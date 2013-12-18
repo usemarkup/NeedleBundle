@@ -167,7 +167,7 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
     public function testGetFacetSetsWithStrategySet()
     {
         $facetSet = $this->getMock('Markup\NeedleBundle\Facet\FacetSetInterface');
-        $facetSetStrategy = $this->getMock('Markup\NeedleBundle\Result\facetSetStrategyInterface');
+        $facetSetStrategy = $this->getMock('Markup\NeedleBundle\Result\FacetSetStrategyInterface');
         $facetSetStrategy
             ->expects($this->any())
             ->method('getFacetSets')
