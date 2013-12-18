@@ -12,7 +12,7 @@ class SubjectDataMapperProvider
      *
      * @var array
      **/
-    private $mappers = [];
+    private $mappers = array();
 
     /**
      * Fetches the mapper that is associated with the given corpus.
