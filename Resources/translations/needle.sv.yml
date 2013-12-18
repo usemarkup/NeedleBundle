@@ -1,0 +1,20 @@
+debug:
+    show: Visar felsökningsinformation för sökfråga
+    hide: Dölj felsökningsinformation för sökfråga
+    solarium:
+        heading: Solr felsökningsinformation
+        timings:
+            heading: Timingar
+            phases: Faserna
+        query:
+            heading: Fråga
+            query_string: Frågesträng
+            parsed_query: Analyseras frågan
+        explain_data: Förklaring uppgifter
+        explanation:
+            document_id_number: "Dokument #%id%"
+            value: Värde
+            match: Match
+            description: Beskrivning
+            detail:
+                heading: Förklaringen detalj

@@ -1,0 +1,19 @@
+Markup\NeedleBundle\Entity\ScheduledIndex:
+  type: entity
+  table: search_scheduled_index
+  id:
+    id:
+     type: integer
+     generator:
+      strategy: AUTO
+  fields:
+    corpus:
+      type: string
+      length: 63
+    added:
+      type: datetime
+    complete:
+      type: datetime
+      nullable: TRUE
+    status:
+      type: string

@@ -1,0 +1,56 @@
+@import "compass/css3/border-radius";
+@import "compass/css3/images";
+
+#search-debug {
+    display: none;
+    border: 2px solid #999;
+    @include border-radius(4px, 6px);
+    @include background-image(linear-gradient(#222, #333));
+    background-color: #333;
+    color: #0f0;
+    padding: 2em;
+    font-family: Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier, monospace;
+
+    h1, h2, h3, h4, h5, h6 {
+        font-size: 100%;
+        font-family: inherit;
+        font-weight: normal;
+        margin: 0.6em 0 0.4em;
+    }
+    h1 {
+        color: #fff;
+        font-weight: bold;
+        margin-bottom: 1em;
+    }
+    h2 {
+        color: #f4f4f4;
+    }
+    h3 {
+        color: #e8e8e8;
+    }
+    h4 {
+        color: #dcdcdc;
+    }
+    h5 {
+        color: #d0d0d0;
+    }
+    h6 {
+        color: #c4c4c4;
+    }
+
+    dl {
+        overflow: auto;
+        margin: 0.3em 0;
+    }
+    dt, dd {
+        float: left;
+    }
+    dt {
+        clear: left;
+        color: #ccc;
+        font-weight: bold;
+    }
+    dt:after {
+        content: ':';
+    }
+}

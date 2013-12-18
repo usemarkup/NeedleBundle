@@ -1,0 +1,106 @@
+parameters:
+    markup_needle.exporter.closure.class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
+    markup_needle.check.solr.class: Markup\NeedleBundle\Check\SolrCheck
+    markup_needle.solr.class: Markup\NeedleBundle\Service\SolrSearchService
+    markup_needle.intercept.definition.class: Markup\NeedleBundle\Intercept\Definition
+    markup_needle.intercept.matcher.normalized_list.class: Markup\NeedleBundle\Intercept\NormalizedListMatcher
+
+services:
+    markup_needle.exporter.closure:
+        class: %markup_needle.exporter.closure.class%
+        arguments:
+            - @markup_needle.corpus.provider
+            - @markup_needle.solarium.client
+            - @markup_needle.exporter.subject_data_mapper_provider
+            - @markup_needle.filter_query.lucenifier
+            - true
+    markup_needle.exporter.closure.prototype:
+        parent: markup_needle.exporter.closure
+        scope: prototype
+    markup_needle.exporter.closure.generator:
+        parent: markup_needle.service_closure
+        arguments:
+            - markup_needle.exporter.closure.prototype
+            - @service_container
+    markup_needle.service_closure:
+        class: Markup\NeedleBundle\Container\ServiceClosure
+        abstract: true
+    markup_needle.exporter.subject_data_mapper_provider:
+        class: Markup\NeedleBundle\Indexer\SubjectDataMapperProvider
+    markup_needle.check.solr:
+        class: %markup_needle.check.solr.class%
+        arguments:
+            - @markup_needle.solarium.client
+        tags:
+            - { name: liip_monitor.check, alias: solr }
+    markup_needle.query.builder.solarium:
+        class: Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder
+        arguments:
+            - @markup_needle.solarium.client
+            - @markup_needle.filter_query.lucenifier
+            - %markup_needle.debug%
+    needle:
+        class: %markup_needle.solr.class%
+        arguments:
+            - @markup_needle.solarium.client
+            - @markup_needle.query.builder.solarium
+            - @?templating
+    markup_needle.index_scheduler:
+        class: Markup\NeedleBundle\Scheduler\IndexScheduler
+        arguments:
+            - @doctrine.orm.entity_manager
+    markup_needle.solarium.helper:
+        class: Solarium\Core\Query\Helper
+    markup_needle.solarium.plugin.log_bad_requests:
+        class: Markup\NeedleBundle\EventListener\SolariumLogBadRequestsPlugin
+        calls:
+            - [ setLogger, [ @logger ] ]
+            - [ setEnabled, [ %markup_needle.solr.log_bad_requests_plugin.enabled% ] ]
+    markup_needle.lucene.helper:
+        class: Markup\NeedleBundle\Lucene\Helper
+        arguments:
+            - @markup_needle.solarium.helper
+    markup_needle.filter_value.lucenifier:
+        class: Markup\NeedleBundle\Lucene\FilterValueLucenifier
+        arguments:
+            - @markup_needle.lucene.helper
+        public: false
+    markup_needle.filter_query.lucenifier:
+        class: Markup\NeedleBundle\Lucene\FilterQueryLucenifier
+        arguments:
+            - @markup_needle.filter_value.lucenifier
+        public: false
+    markup_needle.facet.value_canonicalizer:
+        class: Markup\NeedleBundle\Facet\FacetValueCanonicalizer
+    markup_needle.twig.extension.helper:
+        class: Markup\NeedleBundle\Twig\SearchHelperExtension
+        arguments:
+            - @service_container
+        tags:
+            - { name: twig.extension }
+    markup_needle.interceptor:
+        class: Markup\NeedleBundle\Intercept\Interceptor
+        arguments:
+            - @event_dispatcher
+        calls:
+            - [ addInterceptMapper, [ @markup_needle.intercept_mapper.route ] ]
+            - [ addInterceptMapper, [ @markup_needle.intercept_mapper.search ] ]
+        abstract: true
+    markup_needle.intercept_mapper.route:
+        class: Markup\NeedleBundle\Intercept\RouteInterceptMapper
+        arguments:
+            - @router
+    markup_needle.intercept_mapper.search:
+        class: Markup\NeedleBundle\Intercept\SearchInterceptMapper
+    markup_needle.listener.logging:
+        class: Markup\NeedleBundle\EventListener\LoggingEventListener
+        arguments:
+            - @logger
+        tags:
+            - { name: kernel.event_listener, event: markup_needle.unresolved_intercept, method: logUnresolvedIntercept }
+    markup_needle.corpus.provider:
+        class: Markup\NeedleBundle\Corpus\CorpusProvider
+    markup_needle.listener.index_scheduling:
+        class: Markup\NeedleBundle\EventListener\IndexSchedulingEventListener
+        arguments:
+            - @markup_needle.index_scheduler

@@ -1,0 +1,48 @@
+<hgroup>
+<h1>{{ 'debug.solarium.heading'|trans({}, 'needle') }}</h1>
+
+<h2>{{ 'debug.solarium.query.heading'|trans({}, 'needle') }}</h2>
+<dl>
+    <dt>{{ 'debug.solarium.query.query_string'|trans({}, 'needle') }}</dt>
+    <dd>{{ debug.querystring }}</dd>
+    <dt>{{ 'debug.solarium.query.parsed_query'|trans({}, 'needle') }}</dt>
+    <dd>{{ debug.parsedquery }}</dd>
+</dl>
+
+<h2>{{ 'debug.solarium.timings.heading'|trans({}, 'needle') }}</h2>
+<dl>
+    <dt>Total query time</dt>
+    <dd>{{ debug.timing.time }}ms</dd>
+</dl>
+<h3>{{ 'debug.solarium.timings.phases'|trans({}, 'needle') }}</h3>
+{% for phasename, phasedata in debug.timing.phases %}
+<h4>{{ phasename }}</h4>
+<dl>
+{% for class, time in phasedata %}
+    <dt>{{ class }}</dt>
+    <dd>{{ time }}ms</dd>
+{% endfor %}
+</dl>
+{% endfor %}
+
+<h2>{{ 'debug.solarium.explain_data'|trans({}, 'needle') }}</h2>
+{% for id, explanation in debug.explain %}
+<h3>{{ 'debug.solarium.explanation.document_id_number'|trans({'%id%': id}, 'needle') }}</h3>
+<dl>
+    <dt>{{ 'debug.solarium.explanation.value'|trans({}, 'needle') }}</dt>
+    <dd>{{ explanation.value }}</dd>
+</dl>
+<h4>{{ 'debug.solarium.explanation.detail.heading'|trans({}, 'needle') }}</h4>
+{% for detail in explanation %}
+<dl>
+    <dt>{{ 'debug.solarium.explanation.value'|trans({}, 'needle') }}</dt>
+    <dd>{{ detail.value }}</dd>
+    <dt>{{ 'debug.solarium.explanation.match'|trans({}, 'needle') }}</dt>
+    <dd>{{ detail.match ? 'true' : 'false' }}</dd>
+    <dt>{{ 'debug.solarium.explanation.description'|trans({}, 'needle') }}</dt>
+    <dd>{{ detail.description }}</dd>
+</dl>
+{% endfor %}
+{% endfor %}
+
+</hgroup>

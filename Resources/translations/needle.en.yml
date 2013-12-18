@@ -1,0 +1,20 @@
+debug:
+    show: Show debug information for search query
+    hide: Hide debug information for search query
+    solarium:
+        heading: Solr debug information
+        timings:
+            heading: Timings
+            phases: Phases
+        query:
+            heading: Query
+            query_string: Query string
+            parsed_query: Parsed query
+        explain_data: Explain data
+        explanation:
+            document_id_number: "Document #%id%"
+            value: Value
+            match: Match
+            description: Description
+            detail:
+                heading: Explanation detail
