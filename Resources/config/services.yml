@@ -14,6 +14,7 @@ services:
             - @markup_needle.exporter.subject_data_mapper_provider
             - @markup_needle.filter_query.lucenifier
             - true
+            - @logger
     markup_needle.exporter.closure.prototype:
         parent: markup_needle.exporter.closure
         scope: prototype
