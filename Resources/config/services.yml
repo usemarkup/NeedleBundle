@@ -105,3 +105,5 @@ services:
         class: Markup\NeedleBundle\EventListener\IndexSchedulingEventListener
         arguments:
             - @markup_needle.index_scheduler
+    markup_needle.filter_provider.null:
+        class: Markup\NeedleBundle\Provider\NullFilterProvider
