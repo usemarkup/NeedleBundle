@@ -19,8 +19,8 @@ class NullFilterProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Markup\NeedleBundle\Provider\FilterProviderInterface', $this->provider);
     }
 
-    public function testGetFilterByNameReturnsFalse()
+    public function testGetFilterByNameReturnsNull()
     {
-        $this->assertFalse($this->provider->getFilterByName('filter'));
+        $this->assertNull($this->provider->getFilterByName('filter'));
     }
 }

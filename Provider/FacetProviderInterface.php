@@ -8,10 +8,10 @@ namespace Markup\NeedleBundle\Provider;
 interface FacetProviderInterface
 {
     /**
-     * Gets a facet object using a name.  Returns false if name does not correspond to known facet.
+     * Gets a facet object using a name.  Returns null if name does not correspond to known facet.
      *
      * @param  string                                             $name
-     * @return \Markup\NeedleBundle\Facet\FacetInterface|bool
+     * @return \Markup\NeedleBundle\Facet\FacetInterface|null
      **/
     public function getFacetByName($name);
 }
