@@ -107,3 +107,5 @@ services:
             - @markup_needle.index_scheduler
     markup_needle.filter_provider.null:
         class: Markup\NeedleBundle\Provider\NullFilterProvider
+    markup_needle.search_context.null:
+        class: Markup\NeedleBundle\Context\SearchContext
