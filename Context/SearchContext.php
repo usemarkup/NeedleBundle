@@ -20,11 +20,11 @@ class SearchContext implements SearchContextInterface
     private $itemsPerPage;
 
     /**
-     * @param int $items_per_page
+     * @param int $itemsPerPage
      **/
-    public function __construct($items_per_page)
+    public function __construct($itemsPerPage)
     {
-        $this->itemsPerPage = $items_per_page;
+        $this->itemsPerPage = $itemsPerPage;
     }
 
     /**

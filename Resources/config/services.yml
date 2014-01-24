@@ -112,3 +112,5 @@ services:
         abstract: true
     markup_needle.search_context.null:
         class: Markup\NeedleBundle\Context\SearchContext
+        arguments:
+            - 12
