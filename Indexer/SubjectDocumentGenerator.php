@@ -44,7 +44,7 @@ class SubjectDocumentGenerator implements SubjectDocumentGeneratorInterface
         }
         if (!$this->allowNullValues && false !== array_search(null, $data, true)) {
             //pretty much forced to do this manually. thanks for nothing, php.
-            $filteredData = [];
+            $filteredData = array();
             foreach ($data as $key => $value) {
                 if ($value !== null) {
                     $filteredData[$key] = $value;
