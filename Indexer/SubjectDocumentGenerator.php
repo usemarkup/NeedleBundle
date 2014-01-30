@@ -42,7 +42,7 @@ class SubjectDocumentGenerator implements SubjectDocumentGeneratorInterface
         } catch (IllegalSubjectException $e) {
             return null;
         }
-        if (!$this->allowNullValues) {
+        if (!$this->allowNullValues && false !== array_search(null, $data, true)) {
             //pretty much forced to do this manually. thanks for nothing, php.
             $filteredData = [];
             foreach ($data as $key => $value) {
