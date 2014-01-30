@@ -79,7 +79,7 @@ class SubjectDocumentGeneratorTest extends \PHPUnit_Framework_TestCase
             ->andReturn($data);
         $generator = new SubjectDocumentGenerator($this->subjectDataMapper, $allowNullValues = false);
         $generator->setUpdateQuery($this->updateQuery);
-        $document = $generator->createDocumentForSubject([]);
+        $document = $generator->createDocumentForSubject(array());
         $this->assertInstanceOf('Solarium\QueryType\Update\Query\Document\Document', $document);
         $this->assertCount(1, $document->getFields());
     }
