@@ -17,6 +17,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->fixXmlConfig('corpus', 'corpora')
+            ->addDefaultsIfNotSet()
             ->children()
                 ->arrayNode('backend')
                     ->addDefaultsIfNotSet()
@@ -81,6 +82,9 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->booleanNode('log_bad_requests')
                     ->defaultFalse()
+                ->end()
+                ->booleanNode('allow_null_values_in_update_fields')
+                    ->defaultTrue()
                 ->end()
             ->end();
 

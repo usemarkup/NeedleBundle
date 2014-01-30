@@ -16,16 +16,23 @@ class SubjectDocumentGenerator implements SubjectDocumentGeneratorInterface
     private $subjectToDataMapper;
 
     /**
+     * @var bool
+     */
+    private $allowNullValues;
+
+    /**
      * @var UpdateQuery
      **/
     private $updateQuery = null;
 
     /**
      * @param SubjectDataMapperInterface $subjectToDataMapper
+     * @param bool                       $allowNullValues
      **/
-    public function __construct(SubjectDataMapperInterface $subjectToDataMapper)
+    public function __construct(SubjectDataMapperInterface $subjectToDataMapper, $allowNullValues = true)
     {
         $this->subjectToDataMapper = $subjectToDataMapper;
+        $this->allowNullValues = $allowNullValues;
     }
 
     public function createDocumentForSubject($subject)
@@ -34,6 +41,16 @@ class SubjectDocumentGenerator implements SubjectDocumentGeneratorInterface
             $data = $this->getSubjectToDataMapper()->mapSubjectToData($subject);
         } catch (IllegalSubjectException $e) {
             return null;
+        }
+        if (!$this->allowNullValues) {
+            //pretty much forced to do this manually. thanks for nothing, php.
+            $filteredData = [];
+            foreach ($data as $key => $value) {
+                if ($value !== null) {
+                    $filteredData[$key] = $value;
+                }
+            }
+            $data = $filteredData;
         }
 
         return $this->getUpdateQuery()->createDocument($data);

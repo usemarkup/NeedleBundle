@@ -59,6 +59,13 @@ class CorpusIndexingCommand
     private $wrappingIterator;
 
     /**
+     * Whether nulls should be allowed as update field values.
+     *
+     * @var bool
+     */
+    private $shouldAllowNullFieldValues;
+
+    /**
      * @var string
      **/
     private $corpusName;
@@ -88,6 +95,7 @@ class CorpusIndexingCommand
      * @param bool                      $shouldPreDelete
      * @param LoggerInterface           $logger
      * @param AppendIterator            $wrappingIterator
+     * @param bool                      $shouldAllowNullFieldValues
      **/
     public function __construct(
         CorpusProvider $corpusProvider,
@@ -96,8 +104,9 @@ class CorpusIndexingCommand
         FilterQueryLucenifier $filterQueryLucenifier,
         $shouldPreDelete = false,
         LoggerInterface $logger = null,
-        AppendIterator $wrappingIterator = null)
-    {
+        AppendIterator $wrappingIterator = null,
+        $shouldAllowNullFieldValues = true
+    ) {
         $this->corpusProvider = $corpusProvider;
         $this->solarium = $solarium;
         $this->subjectMapperProvider = $subjectMapperProvider;
@@ -105,6 +114,7 @@ class CorpusIndexingCommand
         $this->shouldPreDelete = $shouldPreDelete;
         $this->logger = $logger ?: new NullLogger();
         $this->wrappingIterator = $wrappingIterator ?: new AppendIterator();
+        $this->shouldAllowNullFieldValues = $shouldAllowNullFieldValues;
         $this->iteratorAppended = false;
     }
 
@@ -128,7 +138,7 @@ class CorpusIndexingCommand
         if ($this->shouldPreDelete) {
             $updateQuery->addDeleteQuery($this->getDeleteQueryLucene());
         }
-        $documentGenerator = new SubjectDocumentGenerator($this->getSubjectMapper());
+        $documentGenerator = new SubjectDocumentGenerator($this->getSubjectMapper(), $this->shouldAllowNullFieldValues);
         $documentGenerator->setUpdateQuery($updateQuery);
         $updateQuery->addDocuments(new DocumentFilterIterator(new SubjectDocumentIterator($subjects, $documentGenerator)));
         $updateQuery->addCommit();

@@ -30,6 +30,7 @@ class MarkupNeedleExtension extends Extension
 
         $this->loadDebug($config, $container);
         $this->loadBackend($config, $container);
+        $this->loadAllowNullValuesInUpdateFields($config, $container);
 
         $loader->load('services.yml');
 
@@ -134,5 +135,14 @@ class MarkupNeedleExtension extends Extension
     private function loadLogSettings(array $config, ContainerBuilder $container)
     {
         $container->setParameter('markup_needle.solr.log_bad_requests_plugin.enabled', $config['log_bad_requests']);
+    }
+
+    /**
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
+    private function loadAllowNullValuesInUpdateFields(array $config, ContainerBuilder $container)
+    {
+        $container->setParameter('markup_needle.allow_null_values_in_update_fields', $config['allow_null_values_in_update_fields']);
     }
 }
