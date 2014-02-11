@@ -41,10 +41,10 @@ interface SearchContextInterface
     public function getDefaultSortCollectionForQuery(SelectQueryInterface $query);
 
     /**
-     * Gets the facet set decorator to apply for a specific facet. (This can determine how a facet set renders.) Returns false if no decoration to be applied.
+     * Gets the facet set decorator to apply for a specific facet. (This can determine how a facet set renders.) Returns null if no decoration to be applied.
      *
      * @param  FacetInterface                                         $facet
-     * @return \Markup\NeedleBundle\Facet\FacetSetInterface|bool
+     * @return \Markup\NeedleBundle\Facet\FacetSetDecoratorInterface|null
      **/
     public function getSetDecoratorForFacet(FacetInterface $facet);
 
