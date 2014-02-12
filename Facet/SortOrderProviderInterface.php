@@ -7,6 +7,9 @@ namespace Markup\NeedleBundle\Facet;
  **/
 interface SortOrderProviderInterface
 {
+    const SORT_BY_INDEX = 'index';
+    const SORT_BY_COUNT = 'count';
+
     /**
      * Gets the sort order to use for sorting facet values in a search engine, given a particular facet.
      *
