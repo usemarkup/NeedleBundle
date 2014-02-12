@@ -116,3 +116,6 @@ services:
         class: Markup\NeedleBundle\Context\SearchContext
         arguments:
             - 12
+    markup_needle.sort_order_provider.simple:
+        abstract: true
+        class: Markup\NeedleBundle\Facet\SimpleSortOrderProvider
