@@ -18,7 +18,6 @@ class SearchContextInterfaceTest extends AbstractInterfaceTestCase
             'getDefaultSortCollectionForQuery',
             'getSetDecoratorForFacet',
             'getWhetherFacetIgnoresCurrentFilters',
-            'shouldUseFacetValuesForRecordedQuery',
             'getAvailableFilterNames',
             'getBoostQueryFields',
             'getFacetCollatorProvider',

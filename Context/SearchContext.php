@@ -62,11 +62,6 @@ class SearchContext implements SearchContextInterface
         return false;
     }
 
-    public function shouldUseFacetValuesForRecordedQuery()
-    {
-        return false;
-    }
-
     public function getSetDecoratorForFacet(FacetInterface $facet)
     {
         return false;

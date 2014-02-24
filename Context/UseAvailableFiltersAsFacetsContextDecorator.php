@@ -68,11 +68,6 @@ class UseAvailableFiltersAsFacetsContextDecorator implements SearchContextInterf
         return $this->searchContext->getWhetherFacetIgnoresCurrentFilters($facet);
     }
 
-    public function shouldUseFacetValuesForRecordedQuery()
-    {
-        return $this->searchContext->shouldUseFacetValuesForRecordedQuery();
-    }
-
     public function getAvailableFilterNames()
     {
         return $this->searchContext->getAvailableFilterNames();

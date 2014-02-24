@@ -56,13 +56,6 @@ interface SearchContextInterface
     public function getWhetherFacetIgnoresCurrentFilters(FacetInterface $facet);
 
     /**
-     * Gets whether this context indicates that the values that show for facets should reflect a query's underlying recorded query (if there is one) - although the facet counts will reflect the query itself.  This is to support the use case where there is a "base" query and you wish to allow users to filter further on that query and "grey out" certain facet values (by allowing their facet counts to go down to zero).
-     *
-     * @return bool
-     **/
-    public function shouldUseFacetValuesForRecordedQuery();
-
-    /**
      * Gets a list of available filter names that a userland query using this context can filter on.
      *
      * @return array

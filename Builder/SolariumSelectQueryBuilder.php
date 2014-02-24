@@ -71,7 +71,6 @@ class SolariumSelectQueryBuilder
 
         //determine whether we are using the facet values for an underlying "base" (recorded) query
         $shouldUseFacetValuesForRecordedQuery = (bool) $this->hasSearchContext()
-            && $this->getSearchContext()->shouldUseFacetValuesForRecordedQuery()
             && $query instanceof RecordableSelectQueryInterface
             && $query->hasRecord()
             && (count($query->getFilterQueries()) > count($query->getRecord()->getFilterQueries()));
