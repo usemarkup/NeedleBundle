@@ -86,4 +86,13 @@ interface SelectQueryInterface extends SimpleQueryInterface
      * @return boolean
      */
     public function doesValueExistInFilterQueries($key, $value);
+
+    /**
+     * Gets whether consuming code should interpret this query as a text search. For example, even if there is a search term
+     * in the query, we may not wish to treat the query as a text search in a particular context (and so possibly apply
+     * different default sorts etc)
+     *
+     * @return bool
+     */
+    public function shouldTreatAsTextSearch();
 }

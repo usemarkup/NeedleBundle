@@ -26,6 +26,7 @@ class RecordableSelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'getFilterQueryWithKey',
             'doesValueExistInFilterQueries',
             'getMaxPerPage',
+            'shouldTreatAsTextSearch',
             );
         $query = new \ReflectionClass('Markup\NeedleBundle\Query\RecordableSelectQueryInterface');
         $actual_public_methods = array();
