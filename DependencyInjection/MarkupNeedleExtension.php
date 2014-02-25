@@ -156,7 +156,7 @@ class MarkupNeedleExtension extends Extension
     private function loadContextServices(array $config, ContainerBuilder $container)
     {
         foreach ($config['context_services'] as $contextName => $contextConfig) {
-            $prefix = sprintf('markup_needle.context.%s.', $contextName);
+            $prefix = sprintf('markup_needle.contexts.%s.', $contextName);
             $container->setAlias($prefix . 'filter_provider', $contextConfig['filter_provider']);
             $container->setAlias($prefix . 'facet_provider', $contextConfig['facet_provider']);
             $container->setAlias($prefix . 'facet_set_decorator_provider', $contextConfig['facet_set_decorator_provider']);
