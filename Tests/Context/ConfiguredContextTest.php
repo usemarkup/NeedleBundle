@@ -2,7 +2,6 @@
 
 namespace Markup\NeedleBundle\Tests\Context;
 
-use Markup\NeedleBundle\Config\ContextConfigurationInterface;
 use Markup\NeedleBundle\Context\ConfiguredContext;
 use Markup\NeedleBundle\Filter\Filter;
 use Mockery as m;
@@ -12,10 +11,10 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->config = m::mock('Markup\NeedleBundle\Config\ContextConfigurationInterface');
-        $this->filterProvider = m::mock('Markup\NeedleBundle\Provider\FilterProviderInterface');
-        $this->facetProvider = m::mock('Markup\NeedleBundle\Provider\FacetProviderInterface');
+        $this->filterProvider = m::mock('Markup\NeedleBundle\Filter\FilterProviderInterface');
+        $this->facetProvider = m::mock('Markup\NeedleBundle\Facet\FacetProviderInterface');
         $this->facetSetDecoratorProvider = m::mock('Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface');
-        $this->facetCollatorProvider = m::mock('Markup\NeedleBundle\Provider\CollatorProviderInterface');
+        $this->facetCollatorProvider = m::mock('Markup\NeedleBundle\Collator\CollatorProviderInterface');
         $this->facetSortOrderProvider = m::mock('Markup\NeedleBundle\Facet\SortOrderProviderInterface');
         $this->interceptorProvider = m::mock('Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider');
         $this->context = new ConfiguredContext(

@@ -126,12 +126,12 @@ services:
         arguments:
             - @markup_needle.index_scheduler
     markup_needle.filter_provider.null:
-        class: Markup\NeedleBundle\Provider\NullFilterProvider
+        class: Markup\NeedleBundle\Filter\NullFilterProvider
     markup_needle.facet_provider.consume_filters.abstract:
-        class: Markup\NeedleBundle\Provider\ConsumeFiltersFacetProvider
+        class: Markup\NeedleBundle\Facet\ConsumeFiltersFacetProvider
         abstract: true
     markup_needle.collator_provider.null:
-        class: Markup\NeedleBundle\Provider\NullCollatorProvider
+        class: Markup\NeedleBundle\Collator\NullCollatorProvider
     markup_needle.search_context.null:
         class: Markup\NeedleBundle\Context\SearchContext
         arguments:

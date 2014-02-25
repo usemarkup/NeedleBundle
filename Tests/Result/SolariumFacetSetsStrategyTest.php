@@ -30,7 +30,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getFacets')
             ->will($this->returnValue(array($facet)));
-        $collatorProvider = new \Markup\NeedleBundle\Provider\NullCollatorProvider();
+        $collatorProvider = new \Markup\NeedleBundle\Collator\NullCollatorProvider();
         $this->searchContext
             ->expects($this->any())
             ->method('getFacetCollatorProvider')

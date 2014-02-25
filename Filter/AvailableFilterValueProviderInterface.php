@@ -1,8 +1,6 @@
 <?php
 
-namespace Markup\NeedleBundle\Provider;
-
-use Markup\NeedleBundle\Filter\FilterInterface;
+namespace Markup\NeedleBundle\Filter;
 
 /**
  * An interface for a provider object that can fetch information about available filter values.

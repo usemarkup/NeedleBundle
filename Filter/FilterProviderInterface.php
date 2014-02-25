@@ -1,6 +1,6 @@
 <?php
 
-namespace Markup\NeedleBundle\Provider;
+namespace Markup\NeedleBundle\Filter;
 
 /**
  * An interface for a provider object that can provide filter objects.

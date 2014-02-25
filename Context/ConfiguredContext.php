@@ -3,16 +3,16 @@
 namespace Markup\NeedleBundle\Context;
 
 use Markup\NeedleBundle\Boost\BoostQueryField;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
 use Markup\NeedleBundle\Facet\FacetInterface;
+use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
+use Markup\NeedleBundle\Filter\FilterProviderInterface;
 use Markup\NeedleBundle\Filter\FilterQuery;
 use Markup\NeedleBundle\Filter\ScalarFilterValue;
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
-use Markup\NeedleBundle\Provider\CollatorProviderInterface;
-use Markup\NeedleBundle\Provider\FacetProviderInterface;
-use Markup\NeedleBundle\Provider\FilterProviderInterface;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Sort\Sort;
 use Markup\NeedleBundle\Sort\SortCollection;
@@ -207,7 +207,7 @@ class ConfiguredContext implements SearchContextInterface
     /**
      * Gets a provider object for collator (sorter) objects that can collate facet values.  May return null if no userland sorting of values should be done.
      *
-     * @return \Markup\NeedleBundle\Provider\CollatorProviderInterface
+     * @return \Markup\NeedleBundle\Collator\CollatorProviderInterface
      **/
     public function getFacetCollatorProvider()
     {

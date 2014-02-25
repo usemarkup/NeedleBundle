@@ -12,7 +12,7 @@ class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework
     public function setUp()
     {
         $this->context = $this->getMock('Markup\NeedleBundle\Context\SearchContextInterface');
-        $this->facetProvider = $this->getMock('Markup\NeedleBundle\Provider\FacetProviderInterface');
+        $this->facetProvider = $this->getMock('Markup\NeedleBundle\Facet\FacetProviderInterface');
         $this->decorator = new UseAvailableFiltersAsFacetsContextDecorator($this->context, $this->facetProvider);
     }
 

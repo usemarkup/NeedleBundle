@@ -2,8 +2,8 @@
 
 namespace Markup\NeedleBundle\Mapper;
 
-use Markup\NeedleBundle\Provider\FilterProviderInterface;
 use Markup\NeedleBundle\Filter\BooleanFilterInterface;
+use Markup\NeedleBundle\Filter\FilterProviderInterface;
 use Markup\NeedleBundle\Filter\FloatFilterInterface;
 
 /**

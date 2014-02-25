@@ -1,6 +1,6 @@
 <?php
 
-namespace Markup\NeedleBundle\Provider;
+namespace Markup\NeedleBundle\Collator;
 
 /**
  * An interface for a provider object that can provide a collator to use for a specific key.

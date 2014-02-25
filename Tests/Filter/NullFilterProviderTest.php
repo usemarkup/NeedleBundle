@@ -1,8 +1,8 @@
 <?php
 
-namespace Markup\NeedleBundle\Tests\Provider;
+namespace Markup\NeedleBundle\Tests\Filter;
 
-use Markup\NeedleBundle\Provider\NullFilterProvider;
+use Markup\NeedleBundle\Filter\NullFilterProvider;
 
 /**
  * Test for null filter provider.
@@ -16,7 +16,7 @@ class NullFilterProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testIsFilterProvider()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Provider\FilterProviderInterface', $this->provider);
+        $this->assertInstanceOf('Markup\NeedleBundle\Filter\FilterProviderInterface', $this->provider);
     }
 
     public function testGetFilterByNameReturnsNull()

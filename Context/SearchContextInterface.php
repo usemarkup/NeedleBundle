@@ -72,7 +72,7 @@ interface SearchContextInterface
     /**
      * Gets a provider object for collator (sorter) objects that can collate facet values.  May return null if no userland sorting of values should be done.
      *
-     * @return \Markup\NeedleBundle\Provider\CollatorProviderInterface
+     * @return \Markup\NeedleBundle\Collator\CollatorProviderInterface
      **/
     public function getFacetCollatorProvider();
 

@@ -3,7 +3,7 @@
 namespace Markup\NeedleBundle\Context;
 
 use Markup\NeedleBundle\Facet\FacetInterface;
-use Markup\NeedleBundle\Provider\FacetProviderInterface;
+use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 
 /**

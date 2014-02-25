@@ -1,8 +1,8 @@
 <?php
 
-namespace Markup\NeedleBundle\Tests\Provider;
+namespace Markup\NeedleBundle\Tests\Facet;
 
-use Markup\NeedleBundle\Provider\ConsumeFiltersFacetProvider;
+use Markup\NeedleBundle\Facet\ConsumeFiltersFacetProvider;
 use Mockery as m;
 
 /**
@@ -12,13 +12,13 @@ class ConsumeFiltersFacetProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->filterProvider = m::mock('Markup\NeedleBundle\Provider\FilterProviderInterface');
+        $this->filterProvider = m::mock('Markup\NeedleBundle\Filter\FilterProviderInterface');
         $this->provider = new ConsumeFiltersFacetProvider($this->filterProvider);
     }
 
     public function testIsFacetProvider()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Provider\FacetProviderInterface', $this->provider);
+        $this->assertInstanceOf('Markup\NeedleBundle\Facet\FacetProviderInterface', $this->provider);
     }
 
     public function testGetFacetByKnownName()

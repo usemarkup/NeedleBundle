@@ -2,10 +2,10 @@
 
 namespace Markup\NeedleBundle\Context;
 
+use Markup\NeedleBundle\Collator\NullCollatorProvider;
 use Markup\NeedleBundle\Facet\FacetInterface;
 use Markup\NeedleBundle\Facet\NullSortOrderProvider;
 use Markup\NeedleBundle\Intercept\NullInterceptor;
-use Markup\NeedleBundle\Provider\NullCollatorProvider;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Sort\EmptySortCollection;
 

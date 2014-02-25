@@ -1,6 +1,6 @@
 <?php
 
-namespace Markup\NeedleBundle\Provider;
+namespace Markup\NeedleBundle\Collator;
 
 /**
 * A null pattern collator provider.

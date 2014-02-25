@@ -2,13 +2,13 @@
 
 namespace Markup\NeedleBundle\Context;
 
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
+use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
+use Markup\NeedleBundle\Filter\FilterProviderInterface;
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
-use Markup\NeedleBundle\Provider\CollatorProviderInterface;
-use Markup\NeedleBundle\Provider\FacetProviderInterface;
-use Markup\NeedleBundle\Provider\FilterProviderInterface;
 
 class ConfiguredContextProvider
 {

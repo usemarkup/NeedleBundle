@@ -1,6 +1,6 @@
 <?php
 
-namespace Markup\NeedleBundle\Provider;
+namespace Markup\NeedleBundle\Facet;
 
 /**
  * An interface for a provider object that can provide facet objects.
