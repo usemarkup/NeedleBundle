@@ -127,6 +127,10 @@ services:
             - @markup_needle.index_scheduler
     markup_needle.filter_provider.null:
         class: Markup\NeedleBundle\Filter\NullFilterProvider
+    markup_needle.filter_provider.simple:
+        class: Markup\NeedleBundle\Filter\SimpleFilterProvider
+    markup_needle.facet_provider.simple:
+        class: Markup\NeedleBundle\Facet\SimpleFacetProvider
     markup_needle.facet_provider.consume_filters.abstract:
         class: Markup\NeedleBundle\Facet\ConsumeFiltersFacetProvider
         abstract: true
