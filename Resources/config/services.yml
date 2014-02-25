@@ -134,6 +134,8 @@ services:
     markup_needle.facet_provider.consume_filters.abstract:
         class: Markup\NeedleBundle\Facet\ConsumeFiltersFacetProvider
         abstract: true
+    markup_needle.facet_set_decorator_provider:
+        class: Markup\NeedleBundle\Facet\FacetSetDecoratorProvider
     markup_needle.collator_provider.null:
         class: Markup\NeedleBundle\Collator\NullCollatorProvider
     markup_needle.search_context.null:
