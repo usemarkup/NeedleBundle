@@ -14,7 +14,8 @@ class ContextConfiguration implements ContextConfigurationInterface
     /**
      * A hash containing all the configuration passed in. Keys are:
      *
-     * items_per_page, sorts, sorts_search_term, sorts_non_search_term, boosts, facets, intercepts
+     * items_per_page, base_filter_queries, sorts, sorts_search_term, sorts_non_search_term, boosts,
+     * filters, facets, intercepts, should_ignore_current_filters_in_faceting
      *
      * Values are exactly in the format as the various methods should return.
      */
@@ -23,7 +24,8 @@ class ContextConfiguration implements ContextConfigurationInterface
     /**
      * @param array $config A hash config with keys:
      *
-     * items_per_page, base_filter_queries, sorts, sorts_search_term, sorts_non_search_term, boosts, filters, facets, intercepts, should_ignore_current_filters_in_faceting
+     * items_per_page, base_filter_queries, sorts, sorts_search_term, sorts_non_search_term, boosts,
+     * filters, facets, intercepts, should_ignore_current_filters_in_faceting
      */
     public function __construct(array $config = array())
     {
