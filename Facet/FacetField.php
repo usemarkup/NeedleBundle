@@ -3,7 +3,6 @@
 namespace Markup\NeedleBundle\Facet;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Filter\FilterInterface as Filter;
 
 /**
 * A facet field implementation that uses a filter.
@@ -11,14 +10,14 @@ use Markup\NeedleBundle\Filter\FilterInterface as Filter;
 class FacetField implements AttributeInterface
 {
     /**
-     * @var Filter
+     * @var AttributeInterface
      **/
     private $filter;
 
     /**
-     * @param Filter $filter
+     * @param AttributeInterface $filter
      **/
-    public function __construct(Filter $filter)
+    public function __construct(AttributeInterface $filter)
     {
         $this->filter = $filter;
     }
@@ -44,7 +43,7 @@ class FacetField implements AttributeInterface
     }
 
     /**
-     * @return Filter
+     * @return AttributeInterface
      **/
     private function getFilter()
     {

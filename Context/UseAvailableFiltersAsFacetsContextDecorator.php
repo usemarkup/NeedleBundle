@@ -2,7 +2,7 @@
 
 namespace Markup\NeedleBundle\Context;
 
-use Markup\NeedleBundle\Facet\FacetInterface;
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 
@@ -58,12 +58,12 @@ class UseAvailableFiltersAsFacetsContextDecorator implements SearchContextInterf
         return $this->searchContext->getDefaultSortCollectionForQuery($query);
     }
 
-    public function getSetDecoratorForFacet(FacetInterface $facet)
+    public function getSetDecoratorForFacet(AttributeInterface $facet)
     {
         return $this->searchContext->getSetDecoratorForFacet($facet);
     }
 
-    public function getWhetherFacetIgnoresCurrentFilters(FacetInterface $facet)
+    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet)
     {
         return $this->searchContext->getWhetherFacetIgnoresCurrentFilters($facet);
     }

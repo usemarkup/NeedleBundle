@@ -2,13 +2,15 @@
 
 namespace Markup\NeedleBundle\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
 * A filter query object.
 */
 class FilterQuery implements FilterQueryInterface
 {
     /**
-     * @var FilterInterface
+     * @var AttributeInterface
      **/
     private $filter;
 
@@ -18,10 +20,10 @@ class FilterQuery implements FilterQueryInterface
     private $filterValue;
 
     /**
-     * @param FilterInterface      $filter
+     * @param AttributeInterface   $filter
      * @param FilterValueInterface $filter_value
      **/
-    public function __construct(FilterInterface $filter, FilterValueInterface $filter_value)
+    public function __construct(AttributeInterface $filter, FilterValueInterface $filter_value)
     {
         $this->filter = $filter;
         $this->filterValue = $filter_value;

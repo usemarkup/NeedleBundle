@@ -25,7 +25,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
 
     public function testGetOneFacetSet()
     {
-        $facet = $this->getMock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->searchContext
             ->expects($this->any())
             ->method('getFacets')
@@ -66,7 +66,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
 
     public function testGetOneFacetSetWithResultPassedToConstructorAsClosure()
     {
-        $facet = $this->getMock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->searchContext
             ->expects($this->any())
             ->method('getFacets')

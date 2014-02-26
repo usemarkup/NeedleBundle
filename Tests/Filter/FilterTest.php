@@ -12,7 +12,7 @@ class FilterTest extends \PHPUnit_Framework_TestCase
     public function testIsFilter()
     {
         $filter = new Filter('name');
-        $this->assertInstanceOf('Markup\NeedleBundle\Filter\FilterInterface', $filter);
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $filter);
     }
 
     public function testIsAttribute()

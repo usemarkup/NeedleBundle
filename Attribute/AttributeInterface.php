@@ -2,12 +2,38 @@
 
 namespace Markup\NeedleBundle\Attribute;
 
-use Markup\NeedleBundle\Facet\FacetInterface;
-
 /**
  * Base interface for an attribute that can be filtered or faceted on.
  *
  * NB. Will replace deprecated filter and facet interfaces.
  */
-interface AttributeInterface extends FacetInterface
-{}
+interface AttributeInterface
+{
+    /**
+     * The name by which this attribute is referred within the application.
+     *
+     * @return string
+     **/
+    public function getName();
+
+    /**
+     * The name by which this attribute should be referred to in visible output.
+     *
+     * @return string
+     **/
+    public function getDisplayName();
+
+    /**
+     * The key being used for this attribute in a search on a search engine.
+     *
+     * @return string
+     **/
+    public function getSearchKey();
+
+    /**
+     * Magic toString method.  Returns display name.
+     *
+     * @return string
+     **/
+    public function __toString();
+}

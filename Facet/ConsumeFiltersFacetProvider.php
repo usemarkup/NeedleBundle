@@ -26,7 +26,7 @@ class ConsumeFiltersFacetProvider implements FacetProviderInterface
      * Gets a facet object using a name.  Returns false if name does not correspond to known facet.
      *
      * @param  string $name
-     * @return \Markup\NeedleBundle\Facet\FacetInterface|bool
+     * @return \Markup\NeedleBundle\Attribute\AttributeInterface|bool
      **/
     public function getFacetByName($name)
     {

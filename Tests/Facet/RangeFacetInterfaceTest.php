@@ -27,9 +27,9 @@ class RangeFacetInterfaceTest extends AbstractInterfaceTestCase
         return 'Markup\NeedleBundle\Facet\RangeFacetInterface';
     }
 
-    public function testIsFacet()
+    public function testIsAttribute()
     {
         $rangeFacet = new \ReflectionClass($this->getInterfaceUnderTest());
-        $this->assertTrue($rangeFacet->implementsInterface('Markup\NeedleBundle\Facet\FacetInterface'));
+        $this->assertTrue($rangeFacet->implementsInterface('Markup\NeedleBundle\Attribute\AttributeInterface'));
     }
 }

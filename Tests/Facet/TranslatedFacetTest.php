@@ -14,12 +14,6 @@ class TranslatedFacetTest extends \PHPUnit_Framework_TestCase
         $this->translator = $this->getMock('Symfony\Component\Translation\TranslatorInterface');
     }
 
-    public function testIsFacet()
-    {
-        $translatedFacet = new \ReflectionClass('Markup\NeedleBundle\Facet\TranslatedFacet');
-        $this->assertTrue($translatedFacet->implementsInterface('Markup\NeedleBundle\Facet\FacetInterface'));
-    }
-
     public function testIsAttribute()
     {
         $translatedFacet = new \ReflectionClass('Markup\NeedleBundle\Facet\TranslatedFacet');

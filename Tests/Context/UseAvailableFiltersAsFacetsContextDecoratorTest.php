@@ -33,7 +33,7 @@ class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework
 
     public function testGetFacets()
     {
-        $facet = $this->getMock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->facetProvider
             ->expects($this->any())
             ->method('getFacetByName')
@@ -45,7 +45,7 @@ class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework
             ->will($this->returnValue($filterNames));
         $facets = $this->decorator->getFacets();
         $this->assertCount(3, $facets);
-        $this->assertContainsOnly('Markup\NeedleBundle\Facet\FacetInterface', $facets);
+        $this->assertContainsOnly('Markup\NeedleBundle\Attribute\AttributeInterface', $facets);
     }
 
     //other methods simply delegate down, so skipping unit tests as little chance of regression

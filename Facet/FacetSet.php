@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
 * A generic facet set.
 */
@@ -10,7 +12,7 @@ class FacetSet implements FacetSetInterface
     /**
      * A search facet.
      *
-     * @var FacetInterface
+     * @var AttributeInterface
      **/
     private $facet;
 
@@ -22,10 +24,10 @@ class FacetSet implements FacetSetInterface
     private $facetSetIterator;
 
     /**
-     * @param FacetInterface            $facet
+     * @param AttributeInterface        $facet
      * @param FacetSetIteratorInterface $facetSetIterator
      **/
-    public function __construct(FacetInterface $facet, FacetSetIteratorInterface $facetSetIterator)
+    public function __construct(AttributeInterface $facet, FacetSetIteratorInterface $facetSetIterator)
     {
         $this->facet = $facet;
         $this->facetSetIterator = $facetSetIterator;

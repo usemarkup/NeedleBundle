@@ -22,7 +22,7 @@ class FacetValueCanonicalizerTest extends \PHPUnit_Framework_TestCase
     public function testNoCanonicalizersMakesCanonicalizeReturnOriginal()
     {
         $value = 'value';
-        $facet = $this->getMock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->assertEquals($value, $this->canonicalizer->canonicalizeForFacet($value, $facet));
     }
 
@@ -32,7 +32,7 @@ class FacetValueCanonicalizerTest extends \PHPUnit_Framework_TestCase
         $canonicalized = 'canonicalized';
         $canonicalizer = $this->getMock('Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface');
         $facetName = 'facet';
-        $facet = $this->getMock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $facet
             ->expects($this->any())
             ->method('getName')

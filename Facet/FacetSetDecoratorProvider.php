@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 class FacetSetDecoratorProvider implements FacetSetDecoratorProviderInterface
 {
     /**
@@ -17,10 +19,10 @@ class FacetSetDecoratorProvider implements FacetSetDecoratorProviderInterface
     /**
      * Gets a facet set decorator for a provided facet, or returns null.
      *
-     * @param FacetInterface $facet
+     * @param AttributeInterface $facet
      * @return FacetSetDecoratorInterface
      */
-    public function getDecoratorForFacet(FacetInterface $facet)
+    public function getDecoratorForFacet(AttributeInterface $facet)
     {
         if (!isset($this->decorators[$facet->getName()])) {
             return null;

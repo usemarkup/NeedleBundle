@@ -9,12 +9,6 @@ use Markup\NeedleBundle\Filter\SimpleFilter;
 */
 class SimpleFilterTest extends \PHPUnit_Framework_TestCase
 {
-    public function testIsFilter()
-    {
-        $filter = new SimpleFilter('name');
-        $this->assertTrue($filter instanceof \Markup\NeedleBundle\Filter\FilterInterface);
-    }
-
     public function testIsAttribute()
     {
         $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', new SimpleFilter('name'));

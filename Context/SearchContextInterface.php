@@ -2,7 +2,7 @@
 
 namespace Markup\NeedleBundle\Context;
 
-use Markup\NeedleBundle\Facet\FacetInterface;
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 
 /**
@@ -20,7 +20,7 @@ interface SearchContextInterface
     /**
      * Gets the set of facets to apply to the search.
      *
-     * @return \Markup\NeedleBundle\Facet\FacetInterface[]
+     * @return \Markup\NeedleBundle\Attribute\AttributeInterface[]
      **/
     public function getFacets();
 
@@ -43,17 +43,18 @@ interface SearchContextInterface
     /**
      * Gets the facet set decorator to apply for a specific facet. (This can determine how a facet set renders.) Returns null if no decoration to be applied.
      *
-     * @param  FacetInterface                                         $facet
+     * @param  AttributeInterface                                         $facet
      * @return \Markup\NeedleBundle\Facet\FacetSetDecoratorInterface|null
      **/
-    public function getSetDecoratorForFacet(FacetInterface $facet);
+    public function getSetDecoratorForFacet(AttributeInterface $facet);
 
     /**
      * Gets whether the given facet that is being displayed should ignore any corresponding filter values that are currently selected (true), or whether they should just reflect the returned results (false).
      *
+     * @param AttributeInterface $facet
      * @return bool
      **/
-    public function getWhetherFacetIgnoresCurrentFilters(FacetInterface $facet);
+    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet);
 
     /**
      * Gets a list of available filter names that a userland query using this context can filter on.

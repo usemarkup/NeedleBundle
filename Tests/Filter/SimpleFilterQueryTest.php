@@ -34,7 +34,7 @@ class SimpleFilterQueryTest extends \PHPUnit_Framework_TestCase
     public function testGetFilter()
     {
         $filter = $this->filterQuery->getFilter();
-        $this->assertInstanceOf('Markup\NeedleBundle\Filter\FilterInterface', $filter);
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $filter);
         $this->assertEquals($this->key, $filter->getSearchKey());
     }
 

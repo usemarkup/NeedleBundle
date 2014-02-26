@@ -12,14 +12,14 @@ abstract class FilterDecorator implements AttributeInterface
     /**
      * The filter being decorated.
      *
-     * @var FilterInterface
+     * @var AttributeInterface
      **/
     private $filter;
 
     /**
-     * @param FilterInterface $filter
+     * @param AttributeInterface $filter
      **/
-    public function __construct(FilterInterface $filter)
+    public function __construct(AttributeInterface $filter)
     {
         $this->filter = $filter;
     }

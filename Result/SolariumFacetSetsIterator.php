@@ -24,7 +24,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
     /**
      * A collection of existing facets in a search context, keyed by facet search key for easy lookups.
      *
-     * @var \Markup\NeedleBundle\Facet\FacetInterface[]
+     * @var \Markup\NeedleBundle\Attribute\AttributeInterface[]
      **/
     private $facetsKeyedBySearchKey;
 
@@ -46,8 +46,8 @@ class SolariumFacetSetsIterator implements \OuterIterator
     private $subIterator = null;
 
     /**
-     * @param SolariumFacetSet          s$facetSet
-     * @param SearchContext $searchContext
+     * @param SolariumFacetSet             s$facetSet
+     * @param SearchContext                $searchContext
      **/
     public function __construct(SolariumFacetSet $facetSet, SearchContext $searchContext, SelectQueryInterface $originalQuery = null)
     {

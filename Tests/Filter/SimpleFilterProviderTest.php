@@ -23,7 +23,7 @@ class SimpleFilterProviderTest extends \PHPUnit_Framework_TestCase
     {
         $name = 'i_am_a_filter';
         $filter = $this->provider->getFilterByName($name);
-        $this->assertInstanceOf('Markup\NeedleBundle\Filter\FilterInterface', $filter);
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $filter);
         $this->assertEquals($name, $filter->getName());
     }
 }

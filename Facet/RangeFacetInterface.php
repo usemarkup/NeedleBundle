@@ -2,10 +2,12 @@
 
 namespace Markup\NeedleBundle\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
  * An interface for a range facet, being a facet that shows ranged values.
  **/
-interface RangeFacetInterface extends FacetInterface
+interface RangeFacetInterface extends AttributeInterface
 {
     /**
      * Gets the start for the ranges that comprise this range facet.

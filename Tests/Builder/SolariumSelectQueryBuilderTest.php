@@ -57,7 +57,7 @@ class SolariumSelectQueryBuilderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('lucenify')
             ->will($this->returnValue('color:"red"'));
-        $filter = $this->getMock('Markup\NeedleBundle\Filter\FilterInterface');
+        $filter = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $filterValue = $this->getMock('Markup\NeedleBundle\Filter\FilterValueInterface');
         $filter
             ->expects($this->any())

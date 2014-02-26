@@ -63,13 +63,13 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->config
             ->shouldReceive('getDefaultFacetingAttributes')
             ->andReturn($facetNames);
-        $facet = m::mock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = m::mock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->facetProvider
             ->shouldReceive('getFacetByName')
             ->andReturn($facet);
         $facets = $this->context->getFacets();
         $this->assertCount(count($facetNames), $facets);
-        $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Facet\FacetInterface', $facets);
+        $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Attribute\AttributeInterface', $facets);
     }
 
     public function testGetDefaultFilterQueries()
@@ -188,7 +188,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testWhetherFacetIgnoresCurrentFilters()
     {
-        $facet = m::mock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = m::mock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->config
             ->shouldReceive('shouldIgnoreCurrentFilteredAttributesInFaceting')
             ->andReturn(true);
@@ -199,7 +199,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
     {
         $decorator = m::mock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
         $field = 'field';
-        $facet = m::mock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = m::mock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $facet
             ->shouldReceive('getName')
             ->andReturn($field);

@@ -11,7 +11,7 @@ class SortTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->filter = $this->getMock('Markup\NeedleBundle\Filter\FilterInterface');
+        $this->filter = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->sort = new Sort($this->filter);
     }
 

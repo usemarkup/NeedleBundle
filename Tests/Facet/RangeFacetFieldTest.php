@@ -11,7 +11,7 @@ class RangeFacetFieldTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->filter = $this->getMock('Markup\NeedleBundle\Filter\FilterInterface');
+        $this->filter = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->rangeFacetConfig = $this->getMock('Markup\NeedleBundle\Facet\RangeFacetConfigurationInterface');
         $this->range = new RangeFacetField($this->filter, $this->rangeFacetConfig);
     }

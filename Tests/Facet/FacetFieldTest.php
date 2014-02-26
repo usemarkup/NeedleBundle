@@ -11,13 +11,8 @@ class FacetFieldTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->filter = $this->getMock('Markup\NeedleBundle\Filter\FilterInterface');
+        $this->filter = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->facet = new FacetField($this->filter);
-    }
-
-    public function testIsFacet()
-    {
-        $this->assertInstanceOf('Markup\NeedleBundle\Facet\FacetInterface', $this->facet);
     }
 
     public function testIsAttribute()

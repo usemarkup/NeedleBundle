@@ -24,7 +24,7 @@ class ConsumeFiltersFacetProviderTest extends \PHPUnit_Framework_TestCase
     public function testGetFacetByKnownName()
     {
         $name = 'a_name';
-        $filter = m::mock('Markup\NeedleBundle\Filter\FilterInterface');
+        $filter = m::mock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $filter
             ->shouldReceive('getName')
             ->andReturn($name);
@@ -33,7 +33,7 @@ class ConsumeFiltersFacetProviderTest extends \PHPUnit_Framework_TestCase
             ->with($name)
             ->andReturn($filter);
         $facet = $this->provider->getFacetByName($name);
-        $this->assertInstanceOf('Markup\NeedleBundle\Facet\FacetInterface', $facet);
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $facet);
         $this->assertEquals($name, $facet->getName());
     }
 

@@ -23,7 +23,7 @@ class SimpleFacetProviderTest extends \PHPUnit_Framework_TestCase
     {
         $name = 'i_am_a_facet';
         $facet = $this->provider->getFacetByName($name);
-        $this->assertInstanceOf('Markup\NeedleBundle\Facet\FacetInterface', $facet);
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $facet);
         $this->assertEquals($name, $facet->getName());
     }
 }

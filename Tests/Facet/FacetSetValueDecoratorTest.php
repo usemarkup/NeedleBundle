@@ -28,7 +28,7 @@ class FacetSetValueDecoratorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getValue')
             ->will($this->returnValue($value));
-        $facet = $this->getMock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $facetSet = $this->getMock('Markup\NeedleBundle\Facet\FacetSetInterface');
         $facetSet
             ->expects($this->any())

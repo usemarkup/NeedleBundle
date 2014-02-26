@@ -24,7 +24,7 @@ class SearchHelperExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $original = 'original';
         $canonicalized = 'canonicalized';
-        $facet = $this->getMock('Markup\NeedleBundle\Facet\FacetInterface');
+        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $facetValueCanonicalizer = $this->getMock('Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface');
         $facetValueCanonicalizer
             ->expects($this->any())

@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
  * A simple provider of sort orders for named facets. Sort order can only be by index or by count.
  */
@@ -30,11 +32,11 @@ class SimpleSortOrderProvider implements SortOrderProviderInterface
     /**
      * Gets the sort order to use for sorting facet values in a search engine, given a particular facet.
      *
-     * @param FacetInterface $facet
+     * @param AttributeInterface $facet
      *
      * @return string
      **/
-    public function getSortOrderForFacet(FacetInterface $facet)
+    public function getSortOrderForFacet(AttributeInterface $facet)
     {
         $defaultCase = ($this->shouldDefaultToIndex) ? SortOrderProviderInterface::SORT_BY_INDEX : SortOrderProviderInterface::SORT_BY_COUNT;
         $exceptionCase = ($this->shouldDefaultToIndex) ? SortOrderProviderInterface::SORT_BY_COUNT : SortOrderProviderInterface::SORT_BY_INDEX;

@@ -2,10 +2,10 @@
 
 namespace Markup\NeedleBundle\Context;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Boost\BoostQueryField;
 use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
-use Markup\NeedleBundle\Facet\FacetInterface;
 use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
@@ -100,7 +100,7 @@ class ConfiguredContext implements SearchContextInterface
     /**
      * Gets the set of facets to apply to the search.
      *
-     * @return \Markup\NeedleBundle\Facet\FacetInterface[]
+     * @return \Markup\NeedleBundle\Attribute\AttributeInterface[]
      **/
     public function getFacets()
     {
@@ -167,10 +167,10 @@ class ConfiguredContext implements SearchContextInterface
     /**
      * Gets the facet set decorator to apply for a specific facet. (This can determine how a facet set renders.) Returns false if no decoration to be applied.
      *
-     * @param  FacetInterface $facet
+     * @param  AttributeInterface $facet
      * @return \Markup\NeedleBundle\Facet\FacetSetDecoratorInterface|bool
      **/
-    public function getSetDecoratorForFacet(FacetInterface $facet)
+    public function getSetDecoratorForFacet(AttributeInterface $facet)
     {
         return $this->facetSetDecoratorProvider->getDecoratorForFacet($facet);
     }
@@ -180,7 +180,7 @@ class ConfiguredContext implements SearchContextInterface
      *
      * @return bool
      **/
-    public function getWhetherFacetIgnoresCurrentFilters(FacetInterface $facet)
+    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet)
     {
         return $this->config->shouldIgnoreCurrentFilteredAttributesInFaceting();
     }

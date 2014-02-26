@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
 * A canonicalizer for facet values.
 */
@@ -17,7 +19,7 @@ class FacetValueCanonicalizer implements FacetValueCanonicalizerInterface
     /**
      * {@inheritdoc}
      **/
-    public function canonicalizeForFacet($value, FacetInterface $facet)
+    public function canonicalizeForFacet($value, AttributeInterface $facet)
     {
         foreach ($this->getCanonicalizersForFacet($facet) as $canonicalizer) {
             $value = $canonicalizer->canonicalizeForFacet($value, $facet);
@@ -47,9 +49,10 @@ class FacetValueCanonicalizer implements FacetValueCanonicalizerInterface
     /**
      * Gets the registered canonicalizers for the provided facet.
      *
+     * @param AttributeInterface $facet
      * @return FacetValueCanonicalizerInterface[]
      **/
-    private function getCanonicalizersForFacet(FacetInterface $facet)
+    private function getCanonicalizersForFacet(AttributeInterface $facet)
     {
         if (!isset($this->canonicalizerCollections[$facet->getName()])) {
             return array();

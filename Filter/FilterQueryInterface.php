@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
  * An interface for a filter query, which is a combination of a filter object and a value for that filter.
  **/
@@ -24,7 +26,7 @@ interface FilterQueryInterface
     /**
      * Gets the filter object associated with this query.
      *
-     * @return FilterInterface
+     * @return AttributeInterface
      **/
     public function getFilter();
 

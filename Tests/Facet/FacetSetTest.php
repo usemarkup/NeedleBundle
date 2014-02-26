@@ -12,7 +12,7 @@ class FacetSetTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->facet = $this->getMock('Markup\NeedleBundle\Facet\FacetInterface');
+        $this->facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->facetValueIterator = $this->getMock('Markup\NeedleBundle\Facet\FacetSetIteratorInterface');
         $this->facetSet = new FacetSet($this->facet, $this->facetValueIterator);
     }

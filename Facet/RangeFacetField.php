@@ -2,7 +2,7 @@
 
 namespace Markup\NeedleBundle\Facet;
 
-use Markup\NeedleBundle\Filter\FilterInterface;
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 
 /**
 * A range facet implementation.
@@ -15,10 +15,10 @@ class RangeFacetField extends FacetField implements RangeFacetInterface
     private $rangeFacetConfiguration;
 
     /**
-     * @param FilterInterface                  $filter
+     * @param AttributeInterface               $filter
      * @param RangeFacetConfigurationInterface $rangeFacetConfig
      **/
-    public function __construct(FilterInterface $filter, RangeFacetConfigurationInterface $rangeFacetConfig)
+    public function __construct(AttributeInterface $filter, RangeFacetConfigurationInterface $rangeFacetConfig)
     {
         parent::__construct($filter);
         $this->rangeFacetConfiguration = $rangeFacetConfig;

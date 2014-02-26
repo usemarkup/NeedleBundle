@@ -2,7 +2,7 @@
 
 namespace Markup\NeedleBundle\Sort;
 
-use Markup\NeedleBundle\Filter\FilterInterface;
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 
 /**
 * A simple sort.
@@ -10,7 +10,7 @@ use Markup\NeedleBundle\Filter\FilterInterface;
 class Sort implements SortInterface
 {
     /**
-     * @var FilterInterface
+     * @var AttributeInterface
      **/
     private $filter;
 
@@ -20,10 +20,10 @@ class Sort implements SortInterface
     private $isDescending;
 
     /**
-     * @param FilterInterface $filter
-     * @param bool            $isDescending
+     * @param AttributeInterface $filter
+     * @param bool               $isDescending
      **/
-    public function __construct(FilterInterface $filter, $isDescending = false)
+    public function __construct(AttributeInterface $filter, $isDescending = false)
     {
         $this->filter = $filter;
         $this->isDescending = (bool) $isDescending;

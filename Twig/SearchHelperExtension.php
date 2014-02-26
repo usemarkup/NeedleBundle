@@ -2,7 +2,8 @@
 
 namespace Markup\NeedleBundle\Twig;
 
-use Markup\NeedleBundle\Facet;
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -37,12 +38,12 @@ class SearchHelperExtension extends \Twig_Extension
      * Canonicalize a value for the provided facet.
      *
      * @param  string               $value
-     * @param  Facet\FacetInterface $facet
+     * @param  AttributeInterface   $facet
      * @return string
      **/
     public function canonicalizeForFacet($value, $facet)
     {
-        if (!$facet instanceof Facet\FacetInterface) {
+        if (!$facet instanceof AttributeInterface) {
             return $value;
         }
 
@@ -57,7 +58,7 @@ class SearchHelperExtension extends \Twig_Extension
     /**
      * Gets the facet value canonicalizer service.
      *
-     * @return Facet\FacetValueCanonicalizerInterface
+     * @return FacetValueCanonicalizerInterface
      **/
     private function getFacetValueCanonicalizer()
     {

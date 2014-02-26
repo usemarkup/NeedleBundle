@@ -10,7 +10,7 @@ interface SortInterface
     /**
      * Gets the filter being sorted on.
      *
-     * @return \Markup\NeedleBundle\Filter\FilterInterface
+     * @return \Markup\NeedleBundle\Attribute\AttributeInterface
      **/
     public function getFilter();
 

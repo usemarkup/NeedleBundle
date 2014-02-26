@@ -2,8 +2,8 @@
 
 namespace Markup\NeedleBundle\Context;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Collator\NullCollatorProvider;
-use Markup\NeedleBundle\Facet\FacetInterface;
 use Markup\NeedleBundle\Facet\NullSortOrderProvider;
 use Markup\NeedleBundle\Intercept\NullInterceptor;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
@@ -40,7 +40,7 @@ class SearchContext implements SearchContextInterface
     /**
      * Gets the set of facets that should be requested with this context.
      *
-     * @return \Markup\NeedleBundle\Facet\FacetInterface[]
+     * @return \Markup\NeedleBundle\Attribute\AttributeInterface[]
      **/
     public function getFacets()
     {
@@ -57,12 +57,12 @@ class SearchContext implements SearchContextInterface
         return new EmptySortCollection();
     }
 
-    public function getWhetherFacetIgnoresCurrentFilters(FacetInterface $facet)
+    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet)
     {
         return false;
     }
 
-    public function getSetDecoratorForFacet(FacetInterface $facet)
+    public function getSetDecoratorForFacet(AttributeInterface $facet)
     {
         return false;
     }
