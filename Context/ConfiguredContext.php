@@ -14,6 +14,7 @@ use Markup\NeedleBundle\Filter\FilterQuery;
 use Markup\NeedleBundle\Filter\ScalarFilterValue;
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
+use Markup\NeedleBundle\Sort\RelevanceSort;
 use Markup\NeedleBundle\Sort\Sort;
 use Markup\NeedleBundle\Sort\SortCollection;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
@@ -152,6 +153,11 @@ class ConfiguredContext implements SearchContextInterface
     {
         $sorts = new SortCollection();
         foreach ($sortConfig as $attr => $direction) {
+            //if this is a relevance sort, create a relevance sort explicitly
+            if ($attr === ContextConfigurationInterface::SORT_RELEVANCE) {
+                $sorts->add(new RelevanceSort()); //assumption: relevance sort will always be descending
+                continue;
+            }
             $sorts->add(new Sort($this->filterProvider->getFilterByName($attr), $direction === ContextConfigurationInterface::ORDER_DESC));
         }
 

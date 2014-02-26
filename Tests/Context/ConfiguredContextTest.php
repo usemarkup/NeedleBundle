@@ -2,8 +2,10 @@
 
 namespace Markup\NeedleBundle\Tests\Context;
 
+use Markup\NeedleBundle\Config\ContextConfigurationInterface;
 use Markup\NeedleBundle\Context\ConfiguredContext;
 use Markup\NeedleBundle\Filter\Filter;
+use Markup\NeedleBundle\Sort\RelevanceSort;
 use Mockery as m;
 
 class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
@@ -111,7 +113,29 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
             ->andReturn(true);
         $sorts = $this->context->getDefaultSortCollectionForQuery($query);
         $this->assertCount(2, $sorts);
-        $this->assertEquals('relevance', $sorts->first()->getFilter()->getName());
+        $this->assertEquals('price', $sorts->get(1)->getFilter()->getName());
+    }
+
+    public function testDefaultSortCollectionForQueryGetsRelevanceSortWhenRelevanceSelected()
+    {
+        $this->filterProvider
+            ->shouldReceive('getFilterByName')
+            ->andReturnUsing(function ($name) {
+                return new Filter($name);
+            });
+        $sortConfig = array(
+            ContextConfigurationInterface::SORT_RELEVANCE => ContextConfigurationInterface::ORDER_DESC,
+        );
+        $this->config
+            ->shouldReceive('getDefaultSortsForSearchTermQuery')
+            ->andReturn($sortConfig);
+        $query = m::mock('Markup\NeedleBundle\Query\SelectQueryInterface');
+        $query
+            ->shouldReceive('shouldTreatAsTextSearch')
+            ->andReturn(true);
+        $sorts = $this->context->getDefaultSortCollectionForQuery($query);
+        $this->assertCount(1, $sorts);
+        $this->assertEquals(RelevanceSort::RELEVANCE_FILTER_NAME, $sorts->first()->getFilter()->getName());
     }
 
     public function testDefaultSortCollectionForQueryUsesNonSearchTermWhenNotTreatedAsSearchTerm()
