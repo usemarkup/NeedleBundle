@@ -15,6 +15,11 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Markup\NeedleBundle\Filter\FilterInterface', $filter);
     }
 
+    public function testIsAttribute()
+    {
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', new Filter('name'));
+    }
+
     public function testOutputsForOneWordName()
     {
         $name = 'filter';
@@ -54,4 +59,3 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($key, $filter->getSearchKey());
     }
 }
- 

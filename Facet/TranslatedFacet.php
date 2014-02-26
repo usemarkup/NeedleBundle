@@ -2,12 +2,13 @@
 
 namespace Markup\NeedleBundle\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Symfony\Component\Translation\TranslatorInterface as Translator;
 
 /**
 * A facet that uses a translator to provide its display name.
 */
-class TranslatedFacet implements FacetInterface
+class TranslatedFacet implements AttributeInterface
 {
     /**
      * The name for the facet.

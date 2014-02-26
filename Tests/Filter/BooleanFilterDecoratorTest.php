@@ -20,6 +20,11 @@ class BooleanFilterDecoratorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Filter\BooleanFilterInterface);
     }
 
+    public function testIsAttribute()
+    {
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $this->decorator);
+    }
+
     public function testOneToOneDecoration()
     {
         $name = 'filter';

@@ -4,6 +4,8 @@ namespace Markup\NeedleBundle\Filter;
 
 /**
  * An interface for a search filter.
+ *
+ * @deprecated
  **/
 interface FilterInterface
 {

@@ -17,7 +17,12 @@ class FacetFieldTest extends \PHPUnit_Framework_TestCase
 
     public function testIsFacet()
     {
-        $this->assertTrue($this->facet instanceof \Markup\NeedleBundle\Facet\FacetInterface);
+        $this->assertInstanceOf('Markup\NeedleBundle\Facet\FacetInterface', $this->facet);
+    }
+
+    public function testIsAttribute()
+    {
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $this->facet);
     }
 
     public function testGetName()

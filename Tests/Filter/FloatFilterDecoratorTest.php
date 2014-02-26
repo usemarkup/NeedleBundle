@@ -20,6 +20,11 @@ class FloatFilterDecoratorTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Filter\FloatFilterInterface);
     }
 
+    public function testIsAttribute()
+    {
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $this->decorator);
+    }
+
     public function testOneToOneDecoration()
     {
         $name = 'filter';

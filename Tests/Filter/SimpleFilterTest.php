@@ -15,6 +15,11 @@ class SimpleFilterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($filter instanceof \Markup\NeedleBundle\Filter\FilterInterface);
     }
 
+    public function testIsAttribute()
+    {
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', new SimpleFilter('name'));
+    }
+
     public function testOutputsForOneWordName()
     {
         $key = 'filter';
@@ -32,4 +37,6 @@ class SimpleFilterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Sleeve length', $filter->getDisplayName());
         $this->assertEquals('sleeve_length', $filter->getSearchKey());
     }
+
+
 }

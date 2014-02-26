@@ -18,7 +18,12 @@ class RangeFacetFieldTest extends \PHPUnit_Framework_TestCase
 
     public function testIsRangeFacet()
     {
-        $this->assertTrue($this->range instanceof \Markup\NeedleBundle\Facet\RangeFacetInterface);
+        $this->assertInstanceOf('Markup\NeedleBundle\Facet\RangeFacetInterface', $this->range);
+    }
+
+    public function testIsAttribute()
+    {
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $this->range);
     }
 
     public function testGetRangeSize()

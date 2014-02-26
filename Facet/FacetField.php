@@ -2,12 +2,13 @@
 
 namespace Markup\NeedleBundle\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Filter\FilterInterface as Filter;
 
 /**
 * A facet field implementation that uses a filter.
 */
-class FacetField implements FacetInterface
+class FacetField implements AttributeInterface
 {
     /**
      * @var Filter

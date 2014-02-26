@@ -20,6 +20,12 @@ class TranslatedFacetTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($translatedFacet->implementsInterface('Markup\NeedleBundle\Facet\FacetInterface'));
     }
 
+    public function testIsAttribute()
+    {
+        $translatedFacet = new \ReflectionClass('Markup\NeedleBundle\Facet\TranslatedFacet');
+        $this->assertTrue($translatedFacet->implementsInterface('Markup\NeedleBundle\Attribute\AttributeInterface'));
+    }
+
     public function testGetName()
     {
         $name = 'color';

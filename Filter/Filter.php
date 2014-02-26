@@ -2,10 +2,12 @@
 
 namespace Markup\NeedleBundle\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
  * A filter implementation that allows a different name to the key.
  */
-class Filter implements FilterInterface
+class Filter implements AttributeInterface
 {
     /**
      * The name for the filter.
@@ -53,5 +55,15 @@ class Filter implements FilterInterface
     public function getSearchKey()
     {
         return $this->key;
+    }
+
+    /**
+     * Magic toString method.  Returns display name.
+     *
+     * @return string
+     **/
+    public function __toString()
+    {
+        return $this->getDisplayName();
     }
 }

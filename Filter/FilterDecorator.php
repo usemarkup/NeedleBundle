@@ -2,10 +2,12 @@
 
 namespace Markup\NeedleBundle\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
 * A superclass for a decorator for filters, setting up the default behaviour of a 1:1 map.
 */
-abstract class FilterDecorator implements FilterInterface
+abstract class FilterDecorator implements AttributeInterface
 {
     /**
      * The filter being decorated.
@@ -35,5 +37,10 @@ abstract class FilterDecorator implements FilterInterface
     public function getSearchKey()
     {
         return $this->filter->getSearchKey();
+    }
+
+    public function __toString()
+    {
+        return $this->getDisplayName();
     }
 }

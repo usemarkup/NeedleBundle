@@ -21,6 +21,12 @@ class TranslatedRangeFacetTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($translatedRangeFacet->implementsInterface('Markup\NeedleBundle\Facet\RangeFacetInterface'));
     }
 
+    public function testIsAttribute()
+    {
+        $translatedRangeFacet = new \ReflectionClass('Markup\NeedleBundle\Facet\TranslatedRangeFacet');
+        $this->assertTrue($translatedRangeFacet->implementsInterface('Markup\NeedleBundle\Attribute\AttributeInterface'));
+    }
+
     public function testGetName()
     {
         $name = 'price';

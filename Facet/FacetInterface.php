@@ -6,6 +6,8 @@ use Markup\NeedleBundle\Filter\FilterInterface;
 
 /**
  * An interface for a search facet.
+ *
+ * @deprecated
  **/
 interface FacetInterface extends FilterInterface
 {
