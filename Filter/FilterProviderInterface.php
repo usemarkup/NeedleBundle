@@ -4,6 +4,8 @@ namespace Markup\NeedleBundle\Filter;
 
 /**
  * An interface for a provider object that can provide filter objects.
+ *
+ * @deprecated
  **/
 interface FilterProviderInterface
 {

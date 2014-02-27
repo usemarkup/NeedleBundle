@@ -4,6 +4,8 @@ namespace Markup\NeedleBundle\Facet;
 
 /**
  * An interface for a provider object that can provide facet objects.
+ *
+ * @deprecated
  **/
 interface FacetProviderInterface
 {
