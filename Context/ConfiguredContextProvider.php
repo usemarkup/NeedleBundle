@@ -43,6 +43,11 @@ class ConfiguredContextProvider
     private $interceptorProvider;
 
     /**
+     * @var \SplQueue<ContextDecoratorInterface>
+     */
+    private $decorators;
+
+    /**
      * @param FilterProviderInterface $filterProvider
      * @param FacetProviderInterface $facetProvider
      * @param FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
@@ -64,6 +69,7 @@ class ConfiguredContextProvider
         $this->facetCollatorProvider = $facetCollatorProvider;
         $this->facetSortOrderProvider = $facetSortOrderProvider;
         $this->interceptorProvider = $interceptorProvider;
+        $this->decorators = new \SplQueue();
     }
 
     /**
@@ -72,7 +78,7 @@ class ConfiguredContextProvider
      */
     public function createConfiguredContext(ContextConfigurationInterface $config)
     {
-        return new ConfiguredContext(
+        $context = new ConfiguredContext(
             $config,
             $this->filterProvider,
             $this->facetProvider,
@@ -81,5 +87,23 @@ class ConfiguredContextProvider
             $this->facetSortOrderProvider,
             $this->interceptorProvider
         );
+        foreach ($this->decorators as $decorator) {
+            $context = $decorator->decorateContext($context);
+        }
+
+        return $context;
+    }
+
+    /**
+     * Add a context decorator to be apply to any generated context. First decorators provided are applied first.
+     *
+     * @param ContextDecoratorInterface $decorator
+     * @return self
+     */
+    public function addDecorator(ContextDecoratorInterface $decorator)
+    {
+        $this->decorators->enqueue($decorator);
+
+        return $this;
     }
 } 
