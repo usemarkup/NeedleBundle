@@ -34,9 +34,9 @@ abstract class FilterDecorator implements AttributeInterface
         return $this->filter->getDisplayName();
     }
 
-    public function getSearchKey()
+    public function getSearchKey(array $options = array())
     {
-        return $this->filter->getSearchKey();
+        return $this->filter->getSearchKey($options);
     }
 
     public function __toString()

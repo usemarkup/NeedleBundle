@@ -32,9 +32,9 @@ class FacetField implements AttributeInterface
         return $this->getFilter()->getDisplayName();
     }
 
-    public function getSearchKey()
+    public function getSearchKey(array $options = array())
     {
-        return $this->getFilter()->getSearchKey();
+        return $this->getFilter()->getSearchKey($options);
     }
 
     public function __toString()

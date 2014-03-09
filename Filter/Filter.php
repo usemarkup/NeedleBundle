@@ -52,7 +52,7 @@ class Filter implements AttributeInterface
         return $this->displayName;
     }
 
-    public function getSearchKey()
+    public function getSearchKey(array $options = array())
     {
         return $this->key;
     }

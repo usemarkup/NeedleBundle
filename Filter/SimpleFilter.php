@@ -34,7 +34,7 @@ class SimpleFilter implements AttributeInterface
         return ucfirst(str_replace('_', ' ', $this->getName()));
     }
 
-    public function getSearchKey()
+    public function getSearchKey(array $options = array())
     {
         return $this->getName();
     }

@@ -75,7 +75,7 @@ class TranslatedFacet implements AttributeInterface
         }
     }
 
-    public function getSearchKey()
+    public function getSearchKey(array $options = array())
     {
         if (null === $this->searchKey) {
             return $this->getName();

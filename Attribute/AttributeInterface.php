@@ -26,9 +26,10 @@ interface AttributeInterface
     /**
      * The key being used for this attribute in a search on a search engine.
      *
+     * @param array $options  Options that might determine which key is returned. Possible values: 'prefer_parsed'
      * @return string
      **/
-    public function getSearchKey();
+    public function getSearchKey(array $options = array());
 
     /**
      * Magic toString method.  Returns display name.
