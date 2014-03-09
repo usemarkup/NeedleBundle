@@ -1,30 +1,30 @@
 <?php
 
-namespace Markup\NeedleBundle\Filter;
+namespace Markup\NeedleBundle\Attribute;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 
 /**
- * A filter implementation that allows a different name to the key.
+ * An attribute implementation that allows a different name to the key.
  */
-class Filter implements AttributeInterface
+class Attribute implements AttributeInterface
 {
     /**
-     * The name for the filter.
+     * The name for the attribute.
      *
      * @var string
      **/
     private $name;
 
     /**
-     * The key for the filter.
+     * The key for the attribute.
      *
      * @var string
      */
     private $key;
 
     /**
-     * The display name for the filter.
+     * The display name for the attribute.
      *
      * @var string
      */

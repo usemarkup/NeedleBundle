@@ -2,9 +2,9 @@
 
 namespace Markup\NeedleBundle\Tests\Context;
 
+use Markup\NeedleBundle\Attribute\Attribute;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
 use Markup\NeedleBundle\Context\ConfiguredContext;
-use Markup\NeedleBundle\Filter\Filter;
 use Markup\NeedleBundle\Sort\RelevanceSort;
 use Mockery as m;
 
@@ -77,7 +77,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->filterProvider
             ->shouldReceive('getFilterByName')
             ->andReturnUsing(function ($name) {
-                return new Filter($name);
+                return new Attribute($name);
             });
         $filterConfig = array(
             'active' => true,
@@ -98,7 +98,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->filterProvider
             ->shouldReceive('getFilterByName')
             ->andReturnUsing(function ($name) {
-                return new Filter($name);
+                return new Attribute($name);
             });
         $sortConfig = array(
             'relevance' => 'desc',
@@ -121,7 +121,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->filterProvider
             ->shouldReceive('getFilterByName')
             ->andReturnUsing(function ($name) {
-                return new Filter($name);
+                return new Attribute($name);
             });
         $sortConfig = array(
             ContextConfigurationInterface::SORT_RELEVANCE => ContextConfigurationInterface::ORDER_DESC,
@@ -143,7 +143,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->filterProvider
             ->shouldReceive('getFilterByName')
             ->andReturnUsing(function ($name) {
-                return new Filter($name);
+                return new Attribute($name);
             });
         $sortConfig = array(
             'name' => 'asc',
