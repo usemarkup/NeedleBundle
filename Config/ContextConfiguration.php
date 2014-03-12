@@ -55,7 +55,7 @@ class ContextConfiguration implements ContextConfigurationInterface
     /**
      * Gets the default sort stack to use for queries that use a search term, with order indicators given
      *
-     * example: [ 'relevance' => 'asc', 'price' => 'desc' ]
+     * example: [ { 'relevance' => 'asc' }, { 'price' => 'desc' } ]
      *
      * @return array
      */
@@ -74,7 +74,7 @@ class ContextConfiguration implements ContextConfigurationInterface
     /**
      * Gets the default sort stack to use for queries that do not use a search term, with order indicators given
      *
-     * example: [ 'name' => 'asc', 'price' => 'desc'
+     * example: [ { 'name' => 'asc' }, { 'price' => 'desc' } ]
      *
      * @return array
      */

@@ -23,7 +23,7 @@ interface ContextConfigurationInterface
     /**
      * Gets the base filter queries that are applied to a query as a baseline.
      *
-     * example: [ 'active' => true, 'in_stock' => true ]
+     * example: { 'active' => true, 'in_stock' => true }
      *
      * @return FilterQueryInterface[]
      */
@@ -32,7 +32,7 @@ interface ContextConfigurationInterface
     /**
      * Gets the default sort stack to use for queries that use a search term, with order indicators given
      *
-     * example: [ 'relevance' => 'asc', 'price' => 'desc' ]
+     * example: [ { 'relevance' => 'asc' }, { 'price' => 'desc' } ]
      *
      * @return array
      */
@@ -41,7 +41,7 @@ interface ContextConfigurationInterface
     /**
      * Gets the default sort stack to use for queries that do not use a search term, with order indicators given
      *
-     * example: [ 'name' => 'asc', 'price' => 'desc'
+     * example: [ { 'name' => 'asc' }, { 'price' => 'desc' } ]
      *
      * @return array
      */
@@ -50,7 +50,7 @@ interface ContextConfigurationInterface
     /**
      * Gets the default set of boosts that should be applied to a query on a backend
      *
-     * example: [ 'name' => 5, 'category' => 0.8, 'description' => 0.2 ]
+     * example: { 'name' => 5, 'category' => 0.8, 'description' => 0.2 }
      *
      * @return array
      */

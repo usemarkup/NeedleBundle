@@ -161,6 +161,29 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($sorts->first()->isDescending());
     }
 
+    public function testSortsUsingListOfObjects()
+    {
+        $this->filterProvider
+            ->shouldReceive('getFilterByName')
+            ->andReturnUsing(function ($name) {
+                return new Attribute($name);
+            });
+        $sortConfig = array(
+            array('name' => 'asc'),
+            array('price' => 'desc'),
+        );
+        $this->config
+            ->shouldReceive('getDefaultSortsForNonSearchTermQuery')
+            ->andReturn($sortConfig);
+        $query = m::mock('Markup\NeedleBundle\Query\SelectQueryInterface');
+        $query
+            ->shouldReceive('shouldTreatAsTextSearch')
+            ->andReturn(false);
+        $sorts = $this->context->getDefaultSortCollectionForQuery($query);
+        $this->assertCount(2, $sorts);
+        $this->assertEquals('name', $sorts->first()->getFilter()->getName());
+    }
+
     public function testBoostQueryFields()
     {
         $boosts = array(

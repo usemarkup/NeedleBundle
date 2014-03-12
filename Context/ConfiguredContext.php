@@ -153,15 +153,30 @@ class ConfiguredContext implements SearchContextInterface
     {
         $sorts = new SortCollection();
         foreach ($sortConfig as $attr => $direction) {
-            //if this is a relevance sort, create a relevance sort explicitly
-            if ($attr === ContextConfigurationInterface::SORT_RELEVANCE) {
-                $sorts->add(new RelevanceSort()); //assumption: relevance sort will always be descending
+            //allow legacy format (using hash as if it is ordered - which it is in PHP but not in other languages like JavaScript)
+            if (is_array($direction)) {
+                foreach ($direction as $attrKey => $dir) {
+                    $sorts->add($this->createSortForAttributeNameAndDirection($attrKey, $dir));
+                }
                 continue;
             }
-            $sorts->add(new Sort($this->filterProvider->getFilterByName($attr), $direction === ContextConfigurationInterface::ORDER_DESC));
+            $sorts->add($this->createSortForAttributeNameAndDirection($attr, $direction));
         }
 
         return $sorts;
+    }
+
+    /**
+     * @param string $attr
+     * @param string $direction A ContextConfigurationInterface::ORDER_* value.
+     */
+    private function createSortForAttributeNameAndDirection($attr, $direction)
+    {
+        if ($attr === ContextConfigurationInterface::SORT_RELEVANCE) {
+            return new RelevanceSort();
+        }
+
+        return new Sort($this->filterProvider->getFilterByName($attr), $direction === ContextConfigurationInterface::ORDER_DESC);
     }
 
     /**
