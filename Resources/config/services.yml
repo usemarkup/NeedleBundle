@@ -147,3 +147,5 @@ services:
         class: Markup\NeedleBundle\Facet\SimpleSortOrderProvider
     markup_needle.config_factory:
         class: Markup\NeedleBundle\Config\ContextConfigurationFactory
+    markup_needle.collator_stack:
+        class: Markup\NeedleBundle\Collator\CollatorStack
