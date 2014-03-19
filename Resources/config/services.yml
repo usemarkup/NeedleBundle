@@ -152,6 +152,10 @@ services:
     markup_needle.collator.fixed_values:
         class: Markup\NeedleBundle\Collator\FixedValueCollator
         abstract: true
+    markup_needle.collator.alpha:
+        class: Markup\NeedleBundle\Collator\AlphaCollator
+    markup_needle.collator.number:
+        class: Markup\NeedleBundle\Collator\NumberCollator
     markup_needle.collator.word_list:
         class: Markup\NeedleBundle\Collator\WordListCollator
         abstract: true
