@@ -149,3 +149,6 @@ services:
         class: Markup\NeedleBundle\Config\ContextConfigurationFactory
     markup_needle.collator_stack:
         class: Markup\NeedleBundle\Collator\CollatorStack
+    markup_needle.collator.fixed_values:
+        class: Markup\NeedleBundle\Collator\FixedValueCollator
+        abstract: true
