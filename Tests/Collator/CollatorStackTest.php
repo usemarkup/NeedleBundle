@@ -122,4 +122,27 @@ class CollatorStackTest extends \PHPUnit_Framework_TestCase
         @usort($list, array($this->stack, 'compare'));//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
         $this->assertEquals(array($untypedValue, $typedValue), $list);
     }
+
+    public function testCompareHappensWithCorrectlyIndexedCollator()
+    {
+        $collator1 = m::mock('Markup\NeedleBundle\Collator\TypedCollatorInterface')->shouldIgnoreMissing();
+        $collator2 = m::mock('Markup\NeedleBundle\Collator\TypedCollatorInterface')->shouldIgnoreMissing();
+        $collator1
+            ->shouldReceive('hasTypeFor')
+            ->andReturn(false);
+        $collator2
+            ->shouldReceive('hasTypeFor')
+            ->andReturn(true);
+        $collatorResult1 = 1;
+        $collatorResult2 = -1;
+        $collator1
+            ->shouldReceive('compare')
+            ->andReturn($collatorResult1);
+        $collator2
+            ->shouldReceive('compare')
+            ->andReturn($collatorResult2);
+        $this->stack->push($collator1);
+        $this->stack->push($collator2);
+        $this->assertEquals($collatorResult2, $this->stack->compare('this', 'that'));
+    }
 }

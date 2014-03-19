@@ -2,7 +2,7 @@
 
 namespace Markup\NeedleBundle\Collator;
 
-use SplStack;
+use SplQueue;
 
 /**
  * A collator that composes a stack of typed collators (i.e. the order of the collators is significant, and a value of an earlier type will be sorted to before one of a later type).
@@ -10,7 +10,7 @@ use SplStack;
 class CollatorStack implements CollatorInterface
 {
     /**
-     * @var SplStack<TypedCollatorInterface>
+     * @var SplQueue<TypedCollatorInterface>
      */
     private $collators;
 
@@ -23,7 +23,7 @@ class CollatorStack implements CollatorInterface
 
     public function __construct()
     {
-        $this->collators = new SplStack();
+        $this->collators = new SplQueue();
         $this->shouldUntypedValuesPrecede = false;
     }
 
