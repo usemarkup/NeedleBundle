@@ -15,13 +15,22 @@ class FacetValue implements FacetValueInterface
     private $count;
 
     /**
+     * @var \Closure
+     */
+    private $displayStrategy;
+
+    /**
      * @param string $value
      * @param int    $count
+     * @param \Closure $displayStrategy
      **/
-    public function __construct($value, $count)
+    public function __construct($value, $count, \Closure $displayStrategy = null)
     {
         $this->value = $value;
         $this->count = $count;
+        $this->displayStrategy = $displayStrategy ?: function ($value) {
+            return $value;
+        };
     }
 
     public function getValue()
@@ -31,7 +40,7 @@ class FacetValue implements FacetValueInterface
 
     public function getDisplayValue()
     {
-        return $this->getValue();
+        return call_user_func($this->displayStrategy, $this->getValue());
     }
 
     public function count()

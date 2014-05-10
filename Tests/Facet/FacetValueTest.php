@@ -2,8 +2,6 @@
 
 namespace Markup\NeedleBundle\Facet;
 
-use Markup\NeedleBundle\Facet\FacetValue;
-
 /**
 * A test for a facet value implementation.
 */
@@ -41,5 +39,15 @@ class FacetValueTest extends \PHPUnit_Framework_TestCase
         $value = 'red';
         $facetValue = new FacetValue($value, 7);
         $this->assertEquals($value, (string) $facetValue);
+    }
+
+    public function testGetDisplayNameUsingDisplayStrategy()
+    {
+        $displayStrategy = function ($value) {
+            return strtoupper($value);
+        };
+        $value = 'value';
+        $facetValue = new FacetValue($value, 7, $displayStrategy);
+        $this->assertEquals('VALUE', $facetValue->getDisplayValue());
     }
 }
