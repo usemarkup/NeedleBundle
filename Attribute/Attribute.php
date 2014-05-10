@@ -7,7 +7,7 @@ use Markup\NeedleBundle\Attribute\AttributeInterface;
 /**
  * An attribute implementation that allows a different name to the key.
  */
-class Attribute implements AttributeInterface
+class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStrategyInterface
 {
     /**
      * The name for the attribute.
@@ -31,15 +31,26 @@ class Attribute implements AttributeInterface
     private $displayName;
 
     /**
+     * The value display strategy for the attribute.
+     *
+     * @var \Closure
+     */
+    private $valueDisplayStrategy;
+
+    /**
      * @param string $name
      * @param string $key
-     * @param
+     * @param string $displayName
+     * @param \Closure $valueDisplayStrategy
      **/
-    public function __construct($name, $key = null, $displayName = null)
+    public function __construct($name, $key = null, $displayName = null, \Closure $valueDisplayStrategy = null)
     {
         $this->name = $name;
         $this->key = $key ?: $name;
         $this->displayName = $displayName ?: ucfirst(str_replace('_', ' ', $name));
+        $this->valueDisplayStrategy = $valueDisplayStrategy ?: function ($value) {
+            return $value;
+        };
     }
 
     public function getName()
@@ -65,5 +76,15 @@ class Attribute implements AttributeInterface
     public function __toString()
     {
         return $this->getDisplayName();
+    }
+
+    /**
+     * Gets a display strategy closure which takes a value as a parameter and emits a displayable value.
+     *
+     * @return \Closure|null
+     */
+    public function getValueDisplayStrategy()
+    {
+        return $this->valueDisplayStrategy;
     }
 }

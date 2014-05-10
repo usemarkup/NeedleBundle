@@ -20,6 +20,11 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', new Attribute('name'));
     }
 
+    public function testProvidesValueDisplayStrategy()
+    {
+        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeProvidesValueDisplayStrategyInterface', new Attribute('name'));
+    }
+
     public function testOutputsForOneWordName()
     {
         $name = 'filter';
@@ -57,5 +62,15 @@ class AttributeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($name, $attr->getName());
         $this->assertEquals($display, $attr->getDisplayName());
         $this->assertEquals($key, $attr->getSearchKey());
+    }
+
+    public function testGetViewDisplayStrategyReturnsDefault()
+    {
+        $name = 'sleeve_length';
+        $attr = new Attribute($name);
+        $value = 'value';
+        $strategy = $attr->getValueDisplayStrategy();
+        $this->assertInstanceOf('Closure', $strategy);
+        $this->assertEquals($value, call_user_func($strategy, $value));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Result;
 
+use Markup\NeedleBundle\Attribute\AttributeProvidesValueDisplayStrategyInterface;
 use Markup\NeedleBundle\Context\SearchContextInterface as SearchContext;
 use Markup\NeedleBundle\Facet\ArbitraryCompositeFacetInterface;
 use Markup\NeedleBundle\Facet\CompositeFacetSetIterator;
@@ -81,15 +82,39 @@ class SolariumFacetSetsIterator implements \OuterIterator
             $this->subIterator->next();
         } elseif (null !== $this->subIterator && !$this->subIterator->valid()) {
             $this->subIterator = null;
-            $facetSet = new FacetSet($this->getCurrentFacet(), new SolariumFacetSetAdaptingIterator($this->getInnerIterator()->current(), $this->getCurrentCollator()));
+            $facetSet = new FacetSet(
+                $this->getCurrentFacet(),
+                new SolariumFacetSetAdaptingIterator(
+                    $this->getInnerIterator()->current(),
+                    $this->getCurrentCollator(),
+                    $this->getViewDisplayStrategy()
+                )
+            );
         } else {
             if ($this->getCurrentFacet() instanceof ArbitraryCompositeFacetInterface) {
-                $this->subIterator = new CompositeFacetSetIterator(new FacetSet($this->getCurrentFacet(), new SolariumFacetSetAdaptingIterator($this->getInnerIterator()->current(), $this->getCurrentCollator())), '::');
+                $this->subIterator = new CompositeFacetSetIterator(
+                    new FacetSet(
+                        $this->getCurrentFacet(),
+                        new SolariumFacetSetAdaptingIterator(
+                            $this->getInnerIterator()->current(),
+                            $this->getCurrentCollator(),
+                            $this->getViewDisplayStrategy()
+                        )
+                    ),
+                    '::'
+                );
                 $this->subIterator->rewind();
                 $facetSet = $this->subIterator->current();
                 $this->subIterator->next();
             } else {
-                $facetSet = new FacetSet($this->getCurrentFacet(), new SolariumFacetSetAdaptingIterator($this->getInnerIterator()->current(), $this->getCurrentCollator()));
+                $facetSet = new FacetSet(
+                    $this->getCurrentFacet(),
+                    new SolariumFacetSetAdaptingIterator(
+                        $this->getInnerIterator()->current(),
+                        $this->getCurrentCollator(),
+                        $this->getViewDisplayStrategy()
+                    )
+                );
             }
         }
         //add a decorator to filter out values that don't match combined filter values, in cases where they exist
@@ -200,5 +225,15 @@ class SolariumFacetSetsIterator implements \OuterIterator
     private function getSearchContext()
     {
         return $this->searchContext;
+    }
+
+    /**
+     * @return \Closure
+     */
+    private function getViewDisplayStrategy()
+    {
+        return ($this->getCurrentFacet() instanceof AttributeProvidesValueDisplayStrategyInterface)
+            ? $this->getCurrentFacet()->getValueDisplayStrategy()
+            : null;
     }
 }

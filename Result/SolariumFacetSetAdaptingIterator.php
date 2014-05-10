@@ -26,10 +26,22 @@ class SolariumFacetSetAdaptingIterator implements \OuterIterator, FacetSetIterat
     private $count;
 
     /**
+     * The view display strategy for the facet.
+     *
+     * @var \Closure
+     */
+    private $viewDisplayStrategy;
+
+    /**
      * @param array|\Traversable $solariumFacetset
+     * @param CollatorInterface|null $collator
+     * @param \Closure $viewDisplayStrategy
      **/
-    public function __construct($solariumFacetset, CollatorInterface $collator = null)
+    public function __construct($solariumFacetset, CollatorInterface $collator = null, \Closure $viewDisplayStrategy = null)
     {
+        $this->viewDisplayStrategy = $viewDisplayStrategy ?: function ($value) {
+            return $value;
+        };
         if ($collator) {
             if ($solariumFacetset instanceof \Traversable) {
                 $solariumFacetset = iterator_to_array($solariumFacetset);
@@ -63,7 +75,7 @@ class SolariumFacetSetAdaptingIterator implements \OuterIterator, FacetSetIterat
 
     public function current()
     {
-        return new FacetValue($this->getInnerIterator()->key(), $this->getInnerIterator()->current());
+        return new FacetValue($this->getInnerIterator()->key(), $this->getInnerIterator()->current(), $this->viewDisplayStrategy);
     }
 
     public function next()
