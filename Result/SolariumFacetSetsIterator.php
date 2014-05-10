@@ -46,7 +46,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
     private $subIterator = null;
 
     /**
-     * @param SolariumFacetSet             s$facetSet
+     * @param SolariumFacetSet             $facetSet
      * @param SearchContext                $searchContext
      **/
     public function __construct(SolariumFacetSet $facetSet, SearchContext $searchContext, SelectQueryInterface $originalQuery = null)
@@ -63,7 +63,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
     private function setFacetsKeyedBySearchKey(SearchContext $context)
     {
         $this->facetsKeyedBySearchKey = array();
-        foreach ($this->getSearchContext()->getFacets() as $facet) {
+        foreach ($context->getFacets() as $facet) {
             $this->facetsKeyedBySearchKey[$facet->getSearchKey()] = $facet;
         }
     }
@@ -76,10 +76,10 @@ class SolariumFacetSetsIterator implements \OuterIterator
     public function current()
     {
         //deal with possible arbitrary composite facets
-        if (null !== $this->subIterator and $this->subIterator->valid()) {
+        if (null !== $this->subIterator && $this->subIterator->valid()) {
             $facetSet = $this->subIterator->current();
             $this->subIterator->next();
-        } elseif (null !== $this->subIterator and !$this->subIterator->valid()) {
+        } elseif (null !== $this->subIterator && !$this->subIterator->valid()) {
             $this->subIterator = null;
             $facetSet = new FacetSet($this->getCurrentFacet(), new SolariumFacetSetAdaptingIterator($this->getInnerIterator()->current(), $this->getCurrentCollator()));
         } else {
@@ -143,7 +143,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
 
     public function rewind()
     {
-        return $this->getInnerIterator()->rewind();
+        $this->getInnerIterator()->rewind();
     }
 
     /**

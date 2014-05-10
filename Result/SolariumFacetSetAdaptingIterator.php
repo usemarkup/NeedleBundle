@@ -68,7 +68,7 @@ class SolariumFacetSetAdaptingIterator implements \OuterIterator, FacetSetIterat
 
     public function next()
     {
-        return $this->getInnerIterator()->next();
+        $this->getInnerIterator()->next();
     }
 
     public function key()
@@ -83,7 +83,7 @@ class SolariumFacetSetAdaptingIterator implements \OuterIterator, FacetSetIterat
 
     public function rewind()
     {
-        return $this->getInnerIterator()->rewind();
+        $this->getInnerIterator()->rewind();
     }
 
     public function count()
