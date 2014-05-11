@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
 use Markup\NeedleBundle\Filter\FilterProviderInterface;
 
 /**
@@ -10,14 +11,14 @@ use Markup\NeedleBundle\Filter\FilterProviderInterface;
 class ConsumeFiltersFacetProvider implements FacetProviderInterface
 {
     /**
-     * @var FilterProviderInterface
+     * @var AttributeProviderInterface
      */
     private $filterProvider;
 
     /**
-     * @param FilterProviderInterface $filterProvider
+     * @param AttributeProviderInterface $filterProvider
      */
-    public function __construct(FilterProviderInterface $filterProvider)
+    public function __construct(AttributeProviderInterface $filterProvider)
     {
         $this->filterProvider = $filterProvider;
     }
@@ -30,7 +31,7 @@ class ConsumeFiltersFacetProvider implements FacetProviderInterface
      **/
     public function getFacetByName($name)
     {
-        $filter = $this->filterProvider->getFilterByName($name);
+        $filter = $this->filterProvider->getAttributeByName($name);
         if (!$filter) {
             return null;
         }

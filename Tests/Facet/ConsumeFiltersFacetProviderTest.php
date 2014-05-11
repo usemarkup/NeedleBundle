@@ -12,7 +12,7 @@ class ConsumeFiltersFacetProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->filterProvider = m::mock('Markup\NeedleBundle\Filter\FilterProviderInterface');
+        $this->filterProvider = m::mock('Markup\NeedleBundle\Attribute\AttributeProviderInterface');
         $this->provider = new ConsumeFiltersFacetProvider($this->filterProvider);
     }
 
@@ -29,7 +29,7 @@ class ConsumeFiltersFacetProviderTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('getName')
             ->andReturn($name);
         $this->filterProvider
-            ->shouldReceive('getFilterByName')
+            ->shouldReceive('getAttributeByName')
             ->with($name)
             ->andReturn($filter);
         $facet = $this->provider->getFacetByName($name);
@@ -41,7 +41,7 @@ class ConsumeFiltersFacetProviderTest extends \PHPUnit_Framework_TestCase
     {
         $name = 'unknown';
         $this->filterProvider
-            ->shouldReceive('getFilterByName')
+            ->shouldReceive('getAttributeByName')
             ->andReturn(null);
         $this->assertNull($this->provider->getFacetByName($name));
     }
