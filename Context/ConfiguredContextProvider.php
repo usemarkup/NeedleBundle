@@ -2,18 +2,18 @@
 
 namespace Markup\NeedleBundle\Context;
 
+use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
 use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
 use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
-use Markup\NeedleBundle\Filter\FilterProviderInterface;
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
 
 class ConfiguredContextProvider
 {
     /**
-     * @var FilterProviderInterface
+     * @var AttributeProviderInterface
      */
     private $filterProvider;
 
@@ -48,7 +48,7 @@ class ConfiguredContextProvider
     private $decorators;
 
     /**
-     * @param FilterProviderInterface $filterProvider
+     * @param AttributeProviderInterface $filterProvider
      * @param FacetProviderInterface $facetProvider
      * @param FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
      * @param CollatorProviderInterface $facetCollatorProvider
@@ -56,7 +56,7 @@ class ConfiguredContextProvider
      * @param ConfiguredInterceptorProvider $interceptorProvider
      */
     public function __construct(
-        FilterProviderInterface $filterProvider,
+        AttributeProviderInterface $filterProvider,
         FacetProviderInterface $facetProvider,
         FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
         CollatorProviderInterface $facetCollatorProvider,

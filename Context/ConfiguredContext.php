@@ -3,13 +3,13 @@
 namespace Markup\NeedleBundle\Context;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
 use Markup\NeedleBundle\Boost\BoostQueryField;
 use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
 use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
-use Markup\NeedleBundle\Filter\FilterProviderInterface;
 use Markup\NeedleBundle\Filter\FilterQuery;
 use Markup\NeedleBundle\Filter\ScalarFilterValue;
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
@@ -30,7 +30,7 @@ class ConfiguredContext implements SearchContextInterface
     private $config;
 
     /**
-     * @var FilterProviderInterface
+     * @var AttributeProviderInterface
      */
     private $filterProvider;
 
@@ -61,7 +61,7 @@ class ConfiguredContext implements SearchContextInterface
 
     /**
      * @param ContextConfigurationInterface $config
-     * @param FilterProviderInterface $filterProvider
+     * @param AttributeProviderInterface $filterProvider
      * @param FacetProviderInterface $facetProvider
      * @param FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
      * @param CollatorProviderInterface $facetCollatorProvider
@@ -70,7 +70,7 @@ class ConfiguredContext implements SearchContextInterface
      */
     public function __construct(
         ContextConfigurationInterface $config,
-        FilterProviderInterface $filterProvider,
+        AttributeProviderInterface $filterProvider,
         FacetProviderInterface $facetProvider,
         FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
         CollatorProviderInterface $facetCollatorProvider,
@@ -121,7 +121,7 @@ class ConfiguredContext implements SearchContextInterface
     {
         $queries = array();
         foreach ($this->config->getDefaultFilterQueries() as $attr => $value) {
-            $queries[] = new FilterQuery($this->filterProvider->getFilterByName($attr), new ScalarFilterValue($value));
+            $queries[] = new FilterQuery($this->filterProvider->getAttributeByName($attr), new ScalarFilterValue($value));
         }
 
         return $queries;
@@ -176,7 +176,7 @@ class ConfiguredContext implements SearchContextInterface
             return new RelevanceSort();
         }
 
-        return new Sort($this->filterProvider->getFilterByName($attr), $direction === ContextConfigurationInterface::ORDER_DESC);
+        return new Sort($this->filterProvider->getAttributeByName($attr), $direction === ContextConfigurationInterface::ORDER_DESC);
     }
 
     /**

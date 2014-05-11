@@ -9,7 +9,7 @@ class ConfiguredContextProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->filterProvider = m::mock('Markup\NeedleBundle\Filter\FilterProviderInterface');
+        $this->filterProvider = m::mock('Markup\NeedleBundle\Attribute\AttributeProviderInterface');
         $this->facetProvider = m::mock('Markup\NeedleBundle\Facet\FacetProviderInterface');
         $this->facetSetDecoratorProvider = m::mock('Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface');
         $this->facetCollatorProvider = m::mock('Markup\NeedleBundle\Collator\CollatorProviderInterface');
