@@ -35,10 +35,13 @@ class SolariumFacetSetAdaptingIterator implements \OuterIterator, FacetSetIterat
     /**
      * @param array|\Traversable $solariumFacetset
      * @param CollatorInterface|null $collator
-     * @param \Closure $viewDisplayStrategy
+     * @param callable $viewDisplayStrategy
      **/
-    public function __construct($solariumFacetset, CollatorInterface $collator = null, \Closure $viewDisplayStrategy = null)
+    public function __construct($solariumFacetset, CollatorInterface $collator = null, $viewDisplayStrategy = null)
     {
+        if (null !== $viewDisplayStrategy && !is_callable($viewDisplayStrategy)) {
+            throw new \InvalidArgumentException('viewDisplayStrategy parameter must be callable if it is set.');
+        }
         $this->viewDisplayStrategy = $viewDisplayStrategy ?: function ($value) {
             return $value;
         };
