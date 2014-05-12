@@ -22,12 +22,15 @@ class FacetValue implements FacetValueInterface
     /**
      * @param string $value
      * @param int    $count
-     * @param \Closure $displayStrategy
+     * @param callable $displayStrategy
      **/
-    public function __construct($value, $count, \Closure $displayStrategy = null)
+    public function __construct($value, $count, $displayStrategy = null)
     {
         $this->value = $value;
         $this->count = $count;
+        if (null !== $displayStrategy && !is_callable($displayStrategy)) {
+            throw new \InvalidArgumentException('displayStrategy parameter must be callable if set.');
+        }
         $this->displayStrategy = $displayStrategy ?: function ($value) {
             return $value;
         };
