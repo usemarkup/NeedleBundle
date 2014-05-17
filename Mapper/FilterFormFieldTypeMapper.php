@@ -2,8 +2,8 @@
 
 namespace Markup\NeedleBundle\Mapper;
 
+use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
 use Markup\NeedleBundle\Filter\BooleanFilterInterface;
-use Markup\NeedleBundle\Filter\FilterProviderInterface;
 use Markup\NeedleBundle\Filter\FloatFilterInterface;
 
 /**
@@ -13,14 +13,14 @@ class FilterFormFieldTypeMapper
 {
     private $filterProvider;
 
-    public function __construct(FilterProviderInterface $filterProvider)
+    public function __construct(AttributeProviderInterface $filterProvider)
     {
         $this->filterProvider = $filterProvider;
     }
 
     public function getTypeByFilterName($name)
     {
-        $filter = $this->filterProvider->getFilterByName($name);
+        $filter = $this->filterProvider->getAttributeByName($name);
 
         return $this->getFormFieldTypeByFilter($filter);
     }
