@@ -38,6 +38,7 @@ class MarkupNeedleExtension extends Extension
         $this->loadIntercepts($config, $container);
         $this->loadLogSettings($config, $container);
         $this->loadContextServices($config, $container);
+        $this->loadSuggester($config, $container);
     }
 
     /**
@@ -175,5 +176,14 @@ class MarkupNeedleExtension extends Extension
             );
             $container->setDefinition($prefix . 'context_provider', $contextProvider);
         }
+    }
+
+    /**
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function loadSuggester(array $config, ContainerBuilder $container)
+    {
+        $container->setParameter('markup_needle.suggester.alias', $config['suggester']);
     }
 }

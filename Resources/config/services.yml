@@ -159,3 +159,18 @@ services:
     markup_needle.collator.word_list:
         class: Markup\NeedleBundle\Collator\WordListCollator
         abstract: true
+    markup_needle.suggester.solr.abstract:
+        class: Markup\NeedleBundle\Suggest\SolrSuggestService
+        abstract: true
+    markup_needle.suggester.noop:
+        class: Markup\NeedleBundle\Suggest\NoopSuggestService
+        tags:
+            - { name: markup_needle.suggester, alias: noop }
+    markup_needle.suggester_provider:
+        class: Markup\NeedleBundle\Suggest\SuggestServiceProvider
+    markup_needle.suggester:
+        class: Markup\NeedleBundle\Suggest\SuggestServiceInterface
+        factory_service: markup_needle.suggester_provider
+        factory_method: getServiceForAlias
+        arguments:
+            - %markup_needle.suggester.alias%

@@ -108,6 +108,9 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->scalarNode('suggester')
+                    ->defaultValue('noop')
+                ->end()
             ->end();
 
         return $treeBuilder;
