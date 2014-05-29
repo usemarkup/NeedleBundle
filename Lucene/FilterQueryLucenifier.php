@@ -30,6 +30,10 @@ class FilterQueryLucenifier
      **/
     public function lucenify(FilterQueryInterface $filterQuery)
     {
+        if ($filterQuery->getFilterValue()->getSearchValue() === '') {
+            return sprintf('-%s:[* TO *]', $filterQuery->getSearchKey());
+        }
+
         return sprintf('%s:%s', $filterQuery->getSearchKey(), $this->filterValueLucenifier->lucenify($filterQuery->getFilterValue()));
     }
 }

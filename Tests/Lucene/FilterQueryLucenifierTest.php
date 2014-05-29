@@ -43,4 +43,26 @@ class FilterQueryLucenifierTest extends \PHPUnit_Framework_TestCase
         $expectedLucene = 'search:fortytwo';
         $this->assertEquals($expectedLucene, $this->queryLucenifier->lucenify($filterQuery));
     }
+
+    public function testLucenifyWithEmptyValue()
+    {
+        $filterKey = 'search';
+        $value = '';
+        $this->valueLucenifier
+            ->shouldReceive('lucenify')
+            ->andReturn('');
+        $filterQuery = m::mock('Markup\NeedleBundle\Filter\FilterQueryInterface');
+        $filterQuery
+            ->shouldReceive('getSearchKey')
+            ->andReturn($filterKey);
+        $filterValue = m::mock('Markup\NeedleBundle\Filter\FilterValueInterface')->shouldIgnoreMissing();
+        $filterValue
+            ->shouldReceive('getSearchValue')
+            ->andReturn($value);
+        $filterQuery
+            ->shouldReceive('getFilterValue')
+            ->andReturn($filterValue);
+        $expectedLucene = '-search:[* TO *]';
+        $this->assertEquals($expectedLucene, $this->queryLucenifier->lucenify($filterQuery));
+    }
 }
