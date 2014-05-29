@@ -159,11 +159,13 @@ services:
     markup_needle.collator.word_list:
         class: Markup\NeedleBundle\Collator\WordListCollator
         abstract: true
-    markup_needle.suggester.solr.abstract:
+    markup_needle.suggester.solr:
         class: Markup\NeedleBundle\Suggest\SolrSuggestService
-        abstract: true
-        calls:
-            - [ setLogger, [ @logger ] ]
+        arguments:
+            - @markup_needle.solarium.client
+            - @logger
+        tags:
+            - { name: markup_needle.suggester, alias: solr }
     markup_needle.suggester.noop:
         class: Markup\NeedleBundle\Suggest\NoopSuggestService
         tags:
