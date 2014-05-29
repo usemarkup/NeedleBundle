@@ -34,7 +34,7 @@ class SolrSuggestResultTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSuggestions()
     {
-        $suggestions = ['talk', 'talking'];
+        $suggestions = array('talk', 'talking');
         $this->solrResult
             ->shouldReceive('getResults')
             ->andReturn($suggestions);
