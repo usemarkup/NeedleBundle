@@ -114,6 +114,8 @@ class SolariumSelectQueryBuilder
                         continue;
                     }
                     $solariumFacets = array();
+                    //check whether to request missing facet values
+                    $checkMissingFacetValues = (method_exists($this->getSearchContext(), 'shouldRequestFacetValueForMissing')) ? $this->getSearchContext()->shouldRequestFacetValueForMissing() : null;
                     //if it's a range facet, create accordingly
                     if ($facet instanceof RangeFacetInterface) {
                         $solariumFacets[] = $solariumQuery
@@ -129,11 +131,13 @@ class SolariumSelectQueryBuilder
                                 ->getFacetSet()
                                 ->createFacetField(sprintf('include_%s', $facet->getSearchKey()))
                                 ->setMinCount(1)
+                                ->setMissing($checkMissingFacetValues)
                                 ->setSort($facetSortOrder ?: 'index');
                             $solariumFacets[] = $solariumQuery
                                 ->getFacetSet()
                                 ->createFacetField(sprintf('exclude_%s', $facet->getSearchKey()))
                                 ->setMinCount(1)
+                                ->setMissing($checkMissingFacetValues)
                                 ->setSort($facetSortOrder ?: 'index')
                                 ->addExcludes(array_map(function ($key) { return sprintf('fq%u', $key); }, array_keys($extraLuceneFilters)));
                         } else {
@@ -141,6 +145,7 @@ class SolariumSelectQueryBuilder
                                 ->getFacetSet()
                                 ->createFacetField($facet->getSearchKey())
                                 ->setMinCount(1) //sets default mincount of 1, so a facet value needs at least one corresponding result to show
+                                ->setMissing($checkMissingFacetValues)
                                 ->setSort($facetSortOrder ?: 'index');
                         }
                     }
