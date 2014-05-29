@@ -162,6 +162,8 @@ services:
     markup_needle.suggester.solr.abstract:
         class: Markup\NeedleBundle\Suggest\SolrSuggestService
         abstract: true
+        calls:
+            - [ setLogger, [ @logger ] ]
     markup_needle.suggester.noop:
         class: Markup\NeedleBundle\Suggest\NoopSuggestService
         tags:
