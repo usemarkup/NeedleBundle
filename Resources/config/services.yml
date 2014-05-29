@@ -170,6 +170,8 @@ services:
             - { name: markup_needle.suggester, alias: noop }
     markup_needle.suggester_provider:
         class: Markup\NeedleBundle\Suggest\SuggestServiceProvider
+        arguments:
+            - @service_container
     markup_needle.suggester:
         class: Markup\NeedleBundle\Suggest\SuggestServiceInterface
         factory_service: markup_needle.suggester_provider
