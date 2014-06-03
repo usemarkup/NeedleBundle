@@ -164,6 +164,7 @@ services:
         arguments:
             - @markup_needle.solarium.client
             - @logger
+            - @markup_needle.suggest_handler
         tags:
             - { name: markup_needle.suggester, alias: solr }
     markup_needle.suggester.noop:
