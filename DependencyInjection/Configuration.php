@@ -111,6 +111,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('suggester')
                     ->defaultValue('noop')
                 ->end()
+                ->scalarNode('suggest_handler')
+                    ->defaultValue('markup_needle.handler_provider.null')
+                ->end()
             ->end();
 
         return $treeBuilder;

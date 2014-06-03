@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Suggest;
 
+use Markup\NeedleBundle\Query\HandlerProviderInterface;
+use Markup\NeedleBundle\Query\NullHandlerProvider;
 use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -24,13 +26,23 @@ class SolrSuggestService implements SuggestServiceInterface
     private $logger;
 
     /**
+     * @var HandlerProviderInterface
+     */
+    private $handlerProvider;
+
+    /**
      * @param Solarium $solarium
      * @param LoggerInterface $logger
+     * @param HandlerProviderInterface $handlerProvider
      */
-    public function __construct(Solarium $solarium, LoggerInterface $logger = null)
-    {
+    public function __construct(
+        Solarium $solarium,
+        LoggerInterface $logger = null,
+        HandlerProviderInterface $handlerProvider = null
+    ) {
         $this->solarium = $solarium;
         $this->setLogger($logger);
+        $this->handlerProvider = $handlerProvider ?: new NullHandlerProvider();
     }
 
     /**
@@ -41,6 +53,10 @@ class SolrSuggestService implements SuggestServiceInterface
     {
         $suggestQuery = $this->solarium->createSuggester();
         $suggestQuery->setQuery($query->getSearchTerm());
+        $handler = $this->handlerProvider->getHandler();
+        if ($handler) {
+            $suggestQuery->setHandler($handler);
+        }
         $suggestQuery->setDictionary('suggest');
         $suggestQuery->setCount(20);
         $suggestQuery->setCollate(true);

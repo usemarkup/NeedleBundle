@@ -180,3 +180,5 @@ services:
         factory_method: getServiceForAlias
         arguments:
             - %markup_needle.suggester.alias%
+    markup_needle.handler_provider.null:
+        class: Markup\NeedleBundle\Query\NullHandlerProvider
