@@ -13,6 +13,7 @@ services:
             - @markup_needle.solarium.client
             - @markup_needle.exporter.subject_data_mapper_provider
             - @markup_needle.filter_query.lucenifier
+            - @event_dispatcher
             - true
             - @logger
             - ~

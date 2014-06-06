@@ -2,10 +2,16 @@
 
 namespace Markup\NeedleBundle\Indexer;
 
+use Markup\NeedleBundle\Corpus\CorpusInterface;
 use Markup\NeedleBundle\Corpus\CorpusProvider;
+use Markup\NeedleBundle\Event\CorpusPostUpdateEvent;
+use Markup\NeedleBundle\Event\CorpusPreUpdateEvent;
+use Markup\NeedleBundle\Event\SearchEvents;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
+use Markup\NeedleBundle\Result\SolariumUpdateResult;
 use Solarium\Client as Solarium;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use AppendIterator;
@@ -40,6 +46,11 @@ class CorpusIndexingCommand
      * @var FilterQueryLucenifier
      **/
     private $filterQueryLucenifier;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     /**
      * @var bool
@@ -92,6 +103,7 @@ class CorpusIndexingCommand
      * @param Solarium                  $solarium
      * @param SubjectDataMapperProvider $subjectMapperProvider
      * @param FilterQueryLucenifier     $filterQueryLucenifier
+     * @param EventDispatcherInterface  $eventDispatcher
      * @param bool                      $shouldPreDelete
      * @param LoggerInterface           $logger
      * @param AppendIterator            $wrappingIterator
@@ -102,6 +114,7 @@ class CorpusIndexingCommand
         Solarium $solarium,
         SubjectDataMapperProvider $subjectMapperProvider,
         FilterQueryLucenifier $filterQueryLucenifier,
+        EventDispatcherInterface $eventDispatcher,
         $shouldPreDelete = false,
         LoggerInterface $logger = null,
         AppendIterator $wrappingIterator = null,
@@ -111,6 +124,7 @@ class CorpusIndexingCommand
         $this->solarium = $solarium;
         $this->subjectMapperProvider = $subjectMapperProvider;
         $this->filterQueryLucenifier = $filterQueryLucenifier;
+        $this->eventDispatcher = $eventDispatcher;
         $this->shouldPreDelete = $shouldPreDelete;
         $this->logger = $logger ?: new NullLogger();
         $this->wrappingIterator = $wrappingIterator ?: new AppendIterator();
@@ -123,6 +137,8 @@ class CorpusIndexingCommand
         if (empty($this->corpusName)) {
             throw new \BadMethodCallException('You need to set a corpus name on the corpus indexing command in order to execute it.');
         }
+        $isFullUpdate = null === $this->deleteQuery;
+        $this->eventDispatcher->dispatch(SearchEvents::CORPUS_PRE_UPDATE, new CorpusPreUpdateEvent($this->getCorpus(), $isFullUpdate));
         $logger = $this->getLogger();
         $logger->info(sprintf('Indexing of corpus "%s" started.', $this->getCorpus()->getName()));
         $logger->debug(sprintf('Memory usage before search indexing process: %01.0fKB.', memory_get_usage(true) / 1024));
@@ -148,6 +164,7 @@ class CorpusIndexingCommand
         $logger->debug(sprintf('Memory usage after search indexing process: %01.0fKB.', memory_get_usage(true) / 1024));
         $endTime = microtime(true);
         $logger->info(sprintf('Indexing of corpus "%s" completed successfully in %01.3fs.', $this->getCorpus()->getName(), $endTime-$startTime));
+        $this->eventDispatcher->dispatch(SearchEvents::CORPUS_POST_UPDATE, new CorpusPostUpdateEvent($this->getCorpus(), $isFullUpdate, new SolariumUpdateResult($result)));
     }
 
     /**

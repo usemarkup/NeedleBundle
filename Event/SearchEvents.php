@@ -8,4 +8,7 @@ namespace Markup\NeedleBundle\Event;
 final class SearchEvents
 {
     const UNRESOLVED_INTERCEPT = 'markup_needle.unresolved_intercept';
+
+    const CORPUS_PRE_UPDATE = 'markup_needle.corpus_pre_update';
+    const CORPUS_POST_UPDATE = 'markup_needle.corpus_post_update';
 }

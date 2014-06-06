@@ -26,6 +26,7 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
         $this->filterQueryLucenifier = $this->getMockBuilder('Markup\NeedleBundle\Lucene\FilterQueryLucenifier')
             ->disableOriginalConstructor()
             ->getMock();
+        $this->eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->shouldReplaceDocuments = true;
         $this->logger = $this->getMock('Psr\Log\LoggerInterface');
         $this->command = new CorpusIndexingCommand(
@@ -33,6 +34,7 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
             $this->solariumClient,
             $this->subjectMapperProvider,
             $this->filterQueryLucenifier,
+            $this->eventDispatcher,
             $this->shouldReplaceDocuments,
             $this->logger
         );
