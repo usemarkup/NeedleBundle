@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\Suggest;
 
 use Solarium\QueryType\Suggester\Result\Result as SolariumResult;
+use string;
 use Traversable;
 
 /**
@@ -66,5 +67,23 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
         return array_map(function ($groupData) {
             return new SolrResultGroup($groupData['groupValue'], $groupData['doclist']);
         }, $this->data['groups']);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTermSuggestions()
+    {
+        $terms = array();
+        foreach ($this->getGroups() as $group) {
+            foreach ($group->getDocuments() as $document) {
+                $terms = array_merge($document->getValues(), $terms);
+            }
+        }
+
+        $terms = array_unique($terms);
+        sort($terms);
+
+        return $terms;
     }
 }

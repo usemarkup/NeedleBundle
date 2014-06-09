@@ -11,4 +11,9 @@ interface SuggestResultInterface extends \Countable, \Traversable
      * @return ResultGroupInterface[]
      */
     public function getGroups();
+
+    /**
+     * @return string[]
+     */
+    public function getTermSuggestions();
 }
