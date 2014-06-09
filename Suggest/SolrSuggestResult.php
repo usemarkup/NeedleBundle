@@ -11,16 +11,16 @@ use Traversable;
 class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
 {
     /**
-     * @var SolariumResult
+     * @var array|SolariumResult
      */
-    private $solariumResult;
+    private $data;
 
     /**
-     * @param SolariumResult $solariumResult
+     * @param array|SolariumResult $solariumResult
      */
-    public function __construct(SolariumResult $solariumResult)
+    public function __construct($data)
     {
-        $this->solariumResult = $solariumResult;
+        $this->data = $data;
     }
 
     /**
@@ -30,7 +30,11 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function count()
     {
-        return $this->solariumResult->count();
+        if ($this->data instanceof SolariumResult) {
+            return $this->data->count();
+        }
+
+        return (array_key_exists('matches', $this->data)) ? intval($this->data['matches']) : 0;
     }
 
     /**
@@ -39,7 +43,7 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function getIterator()
     {
-        return $this->solariumResult->getIterator();
+        return $this->data->getIterator();
     }
 
     /**
@@ -48,10 +52,19 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
     public function getGroups()
     {
         $groups = array();
-        foreach ($this->solariumResult->getResults() as $keyword => $term) {
-            $groups[] = new SolrResultGroup($keyword, $term);
+        if ($this->data instanceof SolariumResult) {
+            foreach ($this->data->getResults() as $keyword => $term) {
+                $groups[] = new SolrResultGroup($keyword, $term);
+            }
+
+            return $groups;
+        }
+        if (!array_key_exists('groups', $this->data) || !is_array($this->data['groups'])) {
+            return array();
         }
 
-        return $groups;
+        return array_map(function ($groupData) {
+            return new SolrResultGroup($groupData['groupValue'], $groupData['doclist']);
+        }, $this->data['groups']);
     }
 }

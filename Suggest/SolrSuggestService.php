@@ -47,7 +47,7 @@ class SolrSuggestService implements SuggestServiceInterface
 
     /**
      * @param SimpleQueryInterface $query
-     * @return SuggestResultInterface
+     * @return SuggestResultInterface[]
      */
     public function fetchSuggestions(SimpleQueryInterface $query)
     {
@@ -68,8 +68,14 @@ class SolrSuggestService implements SuggestServiceInterface
 
             return new EmptySuggestResult();
         }
+        //check if this is a grouped result, and use grouped result parser in this case
+        if (array_key_exists('grouped', $resultSet->getData())) {
+            $groupedResultParser = new GroupedResultParser();
+            $resultData = $resultSet->getData();
+            return $groupedResultParser->parse($resultData['grouped']);
+        }
 
-        return new SolrSuggestResult($resultSet);
+        return array(new SolrSuggestResult($resultSet));
     }
 
     /**

@@ -48,4 +48,24 @@ class SolrResultGroupTest extends \PHPUnit_Framework_TestCase
             ->andReturn($count);
         $this->assertCount($count, $this->group);
     }
+
+    public function testUsingRawDataTerm()
+    {
+        $data = array(
+            'numFound' => 34,
+            'start' => 0,
+            'docs' => array(
+                array(
+                    'id' => '511',
+                    'parsed_category_en_GB' => 'FOOTWEAR',
+                ),
+            ),
+        );
+        $group = new SolrResultGroup($this->term, $data);
+        $this->assertCount(34, $group);
+        $documents = $group->getDocuments();
+        $this->assertCount(1, $documents);
+        $doc = $documents[0];
+        $this->assertInstanceOf('Doctrine\Common\Collections\Collection', $doc);
+    }
 }

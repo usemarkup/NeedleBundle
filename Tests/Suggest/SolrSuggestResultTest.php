@@ -56,4 +56,31 @@ class SolrSuggestResultTest extends \PHPUnit_Framework_TestCase
         $group = $groups[0];
         $this->assertEquals($termKey, $group->getTerm());
     }
+
+    public function testWithRawData()
+    {
+        $data = array(
+            'matches' => 84,
+            'groups' => array(
+                array(
+                    'groupValue' => 'gardener',
+                    'doclist' => array(
+                        'numFound' => 1,
+                        'start' => 0,
+                        'docs' => array(
+                            array(
+                                'id' => '511',
+                                'parsed_category_en_GB' => 'FOOTWEAR',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+        $result = new SolrSuggestResult($data);
+        $this->assertCount(84, $result);
+        $groups = $result->getGroups();
+        $this->assertCount(1, $groups);
+        $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Suggest\ResultGroupInterface', $groups);
+    }
 }

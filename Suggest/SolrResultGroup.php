@@ -13,18 +13,18 @@ class SolrResultGroup implements ResultGroupInterface
     private $term;
 
     /**
-     * @var Term
+     * @var Term|array
      */
-    private $solariumTerm;
+    private $data;
 
     /**
-     * @param string $term
-     * @param Term   $solariumTerm
+     * @param string     $term
+     * @param Term|array $solariumTerm
      */
-    public function __construct($term, Term $solariumTerm)
+    public function __construct($term, $data)
     {
         $this->term = $term;
-        $this->solariumTerm = $solariumTerm;
+        $this->data = $data;
     }
 
     /**
@@ -42,7 +42,18 @@ class SolrResultGroup implements ResultGroupInterface
      */
     public function getDocuments()
     {
-        return array(new ArrayCollection($this->solariumTerm->getSuggestions()));
+        if ($this->data instanceof Term) {
+            return array(new ArrayCollection($this->data->getSuggestions()));
+        }
+        if (!array_key_exists('docs', $this->data) || !is_array($this->data['docs'])) {
+            return array();
+        }
+        $documents = array();
+        foreach ($this->data['docs'] as $doc) {
+            $documents[] = new ArrayCollection($doc);
+        }
+
+        return $documents;
     }
 
     /**
@@ -50,6 +61,10 @@ class SolrResultGroup implements ResultGroupInterface
      */
     public function count()
     {
-        return $this->solariumTerm->getNumFound();
+        if ($this->data instanceof Term) {
+            return $this->data->getNumFound();
+        }
+
+        return (array_key_exists('numFound', $this->data)) ? intval($this->data['numFound']) : 0;
     }
 }

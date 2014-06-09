@@ -11,7 +11,7 @@ interface SuggestServiceInterface
 {
     /**
      * @param SimpleQueryInterface $query
-     * @return SuggestResultInterface
+     * @return SuggestResultInterface[]
      */
     public function fetchSuggestions(SimpleQueryInterface $query);
 } 
