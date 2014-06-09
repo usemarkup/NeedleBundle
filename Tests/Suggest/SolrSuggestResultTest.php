@@ -32,13 +32,28 @@ class SolrSuggestResultTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($count, count($this->suggestResult));
     }
 
-    public function testGetSuggestions()
+    public function testGetGroups()
     {
-        $suggestions = array('talk', 'talking');
-        $term = 'term';
+        $term = m::mock('Solarium\QueryType\Suggester\Result\Term');
+        $count = 42;
+        $term
+            ->shouldReceive('getNumFound')
+            ->andReturn($count);
+        $suggestions = array(
+            'id' => 789,
+            'category_key' => 'socks',
+        );
+        $term
+            ->shouldReceive('getSuggestions')
+            ->andReturn($suggestions);
+        $termKey = 'term_key';
         $this->solrResult
             ->shouldReceive('getResults')
-            ->andReturn(array($term => $suggestions));
-        $this->assertEquals($suggestions, $this->suggestResult->getSuggestions());
+            ->andReturn(array($termKey => $term));
+        $groups = $this->suggestResult->getGroups();
+        $this->assertCount(1, $groups);
+        $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Suggest\ResultGroupInterface', $groups);
+        $group = $groups[0];
+        $this->assertEquals($termKey, $group->getTerm());
     }
 }

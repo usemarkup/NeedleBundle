@@ -34,26 +34,24 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
     }
 
     /**
-     * @return string[]
-     */
-    public function getSuggestions()
-    {
-        $suggestions = array();
-        foreach ($this->solariumResult->getResults() as $termResult) {
-            foreach ($termResult as $result) {
-                $suggestions[] = $result;
-            }
-        }
-
-        return $suggestions;
-    }
-
-    /**
      * Retrieve an external iterator
      * @return Traversable
      */
     public function getIterator()
     {
         return $this->solariumResult->getIterator();
+    }
+
+    /**
+     * @return ResultGroupInterface[]
+     */
+    public function getGroups()
+    {
+        $groups = array();
+        foreach ($this->solariumResult->getResults() as $keyword => $term) {
+            $groups[] = new SolrResultGroup($keyword, $term);
+        }
+
+        return $groups;
     }
 }

@@ -8,7 +8,7 @@ namespace Markup\NeedleBundle\Suggest;
 interface SuggestResultInterface extends \Countable, \Traversable
 {
     /**
-     * @return string[]
+     * @return ResultGroupInterface[]
      */
-    public function getSuggestions();
-} 
+    public function getGroups();
+}
