@@ -71,7 +71,7 @@ class SolrSearchService implements SearchServiceInterface
         $pagerfantaAdapter = new SolariumAdapter($this->getSolariumClient(), $solariumQuery);
         $pagerfanta = new Pagerfanta($pagerfantaAdapter);
         $maxPerPage = $query->getMaxPerPage();
-        if (null === $maxPerPage && $this->hasContext()) {
+        if (null === $maxPerPage && $this->hasContext() && $query->getPageNumber() !== null) {
             $maxPerPage = $this->getContext()->getItemsPerPage() ?: null;
         }
         $pagerfanta->setMaxPerPage($maxPerPage ?: self::INFINITY);
