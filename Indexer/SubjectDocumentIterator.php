@@ -22,7 +22,7 @@ class SubjectDocumentIterator implements \OuterIterator
     private $documentGenerator;
 
     /**
-     * @var callable
+     * @var callable[]
      */
     private $callbacks;
 
