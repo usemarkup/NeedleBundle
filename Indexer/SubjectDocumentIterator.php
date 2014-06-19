@@ -2,8 +2,6 @@
 
 namespace Markup\NeedleBundle\Indexer;
 
-use Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface;
-
 /**
 * An iterator that can take an iteration of subjects and emit Solarium documents.
 */
@@ -24,13 +22,24 @@ class SubjectDocumentIterator implements \OuterIterator
     private $documentGenerator;
 
     /**
-     * @param array|Iterator                    $subjects
+     * @var callable
+     */
+    private $callbacks;
+
+    /**
+     * A list of callbacks that should be called with each subject on each iteration.
+     */
+
+    /**
+     * @param array|\Iterator                   $subjects
      * @param SubjectDocumentGeneratorInterface $documentGenerator
+     * @param callable                          $callbacks
      **/
-    public function __construct($subjects, SubjectDocumentGeneratorInterface $documentGenerator)
+    public function __construct($subjects, SubjectDocumentGeneratorInterface $documentGenerator, array $callbacks = array())
     {
         $this->setSubjects($subjects);
         $this->documentGenerator = $documentGenerator;
+        $this->callbacks = $callbacks;
     }
 
     public function getInnerIterator()
@@ -73,16 +82,19 @@ class SubjectDocumentIterator implements \OuterIterator
      */
     public function current()
     {
+        $subject = $this->getInnerIterator()->current();
+        foreach ($this->callbacks as $callback) {
+            call_user_func($callback, $subject);
+        }
+
         return $this
             ->getDocumentGenerator()
-            ->createDocumentForSubject(
-                $this->getInnerIterator()->current()
-            );
+            ->createDocumentForSubject($subject);
     }
 
     public function next()
     {
-        return $this->getInnerIterator()->next();
+        $this->getInnerIterator()->next();
     }
 
     public function key()
@@ -97,7 +109,7 @@ class SubjectDocumentIterator implements \OuterIterator
 
     public function rewind()
     {
-        return $this->getInnerIterator()->rewind();
+        $this->getInnerIterator()->rewind();
     }
 
     /**

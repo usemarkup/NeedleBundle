@@ -50,4 +50,19 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
         $it->setSubjects($someSubjects);
         $this->assertEquals($someSubjects, iterator_to_array($it->getSubjects()));
     }
+
+    public function testCallbacksExecuted()
+    {
+        $subject = $this->getMock('Doctrine\Common\Collections\Collection');
+        $subject
+            ->expects($this->once())
+            ->method('get');
+        $callback = function ($subject) {
+            $subject->get('skdjhfskjdfh');
+        };
+        $subjects = array($subject);
+        $docGenerator = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
+        $it = new SubjectDocumentIterator($subjects, $docGenerator, array($callback));
+        iterator_to_array($it);
+    }
 }

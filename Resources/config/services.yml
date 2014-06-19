@@ -14,6 +14,7 @@ services:
             - @markup_needle.exporter.subject_data_mapper_provider
             - @markup_needle.filter_query.lucenifier
             - @event_dispatcher
+            - @markup_needle.index_callback_provider
             - true
             - @logger
             - ~
@@ -184,3 +185,7 @@ services:
             - %markup_needle.suggester.alias%
     markup_needle.handler_provider.null:
         class: Markup\NeedleBundle\Query\NullHandlerProvider
+    markup_needle.index_callback_provider:
+        class: Markup\NeedleBundle\Indexer\IndexCallbackProvider
+        arguments:
+            - @service_container
