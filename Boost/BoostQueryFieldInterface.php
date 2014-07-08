@@ -2,17 +2,19 @@
 
 namespace Markup\NeedleBundle\Boost;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
  * An interface for a field query boost, i.e. a weighting factor for an individual attribute.
  **/
 interface BoostQueryFieldInterface
 {
     /**
-     * Gets the key for the attribute being boosted.
+     * Gets the attribute being boosted.
      *
-     * @return string
+     * @return AttributeInterface
      **/
-    public function getAttributeKey();
+    public function getAttribute();
 
     /**
      * Gets the boost factor for this attribute.

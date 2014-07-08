@@ -2,17 +2,19 @@
 
 namespace Markup\NeedleBundle\Boost;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+
 /**
 * A boost query field, representing the weighting to put on a particular attribute in a search.
 */
 class BoostQueryField implements BoostQueryFieldInterface
 {
     /**
-     * The key for the attribute being boosted.
+     * The attribute being boosted.
      *
-     * @var string
+     * @var AttributeInterface
      **/
-    private $attributeKey;
+    private $attribute;
 
     /**
      * The boost factor that acts as a multiplier for the attribute.
@@ -22,18 +24,18 @@ class BoostQueryField implements BoostQueryFieldInterface
     private $boostFactor;
 
     /**
-     * @param string $attributeKey
-     * @param float  $boostFactor
+     * @param AttributeInterface $attribute
+     * @param float              $boostFactor
      **/
-    public function __construct($attributeKey, $boostFactor = 1)
+    public function __construct(AttributeInterface $attribute, $boostFactor = 1)
     {
-        $this->attributeKey = $attributeKey;
+        $this->attribute = $attribute;
         $this->boostFactor = $boostFactor;
     }
 
-    public function getAttributeKey()
+    public function getAttribute()
     {
-        return $this->attributeKey;
+        return $this->attribute;
     }
 
     public function getBoostFactor()

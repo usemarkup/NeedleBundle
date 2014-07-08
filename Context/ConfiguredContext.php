@@ -32,7 +32,7 @@ class ConfiguredContext implements SearchContextInterface
     /**
      * @var AttributeProviderInterface
      */
-    private $filterProvider;
+    private $attributeProvider;
 
     /**
      * @var FacetProviderInterface
@@ -61,7 +61,7 @@ class ConfiguredContext implements SearchContextInterface
 
     /**
      * @param ContextConfigurationInterface $config
-     * @param AttributeProviderInterface $filterProvider
+     * @param AttributeProviderInterface $attributeProvider
      * @param FacetProviderInterface $facetProvider
      * @param FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
      * @param CollatorProviderInterface $facetCollatorProvider
@@ -70,7 +70,7 @@ class ConfiguredContext implements SearchContextInterface
      */
     public function __construct(
         ContextConfigurationInterface $config,
-        AttributeProviderInterface $filterProvider,
+        AttributeProviderInterface $attributeProvider,
         FacetProviderInterface $facetProvider,
         FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
         CollatorProviderInterface $facetCollatorProvider,
@@ -78,7 +78,7 @@ class ConfiguredContext implements SearchContextInterface
         ConfiguredInterceptorProvider $interceptorProvider
     ) {
         $this->config = $config;
-        $this->filterProvider = $filterProvider;
+        $this->attributeProvider = $attributeProvider;
         $this->facetProvider = $facetProvider;
         $this->facetSetDecoratorProvider = $facetSetDecoratorProvider;
         $this->facetCollatorProvider = $facetCollatorProvider;
@@ -121,7 +121,7 @@ class ConfiguredContext implements SearchContextInterface
     {
         $queries = array();
         foreach ($this->config->getDefaultFilterQueries() as $attr => $value) {
-            $queries[] = new FilterQuery($this->filterProvider->getAttributeByName($attr), new ScalarFilterValue($value));
+            $queries[] = new FilterQuery($this->attributeProvider->getAttributeByName($attr), new ScalarFilterValue($value));
         }
 
         return $queries;
@@ -176,7 +176,7 @@ class ConfiguredContext implements SearchContextInterface
             return new RelevanceSort();
         }
 
-        return new Sort($this->filterProvider->getAttributeByName($attr), $direction === ContextConfigurationInterface::ORDER_DESC);
+        return new Sort($this->attributeProvider->getAttributeByName($attr), $direction === ContextConfigurationInterface::ORDER_DESC);
     }
 
     /**
@@ -219,7 +219,7 @@ class ConfiguredContext implements SearchContextInterface
     {
         $fields = array();
         foreach ($this->config->getDefaultBoosts() as $attr => $factor) {
-            $fields[] = new BoostQueryField($attr, $factor);
+            $fields[] = new BoostQueryField($this->attributeProvider->getAttributeByName($attr), $factor);
         }
 
         return $fields;

@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Boost;
 
+use Markup\NeedleBundle\Attribute\Attribute;
 use Markup\NeedleBundle\Boost\BoostQueryField;
 
 /**
@@ -15,17 +16,18 @@ class BoostQueryFieldTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($field->implementsInterface('Markup\NeedleBundle\Boost\BoostQueryFieldInterface'));
     }
 
-    public function testGetAttributeKey()
+    public function testGetAttributeName()
     {
-        $attrKey = 'boots';
-        $field = new BoostQueryField($attrKey);
-        $this->assertEquals($attrKey, $field->getAttributeKey());
+        $attrName = 'boots';
+        $attr = new Attribute($attrName);
+        $field = new BoostQueryField($attr);
+        $this->assertSame($attr, $field->getAttribute());
     }
 
     public function testGetBoost()
     {
         $boostFactor = 42;
-        $field = new BoostQueryField('attr', $boostFactor);
+        $field = new BoostQueryField(new Attribute('attr'), $boostFactor);
         $this->assertEquals($boostFactor, $field->getBoostFactor());
     }
 }

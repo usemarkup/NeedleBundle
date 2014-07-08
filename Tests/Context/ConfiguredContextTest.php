@@ -13,7 +13,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->config = m::mock('Markup\NeedleBundle\Config\ContextConfigurationInterface');
-        $this->filterProvider = m::mock('Markup\NeedleBundle\Attribute\AttributeProviderInterface');
+        $this->attributeProvider = m::mock('Markup\NeedleBundle\Attribute\AttributeProviderInterface');
         $this->facetProvider = m::mock('Markup\NeedleBundle\Facet\FacetProviderInterface');
         $this->facetSetDecoratorProvider = m::mock('Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface');
         $this->facetCollatorProvider = m::mock('Markup\NeedleBundle\Collator\CollatorProviderInterface');
@@ -21,7 +21,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->interceptorProvider = m::mock('Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider');
         $this->context = new ConfiguredContext(
             $this->config,
-            $this->filterProvider,
+            $this->attributeProvider,
             $this->facetProvider,
             $this->facetSetDecoratorProvider,
             $this->facetCollatorProvider,
@@ -74,7 +74,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDefaultFilterQueries()
     {
-        $this->filterProvider
+        $this->attributeProvider
             ->shouldReceive('getAttributeByName')
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
@@ -95,7 +95,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testDefaultSortCollectionForQueryUsesSearchTermSortsWhenTreatedAsSearchTerm()
     {
-        $this->filterProvider
+        $this->attributeProvider
             ->shouldReceive('getAttributeByName')
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
@@ -118,7 +118,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testDefaultSortCollectionForQueryGetsRelevanceSortWhenRelevanceSelected()
     {
-        $this->filterProvider
+        $this->attributeProvider
             ->shouldReceive('getAttributeByName')
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
@@ -140,7 +140,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testDefaultSortCollectionForQueryUsesNonSearchTermWhenNotTreatedAsSearchTerm()
     {
-        $this->filterProvider
+        $this->attributeProvider
             ->shouldReceive('getAttributeByName')
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
@@ -163,7 +163,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testSortsUsingListOfObjects()
     {
-        $this->filterProvider
+        $this->attributeProvider
             ->shouldReceive('getAttributeByName')
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
@@ -193,6 +193,11 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->config
             ->shouldReceive('getDefaultBoosts')
             ->andReturn($boosts);
+        $this->attributeProvider
+            ->shouldReceive('getAttributeByName')
+            ->andReturnUsing(function ($name) {
+                return new Attribute($name);
+            });
         $boostFields = $this->context->getBoostQueryFields();
         $this->assertCount(2, $boostFields);
         $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Boost\BoostQueryFieldInterface', $boostFields);

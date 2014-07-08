@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Builder;
 
+use Markup\NeedleBundle\Boost\BoostQueryField;
 use Markup\NeedleBundle\Context\SearchContextInterface as SearchContext;
 use Markup\NeedleBundle\Facet\RangeFacetInterface;
 use Markup\NeedleBundle\Filter;
@@ -177,7 +178,10 @@ class SolariumSelectQueryBuilder
                 //apply boosts
                 $queryFields = array();
                 foreach ($boostQueryFields as $boostField) {
-                    $queryFields[] = $boostField->getAttributeKey() . (($boostField->getBoostFactor() !== 1) ? ('^'.strval($boostField->getBoostFactor())) : '');
+                    /**
+                     * @var BoostQueryField $boostField
+                     */
+                    $queryFields[] = $boostField->getAttribute()->getSearchKey(array('prefer_parsed' => true)) . (($boostField->getBoostFactor() !== 1) ? ('^'.strval($boostField->getBoostFactor())) : '');
                 }
                 $edismax->setQueryFields(implode(' ', $queryFields));
             }
