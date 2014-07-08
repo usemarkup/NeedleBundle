@@ -14,14 +14,14 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
     /**
      * @var SolariumResult
      **/
-    private $solariumResult = null;
+    private $solariumResult;
 
     /**
      * A closure that returns a Solarium result object.
      *
      * @var \Closure
      **/
-    private $solariumResultClosure = null;
+    private $solariumResultClosure;
 
     /**
      * @var SearchContext

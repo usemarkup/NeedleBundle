@@ -189,3 +189,14 @@ services:
         class: Markup\NeedleBundle\Indexer\IndexCallbackProvider
         arguments:
             - @service_container
+    markup_needle.spellcheck.static_dictionary_provider:
+        class: Markup\NeedleBundle\Spellcheck\StaticDictionaryProvider
+    markup_needle.spellcheck.dictionary_provider.default:
+        parent: markup_needle.spellcheck.static_dictionary_provider
+        arguments:
+            - spell
+    markup_needle.spellcheck.default:
+        class: Markup\NeedleBundle\Spellcheck\Spellcheck
+        arguments:
+            - @markup_needle.spellcheck.dictionary_provider.default
+            - 10

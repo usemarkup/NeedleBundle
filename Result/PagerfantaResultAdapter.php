@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Result;
 
+use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
+use Markup\NeedleBundle\Spellcheck\SpellcheckResultStrategyInterface;
 use Pagerfanta\Pagerfanta;
 
 /**
@@ -21,21 +23,28 @@ class PagerfantaResultAdapter implements ResultInterface
      *
      * @var QueryTimeStrategyInterface
      **/
-    private $queryTimeStrategy = null;
+    private $queryTimeStrategy;
 
     /**
      * A strategy that can fetch the facet sets for a result.
      *
      * @var FacetSetStrategyInterface
      **/
-    private $facetSetStrategy = null;
+    private $facetSetStrategy;
+
+    /**
+     * A spellcheck result.
+     *
+     * @var SpellcheckResultStrategyInterface
+     */
+    private $spellcheckResultStrategy;
 
     /**
      * A strategy that can fetch debug info for a result.
      *
      * @var DebugOutputStrategyInterface
      **/
-    private $debugOutputStrategy = null;
+    private $debugOutputStrategy;
 
     /**
      * @param Pagerfanta $pagerfanta
@@ -139,6 +148,24 @@ class PagerfantaResultAdapter implements ResultInterface
         }
 
         return $this->facetSetStrategy->getFacetSets();
+    }
+
+    /**
+     * @param SpellcheckResultInterface $spellcheckResult
+     */
+    public function setSpellcheckResultStrategy(SpellcheckResultStrategyInterface $spellcheckResultStrategy)
+    {
+        $this->spellcheckResultStrategy = $spellcheckResultStrategy;
+
+        return $this;
+    }
+
+    /**
+     * @return SpellcheckResultInterface|null
+     */
+    public function getSpellcheckResult()
+    {
+        return $this->spellcheckResultStrategy->getSpellcheckResult();
     }
 
     public function setDebugOutputStrategy(DebugOutputStrategyInterface $debugOutputStrategy)

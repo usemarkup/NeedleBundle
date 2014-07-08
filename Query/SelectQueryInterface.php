@@ -4,6 +4,7 @@ namespace Markup\NeedleBundle\Query;
 
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Service\SearchServiceInterface as SearchService;
+use Markup\NeedleBundle\Spellcheck\SpellcheckInterface;
 
 /**
  * An interface for a select query.
@@ -95,4 +96,11 @@ interface SelectQueryInterface extends SimpleQueryInterface
      * @return bool
      */
     public function shouldTreatAsTextSearch();
+
+    /**
+     * Gets a spellcheck on the query, or null if none set.
+     *
+     * @return SpellcheckInterface|null
+     */
+    public function getSpellcheck();
 }

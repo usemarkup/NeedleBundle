@@ -193,6 +193,15 @@ class SolariumSelectQueryBuilder
             $solariumQuery->addSort($sort->getFilter()->getSearchKey(), ($sort->isDescending()) ? SolariumQuery::SORT_DESC : SolariumQuery::SORT_ASC);
         }
 
+        //if there is a spellcheck request to apply, apply it
+        if ($query->getSpellcheck()) {
+            $solariumSpellcheck = $solariumQuery->getSpellcheck();
+            if (null !== $query->getSpellcheck()->getResultLimit()) {
+                $solariumSpellcheck->setCount($query->getSpellcheck()->getResultLimit());
+            }
+            $solariumSpellcheck->setDictionary($query->getSpellcheck()->getDictionary());
+        }
+
         //if configured to generate debug output, and there is a search term, request debug output
         if ($query->hasSearchTerm() and $this->provideDebugOutput) {
             $solariumQuery->getDebug(); //this switches debug on

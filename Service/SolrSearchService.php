@@ -9,6 +9,7 @@ use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
 use Markup\NeedleBundle\Result\SolariumDebugOutputStrategy;
 use Markup\NeedleBundle\Result\SolariumFacetSetsStrategy;
 use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Result\SolariumSpellcheckResultStrategy;
 use Pagerfanta\Adapter\SolariumAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Templating\EngineInterface as TemplatingEngine;
@@ -89,6 +90,9 @@ class SolrSearchService implements SearchServiceInterface
         if ($this->hasContext()) {
             $result->setFacetSetStrategy(new SolariumFacetSetsStrategy($resultClosure, $this->getContext(), ($query instanceof RecordableSelectQueryInterface) ? $query->getRecord() : null));
         }
+
+        //set any spellcheck result
+        $result->setSpellcheckResultStrategy(new SolariumSpellcheckResultStrategy($resultClosure));
 
         //set strategy for debug information output as this is not available through pagerfanta - only if templating service was available
         if (null !== $this->templating) {

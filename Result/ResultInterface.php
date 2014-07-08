@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Result;
 
+use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
+
 /**
  * An interface for a search service result.
  **/
@@ -80,6 +82,13 @@ interface ResultInterface extends \Countable, \IteratorAggregate
      * @return \Markup\NeedleBundle\Facet\FacetSetInterface[]
      **/
     public function getFacetSets();
+
+    /**
+     * Gets a spellcheck result, if there is one (otherwise returns null).
+     *
+     * @return SpellcheckResultInterface|null
+     */
+    public function getSpellcheckResult();
 
     /**
      * Gets whether there is debug output for this result that could be displayed.

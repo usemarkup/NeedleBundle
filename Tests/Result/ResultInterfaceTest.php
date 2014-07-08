@@ -36,6 +36,7 @@ class ResultInterfaceTest extends AbstractInterfaceTestCase
             'hasNextPage',
             'getNextPageNumber',
             'getFacetSets',
+            'getSpellcheckResult',
             'hasDebugOutput',
             'getDebugOutput',
             );

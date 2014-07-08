@@ -24,6 +24,7 @@ class SelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'doesValueExistInFilterQueries',
             'getMaxPerPage',
             'shouldTreatAsTextSearch',
+            'getSpellcheck',
         );
         $query = new \ReflectionClass('Markup\NeedleBundle\Query\SelectQueryInterface');
         $actual_public_methods = array();
