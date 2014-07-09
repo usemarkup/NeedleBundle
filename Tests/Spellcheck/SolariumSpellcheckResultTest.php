@@ -38,11 +38,11 @@ class SolariumSpellcheckResultTest extends \PHPUnit_Framework_TestCase
     {
         $words = array('aword', 'theword');
         $this->suggestion1
-            ->shouldReceive('getWords')
-            ->andReturn(array($words[0]));
+            ->shouldReceive('getWord')
+            ->andReturn($words[0]);
         $this->suggestion2
-            ->shouldReceive('getWords')
-            ->andReturn(array($words[1]));
+            ->shouldReceive('getWord')
+            ->andReturn($words[1]);
         $this->assertEquals($words, $this->spellcheckResult->getSuggestions());
     }
 }

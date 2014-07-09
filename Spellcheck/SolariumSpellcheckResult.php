@@ -40,16 +40,12 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
      */
     public function getSuggestions()
     {
-        return array_unique(array_reduce(
-            $this->result->getSuggestions(),
-            function ($carry, $item) {
-                if (!$item instanceof Suggestion) {
-                    return $carry;
-                }
+        return array_unique(array_filter(array_map(function ($item) {
+            if (!$item instanceof Suggestion) {
+                return null;
+            }
 
-                return array_merge($carry, $item->getWords());
-            },
-            array()
-        ));
+            return $item->getWord();
+        }, $this->result->getSuggestions())));
     }
 }
