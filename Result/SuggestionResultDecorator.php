@@ -5,6 +5,7 @@ namespace Markup\NeedleBundle\Result;
 use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Markup\NeedleBundle\Service\SearchServiceInterface;
 use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
+use Pagerfanta\Pagerfanta;
 use Traversable;
 
 /**
@@ -203,6 +204,20 @@ class SuggestionResultDecorator implements ResultInterface
     {
         //use original result
         return $this->originalResult->getDebugOutput();
+    }
+
+    /**
+     * It's likely there's a pagerfanta object on the result, so expose if present.
+     *
+     * @return Pagerfanta|null
+     */
+    public function getPagerfanta()
+    {
+        if (!method_exists($this->originalResult, 'getPagerfanta')) {
+            return null;
+        }
+
+        return $this->originalResult->getPagerfanta();
     }
 
     /**
