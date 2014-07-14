@@ -4,7 +4,7 @@ namespace Markup\NeedleBundle\Spellcheck;
 
 use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Solarium\QueryType\Select\Result\Spellcheck\Result;
-use Solarium\QueryType\Select\Result\Spellcheck\Suggestion;
+use Solarium\QueryType\Select\Result\Spellcheck\Suggestion as SolariumSuggestion;
 
 /**
  * A spellcheck result wrapping the Solarium spellcheck result.
@@ -42,27 +42,27 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
     }
 
     /**
-     * Gets a list of suggestions,
+     * Gets a list of suggestions.
      *
-     * @return string[]
+     * @return Suggestion[]
      */
     public function getSuggestions()
     {
         return array_values(array_unique(array_filter(array_map(function ($item) {
-            if (!$item instanceof Suggestion) {
+            if (!$item instanceof SolariumSuggestion) {
                 return null;
             }
 
-            return $item->getWord();
-        }, $this->result->getSuggestions()), function ($word) {
-            if (!$word) {
+            return new Suggestion($item->getWord(), $item->getNumFound());
+        }, $this->result->getSuggestions()), function (Suggestion $suggestion = null) {
+            if (!$suggestion || !$suggestion->getWord()) {
                 return false;
             }
             if (!$this->query->hasSearchTerm()) {
                 return true;
             }
 
-            return $word !== $this->query->getSearchTerm();
+            return $suggestion->getWord() !== $this->query->getSearchTerm();
         })));
     }
 }
