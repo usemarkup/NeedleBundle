@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Result;
 
+use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Markup\NeedleBundle\Spellcheck\SolariumSpellcheckResult;
 use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
 use Markup\NeedleBundle\Spellcheck\SpellcheckResultStrategyInterface;
@@ -15,6 +16,11 @@ class SolariumSpellcheckResultStrategy implements SpellcheckResultStrategyInterf
     private $solariumResult;
 
     /**
+     * @var SimpleQueryInterface
+     */
+    private $query;
+
+    /**
      * A closure that returns a Solarium result object.
      *
      * @var \Closure
@@ -23,8 +29,9 @@ class SolariumSpellcheckResultStrategy implements SpellcheckResultStrategyInterf
 
     /**
      * @param SolariumResult|\Closure $result
+     * @param SimpleQueryInterface    $query
      */
-    public function __construct($result)
+    public function __construct($result, SimpleQueryInterface $query)
     {
         if ($result instanceof SolariumResult) {
             $this->solariumResult = $result;
@@ -33,6 +40,7 @@ class SolariumSpellcheckResultStrategy implements SpellcheckResultStrategyInterf
         } else {
             throw new \InvalidArgumentException(sprintf('Passed an instance of %s as a result into %s. Expected a Solarium result instance (Solarium\QueryType\Select\Result\Result) or a closure that returns a Solarium result instance.', get_class($result), __METHOD__));
         }
+        $this->query = $query;
     }
 
     /**
@@ -45,7 +53,7 @@ class SolariumSpellcheckResultStrategy implements SpellcheckResultStrategyInterf
             return null;
         }
 
-        return new SolariumSpellcheckResult($solariumResult->getSpellcheck());
+        return new SolariumSpellcheckResult($solariumResult->getSpellcheck(), $this->query);
     }
 
     /**

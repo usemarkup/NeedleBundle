@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Spellcheck;
 
+use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Solarium\QueryType\Select\Result\Spellcheck\Result;
 use Solarium\QueryType\Select\Result\Spellcheck\Suggestion;
 
@@ -16,11 +17,18 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
     private $result;
 
     /**
-     * @param Result $result
+     * @var SimpleQueryInterface
      */
-    public function __construct(Result $result)
+    private $query;
+
+    /**
+     * @param Result $result
+     * @param SimpleQueryInterface $query
+     */
+    public function __construct(Result $result, SimpleQueryInterface $query)
     {
         $this->result = $result;
+        $this->query = $query;
     }
 
     /**
@@ -40,12 +48,21 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
      */
     public function getSuggestions()
     {
-        return array_unique(array_filter(array_map(function ($item) {
+        return array_values(array_unique(array_filter(array_map(function ($item) {
             if (!$item instanceof Suggestion) {
                 return null;
             }
 
             return $item->getWord();
-        }, $this->result->getSuggestions())));
+        }, $this->result->getSuggestions()), function ($word) {
+            if (!$word) {
+                return false;
+            }
+            if (!$this->query->hasSearchTerm()) {
+                return true;
+            }
+
+            return $word !== $this->query->getSearchTerm();
+        })));
     }
 }

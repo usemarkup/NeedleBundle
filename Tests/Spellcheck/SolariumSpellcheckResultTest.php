@@ -21,7 +21,8 @@ class SolariumSpellcheckResultTest extends \PHPUnit_Framework_TestCase
             array(),
             $this->correctlySpelled
         );
-        $this->spellcheckResult = new SolariumSpellcheckResult($this->solariumResult);
+        $this->query = m::mock('Markup\NeedleBundle\Query\SimpleQueryInterface')->shouldIgnoreMissing();
+        $this->spellcheckResult = new SolariumSpellcheckResult($this->solariumResult, $this->query);
     }
 
     protected function tearDown()
@@ -44,5 +45,23 @@ class SolariumSpellcheckResultTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('getWord')
             ->andReturn($words[1]);
         $this->assertEquals($words, $this->spellcheckResult->getSuggestions());
+    }
+
+    public function testGetSuggestionsReducedByOriginalQuery()
+    {
+        $words = array('aword', 'theword');
+        $this->suggestion1
+            ->shouldReceive('getWord')
+            ->andReturn($words[0]);
+        $this->suggestion2
+            ->shouldReceive('getWord')
+            ->andReturn($words[1]);
+        $this->query
+            ->shouldReceive('hasSearchTerm')
+            ->andReturn(true);
+        $this->query
+            ->shouldReceive('getSearchTerm')
+            ->andReturn('aword');
+        $this->assertEquals(['theword'], $this->spellcheckResult->getSuggestions());
     }
 }

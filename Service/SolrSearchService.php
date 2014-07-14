@@ -92,7 +92,7 @@ class SolrSearchService implements SearchServiceInterface
         }
 
         //set any spellcheck result
-        $result->setSpellcheckResultStrategy(new SolariumSpellcheckResultStrategy($resultClosure));
+        $result->setSpellcheckResultStrategy(new SolariumSpellcheckResultStrategy($resultClosure, $query));
 
         //set strategy for debug information output as this is not available through pagerfanta - only if templating service was available
         if (null !== $this->templating) {
