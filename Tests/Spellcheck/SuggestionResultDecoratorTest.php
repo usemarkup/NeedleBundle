@@ -11,7 +11,7 @@ class SuggestionResultDecoratorTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->originalResult = m::mock('Markup\NeedleBundle\Result\ResultInterface');
+        $this->originalResult = m::mock('Markup\NeedleBundle\Result\ResultInterface')->shouldIgnoreMissing();
         $this->originalQuery = new SettableSelectQuery('original query');
         $this->searchService = m::mock('Markup\NeedleBundle\Service\SearchServiceInterface');
         $this->decorator = new SuggestionResultDecorator($this->originalResult, $this->originalQuery, $this->searchService);
@@ -61,6 +61,9 @@ class SuggestionResultDecoratorTest extends \PHPUnit_Framework_TestCase
         $this->originalResult
             ->shouldReceive('getIterator')
             ->andReturn(new \ArrayIterator(array()));
+        $this->originalResult
+            ->shouldReceive('getTotalCount')
+            ->andReturn(0);
         iterator_to_array($this->decorator);
     }
 }

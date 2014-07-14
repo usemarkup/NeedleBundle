@@ -223,7 +223,7 @@ class SuggestionResultDecorator implements ResultInterface
     private function getSuggestionResult()
     {
         if (!$this->resolved) {
-            if ($this->originalResult->getSpellcheckResult() && count($this->originalResult->getSpellcheckResult()->getSuggestions()) > 0) {
+            if ($this->originalResult->getSpellcheckResult() && $this->originalResult->getTotalCount() === 0 && count($this->originalResult->getSpellcheckResult()->getSuggestions()) > 0) {
                 $suggestionQuery = clone $this->query;
                 $suggestions = $this->originalResult->getSpellcheckResult()->getSuggestions();
                 $suggestion = $suggestions[0];
