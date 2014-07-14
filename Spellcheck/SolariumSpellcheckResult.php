@@ -48,13 +48,14 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
      */
     public function getSuggestions()
     {
+        $that = $this;
         return array_values(array_unique(array_filter(array_map(function ($item) {
             if (!$item instanceof SolariumSuggestion) {
                 return null;
             }
 
             return new Suggestion($item->getWord(), $item->getNumFound());
-        }, $this->result->getSuggestions()), function (Suggestion $suggestion = null) {
+        }, $this->result->getSuggestions()), function (Suggestion $suggestion = null) use ($that) {
             if (!$suggestion || !$suggestion->getWord()) {
                 return false;
             }
@@ -62,7 +63,7 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
                 return true;
             }
 
-            return $suggestion->getWord() !== $this->query->getSearchTerm();
+            return $suggestion->getWord() !== $that->query->getSearchTerm();
         })));
     }
 }
