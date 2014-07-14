@@ -42,6 +42,14 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
     }
 
     /**
+     * NB. This needs to be public in order to make the query accessible within the closures in getSuggestions(), but is not on the defined interface and should not be used/ relied upon.
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
      * Gets a list of suggestions.
      *
      * @return Suggestion[]
@@ -49,6 +57,7 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
     public function getSuggestions()
     {
         $that = $this;
+
         return array_values(array_unique(array_filter(array_map(function ($item) {
             if (!$item instanceof SolariumSuggestion) {
                 return null;
@@ -59,11 +68,11 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
             if (!$suggestion || !$suggestion->getWord()) {
                 return false;
             }
-            if (!$that->query->hasSearchTerm()) {
+            if (!$that->getQuery()->hasSearchTerm()) {
                 return true;
             }
 
-            return $suggestion->getWord() !== $that->query->getSearchTerm();
+            return $suggestion->getWord() !== $that->getQuery()->getSearchTerm();
         })));
     }
 }
