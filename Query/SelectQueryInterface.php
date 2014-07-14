@@ -80,11 +80,11 @@ interface SelectQueryInterface extends SimpleQueryInterface
     public function getFilterQueryWithKey($key);
 
      /**
-     * Determine if the filterquery with key $key, exists in this catalogQuery, and has a value of $value.
+     * Determine if the filter query with key $key, exists in this select query, and has a value of $value.
      *
-     * @param string The search key of the filter query to retrieve
-     * @param string The search value of the filter query to retrieve
-     * @return boolean
+     * @param string $key   The search key of the filter query to retrieve
+     * @param string $value search value of the filter query to retrieve
+     * @return bool
      */
     public function doesValueExistInFilterQueries($key, $value);
 
