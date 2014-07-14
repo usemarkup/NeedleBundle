@@ -29,25 +29,36 @@ class SuggestionResultDecorator implements ResultInterface
     private $searchService;
 
     /**
-     * @var ResultInterface
-     */
-    private $suggestionResult;
-
-    /**
      * @var bool
      */
     private $resolved;
 
     /**
+     * @var bool
+     */
+    private $useOriginalFacets;
+
+    /**
+     * @var ResultInterface
+     */
+    private $suggestionResult;
+
+    /**
      * @param ResultInterface        $originalResult
      * @param SimpleQueryInterface   $query
      * @param SearchServiceInterface $searchService
+     * @param bool                   $useOriginalFacets
      */
-    public function __construct(ResultInterface $originalResult, SimpleQueryInterface $query, SearchServiceInterface $searchService)
-    {
+    public function __construct(
+        ResultInterface $originalResult,
+        SimpleQueryInterface $query,
+        SearchServiceInterface $searchService,
+        $useOriginalFacets = true
+    ) {
         $this->originalResult = $originalResult;
         $this->query = $query;
         $this->searchService = $searchService;
+        $this->useOriginalFacets = $useOriginalFacets;
         $this->resolved = false;
     }
 
@@ -170,7 +181,9 @@ class SuggestionResultDecorator implements ResultInterface
     public function getFacetSets()
     {
         //use original result
-        return $this->originalResult->getFacetSets();
+        $result = ($this->useOriginalFacets) ? $this->originalResult : $this->getSuggestionResult();
+
+        return $result->getFacetSets();
     }
 
     /**
