@@ -59,7 +59,7 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
             if (!$suggestion || !$suggestion->getWord()) {
                 return false;
             }
-            if (!$this->query->hasSearchTerm()) {
+            if (!$that->query->hasSearchTerm()) {
                 return true;
             }
 
