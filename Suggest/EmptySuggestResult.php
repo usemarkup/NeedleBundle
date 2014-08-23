@@ -24,4 +24,20 @@ class EmptySuggestResult implements \IteratorAggregate, SuggestResultInterface
     {
         return new \ArrayIterator(array());
     }
+
+    /**
+     * @return ResultGroupInterface[]
+     */
+    public function getGroups()
+    {
+        return [];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTermSuggestions()
+    {
+        return [];
+    }
 }
