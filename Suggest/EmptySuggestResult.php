@@ -30,7 +30,7 @@ class EmptySuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function getGroups()
     {
-        return [];
+        return array();
     }
 
     /**
@@ -38,6 +38,6 @@ class EmptySuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function getTermSuggestions()
     {
-        return [];
+        return array();
     }
 }
