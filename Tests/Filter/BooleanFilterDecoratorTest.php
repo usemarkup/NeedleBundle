@@ -15,9 +15,9 @@ class BooleanFilterDecoratorTest extends \PHPUnit_Framework_TestCase
         $this->decorator = new BooleanFilterDecorator($this->filter);
     }
 
-    public function testIsFloatFilter()
+    public function testIsBooleanFilter()
     {
-        $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Filter\BooleanFilterInterface);
+        $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Attribute\BooleanAttributeInterface);
     }
 
     public function testIsAttribute()

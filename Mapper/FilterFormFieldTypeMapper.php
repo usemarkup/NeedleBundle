@@ -3,7 +3,7 @@
 namespace Markup\NeedleBundle\Mapper;
 
 use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
-use Markup\NeedleBundle\Filter\BooleanFilterInterface;
+use Markup\NeedleBundle\Attribute\BooleanAttributeInterface;
 use Markup\NeedleBundle\Filter\FloatFilterInterface;
 
 /**
@@ -27,7 +27,7 @@ class FilterFormFieldTypeMapper
 
     private function getFormFieldTypeByFilter($filter)
     {
-        if ($filter instanceof BooleanFilterInterface) {
+        if ($filter instanceof BooleanAttributeInterface) {
             return 'radio';
         }
 
