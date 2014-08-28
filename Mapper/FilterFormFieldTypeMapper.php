@@ -4,7 +4,7 @@ namespace Markup\NeedleBundle\Mapper;
 
 use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
 use Markup\NeedleBundle\Attribute\BooleanAttributeInterface;
-use Markup\NeedleBundle\Filter\FloatFilterInterface;
+use Markup\NeedleBundle\Attribute\FloatAttributeInterface;
 
 /**
 * Maps class instances of Filter Query Objects to form field types that should be used to render them
@@ -31,7 +31,7 @@ class FilterFormFieldTypeMapper
             return 'radio';
         }
 
-        if ($filter instanceof FloatFilterInterface) {
+        if ($filter instanceof FloatAttributeInterface) {
             return 'range_slider';
         }
 

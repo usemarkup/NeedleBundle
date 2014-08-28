@@ -2,22 +2,22 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
-use Markup\NeedleBundle\Filter\BooleanFilterDecorator;
+use Markup\NeedleBundle\Attribute\FloatAttributeDecorator;
 
 /**
-* A test for a decorator for a filter that declares a Boolean type (clocking any underlying type).
+* A test for a decorator for a filter that declares a float type (clocking any underlying type).
 */
-class BooleanFilterDecoratorTest extends \PHPUnit_Framework_TestCase
+class FloatAttributeDecoratorTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
         $this->filter = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $this->decorator = new BooleanFilterDecorator($this->filter);
+        $this->decorator = new FloatAttributeDecorator($this->filter);
     }
 
-    public function testIsBooleanFilter()
+    public function testIsFloatAttribute()
     {
-        $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Attribute\BooleanAttributeInterface);
+        $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Attribute\FloatAttributeInterface);
     }
 
     public function testIsAttribute()
