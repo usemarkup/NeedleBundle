@@ -80,7 +80,7 @@ class SettableSelectQuery implements SelectQueryInterface
      */
     public function getFields()
     {
-        return [];
+        return array();
     }
 
     /**
