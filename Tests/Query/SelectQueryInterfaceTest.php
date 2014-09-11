@@ -12,6 +12,7 @@ class SelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
         $expected_public_methods = array(
             'getFilterQueries',
             'hasFilterQueries',
+            'getFields',
             'getPageNumber',
             'hasSearchTerm',
             'getSearchTerm',

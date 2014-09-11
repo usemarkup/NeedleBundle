@@ -104,6 +104,12 @@ class SolariumSelectQueryBuilder
             }
         }
 
+        //if there are fields specified, set them
+        $fields = $query->getFields();
+        if (!empty($fields)) {
+            $solariumQuery->setFields($fields);
+        }
+
         //if there are facets to request, request them
         if ($this->hasSearchContext()) {
             $facets = $this->getSearchContext()->getFacets();

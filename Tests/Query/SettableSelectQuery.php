@@ -74,6 +74,16 @@ class SettableSelectQuery implements SelectQueryInterface
     }
 
     /**
+     * Gets a list of explicit field names on the backend to return. If empty, will not specify fields on any backend.
+     *
+     * @return string[]
+     */
+    public function getFields()
+    {
+        return [];
+    }
+
+    /**
      * Gets the page number of results being requested, if specified. Returns null if not specified.
      *
      * @return int|null
