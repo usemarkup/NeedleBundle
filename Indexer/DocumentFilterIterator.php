@@ -11,6 +11,6 @@ class DocumentFilterIterator extends \FilterIterator
 {
     public function accept()
     {
-        return $this->getInnerIterator()->current() instanceof Document;
+        return $this->current() instanceof Document;
     }
 }
