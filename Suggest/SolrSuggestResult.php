@@ -3,7 +3,6 @@
 namespace Markup\NeedleBundle\Suggest;
 
 use Solarium\QueryType\Suggester\Result\Result as SolariumResult;
-use string;
 use Traversable;
 
 /**
