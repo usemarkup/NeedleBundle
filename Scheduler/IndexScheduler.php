@@ -43,6 +43,7 @@ class IndexScheduler
      **/
     public function updateStatus($record,    $status)
     {
+        $this->em->clear();
         switch ($this->em->getUnitOfWork()->getEntityState($record)) {
             case UnitOfWork::STATE_MANAGED:
                 break;
