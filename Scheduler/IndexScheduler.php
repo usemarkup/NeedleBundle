@@ -110,8 +110,6 @@ class IndexScheduler
      **/
     public function failExpiredProcessingExports($corpus)
     {
-        $expiry = self::PROCESSING_EXPIRY;
-
         $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
         $qb = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->createQueryBuilder('i');
 
