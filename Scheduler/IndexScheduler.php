@@ -2,21 +2,39 @@
 
 namespace Markup\NeedleBundle\Scheduler;
 
-use Markup\NeedleBundle\Corpus\CorpusInterface;
-use Markup\NeedleBundle\Entity\ScheduledIndex;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
+use Markup\NeedleBundle\Corpus\CorpusInterface;
+use Markup\NeedleBundle\Entity\ScheduledIndex;
+use Psr\Log\LoggerInterface;
 
 class IndexScheduler
 {
+    /**
+     * @var EntityManager
+     */
     private $em;
 
     /**
-     * @param EntityManager $em
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * Number of days after which a 'processing' export is considered failed
+     */
+    const PROCESSING_EXPIRY = 90;
+
+    /**
+     * @param EntityManager   $em
+     * @param LoggerInterface $logger
      **/
-    public function __construct(EntityManager $em)
-    {
+    public function __construct(
+        EntityManager $em,
+        LoggerInterface $logger
+    ) {
         $this->em = $em;
+        $this->logger = $logger;
     }
 
     /**
@@ -54,7 +72,7 @@ class IndexScheduler
                 throw new \Exception('This method must only be used to update existing entities (not new or removed)');
         }
         if (!$record->isValidStatus($status)) {
-            throw new \Exception($status . ' is not a valid status');
+            throw new \Exception($status.' is not a valid status');
         }
         $record->setStatus($status);
         $this->em->persist($record);
@@ -85,5 +103,39 @@ class IndexScheduler
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param Changes 'processing' exports to failed after the expiry period has elapsed
+     **/
+    public function failExpiredProcessingExports($corpus)
+    {
+        $expiry = self::PROCESSING_EXPIRY;
+
+        $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
+        $qb = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->createQueryBuilder('i');
+
+        $added = new \DateTime('now');
+        $added->sub(new \DateInterval('PT'.self::PROCESSING_EXPIRY.'M'));
+
+        $qb->andWhere($qb->expr()->eq('i.status', ':status'))
+            ->andWhere($qb->expr()->eq('i.corpus', ':corpus'))
+            ->andWhere($qb->expr()->lte('i.added', ':added'));
+
+        $qb->setParameter('status', ScheduledIndex::PROCESSING)
+            ->setParameter('corpus', $corpus)
+            ->setParameter('added', $added);
+
+        $r = $qb->getQuery()->getResult();
+        if (!$r) {
+            return;
+        }
+        foreach ($r as $scheduled) {
+            $scheduled->setStatus(ScheduledIndex::FAILED);
+        }
+        $this->em->flush();
+        $this->logger->error(sprintf('Scheduled index contained a processing engtry older than %s minutes. This was set to failed. Please investigate why the indexing process is taking too long or failing without moving to `failed` status.', self::PROCESSING_EXPIRY));
+
+        return;
     }
 }

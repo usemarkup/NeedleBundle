@@ -54,6 +54,7 @@ services:
         class: Markup\NeedleBundle\Scheduler\IndexScheduler
         arguments:
             - @doctrine.orm.entity_manager
+            - @logger
     markup_needle.solarium.helper:
         class: Solarium\Core\Query\Helper
     markup_needle.solarium.plugin.log_bad_requests:
