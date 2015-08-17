@@ -11,6 +11,7 @@ use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
 use Markup\NeedleBundle\Filter\FilterQuery;
+use Markup\NeedleBundle\Filter\UnionFilterValue;
 use Markup\NeedleBundle\Filter\ScalarFilterValue;
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
