@@ -121,7 +121,19 @@ class ConfiguredContext implements SearchContextInterface
     {
         $queries = array();
         foreach ($this->config->getDefaultFilterQueries() as $attr => $value) {
-            $queries[] = new FilterQuery($this->attributeProvider->getAttributeByName($attr), new ScalarFilterValue($value));
+            if (!is_array($value)) {
+                $q = new FilterQuery($this->attributeProvider->getAttributeByName($attr), new ScalarFilterValue($value));
+            } else {
+                $q = new FilterQuery(
+                        $this->attributeProvider->getAttributeByName($attr),
+                        new UnionFilterValue(
+                            array_map(function ($filterValue) {
+                                    return new ScalarFilterValue($filterValue);
+                                }, $value)
+                            )
+                    );
+            }
+            $queries[] = $q;
         }
 
         return $queries;
