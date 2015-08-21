@@ -14,8 +14,8 @@ use Solarium\Client as SolariumClient;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
 /**
-* An object that can build a Solarium select query that maps a generic select search query.
-*/
+ * An object that can build a Solarium select query that maps a generic select search query.
+ */
 class SolariumSelectQueryBuilder
 {
     const ALL_SIGNIFIER = '*:*';
@@ -187,7 +187,7 @@ class SolariumSelectQueryBuilder
                     /**
                      * @var BoostQueryField $boostField
                      */
-                    $queryFields[] = $boostField->getAttribute()->getSearchKey(array('prefer_parsed' => true)) . (($boostField->getBoostFactor() !== 1) ? ('^'.strval($boostField->getBoostFactor())) : '');
+                    $queryFields[] = $boostField->getAttribute()->getSearchKey(array('prefer_parsed' => true)).(($boostField->getBoostFactor() !== 1) ? ('^'.strval($boostField->getBoostFactor())) : '');
                 }
                 $edismax->setQueryFields(implode(' ', $queryFields));
             }

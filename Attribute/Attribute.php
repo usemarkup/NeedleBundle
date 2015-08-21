@@ -2,8 +2,6 @@
 
 namespace Markup\NeedleBundle\Attribute;
 
-use Markup\NeedleBundle\Attribute\AttributeInterface;
-
 /**
  * An attribute implementation that allows a different name to the key.
  */
@@ -33,17 +31,17 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
     /**
      * The value display strategy for the attribute.
      *
-     * @var \Closure
+     * @var callable
      */
     private $valueDisplayStrategy;
 
     /**
-     * @param string $name
-     * @param string $key
-     * @param string $displayName
+     * @param string   $name
+     * @param string   $key
+     * @param string   $displayName
      * @param \Closure $valueDisplayStrategy
      **/
-    public function __construct($name, $key = null, $displayName = null, \Closure $valueDisplayStrategy = null)
+    public function __construct($name, $key = null, $displayName = null, callable $valueDisplayStrategy = null)
     {
         $this->name = $name;
         $this->key = $key ?: $name;

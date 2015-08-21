@@ -201,3 +201,5 @@ services:
         arguments:
             - @markup_needle.spellcheck.dictionary_provider.default
             - 10
+    markup_needle.registry.attribute_specialization_context:
+        class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextRegistry
