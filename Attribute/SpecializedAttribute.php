@@ -45,11 +45,19 @@ class SpecializedAttribute extends Attribute implements SpecializedAttributeInte
     }
 
     /**
-     * @param AttributeSpecializationContext $context
+     * {@inheritDoc}
      */
     public function setContext(AttributeSpecializationContextInterface $context)
     {
         $this->context = $context;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getContext()
+    {
+        return $this->context;
     }
 
     /**
