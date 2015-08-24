@@ -15,4 +15,12 @@ class AttributeNullSpecializationContext implements AttributeSpecializationNullC
     {
         return;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getData()
+    {
+        return;
+    }
 }

@@ -9,7 +9,13 @@ interface AttributeSpecializationContextInterface
 {
     /**
      * The value of the context
-     * @return mixed
+     * @return string
      */
     public function getValue();
+
+    /**
+     * The underlying data that is used to get the value
+     * @return mixed
+     */
+    public function getData();
 }

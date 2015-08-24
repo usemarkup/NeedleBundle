@@ -41,4 +41,12 @@ class AttributeGenericSpecializationContext implements AttributeSpecializationCo
         }
         throw new \InvalidArgumentException('Cannot get a value for the given data');
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 }
