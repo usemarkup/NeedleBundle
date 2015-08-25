@@ -61,13 +61,13 @@ class ConfiguredContext implements SearchContextInterface
     private $interceptorProvider;
 
     /**
-     * @param ContextConfigurationInterface $config
-     * @param AttributeProviderInterface $attributeProvider
-     * @param FacetProviderInterface $facetProvider
+     * @param ContextConfigurationInterface      $config
+     * @param AttributeProviderInterface         $attributeProvider
+     * @param FacetProviderInterface             $facetProvider
      * @param FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
-     * @param CollatorProviderInterface $facetCollatorProvider
-     * @param SortOrderProviderInterface $facetSortOrderProvider
-     * @param ConfiguredInterceptorProvider $interceptorProvider
+     * @param CollatorProviderInterface          $facetCollatorProvider
+     * @param SortOrderProviderInterface         $facetSortOrderProvider
+     * @param ConfiguredInterceptorProvider      $interceptorProvider
      */
     public function __construct(
         ContextConfigurationInterface $config,
@@ -86,7 +86,6 @@ class ConfiguredContext implements SearchContextInterface
         $this->facetSortOrderProvider = $facetSortOrderProvider;
         $this->interceptorProvider = $interceptorProvider;
     }
-
 
     /**
      * Gets the number of items that should be shown per page in a paged view.  Returns null if no constraint on numbers exists.
@@ -159,7 +158,7 @@ class ConfiguredContext implements SearchContextInterface
     /**
      * Creates a sort collection from a hash of attribute names and directions.
      *
-     * @param array $sortConfig
+     * @param  array                   $sortConfig
      * @return SortCollectionInterface
      */
     private function createSortCollectionForConfig(array $sortConfig)
@@ -195,7 +194,7 @@ class ConfiguredContext implements SearchContextInterface
     /**
      * Gets the facet set decorator to apply for a specific facet. (This can determine how a facet set renders.) Returns false if no decoration to be applied.
      *
-     * @param  AttributeInterface $facet
+     * @param  AttributeInterface                                         $facet
      * @return \Markup\NeedleBundle\Facet\FacetSetDecoratorInterface|bool
      **/
     public function getSetDecoratorForFacet(AttributeInterface $facet)

@@ -66,7 +66,7 @@ class SpecializedAttribute extends Attribute implements SpecializedAttributeInte
     public function getSearchKey(array $options = [])
     {
         if (!$this->context) {
-            throw new \LogicException('Cannot get a search key for a specialized attribute without a context');
+            throw new \LogicException(sprintf('Cannot get a search key for a specialized attribute without a context where name is %s', $this->getName()));
         }
 
         if ($this->context instanceof AttributeSpecializationNullContextInterface) {
