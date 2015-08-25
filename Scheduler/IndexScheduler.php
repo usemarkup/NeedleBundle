@@ -88,7 +88,7 @@ class IndexScheduler
         if ($r = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->findBy(array('status' => ScheduledIndex::SCHEDULED, 'corpus' => $corpus))) {
             return $r;
         } else {
-            return false;
+            return array();
         }
     }
 
