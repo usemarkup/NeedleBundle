@@ -9,7 +9,7 @@ class RecordableSelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
 {
     public function testHasCorrectPublicMethods()
     {
-        $expected_public_methods = array(
+        $expected_public_methods = [
             'getFilterQueries',
             'hasFilterQueries',
             'getFields',
@@ -29,9 +29,9 @@ class RecordableSelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'getMaxPerPage',
             'shouldTreatAsTextSearch',
             'getSpellcheck',
-            );
+        ];
         $query = new \ReflectionClass('Markup\NeedleBundle\Query\RecordableSelectQueryInterface');
-        $actual_public_methods = array();
+        $actual_public_methods = [];
         foreach ($query->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $actual_public_methods[] = $method->name;
         }

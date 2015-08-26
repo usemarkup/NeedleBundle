@@ -50,7 +50,7 @@ class TranslatedFacetTest extends \PHPUnit_Framework_TestCase
         $this->translator
             ->expects($this->any())
             ->method('trans')
-            ->with($this->equalTo('catalog.facet.color'), $this->equalTo(array()), $this->equalTo($messageDomain))
+            ->with($this->equalTo('catalog.facet.color'), $this->equalTo([]), $this->equalTo($messageDomain))
             ->will($this->returnValue($displayName));
         $facet = new TranslatedFacet($name, $this->translator, $translationNamespace, $messageDomain);
         $this->assertEquals($displayName, $facet->getDisplayName());

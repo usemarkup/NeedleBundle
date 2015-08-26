@@ -29,7 +29,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
         $this->searchContext
             ->expects($this->any())
             ->method('getFacets')
-            ->will($this->returnValue(array($facet)));
+            ->will($this->returnValue([$facet]));
         $collatorProvider = new \Markup\NeedleBundle\Collator\NullCollatorProvider();
         $this->searchContext
             ->expects($this->any())
@@ -51,7 +51,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
         $solariumFacet = $this->getMockBuilder('Solarium\QueryType\Select\Result\Facet\Field')
             ->disableOriginalConstructor()
             ->getMock();
-        $solariumFacetValues = new \ArrayIterator(array($key => $solariumFacetValue));
+        $solariumFacetValues = new \ArrayIterator([$key => $solariumFacetValue]);
         $solariumFacet
             ->expects($this->any())
             ->method('getIterator')
@@ -59,7 +59,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
         $solariumFacetSet
             ->expects($this->any())
             ->method('getIterator')
-            ->will($this->returnValue(new \ArrayIterator(array($key => $solariumFacet))));
+            ->will($this->returnValue(new \ArrayIterator([$key => $solariumFacet])));
         $facetSets = $this->strategy->getFacetSets();
         $this->assertContainsOnly('Markup\NeedleBundle\Facet\FacetSetInterface', $facetSets);
     }
@@ -70,7 +70,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
         $this->searchContext
             ->expects($this->any())
             ->method('getFacets')
-            ->will($this->returnValue(array($facet)));
+            ->will($this->returnValue([$facet]));
         $key = 'color';
         $facet
             ->expects($this->any())
@@ -87,7 +87,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
         $solariumFacet = $this->getMockBuilder('Solarium\QueryType\Select\Result\Facet\Field')
             ->disableOriginalConstructor()
             ->getMock();
-        $solariumFacetValues = new \ArrayIterator(array($key => $solariumFacetValue));
+        $solariumFacetValues = new \ArrayIterator([$key => $solariumFacetValue]);
         $solariumFacet
             ->expects($this->any())
             ->method('getIterator')
@@ -95,7 +95,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
         $solariumFacetSet
             ->expects($this->any())
             ->method('getIterator')
-            ->will($this->returnValue(new \ArrayIterator(array($key => $solariumFacet))));
+            ->will($this->returnValue(new \ArrayIterator([$key => $solariumFacet])));
         $that = $this;
         $strategy = new SolariumFacetSetsStrategy(function() use ($that) { return $that->solariumResult; }, $this->searchContext);
         $facetSets = $strategy->getFacetSets();

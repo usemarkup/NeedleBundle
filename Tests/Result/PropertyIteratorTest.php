@@ -15,7 +15,7 @@ class PropertyIteratorTest extends \PHPUnit_Framework_TestCase
         $property = 'prop';
         $value = 'this is a value';
         $document->$property = $value;
-        $resultIterator = new \ArrayIterator(array($document, $document, $document));
+        $resultIterator = new \ArrayIterator([$document, $document, $document]);
         $result = $this->getMock('IteratorAggregate');
         $result
             ->expects($this->any())

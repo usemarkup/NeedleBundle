@@ -26,7 +26,7 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
     {
         $subject = new \stdClass();
 
-        $allSubjects = array($subject, $subject, $subject, $subject);
+        $allSubjects = [$subject, $subject, $subject, $subject];
         $docGenerator = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
         $doc = $this->getMockBuilder('Solarium\QueryType\Update\Query\Document')
                 ->disableOriginalConstructor()
@@ -43,10 +43,10 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
     public function testSetAndGetSubjects()
     {
         $docGenerator = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
-        $it = new SubjectDocumentIterator(array(), $docGenerator);
+        $it = new SubjectDocumentIterator([], $docGenerator);
         $this->assertCount(0, iterator_to_array($it->getSubjects()));
         $subject = new \stdClass();
-        $someSubjects = array($subject, $subject, $subject);
+        $someSubjects = [$subject, $subject, $subject];
         $it->setSubjects($someSubjects);
         $this->assertEquals($someSubjects, iterator_to_array($it->getSubjects()));
     }
@@ -60,9 +60,9 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
         $callback = function ($subject) {
             $subject->get('skdjhfskjdfh');
         };
-        $subjects = array($subject);
+        $subjects = [$subject];
         $docGenerator = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
-        $it = new SubjectDocumentIterator($subjects, $docGenerator, array($callback));
+        $it = new SubjectDocumentIterator($subjects, $docGenerator, [$callback]);
         iterator_to_array($it);
     }
 }

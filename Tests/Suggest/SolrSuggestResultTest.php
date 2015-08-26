@@ -39,17 +39,17 @@ class SolrSuggestResultTest extends \PHPUnit_Framework_TestCase
         $term
             ->shouldReceive('getNumFound')
             ->andReturn($count);
-        $suggestions = array(
+        $suggestions = [
             'id' => 789,
             'category_key' => 'socks',
-        );
+        ];
         $term
             ->shouldReceive('getSuggestions')
             ->andReturn($suggestions);
         $termKey = 'term_key';
         $this->solrResult
             ->shouldReceive('getResults')
-            ->andReturn(array($termKey => $term));
+            ->andReturn([$termKey => $term]);
         $groups = $this->suggestResult->getGroups();
         $this->assertCount(1, $groups);
         $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Suggest\ResultGroupInterface', $groups);
@@ -59,24 +59,24 @@ class SolrSuggestResultTest extends \PHPUnit_Framework_TestCase
 
     public function testWithRawData()
     {
-        $data = array(
+        $data = [
             'matches' => 84,
-            'groups' => array(
-                array(
+            'groups' => [
+                [
                     'groupValue' => 'gardener',
-                    'doclist' => array(
+                    'doclist' => [
                         'numFound' => 1,
                         'start' => 0,
-                        'docs' => array(
-                            array(
+                        'docs' => [
+                            [
                                 'id' => '511',
                                 'parsed_category_en_GB' => 'FOOTWEAR',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        );
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
         $result = new SolrSuggestResult($data);
         $this->assertCount(84, $result);
         $groups = $result->getGroups();

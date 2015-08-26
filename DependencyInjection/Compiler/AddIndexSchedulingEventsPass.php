@@ -22,9 +22,9 @@ class AddIndexSchedulingEventsPass implements CompilerPassInterface
         $scheduledEvents = $container->getParameter($scheduledEventsParameterId);
         foreach ($scheduledEvents as $corpus => $events) {
             foreach ($events as $event) {
-                $schedulingListener->addTag('kernel.event_listener', array('event' => $event, 'method' => 'triggerSchedule'));
+                $schedulingListener->addTag('kernel.event_listener', ['event' => $event, 'method' => 'triggerSchedule']);
                 //add explicit record of corpus so listener can know which corpora to schedule against on which events
-                $schedulingListener->addMethodCall('addCorpusForEvent', array($corpus, $event));
+                $schedulingListener->addMethodCall('addCorpusForEvent', [$corpus, $event]);
             }
         }
     }

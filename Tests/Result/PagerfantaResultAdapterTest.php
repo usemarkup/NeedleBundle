@@ -34,7 +34,7 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
 
     public function testGetIterator()
     {
-        $resultIterator = new \ArrayIterator(array('these', 'are', 'some', 'results'));
+        $resultIterator = new \ArrayIterator(['these', 'are', 'some', 'results']);
         $this->pagerfanta
             ->expects($this->any())
             ->method('getIterator')
@@ -171,7 +171,7 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
         $facetSetStrategy
             ->expects($this->any())
             ->method('getFacetSets')
-            ->will($this->returnValue(array($facetSet)));
+            ->will($this->returnValue([$facetSet]));
         $this->adapter->setFacetSetStrategy($facetSetStrategy);
         $this->assertCount(1, $this->adapter->getFacetSets());
     }

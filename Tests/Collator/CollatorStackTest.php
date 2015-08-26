@@ -27,14 +27,14 @@ class CollatorStackTest extends \PHPUnit_Framework_TestCase
 
     public function testFallsBackToSimpleStringCompareWithEmptyStack()
     {
-        $list = array('this', 'old', 'house', 'is', 'sinking');
-        @usort($list, array($this->stack, 'compare'));//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
-        $this->assertEquals(array('house', 'is', 'old', 'sinking', 'this'), $list);
+        $list = ['this', 'old', 'house', 'is', 'sinking'];
+        @usort($list, [$this->stack, 'compare']);//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
+        $this->assertEquals(['house', 'is', 'old', 'sinking', 'this'], $list);
     }
 
     public function testPushedCollatorSortsValues()
     {
-        $list = array('1', '2', '12', '3', '23');
+        $list = ['1', '2', '12', '3', '23'];
         $collator = m::mock('Markup\NeedleBundle\Collator\TypedCollatorInterface');
         $collator
             ->shouldReceive('hasTypeFor')
@@ -45,15 +45,15 @@ class CollatorStackTest extends \PHPUnit_Framework_TestCase
                 return floatval($value1) - floatval($value2);
             });
         $this->stack->push($collator);
-        @usort($list, array($this->stack, 'compare'));//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
-        $this->assertEquals(array('1', '2', '3', '12', '23'), $list);
+        @usort($list, [$this->stack, 'compare']);//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
+        $this->assertEquals(['1', '2', '3', '12', '23'], $list);
     }
 
     public function testComparisonHappensInOrderOfCollator()
     {
         $value1 = 'eskimo';
         $value2 = 'igloo';
-        $list = array($value1, $value2);
+        $list = [$value1, $value2];
         $collator1 = m::mock('Markup\NeedleBundle\Collator\TypedCollatorInterface')->shouldIgnoreMissing();
         $collator1
             ->shouldReceive('hasTypeFor')
@@ -80,15 +80,15 @@ class CollatorStackTest extends \PHPUnit_Framework_TestCase
             ->andReturnUsing('strcasecmp');
         $this->stack->push($collator1);
         $this->stack->push($collator2);
-        @usort($list, array($this->stack, 'compare'));//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
-        $this->assertEquals(array($value1, $value2), $list);
+        @usort($list, [$this->stack, 'compare']);//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
+        $this->assertEquals([$value1, $value2], $list);
     }
 
     public function testValuesOfUnknownTypeComeAfterOthersByDefault()
     {
         $typedValue = 'yesplease';
         $untypedValue = 'nothankyou';
-        $list = array($typedValue, $untypedValue);
+        $list = [$typedValue, $untypedValue];
         $collator = m::mock('Markup\NeedleBundle\Collator\TypedCollatorInterface')->shouldIgnoreMissing();
         $collator
             ->shouldReceive('hasTypeFor')
@@ -99,8 +99,8 @@ class CollatorStackTest extends \PHPUnit_Framework_TestCase
             ->with($untypedValue)
             ->andReturn(false);
         $this->stack->push($collator);
-        @usort($list, array($this->stack, 'compare'));//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
-        $this->assertEquals(array($typedValue, $untypedValue), $list);
+        @usort($list, [$this->stack, 'compare']);//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
+        $this->assertEquals([$typedValue, $untypedValue], $list);
     }
 
     public function testValuesOfUnknownTypeComeBeforeIfSelected()
@@ -108,7 +108,7 @@ class CollatorStackTest extends \PHPUnit_Framework_TestCase
         $this->stack->setUntypedValuesToPrecede(true);
         $typedValue = 'yesplease';
         $untypedValue = 'nothankyou';
-        $list = array($typedValue, $untypedValue);
+        $list = [$typedValue, $untypedValue];
         $collator = m::mock('Markup\NeedleBundle\Collator\TypedCollatorInterface')->shouldIgnoreMissing();
         $collator
             ->shouldReceive('hasTypeFor')
@@ -119,8 +119,8 @@ class CollatorStackTest extends \PHPUnit_Framework_TestCase
             ->with($untypedValue)
             ->andReturn(false);
         $this->stack->push($collator);
-        @usort($list, array($this->stack, 'compare'));//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
-        $this->assertEquals(array($untypedValue, $typedValue), $list);
+        @usort($list, [$this->stack, 'compare']);//at-suppressor is because of annoying PHP bug @see https://bugs.php.net/bug.php?id=50688
+        $this->assertEquals([$untypedValue, $typedValue], $list);
     }
 
     public function testCompareHappensWithCorrectlyIndexedCollator()

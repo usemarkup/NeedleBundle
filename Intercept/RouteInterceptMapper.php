@@ -42,7 +42,7 @@ class RouteInterceptMapper implements TypedInterceptMapperInterface
             throw new UnresolvedInterceptException('Route type definition did not contain a "route" property.');
         }
         $route = $properties['route'];
-        $routeParams = (isset($properties['params'])) ? $properties['params'] : array();
+        $routeParams = (isset($properties['params'])) ? $properties['params'] : [];
         try {
             $uri = $this->urlGenerator->generate($route, $routeParams, true);
         } catch (RouteNotFoundException $e) {

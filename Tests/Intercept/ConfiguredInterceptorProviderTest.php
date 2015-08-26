@@ -25,13 +25,13 @@ class ConfiguredInterceptorProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateInterceptor()
     {
-        $config = array(
-            'sale' => array(
-                'terms' => array('sale'),
+        $config = [
+            'sale' => [
+                'terms' => ['sale'],
                 'type' => 'route',
                 'route' => 'sale',
-            ),
-        );
+            ],
+        ];
         $this->configurator
             ->shouldReceive('configureInterceptor')
             ->with($this->interceptor, $config)

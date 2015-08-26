@@ -27,7 +27,7 @@ class AddFacetValueCanonicalizersPass implements CompilerPassInterface
                 if (!isset($attributes['facet'])) {
                     continue;
                 }
-                $canonicalizer->addMethodCall('addCanonicalizerForFacetName', array(new Reference($id), $attributes['facet']));
+                $canonicalizer->addMethodCall('addCanonicalizerForFacetName', [new Reference($id), $attributes['facet']]);
             }
         }
     }

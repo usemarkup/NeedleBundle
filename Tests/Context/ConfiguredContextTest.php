@@ -59,7 +59,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFacets()
     {
-        $facetNames = array('gender', 'size', 'price');
+        $facetNames = ['gender', 'size', 'price'];
         $this->config
             ->shouldReceive('getDefaultFacetingAttributes')
             ->andReturn($facetNames);
@@ -79,10 +79,10 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
             });
-        $filterConfig = array(
+        $filterConfig = [
             'active' => true,
             'in_stock' => true,
-        );
+        ];
         $this->config
             ->shouldReceive('getDefaultFilterQueries')
             ->andReturn($filterConfig);
@@ -100,10 +100,10 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
             });
-        $sortConfig = array(
+        $sortConfig = [
             'relevance' => 'desc',
             'price' => 'desc',
-        );
+        ];
         $this->config
             ->shouldReceive('getDefaultSortsForSearchTermQuery')
             ->andReturn($sortConfig);
@@ -123,9 +123,9 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
             });
-        $sortConfig = array(
+        $sortConfig = [
             ContextConfigurationInterface::SORT_RELEVANCE => ContextConfigurationInterface::ORDER_DESC,
-        );
+        ];
         $this->config
             ->shouldReceive('getDefaultSortsForSearchTermQuery')
             ->andReturn($sortConfig);
@@ -145,10 +145,10 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
             });
-        $sortConfig = array(
+        $sortConfig = [
             'name' => 'asc',
             'price' => 'desc',
-        );
+        ];
         $this->config
             ->shouldReceive('getDefaultSortsForNonSearchTermQuery')
             ->andReturn($sortConfig);
@@ -168,10 +168,10 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
             ->andReturnUsing(function ($name) {
                 return new Attribute($name);
             });
-        $sortConfig = array(
-            array('name' => 'asc'),
-            array('price' => 'desc'),
-        );
+        $sortConfig = [
+            ['name' => 'asc'],
+            ['price' => 'desc'],
+        ];
         $this->config
             ->shouldReceive('getDefaultSortsForNonSearchTermQuery')
             ->andReturn($sortConfig);
@@ -186,10 +186,10 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testBoostQueryFields()
     {
-        $boosts = array(
+        $boosts = [
             'name' => 5,
             'category' => 0.4,
-        );
+        ];
         $this->config
             ->shouldReceive('getDefaultBoosts')
             ->andReturn($boosts);
@@ -207,7 +207,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAvailableFilterNames()
     {
-        $filters = array('gender', 'size', 'on_sale');
+        $filters = ['gender', 'size', 'on_sale'];
         $this->config
             ->shouldReceive('getFilterableAttributes')
             ->andReturn($filters);
@@ -251,13 +251,13 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
     public function testGetInterceptor()
     {
         $interceptor = m::mock('Markup\NeedleBundle\Intercept\InterceptorInterface');
-        $config = array(
-            'sale' => array(
-                'terms' => array('sale'),
+        $config = [
+            'sale' => [
+                'terms' => ['sale'],
                 'type' => 'route',
                 'route' => 'sale',
-            ),
-        );
+            ],
+        ];
         $this->interceptorProvider
             ->shouldReceive('createInterceptor')
             ->with($config)

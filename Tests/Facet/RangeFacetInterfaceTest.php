@@ -11,7 +11,7 @@ class RangeFacetInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'getName',
             'getDisplayName',
             'getSearchKey',
@@ -19,7 +19,7 @@ class RangeFacetInterfaceTest extends AbstractInterfaceTestCase
             'getRangeSize',
             'getRangesStart',
             'getRangesEnd',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

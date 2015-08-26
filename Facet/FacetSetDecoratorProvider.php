@@ -13,7 +13,7 @@ class FacetSetDecoratorProvider implements FacetSetDecoratorProviderInterface
 
     public function __construct()
     {
-        $this->decorators = array();
+        $this->decorators = [];
     }
 
     /**

@@ -41,7 +41,7 @@ abstract class AttributeDecorator implements AttributeInterface
     /**
      * {@inheritDoc}
      **/
-    public function getSearchKey(array $options = array())
+    public function getSearchKey(array $options = [])
     {
         return $this->attribute->getSearchKey($options);
     }

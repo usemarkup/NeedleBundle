@@ -43,12 +43,12 @@ class SolrResultGroup implements ResultGroupInterface
     public function getDocuments()
     {
         if ($this->data instanceof Term) {
-            return array(new ArrayCollection($this->data->getSuggestions()));
+            return [new ArrayCollection($this->data->getSuggestions())];
         }
         if (!array_key_exists('docs', $this->data) || !is_array($this->data['docs'])) {
-            return array();
+            return [];
         }
-        $documents = array();
+        $documents = [];
         foreach ($this->data['docs'] as $doc) {
             $documents[] = new ArrayCollection($doc);
         }

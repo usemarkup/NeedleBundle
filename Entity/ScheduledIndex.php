@@ -80,7 +80,7 @@ class ScheduledIndex
 
     public function isValidStatus($v)
     {
-        return in_array($v, array(self::SCHEDULED, self::PROCESSING, self::FAILED, self::COMPLETE));
+        return in_array($v, [self::SCHEDULED, self::PROCESSING, self::FAILED, self::COMPLETE]);
     }
 
 }

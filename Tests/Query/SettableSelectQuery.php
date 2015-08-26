@@ -60,7 +60,7 @@ class SettableSelectQuery implements SelectQueryInterface
      **/
     public function getFilterQueries()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -70,7 +70,7 @@ class SettableSelectQuery implements SelectQueryInterface
      **/
     public function hasFilterQueries()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -80,7 +80,7 @@ class SettableSelectQuery implements SelectQueryInterface
      */
     public function getFields()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -129,7 +129,7 @@ class SettableSelectQuery implements SelectQueryInterface
      **/
     public function getFacetNamesToExclude()
     {
-        return array();
+        return [];
     }
 
     /**

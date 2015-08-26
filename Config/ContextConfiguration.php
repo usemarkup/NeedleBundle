@@ -27,7 +27,7 @@ class ContextConfiguration implements ContextConfigurationInterface
      * items_per_page, base_filter_queries, sorts, sorts_search_term, sorts_non_search_term, boosts,
      * filters, facets, intercepts, should_ignore_current_filters_in_faceting
      */
-    public function __construct(array $config = array())
+    public function __construct(array $config = [])
     {
         $this->config = array_merge($this->getDefaultConfig(), $config);
     }
@@ -68,7 +68,7 @@ class ContextConfiguration implements ContextConfigurationInterface
             return $this->config['sorts'];
         }
 
-        return array(ContextConfigurationInterface::SORT_RELEVANCE => ContextConfigurationInterface::ORDER_DESC);
+        return [ContextConfigurationInterface::SORT_RELEVANCE => ContextConfigurationInterface::ORDER_DESC];
     }
 
     /**
@@ -87,7 +87,7 @@ class ContextConfiguration implements ContextConfigurationInterface
             return $this->config['sorts'];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -157,14 +157,14 @@ class ContextConfiguration implements ContextConfigurationInterface
      */
     private function getDefaultConfig()
     {
-        return array(
+        return [
             'items_per_page' => self::DEFAULT_ITEMS_PER_PAGE,
-            'base_filter_queries' => array(),
-            'boosts' => array(),
-            'filters' => array(),
-            'facets' => array(),
-            'intercepts' => array(),
+            'base_filter_queries' => [],
+            'boosts' => [],
+            'filters' => [],
+            'facets' => [],
+            'intercepts' => [],
             'should_ignore_current_filters_in_faceting' => false,
-        );
+        ];
     }
 }

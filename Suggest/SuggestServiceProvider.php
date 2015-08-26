@@ -25,7 +25,7 @@ class SuggestServiceProvider
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->services = array();
+        $this->services = [];
     }
 
     /**

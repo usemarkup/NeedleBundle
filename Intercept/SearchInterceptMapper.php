@@ -14,7 +14,7 @@ class SearchInterceptMapper implements TypedInterceptMapperInterface
      *
      * @var array
      **/
-    private $mappers = array();
+    private $mappers = [];
 
     /**
      * {@inheritdoc}

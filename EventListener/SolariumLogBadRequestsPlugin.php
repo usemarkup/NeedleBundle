@@ -57,7 +57,7 @@ class SolariumLogBadRequestsPlugin extends SolariumPlugin
         $dispatcher = $this->client->getEventDispatcher();
         $dispatcher->addListener(
             SolariumEvents::POST_EXECUTE_REQUEST,
-            array($this, 'onPostExecute')
+            [$this, 'onPostExecute']
         );
     }
 

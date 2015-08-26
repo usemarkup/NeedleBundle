@@ -13,44 +13,44 @@ class GroupedResultParserTest extends \PHPUnit_Framework_TestCase
 
     public function testParse()
     {
-        $data = array(
-            'name_en_GB_s' => array(
+        $data = [
+            'name_en_GB_s' => [
                 'matches' => 84,
-                'groups' => array(
-                    array(
+                'groups' => [
+                    [
                         'groupValue' => 'gardener',
-                        'doclist' => array(
+                        'doclist' => [
                             'numFound' => 1,
                             'start' => 0,
-                            'docs' => array(
-                                array(
+                            'docs' => [
+                                [
                                     'id' => '511',
                                     'parsed_category_en_GB' => 'FOOTWEAR',
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-            'parsed_category_en_GB_s' => array(
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'parsed_category_en_GB_s' => [
                 'matches' => 84,
-                'groups' => array(
-                    array(
+                'groups' => [
+                    [
                         'groupValue' => null,
-                        'doclist' => array(
+                        'doclist' => [
                             'numFound' => 84,
                             'start' => 0,
-                            'docs' => array(
-                                array(
+                            'docs' => [
+                                [
                                     'id' => '23',
                                     'parsed_category_en_GB' => 'SOCKS',
-                                )
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        );
+                                ]
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
         $results = $this->parser->parse($data);
         $this->assertCount(2, $results);
         $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Suggest\SolrSuggestResult', $results);

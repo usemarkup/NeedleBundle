@@ -11,10 +11,10 @@ class SearchServiceInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'executeQuery',
             'setContext',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

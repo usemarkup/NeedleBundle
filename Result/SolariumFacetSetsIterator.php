@@ -63,7 +63,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
      **/
     private function setFacetsKeyedBySearchKey(SearchContext $context)
     {
-        $this->facetsKeyedBySearchKey = array();
+        $this->facetsKeyedBySearchKey = [];
         foreach ($context->getFacets() as $facet) {
             $this->facetsKeyedBySearchKey[$facet->getSearchKey()] = $facet;
         }
@@ -181,7 +181,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
     private function normalizeFacetData(SolariumFacetSet $facetSet)
     {
         $facets = iterator_to_array($facetSet);
-        $normalizedFacets = array();
+        $normalizedFacets = [];
         foreach ($facets as $name => $facet) {
             //check for includes and excludes
             if (substr($name, 0, 7) == 'include' && isset($facets['exclude_' . substr($name, 8)])) {
@@ -206,7 +206,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
      **/
     private function combineFacetValueFieldWithCountField(SolariumFacetField $valueField, SolariumFacetField $countField)
     {
-        $facetValues = array();
+        $facetValues = [];
         $counts = iterator_to_array($countField);
         foreach ($valueField as $value => $count) {
             if (!isset($counts[$value])) {

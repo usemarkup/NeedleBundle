@@ -13,7 +13,7 @@ class GroupedResultParser
      */
     public function parse(array $data)
     {
-        $results = array();
+        $results = [];
         foreach ($data as $key => $resultData) {
             $results[$key] = new SolrSuggestResult($resultData);
         }

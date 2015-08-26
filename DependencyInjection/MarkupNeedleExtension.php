@@ -50,7 +50,7 @@ class MarkupNeedleExtension extends Extension
      **/
     public function loadBackend(array $config, ContainerBuilder $container)
     {
-        $knownBackends = array('solarium');
+        $knownBackends = ['solarium'];
         if (!isset($config['backend']['type'])) {
             return;
         }
@@ -82,8 +82,8 @@ class MarkupNeedleExtension extends Extension
      **/
     private function loadCorpora(array $config, ContainerBuilder $container)
     {
-        $scheduleEvents = array();
-        $indexCallbacks = array();
+        $scheduleEvents = [];
+        $indexCallbacks = [];
         foreach ($config['corpora'] as $name => $corpusConfig) {
             $scheduleEvents[$name] = $corpusConfig['schedule_index_on_events'];
             $indexCallbacks[$name] = $corpusConfig['callbacks_during_index'];
@@ -91,7 +91,7 @@ class MarkupNeedleExtension extends Extension
         $container->setParameter('markup_needle.schedule_events_by_corpus', $scheduleEvents);
         $indexCallbackProvider = $container->getDefinition('markup_needle.index_callback_provider');
         foreach ($indexCallbacks as $name => $callbackServices) {
-            $indexCallbackProvider->addMethodCall('setCallbacksForCorpus', array($name, $callbackServices));
+            $indexCallbackProvider->addMethodCall('setCallbacksForCorpus', [$name, $callbackServices]);
         }
     }
 
@@ -104,9 +104,9 @@ class MarkupNeedleExtension extends Extension
     private function loadIntercepts(array $config, ContainerBuilder $container)
     {
         $defaultDomain = $config['intercepts']['default_domain'];
-        $domains = isset($config['intercepts']['domains']) ? $config['intercepts']['domains'] : array();
-        $domains = array_unique(array_merge($domains, array($defaultDomain)));
-        $interceptors = array();
+        $domains = isset($config['intercepts']['domains']) ? $config['intercepts']['domains'] : [];
+        $domains = array_unique(array_merge($domains, [$defaultDomain]));
+        $interceptors = [];
         foreach ($domains as $domain) {
             $domainedInterceptor = new DefinitionDecorator('markup_needle.interceptor');
             $container->setDefinition(sprintf('markup_needle.interceptor.%s', $domain), $domainedInterceptor);
@@ -117,23 +117,23 @@ class MarkupNeedleExtension extends Extension
         }
         foreach ($config['intercepts']['definitions'] as $definitionName => $definition) {
             $matcher = new Definition('%markup_needle.intercept.matcher.normalized_list.class%');
-            $matcher->addMethodCall('setList', array($definition['terms']));
+            $matcher->addMethodCall('setList', [$definition['terms']]);
             $matcherName = sprintf('markup_needle.intercept.matcher.%s', $definitionName);
             $matcher->setPublic(false);
             $container->setDefinition($matcherName, $matcher);
-            $properties = array_diff_key($definition, array('name' => true, 'type' => true));
+            $properties = array_diff_key($definition, ['name' => true, 'type' => true]);
             $interceptDefinition = new Definition(
                 '%markup_needle.intercept.definition.class%',
-                array(
+                [
                     $definitionName,
                     new Reference($matcherName),
                     $definition['type'],
                     $properties,
-                )
+                ]
             );
             $domain = (isset($definition['domain'])) ? $definition['domain'] : $defaultDomain;
             $interceptor = $interceptors[$domain];
-            $interceptor->addMethodCall('addDefinition', array($interceptDefinition));
+            $interceptor->addMethodCall('addDefinition', [$interceptDefinition]);
         }
     }
 
@@ -172,14 +172,14 @@ class MarkupNeedleExtension extends Extension
             $container->setAlias($prefix . 'facet_order_provider', $contextConfig['facet_order_provider']);
             $contextProvider = new Definition(
                 'Markup\NeedleBundle\Context\ConfiguredContextProvider',
-                array(
+                [
                     new Reference($prefix . 'filter_provider'),
                     new Reference($prefix . 'facet_provider'),
                     new Reference($prefix . 'facet_set_decorator_provider'),
                     new Reference($prefix . 'facet_collator_provider'),
                     new Reference($prefix . 'facet_order_provider'),
                     new Reference('markup_needle.configured_interceptor_provider')
-                )
+                ]
             );
             $container->setDefinition($prefix . 'context_provider', $contextProvider);
         }

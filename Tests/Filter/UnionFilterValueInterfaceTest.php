@@ -11,14 +11,14 @@ class UnionFilterValueInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'getSearchValue',
             'getSlug',
             'getValues',
             'getIterator',
             'addFilterValue',
             'count',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

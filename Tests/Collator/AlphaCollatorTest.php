@@ -31,15 +31,15 @@ class AlphaCollatorTest extends \PHPUnit_Framework_TestCase
 
     public function sorts()
     {
-        return array(
-            array(
-                array('fish', 'chips'),
+        return [
+            [
+                ['fish', 'chips'],
                 1,
-            ),
-            array(
-                array('betty', 'brush'),
+            ],
+            [
+                ['betty', 'brush'],
                 -1
-            ),
-        );
+            ],
+        ];
     }
 }

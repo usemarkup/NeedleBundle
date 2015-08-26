@@ -26,7 +26,7 @@ class IndexCallbackProvider
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->corpusServices = array();
+        $this->corpusServices = [];
     }
 
     /**
@@ -36,7 +36,7 @@ class IndexCallbackProvider
     public function getCallbacksForCorpus($corpus)
     {
         if (!isset($this->corpusServices[$this->getNameForCorpus($corpus)])) {
-            return array();
+            return [];
         }
 
         $container = $this->container;

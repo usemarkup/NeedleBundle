@@ -28,8 +28,8 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
     public function testMapDefinitionToIntercept()
     {
         $route = 'route';
-        $routeParams = array('param' => 'yes');
-        $properties = array('route' => $route, 'params' => $routeParams);
+        $routeParams = ['param' => 'yes'];
+        $properties = ['route' => $route, 'params' => $routeParams];
         $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
         $definition
             ->expects($this->any())
@@ -50,7 +50,7 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Markup\NeedleBundle\Intercept\UnresolvedInterceptException');
         $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
-        $properties = array();
+        $properties = [];
         $definition
             ->expects($this->any())
             ->method('getProperties')
@@ -62,8 +62,8 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Markup\NeedleBundle\Intercept\UnresolvedInterceptException');
         $route = 'route';
-        $routeParams = array('param' => 'yes');
-        $properties = array('route' => $route, 'params' => $routeParams);
+        $routeParams = ['param' => 'yes'];
+        $properties = ['route' => $route, 'params' => $routeParams];
         $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
         $definition
             ->expects($this->any())

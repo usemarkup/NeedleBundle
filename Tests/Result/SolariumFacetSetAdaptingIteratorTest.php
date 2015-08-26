@@ -22,7 +22,7 @@ class SolariumFacetSetAdaptingIteratorTest extends \PHPUnit_Framework_TestCase
         $solariumFacetField = $this->getMockBuilder('Solarium\QueryType\Select\Result\Facet\Field')
             ->disableOriginalConstructor()
             ->getMock();
-        $valuesIterator = new \ArrayIterator(array($value => $count));
+        $valuesIterator = new \ArrayIterator([$value => $count]);
         $solariumFacetField
             ->expects($this->any())
             ->method('getIterator')
@@ -40,11 +40,11 @@ class SolariumFacetSetAdaptingIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function testIteratorWithCollation()
     {
-        $values = array(
+        $values = [
             'red'               => 1,
             'blue'              => 2,
             'yellow'            => 3,
-        );
+        ];
         $expectedValues = array_reverse($values);
         $collator = $this->getMock('Markup\NeedleBundle\Collator\CollatorInterface');
         $collator
@@ -57,11 +57,11 @@ class SolariumFacetSetAdaptingIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function testCount()
     {
-        $values = array(
+        $values = [
             'red'               => 1,
             'blue'              => 2,
             'yellow'            => 3,
-        );
+        ];
         $it = new SolariumFacetSetAdaptingIterator($values);
         $this->assertCount(3, $it);
     }

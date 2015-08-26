@@ -26,10 +26,10 @@ class SolrResultGroupTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDocuments()
     {
-        $terms = array(
+        $terms = [
             'id' => 42,
             'category' => 'shirts',
-        );
+        ];
         $this->solariumTerm
             ->shouldReceive('getSuggestions')
             ->andReturn($terms);
@@ -51,16 +51,16 @@ class SolrResultGroupTest extends \PHPUnit_Framework_TestCase
 
     public function testUsingRawDataTerm()
     {
-        $data = array(
+        $data = [
             'numFound' => 34,
             'start' => 0,
-            'docs' => array(
-                array(
+            'docs' => [
+                [
                     'id' => '511',
                     'parsed_category_en_GB' => 'FOOTWEAR',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
         $group = new SolrResultGroup($this->term, $data);
         $this->assertCount(34, $group);
         $documents = $group->getDocuments();

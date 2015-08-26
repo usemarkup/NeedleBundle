@@ -11,13 +11,13 @@ class FacetValueDecoratorInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'getValue',
             'getDisplayValue',
             'count',
             '__toString',
             'decorate',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

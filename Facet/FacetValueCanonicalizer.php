@@ -14,7 +14,7 @@ class FacetValueCanonicalizer implements FacetValueCanonicalizerInterface
      *
      * @var array
      **/
-    private $canonicalizerCollections = array();
+    private $canonicalizerCollections = [];
 
     /**
      * {@inheritdoc}
@@ -55,7 +55,7 @@ class FacetValueCanonicalizer implements FacetValueCanonicalizerInterface
     private function getCanonicalizersForFacet(AttributeInterface $facet)
     {
         if (!isset($this->canonicalizerCollections[$facet->getName()])) {
-            return array();
+            return [];
         }
 
         return $this->canonicalizerCollections[$facet->getName()];

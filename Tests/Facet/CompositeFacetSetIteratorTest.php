@@ -15,7 +15,7 @@ class CompositeFacetSetIteratorTest extends \PHPUnit_Framework_TestCase
      **/
     public function testIteration($facetValues, $valueDelimiter, $facetCount, $valueSets)
     {
-        $values = array();
+        $values = [];
         foreach ($facetValues as $facetValueValue => $facetValueCount) {
             $values[] = new \Markup\NeedleBundle\Facet\FacetValue($facetValueValue, $facetValueCount);
         }
@@ -28,9 +28,9 @@ class CompositeFacetSetIteratorTest extends \PHPUnit_Framework_TestCase
         $emittedFacetSets = iterator_to_array($it);
         $this->assertCount($facetCount, $emittedFacetSets);
         $this->assertContainsOnly('Markup\NeedleBundle\Facet\FacetSetInterface', $emittedFacetSets);
-        $emittedValueSets = array();
+        $emittedValueSets = [];
         foreach ($emittedFacetSets as $facetSet) {
-            $valueSet = array();
+            $valueSet = [];
             foreach ($facetSet as $facetValue) {
                 $valueSet[$facetValue->getValue()] = count($facetValue);
             }
@@ -41,25 +41,25 @@ class CompositeFacetSetIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function fixtures()
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'fit::tight' => 2,
                     'fit::loose' => 3,
                     'sleeve_length::long' => 10,
-                    ),
+                ],
                 '::',
                 2,
-                array(
-                    array(
+                [
+                    [
                         'tight' => 2,
                         'loose' => 3,
-                        ),
-                    array(
+                    ],
+                    [
                         'long' => 10,
-                        ),
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ],
+        ];
     }
 }

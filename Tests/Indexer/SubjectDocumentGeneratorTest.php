@@ -65,10 +65,10 @@ class SubjectDocumentGeneratorTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateDocumentNotAllowingNulls()
     {
-        $data = array(
+        $data = [
             'id' => 1,
             'field' => null,
-        );
+        ];
         $this->updateQuery
             ->shouldReceive('createDocument')
             ->andReturnUsing(function ($data) {
@@ -79,7 +79,7 @@ class SubjectDocumentGeneratorTest extends \PHPUnit_Framework_TestCase
             ->andReturn($data);
         $generator = new SubjectDocumentGenerator($this->subjectDataMapper, $allowNullValues = false);
         $generator->setUpdateQuery($this->updateQuery);
-        $document = $generator->createDocumentForSubject(array());
+        $document = $generator->createDocumentForSubject([]);
         $this->assertInstanceOf('Solarium\QueryType\Update\Query\Document\Document', $document);
         $this->assertCount(1, $document->getFields());
     }

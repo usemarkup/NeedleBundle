@@ -24,7 +24,7 @@ class RegisterSearchInterceptMappersPass implements CompilerPassInterface
                 if (empty($attributes['corpus'])) {
                     continue;
                 }
-                $searchMapper->addMethodCall('addSearchInterceptMapper', array($attributes['corpus'], new Reference($id)));
+                $searchMapper->addMethodCall('addSearchInterceptMapper', [$attributes['corpus'], new Reference($id)]);
             }
         }
     }

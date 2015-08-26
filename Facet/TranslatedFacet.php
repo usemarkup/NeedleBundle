@@ -71,11 +71,11 @@ class TranslatedFacet implements AttributeInterface
         if (!$this->hasMessageDomain()) {
             return $this->getTranslator()->trans($this->getTranslatorKey());
         } else {
-            return $this->getTranslator()->trans($this->getTranslatorKey(), array(), $this->getMessageDomain());
+            return $this->getTranslator()->trans($this->getTranslatorKey(), [], $this->getMessageDomain());
         }
     }
 
-    public function getSearchKey(array $options = array())
+    public function getSearchKey(array $options = [])
     {
         if (null === $this->searchKey) {
             return $this->getName();
@@ -136,6 +136,6 @@ class TranslatedFacet implements AttributeInterface
      **/
     private function getTranslatorKey()
     {
-        return implode('.', array_filter(array($this->getTranslationNamespace(), $this->getName())));
+        return implode('.', array_filter([$this->getTranslationNamespace(), $this->getName()]));
     }
 }

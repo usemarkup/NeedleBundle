@@ -32,7 +32,7 @@ class MinCountFacetSetDecoratorTest extends \PHPUnit_Framework_TestCase
         $this->facetSet
             ->expects($this->any())
             ->method('getIterator')
-            ->will($this->returnValue(new \ArrayIterator(array($facetValue1, $facetValue2))));
+            ->will($this->returnValue(new \ArrayIterator([$facetValue1, $facetValue2])));
         $facetValues = iterator_to_array($this->decorator);
         $this->assertCount(1, $facetValues);
         foreach ($facetValues as $facetValue) {

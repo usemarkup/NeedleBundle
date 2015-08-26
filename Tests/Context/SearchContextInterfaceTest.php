@@ -11,7 +11,7 @@ class SearchContextInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'getItemsPerPage',
             'getFacets',
             'getDefaultFilterQueries',
@@ -23,7 +23,7 @@ class SearchContextInterfaceTest extends AbstractInterfaceTestCase
             'getFacetCollatorProvider',
             'getFacetSortOrderProvider',
             'getInterceptor',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

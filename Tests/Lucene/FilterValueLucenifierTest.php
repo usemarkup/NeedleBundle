@@ -38,7 +38,7 @@ class FilterValueLucenifierTest extends \PHPUnit_Framework_TestCase
         $expectedExpr = '("red" "blue")';
         $scalar1 = new Filter\ScalarFilterValue($value1);
         $scalar2 = new Filter\ScalarFilterValue($value2);
-        $union = new Filter\UnionFilterValue(array($scalar1, $scalar2));
+        $union = new Filter\UnionFilterValue([$scalar1, $scalar2]);
         $this->assertEquals($expectedExpr, $this->lucenifier->lucenify($union));
     }
 
@@ -49,7 +49,7 @@ class FilterValueLucenifierTest extends \PHPUnit_Framework_TestCase
         $expectedExpr = '(+"red" +"blue")';
         $scalar1 = new Filter\ScalarFilterValue($value1);
         $scalar2 = new Filter\ScalarFilterValue($value2);
-        $intersection = new Filter\IntersectionFilterValue(array($scalar1, $scalar2));
+        $intersection = new Filter\IntersectionFilterValue([$scalar1, $scalar2]);
         $this->assertEquals($expectedExpr, $this->lucenifier->lucenify($intersection));
     }
 
@@ -73,9 +73,9 @@ class FilterValueLucenifierTest extends \PHPUnit_Framework_TestCase
         $scalar2 = new Filter\ScalarFilterValue($value2);
         $scalar3 = new Filter\ScalarFilterValue($value3);
         $scalar4 = new Filter\ScalarFilterValue($value4);
-        $union1 = new Filter\UnionFilterValue(array($scalar1, $scalar2));
-        $union2 = new Filter\UnionFilterValue(array($scalar3, $scalar4));
-        $intersection = new Filter\IntersectionFilterValue(array($union1, $union2));
+        $union1 = new Filter\UnionFilterValue([$scalar1, $scalar2]);
+        $union2 = new Filter\UnionFilterValue([$scalar3, $scalar4]);
+        $intersection = new Filter\IntersectionFilterValue([$union1, $union2]);
         $this->assertEquals($expectedExpr, $this->lucenifier->lucenify($intersection));
     }
 }

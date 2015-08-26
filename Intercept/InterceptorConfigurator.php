@@ -14,7 +14,7 @@ class InterceptorConfigurator implements InterceptorConfiguratorInterface
 
     public function __construct()
     {
-        $this->interceptMappers = array();
+        $this->interceptMappers = [];
     }
 
     /**
@@ -33,10 +33,10 @@ class InterceptorConfigurator implements InterceptorConfiguratorInterface
             if (!isset($config['terms']) || !isset($config['type'])) {
                 continue;
             }
-            $terms = (is_string($config['terms'])) ? array($config['terms']) : $config['terms'];
+            $terms = (is_string($config['terms'])) ? [$config['terms']] : $config['terms'];
             $matcher = new NormalizedListMatcher();
             $matcher->setList($terms);
-            $properties = array_diff_key($config, array('name' => true, 'type' => true));
+            $properties = array_diff_key($config, ['name' => true, 'type' => true]);
             $interceptor->addDefinition(
                 new Definition(
                     $definition,

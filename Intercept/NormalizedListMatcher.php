@@ -10,7 +10,7 @@ class NormalizedListMatcher implements MatcherInterface
     /**
      * @var array
      **/
-    private $list = array();
+    private $list = [];
 
     /**
      * {@inheritdoc}
@@ -42,7 +42,7 @@ class NormalizedListMatcher implements MatcherInterface
      **/
     private function getNormalizedList()
     {
-        $normalized = array();
+        $normalized = [];
         foreach ($this->list as $term) {
             $normalized[] = $this->normalizeString($term);
         }

@@ -11,7 +11,7 @@ abstract class AbstractInterfaceTestCase extends \PHPUnit_Framework_TestCase
     {
         $expectedPublicMethods = $this->getExpectedPublicMethods();
         $interface = new \ReflectionClass($this->getInterfaceUnderTest());
-        $actualPublicMethods = array();
+        $actualPublicMethods = [];
         foreach ($interface->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $actualPublicMethods[] = $method->name;
         }

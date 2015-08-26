@@ -33,7 +33,7 @@ class Definition implements DefinitionInterface
      * @param string           $type
      * @param array            $properties
      **/
-    public function __construct($name, MatcherInterface $matcher, $type, array $properties = array())
+    public function __construct($name, MatcherInterface $matcher, $type, array $properties = [])
     {
         $this->name = $name;
         $this->matcher = $matcher;

@@ -32,18 +32,18 @@ class InterceptorConfiguratorTest extends \PHPUnit_Framework_TestCase
         $interceptor
             ->shouldReceive('addInterceptMapper')
             ->twice();
-        $this->configurator->configureInterceptor($interceptor, array());
+        $this->configurator->configureInterceptor($interceptor, []);
     }
 
     public function testAddDefinitionToInterceptor()
     {
-        $config = array(
-            'sale' => array(
-                'terms' => array('sale'),
+        $config = [
+            'sale' => [
+                'terms' => ['sale'],
                 'type' => 'route',
                 'route' => 'sale',
-            ),
-        );
+            ],
+        ];
         $interceptor = m::mock('Markup\NeedleBundle\Intercept\Interceptor');
         $interceptor
             ->shouldReceive('addDefinition')

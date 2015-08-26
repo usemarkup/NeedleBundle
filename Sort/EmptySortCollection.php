@@ -9,6 +9,6 @@ class EmptySortCollection extends SortCollection
 {
     public function __construct()
     {
-        parent::__construct(array());
+        parent::__construct([]);
     }
 }

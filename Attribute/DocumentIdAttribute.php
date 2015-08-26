@@ -42,7 +42,7 @@ class DocumentIdAttribute implements AttributeInterface
      *
      * @return string
      **/
-    public function getSearchKey(array $options = array())
+    public function getSearchKey(array $options = [])
     {
         return $this->key;
     }

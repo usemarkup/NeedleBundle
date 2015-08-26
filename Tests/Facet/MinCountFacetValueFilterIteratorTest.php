@@ -21,7 +21,7 @@ class MinCountFacetValueFilterIteratorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('count')
             ->will($this->returnValue(3));
-        $facetValueIterator = new \ArrayIterator(array($facetValue1, $facetValue2));
+        $facetValueIterator = new \ArrayIterator([$facetValue1, $facetValue2]);
         $filteredFacetValues = new MinCountFacetValueFilterIterator(3, $facetValueIterator);
         $this->assertCount(1, $filteredFacetValues);
         foreach ($filteredFacetValues as $filteredFacetValue) {

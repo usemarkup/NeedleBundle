@@ -61,7 +61,7 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
         return $this->displayName;
     }
 
-    public function getSearchKey(array $options = array())
+    public function getSearchKey(array $options = [])
     {
         return $this->key;
     }

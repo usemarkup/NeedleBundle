@@ -83,7 +83,7 @@ class SolariumSelectQueryBuilder
             //pick out Lucene representations for the filters being applied on top of an underlying "base" query
             $extraLuceneFilters = array_values(array_diff($this->lucenifyFilterQueries($filterQueries), $this->lucenifyFilterQueries($query->getRecord()->getFilterQueries())));
         } else {
-            $extraLuceneFilters = array();
+            $extraLuceneFilters = [];
         }
 
         if ($this->hasSearchContext()) {
@@ -120,7 +120,7 @@ class SolariumSelectQueryBuilder
                     if (false !== array_search($facet->getSearchKey(), $facetNamesToExclude)) {
                         continue;
                     }
-                    $solariumFacets = array();
+                    $solariumFacets = [];
                     //check whether to request missing facet values
                     $checkMissingFacetValues = (method_exists($this->getSearchContext(), 'shouldRequestFacetValueForMissing')) ? $this->getSearchContext()->shouldRequestFacetValueForMissing() : null;
                     //if it's a range facet, create accordingly
@@ -182,12 +182,12 @@ class SolariumSelectQueryBuilder
                     $edismax->setQueryAlternative(self::ALL_SIGNIFIER);
                 }
                 //apply boosts
-                $queryFields = array();
+                $queryFields = [];
                 foreach ($boostQueryFields as $boostField) {
                     /**
                      * @var BoostQueryField $boostField
                      */
-                    $queryFields[] = $boostField->getAttribute()->getSearchKey(array('prefer_parsed' => true)).(($boostField->getBoostFactor() !== 1) ? ('^'.strval($boostField->getBoostFactor())) : '');
+                    $queryFields[] = $boostField->getAttribute()->getSearchKey(['prefer_parsed' => true]).(($boostField->getBoostFactor() !== 1) ? ('^'.strval($boostField->getBoostFactor())) : '');
                 }
                 $edismax->setQueryFields(implode(' ', $queryFields));
             }
@@ -227,7 +227,7 @@ class SolariumSelectQueryBuilder
      **/
     private function dedupeFilterQueries($filterQueries)
     {
-        $nameCounts = array();
+        $nameCounts = [];
         foreach ($filterQueries as $filterQuery) {
             $name = $filterQuery->getSearchKey();
             if (!isset($nameCounts[$name])) {
@@ -238,14 +238,14 @@ class SolariumSelectQueryBuilder
         }
 
         //if there are no dupes, just return the original queries
-        if (array_values(array_unique($nameCounts)) == array(1)) {
+        if (array_values(array_unique($nameCounts)) == [1]) {
             return $filterQueries;
         }
 
         $namesToProcess = array_keys(array_filter($nameCounts, function ($v) { return $v > 1; }));
-        $intersectFilterQueries = array();
-        $intersectibleQueries = array();
-        $filters = array();
+        $intersectFilterQueries = [];
+        $intersectibleQueries = [];
+        $filters = [];
         foreach ($filterQueries as $filterQuery) {
             if (!in_array($filterQuery->getSearchKey(), $namesToProcess)) {
                 continue;
@@ -253,7 +253,7 @@ class SolariumSelectQueryBuilder
             $filters[$filterQuery->getSearchKey()] = $filterQuery->getFilter();
         }
         foreach ($namesToProcess as $nameToProcess) {
-            $intersectibleQueries[$nameToProcess] = array();
+            $intersectibleQueries[$nameToProcess] = [];
             foreach ($filterQueries as $filterQuery) {
                 if ($filterQuery->getSearchKey() === $nameToProcess) {
                     $intersectibleQueries[$nameToProcess][] = $filterQuery;
@@ -261,7 +261,7 @@ class SolariumSelectQueryBuilder
             }
         }
         foreach ($intersectibleQueries as $key => $querySet) {
-            $intersectFilterValue = new Filter\IntersectionFilterValue(array());
+            $intersectFilterValue = new Filter\IntersectionFilterValue([]);
             foreach ($querySet as $query) {
                 if ($query->getFilterValue() instanceof Filter\IntersectionFilterValueInterface) {
                     foreach ($query->getFilterValue() as $filterValue) {
@@ -304,7 +304,7 @@ class SolariumSelectQueryBuilder
      **/
     private function lucenifyFilterQueries($filterQueries)
     {
-        $luceneFilters = array();
+        $luceneFilters = [];
         foreach ($filterQueries as $filterQuery) {
             if (!$filterQuery instanceof Filter\FilterQueryInterface) {
                 continue;

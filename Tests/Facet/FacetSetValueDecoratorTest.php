@@ -37,7 +37,7 @@ class FacetSetValueDecoratorTest extends \PHPUnit_Framework_TestCase
         $facetSet
             ->expects($this->any())
             ->method('getIterator')
-            ->will($this->returnValue(new \ArrayIterator(array($facetValue))));
+            ->will($this->returnValue(new \ArrayIterator([$facetValue])));
         $this->facetValueDecorator
             ->expects($this->once())
             ->method('decorate')
@@ -48,11 +48,11 @@ class FacetSetValueDecoratorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getValue')
             ->will($this->returnValue($decoratedValue));
-        $outputValues = array();
+        $outputValues = [];
         $this->decorator->decorate($facetSet);
         foreach ($this->decorator as $decoratedFacetValue) {
             $outputValues[] = $decoratedFacetValue->getValue();
         }
-        $this->assertEquals(array($decoratedValue), $outputValues);
+        $this->assertEquals([$decoratedValue], $outputValues);
     }
 }

@@ -21,7 +21,7 @@ class IndexSchedulingEventListener
      *
      * @var array
      **/
-    private $eventCorpora = array();
+    private $eventCorpora = [];
 
     /**
      * @param IndexScheduler $scheduler
@@ -55,9 +55,9 @@ class IndexSchedulingEventListener
         $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
         $event = ($event instanceof Event) ? $event->getName() : $event;
         if (!isset($this->eventCorpora[$event])) {
-            $this->eventCorpora[$event] = array();
+            $this->eventCorpora[$event] = [];
         }
-        $this->eventCorpora[$event] = array_unique(array_merge($this->eventCorpora[$event], array($corpus)));
+        $this->eventCorpora[$event] = array_unique(array_merge($this->eventCorpora[$event], [$corpus]));
 
         return $this;
     }
@@ -68,7 +68,7 @@ class IndexSchedulingEventListener
     private function getCorporaForEvent(Event $event)
     {
         if (!isset($this->eventCorpora[$event->getName()])) {
-            return array();
+            return [];
         }
 
         return $this->eventCorpora[$event->getName()];

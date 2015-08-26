@@ -23,7 +23,7 @@ class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework
 
     public function testGetAvailableFilterNames()
     {
-        $filterNames = array('filter1', 'filter2', 'filter3');
+        $filterNames = ['filter1', 'filter2', 'filter3'];
         $this->context
             ->expects($this->any())
             ->method('getAvailableFilterNames')
@@ -38,7 +38,7 @@ class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework
             ->expects($this->any())
             ->method('getFacetByName')
             ->will($this->returnValue($facet));
-        $filterNames = array('filter1', 'filter2', 'filter3');
+        $filterNames = ['filter1', 'filter2', 'filter3'];
         $this->context
             ->expects($this->any())
             ->method('getAvailableFilterNames')

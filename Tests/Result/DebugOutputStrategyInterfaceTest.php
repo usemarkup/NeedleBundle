@@ -11,10 +11,10 @@ class DebugOutputStrategyInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'hasDebugOutput',
             'getDebugOutput',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

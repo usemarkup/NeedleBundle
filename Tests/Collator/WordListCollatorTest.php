@@ -11,7 +11,7 @@ class WordListCollatorTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->wordList = array(
+        $this->wordList = [
             'the',
             'quick',
             'brown',
@@ -21,7 +21,7 @@ class WordListCollatorTest extends \PHPUnit_Framework_TestCase
             'the',
             'lazy',
             'dog',
-        );
+        ];
         $this->collator = new WordListCollator($this->wordList);
     }
 
@@ -40,16 +40,16 @@ class WordListCollatorTest extends \PHPUnit_Framework_TestCase
 
     public function values()
     {
-        return array(
-            array('the', true),
-            array('quick', true),
-            array('green', false),
-            array('fox', true),
-            array('jumped', true),
-            array('over', true),
-            array('energetic', false),
-            array('cat', false),
-        );
+        return [
+            ['the', true],
+            ['quick', true],
+            ['green', false],
+            ['fox', true],
+            ['jumped', true],
+            ['over', true],
+            ['energetic', false],
+            ['cat', false],
+        ];
     }
 
     /**
@@ -62,9 +62,9 @@ class WordListCollatorTest extends \PHPUnit_Framework_TestCase
 
     public function comparisons()
     {
-        return array(
-            array('the', 'quick', -1),
-            array('lazy', 'brown', 1),
-        );
+        return [
+            ['the', 'quick', -1],
+            ['lazy', 'brown', 1],
+        ];
     }
 }

@@ -23,7 +23,7 @@ class SimpleSortOrderProvider implements SortOrderProviderInterface
      * @param bool $shouldDefaultToIndex
      * @param array $exceptionFacetNames
      */
-    public function __construct($shouldDefaultToIndex = true, array $exceptionFacetNames = array())
+    public function __construct($shouldDefaultToIndex = true, array $exceptionFacetNames = [])
     {
         $this->shouldDefaultToIndex = $shouldDefaultToIndex;
         $this->exceptionFacetNames = $exceptionFacetNames;

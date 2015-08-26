@@ -11,10 +11,10 @@ class FilterValueInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'getSearchValue',
             'getSlug',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

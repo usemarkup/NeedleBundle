@@ -25,7 +25,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     public function testAssembleCallsDownOnHelper()
     {
         $query = 'query';
-        $parts = array('yes', 'no');
+        $parts = ['yes', 'no'];
         $assembled = 'assembled';
         $this->solariumHelper
             ->expects($this->once())

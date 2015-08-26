@@ -28,7 +28,7 @@ class SearchInterceptMapperTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Markup\NeedleBundle\Intercept\UnresolvedInterceptException');
         $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
-        $properties = array('corpus' => 'corpus');
+        $properties = ['corpus' => 'corpus'];
         $definition
             ->expects($this->any())
             ->method('getProperties')
@@ -40,7 +40,7 @@ class SearchInterceptMapperTest extends \PHPUnit_Framework_TestCase
     {
         $corpus = 'corpus';
         $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
-        $properties = array('corpus' => $corpus);
+        $properties = ['corpus' => $corpus];
         $definition
             ->expects($this->any())
             ->method('getProperties')

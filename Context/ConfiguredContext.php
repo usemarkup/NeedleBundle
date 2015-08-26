@@ -104,7 +104,7 @@ class ConfiguredContext implements SearchContextInterface
      **/
     public function getFacets()
     {
-        $facets = array();
+        $facets = [];
         foreach ($this->config->getDefaultFacetingAttributes() as $facetName) {
             $facets[] = $this->facetProvider->getFacetByName($facetName);
         }
@@ -119,7 +119,7 @@ class ConfiguredContext implements SearchContextInterface
      **/
     public function getDefaultFilterQueries()
     {
-        $queries = array();
+        $queries = [];
         foreach ($this->config->getDefaultFilterQueries() as $attr => $value) {
             if (!is_array($value)) {
                 $q = new FilterQuery($this->attributeProvider->getAttributeByName($attr), new ScalarFilterValue($value));
@@ -229,7 +229,7 @@ class ConfiguredContext implements SearchContextInterface
      **/
     public function getBoostQueryFields()
     {
-        $fields = array();
+        $fields = [];
         foreach ($this->config->getDefaultBoosts() as $attr => $factor) {
             $fields[] = new BoostQueryField($this->attributeProvider->getAttributeByName($attr), $factor);
         }

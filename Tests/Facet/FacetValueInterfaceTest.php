@@ -11,12 +11,12 @@ class FacetValueInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'getValue',
             'getDisplayValue',
             'count',
             '__toString',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

@@ -11,7 +11,7 @@ class FixedValueCollatorTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $list = array('one', 'two', 'three', 'four', 'five');
+        $list = ['one', 'two', 'three', 'four', 'five'];
         $this->collator = new FixedValueCollator($list);
     }
 
@@ -30,12 +30,12 @@ class FixedValueCollatorTest extends \PHPUnit_Framework_TestCase
 
     public function values()
     {
-        return array(
-            array('two', 'three', -1),
-            array('four', 'three', 1),
-            array('one', 'umpteen', -1),
-            array('x', 'y', -1),
-            array('j', 'i', 1),
-        );
+        return [
+            ['two', 'three', -1],
+            ['four', 'three', 1],
+            ['one', 'umpteen', -1],
+            ['x', 'y', -1],
+            ['j', 'i', 1],
+        ];
     }
 }

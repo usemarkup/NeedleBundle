@@ -36,15 +36,15 @@ class NumberCollatorTest extends \PHPUnit_Framework_TestCase
 
     public function sorts()
     {
-        return array(
-            array(
-                array('1.5', '2.5'),
+        return [
+            [
+                ['1.5', '2.5'],
                 -1
-            ),
-            array(
-                array('12', '2'),
+            ],
+            [
+                ['12', '2'],
                 1
-            )
-        );
+            ]
+        ];
     }
 }

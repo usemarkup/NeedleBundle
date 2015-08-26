@@ -14,11 +14,11 @@ class SolariumSpellcheckResultTest extends \PHPUnit_Framework_TestCase
         $this->suggestion2 = m::mock('Solarium\QueryType\Select\Result\Spellcheck\Suggestion')->shouldIgnoreMissing();
         $this->correctlySpelled = true;
         $this->solariumResult = new Result(
-            array(
+            [
                 $this->suggestion1,
                 $this->suggestion2,
-            ),
-            array(),
+            ],
+            [],
             $this->correctlySpelled
         );
         $this->query = m::mock('Markup\NeedleBundle\Query\SimpleQueryInterface')->shouldIgnoreMissing();
@@ -37,7 +37,7 @@ class SolariumSpellcheckResultTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSuggestions()
     {
-        $words = array('aword', 'theword');
+        $words = ['aword', 'theword'];
         $this->suggestion1
             ->shouldReceive('getWord')
             ->andReturn($words[0]);
@@ -51,7 +51,7 @@ class SolariumSpellcheckResultTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSuggestionsReducedByOriginalQuery()
     {
-        $words = array('aword', 'theword');
+        $words = ['aword', 'theword'];
         $this->suggestion1
             ->shouldReceive('getWord')
             ->andReturn($words[0]);
@@ -64,6 +64,6 @@ class SolariumSpellcheckResultTest extends \PHPUnit_Framework_TestCase
         $this->query
             ->shouldReceive('getSearchTerm')
             ->andReturn('aword');
-        $this->assertEquals(array('theword'), $this->spellcheckResult->getSuggestions());
+        $this->assertEquals(['theword'], $this->spellcheckResult->getSuggestions());
     }
 }

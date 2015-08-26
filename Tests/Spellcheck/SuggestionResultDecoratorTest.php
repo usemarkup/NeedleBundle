@@ -32,7 +32,7 @@ class SuggestionResultDecoratorTest extends \PHPUnit_Framework_TestCase
         $spellcheckResult = m::mock('Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface')->shouldIgnoreMissing();
         $spellcheckResult
             ->shouldReceive('getSuggestions')
-            ->andReturn(array());
+            ->andReturn([]);
         $this->searchService
             ->shouldReceive('executeQuery')
             ->never();
@@ -41,7 +41,7 @@ class SuggestionResultDecoratorTest extends \PHPUnit_Framework_TestCase
             ->andReturn($spellcheckResult);
         $this->originalResult
             ->shouldReceive('getIterator')
-            ->andReturn(new \ArrayIterator(array()));
+            ->andReturn(new \ArrayIterator([]));
         iterator_to_array($this->decorator);
     }
 
@@ -51,7 +51,7 @@ class SuggestionResultDecoratorTest extends \PHPUnit_Framework_TestCase
         $suggestion = new Suggestion('i am a suggestion', 42);
         $spellcheckResult
             ->shouldReceive('getSuggestions')
-            ->andReturn(array($suggestion));
+            ->andReturn([$suggestion]);
         $this->searchService
             ->shouldReceive('executeQuery')
             ->once();
@@ -60,7 +60,7 @@ class SuggestionResultDecoratorTest extends \PHPUnit_Framework_TestCase
             ->andReturn($spellcheckResult);
         $this->originalResult
             ->shouldReceive('getIterator')
-            ->andReturn(new \ArrayIterator(array()));
+            ->andReturn(new \ArrayIterator([]));
         $this->originalResult
             ->shouldReceive('getTotalCount')
             ->andReturn(0);

@@ -29,7 +29,7 @@ interface AttributeInterface
      * @param array $options  Options that might determine which key is returned. Possible values: 'prefer_parsed'
      * @return string
      **/
-    public function getSearchKey(array $options = array());
+    public function getSearchKey(array $options = []);
 
     /**
      * Magic toString method.  Returns display name.

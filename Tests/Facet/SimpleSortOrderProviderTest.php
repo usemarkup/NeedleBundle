@@ -12,7 +12,7 @@ class SimpleSortOrderProviderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->shouldDefaultToIndex = true;
-        $this->exceptions = array('size');
+        $this->exceptions = ['size'];
         $this->provider = new SimpleSortOrderProvider($this->shouldDefaultToIndex, $this->exceptions);
     }
 
@@ -34,7 +34,7 @@ class SimpleSortOrderProviderTest extends \PHPUnit_Framework_TestCase
     public function testNonExceptionReturnsCountIfCountSpecifiedAsDefault()
     {
         $shouldDefaultToIndex = false;
-        $exceptions = array('color');
+        $exceptions = ['color'];
         $provider = new SimpleSortOrderProvider($shouldDefaultToIndex, $exceptions);
         $this->assertEquals(SortOrderProviderInterface::SORT_BY_COUNT, $provider->getSortOrderForFacet($this->createFacetForName('section')));
     }
@@ -42,7 +42,7 @@ class SimpleSortOrderProviderTest extends \PHPUnit_Framework_TestCase
     public function testExceptionReturnsIndexIfCountSpecifiedAsDefault()
     {
         $shouldDefaultToIndex = false;
-        $exceptions = array('color');
+        $exceptions = ['color'];
         $provider = new SimpleSortOrderProvider($shouldDefaultToIndex, $exceptions);
         $this->assertEquals(SortOrderProviderInterface::SORT_BY_INDEX, $provider->getSortOrderForFacet($this->createFacetForName('color')));
     }

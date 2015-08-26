@@ -24,7 +24,7 @@ class Interceptor implements InterceptorInterface
     /**
      * @var TypedInterceptMapperInterface[]
      **/
-    private $interceptMappers = array();
+    private $interceptMappers = [];
 
     /**
      * @param EventDispatcherInterface $eventDispatcher

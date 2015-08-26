@@ -24,7 +24,7 @@ class AddCorporaPass implements CompilerPassInterface
                 if (empty($attributes['alias'])) {
                     continue;
                 }
-                $corpusProvider->addMethodCall('addCorpus', array($attributes['alias'], new Reference($id)));
+                $corpusProvider->addMethodCall('addCorpus', [$attributes['alias'], new Reference($id)]);
             }
         }
     }

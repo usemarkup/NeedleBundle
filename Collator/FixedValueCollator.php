@@ -17,7 +17,7 @@ class FixedValueCollator implements CollatorInterface
     /**
      * @param array $values The fixed list of values to collate on.
      **/
-    public function __construct(array $values = array())
+    public function __construct(array $values = [])
     {
         $this->values = $values;
     }

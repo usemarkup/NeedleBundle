@@ -51,7 +51,7 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function getGroups()
     {
-        $groups = array();
+        $groups = [];
         if ($this->data instanceof SolariumResult) {
             foreach ($this->data->getResults() as $keyword => $term) {
                 $groups[] = new SolrResultGroup($keyword, $term);
@@ -60,7 +60,7 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
             return $groups;
         }
         if (!array_key_exists('groups', $this->data) || !is_array($this->data['groups'])) {
-            return array();
+            return [];
         }
 
         return array_map(function ($groupData) {
@@ -73,7 +73,7 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function getTermSuggestions()
     {
-        $terms = array();
+        $terms = [];
         foreach ($this->getGroups() as $group) {
             foreach ($group->getDocuments() as $document) {
                 $terms = array_merge($document->getValues(), $terms);

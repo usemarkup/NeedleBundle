@@ -44,12 +44,12 @@ class SearchContext implements SearchContextInterface
      **/
     public function getFacets()
     {
-        return array();
+        return [];
     }
 
     public function getDefaultFilterQueries()
     {
-        return array();
+        return [];
     }
 
     public function getDefaultSortCollectionForQuery(SelectQueryInterface $query)
@@ -69,12 +69,12 @@ class SearchContext implements SearchContextInterface
 
     public function getAvailableFilterNames()
     {
-        return array();
+        return [];
     }
 
     public function getBoostQueryFields()
     {
-        return array();
+        return [];
     }
 
     public function getFacetCollatorProvider()

@@ -48,7 +48,7 @@ class SolariumDebugOutputStrategyTest extends \PHPUnit_Framework_TestCase
         $this->templating
             ->expects($this->any())
             ->method('render')
-            ->with($this->isType('string'), array('debug' => $debug))
+            ->with($this->isType('string'), ['debug' => $debug])
             ->will($this->returnValue($output));
         $this->assertEquals($output, $this->strategy->getDebugOutput());
     }

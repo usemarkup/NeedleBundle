@@ -53,9 +53,9 @@ class SolariumDebugOutputStrategy implements DebugOutputStrategyInterface
         if ($this->hasDebugOutput()) {
             return $this->templating->render(
                 'MarkupNeedleBundle:Solarium:debug_output.html.twig',
-                array(
+                [
                     'debug'         => $this->getSolariumResult()->getDebug(),
-                    )
+                ]
                 );
         }
     }

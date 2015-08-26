@@ -144,7 +144,7 @@ class PagerfantaResultAdapter implements ResultInterface
     public function getFacetSets()
     {
         if (null === $this->facetSetStrategy) {
-            return array();
+            return [];
         }
 
         return $this->facetSetStrategy->getFacetSets();

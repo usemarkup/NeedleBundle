@@ -17,12 +17,12 @@ class EmptySuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function getSuggestions()
     {
-        return array();
+        return [];
     }
 
     public function getIterator()
     {
-        return new \ArrayIterator(array());
+        return new \ArrayIterator([]);
     }
 
     /**
@@ -30,7 +30,7 @@ class EmptySuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function getGroups()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -38,6 +38,6 @@ class EmptySuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function getTermSuggestions()
     {
-        return array();
+        return [];
     }
 }

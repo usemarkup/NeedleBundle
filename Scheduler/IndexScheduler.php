@@ -85,10 +85,10 @@ class IndexScheduler
     public function getScheduledExports($corpus)
     {
         $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
-        if ($r = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->findBy(array('status' => ScheduledIndex::SCHEDULED, 'corpus' => $corpus))) {
+        if ($r = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->findBy(['status' => ScheduledIndex::SCHEDULED, 'corpus' => $corpus])) {
             return $r;
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -98,7 +98,7 @@ class IndexScheduler
     public function getProcessingExports($corpus)
     {
         $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
-        if ($r = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->findBy(array('status' => ScheduledIndex::PROCESSING, 'corpus' => $corpus))) {
+        if ($r = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->findBy(['status' => ScheduledIndex::PROCESSING, 'corpus' => $corpus])) {
             return $r;
         } else {
             return false;

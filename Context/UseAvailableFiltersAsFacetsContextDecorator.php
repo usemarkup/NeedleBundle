@@ -35,7 +35,7 @@ class UseAvailableFiltersAsFacetsContextDecorator implements SearchContextInterf
 
     public function getFacets()
     {
-        $facets = array();
+        $facets = [];
         foreach ($this->getAvailableFilterNames() as $filterName) {
             $facets[] = $this->facetProvider->getFacetByName($filterName);
         }

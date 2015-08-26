@@ -11,12 +11,12 @@ class CompositeFacetSetInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'count',
             'getIterator',
             'getFacet',
             'getSubFacetSets',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

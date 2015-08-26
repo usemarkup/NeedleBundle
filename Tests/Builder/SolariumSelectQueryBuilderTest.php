@@ -74,7 +74,7 @@ class SolariumSelectQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $genericQuery
             ->expects($this->any())
             ->method('getFilterQueries')
-            ->will($this->returnValue(array($filterQuery)));
+            ->will($this->returnValue([$filterQuery]));
         $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
         $filterQueries = $query->getFilterQueries();
         $this->assertCount(1, $filterQueries, 'checking correct number of filter queries returned');

@@ -23,7 +23,7 @@ class ResultInterfaceTest extends AbstractInterfaceTestCase
 
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'getTotalCount',
             'getQueryTimeInMilliseconds',
             'count',
@@ -39,7 +39,7 @@ class ResultInterfaceTest extends AbstractInterfaceTestCase
             'getSpellcheckResult',
             'hasDebugOutput',
             'getDebugOutput',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

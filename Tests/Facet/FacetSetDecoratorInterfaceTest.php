@@ -11,12 +11,12 @@ class FacetSetDecoratorInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'count',
             'decorate',
             'getIterator',
             'getFacet',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

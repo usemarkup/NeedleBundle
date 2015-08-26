@@ -36,11 +36,11 @@ class NormalizedListMatcherTest extends \PHPUnit_Framework_TestCase
 
     public function lists()
     {
-        return array(
-            array('jumpers', array('JUMPERS', 'jumper', 'sweater'), true),
-            array('cabbage', array('lettuce', 'courgette'), false),
-            array('STRAßE', array('straße', 'allee'), true),
-            array('ÜBER', array('uber', 'unter'), true),
-        );
+        return [
+            ['jumpers', ['JUMPERS', 'jumper', 'sweater'], true],
+            ['cabbage', ['lettuce', 'courgette'], false],
+            ['STRAßE', ['straße', 'allee'], true],
+            ['ÜBER', ['uber', 'unter'], true],
+        ];
     }
 }

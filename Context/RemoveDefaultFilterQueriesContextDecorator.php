@@ -27,7 +27,7 @@ class RemoveDefaultFilterQueriesContextDecorator implements SearchContextInterfa
 
     public function getDefaultFilterQueries()
     {
-        return array();
+        return [];
     }
 
     public function getDefaultSortCollectionForQuery(SelectQueryInterface $query)

@@ -24,7 +24,7 @@ class RegisterSubjectDataMappersPass implements CompilerPassInterface
                 if (empty($attributes['corpus'])) {
                     continue;
                 }
-                $mapperProvider->addMethodCall('addMapper', array($attributes['corpus'], new Reference($id)));
+                $mapperProvider->addMethodCall('addMapper', [$attributes['corpus'], new Reference($id)]);
             }
         }
     }

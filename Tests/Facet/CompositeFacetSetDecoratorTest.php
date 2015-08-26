@@ -13,7 +13,7 @@ class CompositeFacetSetDecoratorTest extends \PHPUnit_Framework_TestCase
     {
         $this->decorator1 = $this->getMock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
         $this->decorator2 = $this->getMock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
-        $this->composite = new CompositeFacetSetDecorator(array($this->decorator1, $this->decorator2));
+        $this->composite = new CompositeFacetSetDecorator([$this->decorator1, $this->decorator2]);
     }
 
     public function testIsFacetSetDecorator()

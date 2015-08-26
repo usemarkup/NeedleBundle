@@ -51,7 +51,7 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
         $corpus
             ->expects($this->once())
             ->method('getSubjectIteration')
-            ->will($this->returnValue(new \ArrayIterator(array($subject, $subject, $subject))));
+            ->will($this->returnValue(new \ArrayIterator([$subject, $subject, $subject])));
         $corpusName = 'corpus';
         $this->corpusProvider
             ->expects($this->any())
@@ -76,7 +76,7 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
         $this->indexCallbackProvider
             ->expects($this->any())
             ->method('getCallbacksForCorpus')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
         $this->command->setCorpusName($corpusName);
         call_user_func($this->command);
     }

@@ -23,7 +23,7 @@ class AddSolariumPluginsPass implements CompilerPassInterface
         ];
         $solarium = $container->findDefinition($solariumClientId);
         foreach ($knownPluginIds as $key => $pluginId) {
-            $solarium->addMethodCall('registerPlugin', array($key, new Reference($pluginId)));
+            $solarium->addMethodCall('registerPlugin', [$key, new Reference($pluginId)]);
         }
     }
 }

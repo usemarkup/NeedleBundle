@@ -26,8 +26,8 @@ class RemoveDefaultFilterQueriesContextDecoratorTest extends \PHPUnit_Framework_
         $this->context
             ->expects($this->any())
             ->method('getDefaultFilterQueries')
-            ->will($this->returnValue(array($filterQuery)));
-        $this->assertEquals(array(), $this->decorator->getDefaultFilterQueries());
+            ->will($this->returnValue([$filterQuery]));
+        $this->assertEquals([], $this->decorator->getDefaultFilterQueries());
     }
 
     public function testGetItemsPerPageReturnsLargeNumber()

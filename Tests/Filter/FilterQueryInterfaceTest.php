@@ -11,12 +11,12 @@ class FilterQueryInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
     {
-        return array(
+        return [
             'getSearchKey',
             'getSearchValue',
             'getFilter',
             'getFilterValue',
-            );
+        ];
     }
 
     protected function getInterfaceUnderTest()

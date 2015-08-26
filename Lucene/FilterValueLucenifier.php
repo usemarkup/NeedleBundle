@@ -29,7 +29,7 @@ class FilterValueLucenifier
     {
         //if the filterValue is a union, iterate over it to form a query with an OR operator
         if ($filterValue instanceof Filter\CombinedFilterValueInterface) {
-            $luceneParts = array();
+            $luceneParts = [];
             foreach ($filterValue as $subValue) {
                 $luceneParts[] = $this->lucenify($subValue);
             }
@@ -42,6 +42,6 @@ class FilterValueLucenifier
         }
 
         //perform phrase escaping unless this is a range filter (and therefore we need to preserve lucene syntax)
-        return (!$filterValue instanceof Filter\RangeFilterValueInterface) ? $this->helper->assemble('%P1%', array($filterValue->getSearchValue())) : $filterValue->getSearchValue();
+        return (!$filterValue instanceof Filter\RangeFilterValueInterface) ? $this->helper->assemble('%P1%', [$filterValue->getSearchValue()]) : $filterValue->getSearchValue();
     }
 }

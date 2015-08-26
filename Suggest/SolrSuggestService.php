@@ -75,7 +75,7 @@ class SolrSuggestService implements SuggestServiceInterface
             return $groupedResultParser->parse($resultData['grouped']);
         }
 
-        return array(new SolrSuggestResult($resultSet));
+        return [new SolrSuggestResult($resultSet)];
     }
 
     /**
