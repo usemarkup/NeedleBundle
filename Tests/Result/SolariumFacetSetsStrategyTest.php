@@ -96,8 +96,7 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getIterator')
             ->will($this->returnValue(new \ArrayIterator([$key => $solariumFacet])));
-        $that = $this;
-        $strategy = new SolariumFacetSetsStrategy(function() use ($that) { return $that->solariumResult; }, $this->searchContext);
+        $strategy = new SolariumFacetSetsStrategy(function() { return $this->solariumResult; }, $this->searchContext);
         $facetSets = $strategy->getFacetSets();
         $this->assertContainsOnly('Markup\NeedleBundle\Facet\FacetSetInterface', $facetSets);
     }

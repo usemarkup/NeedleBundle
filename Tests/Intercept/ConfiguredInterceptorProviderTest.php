@@ -10,9 +10,8 @@ class ConfiguredInterceptorProviderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->interceptor = m::mock('Markup\NeedleBundle\Intercept\Interceptor');
-        $that = $this;
-        $closure = function () use ($that) {
-            return $that->interceptor;
+        $closure = function () {
+            return $this->interceptor;
         };
         $this->configurator = m::mock('Markup\NeedleBundle\Intercept\InterceptorConfiguratorInterface');
         $this->provider = new ConfiguredInterceptorProvider($closure, $this->configurator);
