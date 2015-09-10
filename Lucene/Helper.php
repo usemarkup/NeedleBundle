@@ -2,7 +2,9 @@
 
 namespace Markup\NeedleBundle\Lucene;
 
+use Markup\NeedleBundle\Exception\LuceneSyntaxException;
 use Solarium\Core\Query\Helper as SolariumHelper;
+use Solarium\Exception\ExceptionInterface as SolariumException;
 
 /**
 * A Lucene helper.
@@ -27,6 +29,21 @@ class Helper implements HelperInterface
      **/
     public function assemble($query, $parts)
     {
-        return $this->solariumHelper->assemble($query, $parts);
+        try {
+            $assembled = $this->solariumHelper->assemble($query, $parts);
+        } catch (SolariumException $e) {
+            throw new LuceneSyntaxException(
+                sprintf(
+                    'Could not build Lucene syntax with query "%" and parts: %s. Underlying exception message: %s',
+                    $query,
+                    implode(', ', $parts),
+                    $e->getMessage()
+                ),
+                0,
+                $e
+            );
+        }
+
+        return $assembled;
     }
 }
