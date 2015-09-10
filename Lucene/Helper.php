@@ -34,7 +34,7 @@ class Helper implements HelperInterface
         } catch (SolariumException $e) {
             throw new LuceneSyntaxException(
                 sprintf(
-                    'Could not build Lucene syntax with query "%" and parts: %s. Underlying exception message: %s',
+                    'Could not build Lucene syntax with query "%s" and parts: %s. Underlying exception message: %s',
                     $query,
                     implode(', ', $parts),
                     $e->getMessage()
