@@ -30,7 +30,7 @@ class SearchHelperExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            'needle_canonicalize_value_for_facet'      => new \Twig_Filter_Method($this, 'canonicalizeForFacet'),
+            new \Twig_SimpleFilter('needle_canonicalize_value_for_facet', [$this, 'canonicalizeForFacet']),
         ];
     }
 
