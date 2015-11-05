@@ -15,8 +15,6 @@ use Markup\NeedleBundle\Filter\UnionFilterValue;
 use Markup\NeedleBundle\Filter\ScalarFilterValue;
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
-use Markup\NeedleBundle\Sort\RelevanceSort;
-use Markup\NeedleBundle\Sort\Sort;
 use Markup\NeedleBundle\Sort\SortCollection;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
@@ -125,13 +123,13 @@ class ConfiguredContext implements SearchContextInterface
                 $q = new FilterQuery($this->attributeProvider->getAttributeByName($attr), new ScalarFilterValue($value));
             } else {
                 $q = new FilterQuery(
-                        $this->attributeProvider->getAttributeByName($attr),
-                        new UnionFilterValue(
-                            array_map(function ($filterValue) {
-                                    return new ScalarFilterValue($filterValue);
-                                }, $value)
-                            )
-                    );
+                    $this->attributeProvider->getAttributeByName($attr),
+                    new UnionFilterValue(
+                        array_map(function ($filterValue) {
+                            return new ScalarFilterValue($filterValue);
+                        }, $value)
+                    )
+                );
             }
             $queries[] = $q;
         }
@@ -164,31 +162,20 @@ class ConfiguredContext implements SearchContextInterface
     private function createSortCollectionForConfig(array $sortConfig)
     {
         $sorts = new SortCollection();
+        $contextSortAttributeFactory = new ContextSortAttributeFactory($this->attributeProvider);
+
         foreach ($sortConfig as $attr => $direction) {
             //allow legacy format (using hash as if it is ordered - which it is in PHP but not in other languages like JavaScript)
             if (is_array($direction)) {
                 foreach ($direction as $attrKey => $dir) {
-                    $sorts->add($this->createSortForAttributeNameAndDirection($attrKey, $dir));
+                    $sorts->add($contextSortAttributeFactory->createSortForAttributeNameAndDirection($attrKey, $dir));
                 }
                 continue;
             }
-            $sorts->add($this->createSortForAttributeNameAndDirection($attr, $direction));
+            $sorts->add($contextSortAttributeFactory->createSortForAttributeNameAndDirection($attr, $direction));
         }
 
         return $sorts;
-    }
-
-    /**
-     * @param string $attr
-     * @param string $direction A ContextConfigurationInterface::ORDER_* value.
-     */
-    private function createSortForAttributeNameAndDirection($attr, $direction)
-    {
-        if ($attr === ContextConfigurationInterface::SORT_RELEVANCE) {
-            return new RelevanceSort();
-        }
-
-        return new Sort($this->attributeProvider->getAttributeByName($attr), $direction === ContextConfigurationInterface::ORDER_DESC);
     }
 
     /**
