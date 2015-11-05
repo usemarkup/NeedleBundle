@@ -69,7 +69,7 @@ class ConfiguredContextProvider
         $this->facetCollatorProvider = $facetCollatorProvider;
         $this->facetSortOrderProvider = $facetSortOrderProvider;
         $this->interceptorProvider = $interceptorProvider;
-        $this->decorators = new \SplQueue();
+        $this->decorators = new ContextDecoratorPriorityQueue();
     }
 
     /**
@@ -95,14 +95,16 @@ class ConfiguredContextProvider
     }
 
     /**
-     * Add a context decorator to be apply to any generated context. First decorators provided are applied first.
+     * Add a context decorator to be apply to any generated context.
      *
      * @param ContextDecoratorInterface $decorator
-     * @return self
+     * @param int                       $priority
+     *
+     * @return $this
      */
-    public function addDecorator(ContextDecoratorInterface $decorator)
+    public function addDecorator(ContextDecoratorInterface $decorator, $priority = 500)
     {
-        $this->decorators->enqueue($decorator);
+        $this->decorators->insert($decorator, $priority);
 
         return $this;
     }
