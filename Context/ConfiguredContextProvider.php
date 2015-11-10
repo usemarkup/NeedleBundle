@@ -102,7 +102,7 @@ class ConfiguredContextProvider
      *
      * @return $this
      */
-    public function addDecorator(ContextDecoratorInterface $decorator, $priority = 500)
+    public function addDecorator(ContextDecoratorInterface $decorator, $priority = 0)
     {
         $this->decorators->insert($decorator, $priority);
 
