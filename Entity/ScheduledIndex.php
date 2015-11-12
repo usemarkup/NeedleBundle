@@ -74,6 +74,9 @@ class ScheduledIndex
     public function setStatus($status)
     {
         $this->status = $status;
+        if ($status === self::COMPLETE) {
+            $this->setComplete(new \Datetime('now'));
+        }
 
         return $this;
     }
