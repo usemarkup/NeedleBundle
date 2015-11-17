@@ -59,6 +59,7 @@ class Configuration implements ConfigurationInterface
                                         ->useAttributeAsKey('attr')
                                         ->prototype('variable')->end()
                                     ->end()
+                                    ->scalarNode('query')->end()
                                     ->scalarNode('route')->cannotBeEmpty()->end()
                                     ->arrayNode('route_params')
                                         ->useAttributeAsKey('param')
