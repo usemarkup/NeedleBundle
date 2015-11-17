@@ -57,7 +57,7 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('corpus')->cannotBeEmpty()->end()
                                     ->arrayNode('filters')
                                         ->useAttributeAsKey('attr')
-                                        ->prototype('scalar')->end()
+                                        ->prototype('variable')->end()
                                     ->end()
                                     ->scalarNode('route')->cannotBeEmpty()->end()
                                     ->arrayNode('route_params')
