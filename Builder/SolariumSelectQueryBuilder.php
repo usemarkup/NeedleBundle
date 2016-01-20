@@ -117,7 +117,7 @@ class SolariumSelectQueryBuilder
                 }
                 $solariumFacets = [];
                 //check whether to request missing facet values
-                $checkMissingFacetValues = $query->shouldRequestFacetValueForMissing() ?: null;
+                $checkMissingFacetValues = (method_exists($this->getSearchContext(), 'shouldRequestFacetValueForMissing')) ? $this->getSearchContext()->shouldRequestFacetValueForMissing() : null;
 
                 //if it's a range facet, create accordingly
                 if ($facet instanceof RangeFacetInterface) {
