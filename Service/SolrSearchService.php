@@ -2,26 +2,31 @@
 
 namespace Markup\NeedleBundle\Service;
 
-use Markup\NeedleBundle\Query\RecordableSelectQueryInterface;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
+use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Query\RecordableSelectQueryInterface;
+use Markup\NeedleBundle\Query\ResolvedSelectQuery;
+use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
 use Markup\NeedleBundle\Result\SolariumDebugOutputStrategy;
 use Markup\NeedleBundle\Result\SolariumFacetSetsStrategy;
-use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Result\SolariumSpellcheckResultStrategy;
 use Pagerfanta\Adapter\SolariumAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Templating\EngineInterface as TemplatingEngine;
 use Solarium\Client as SolariumClient;
+use Symfony\Component\Templating\EngineInterface as TemplatingEngine;
 
 /**
-* A search service using Solr/ Solarium.
-*/
+ * A search service using Solr/ Solarium.
+ *
+ * Composes a SelectQuery & SearchContext (into a ResolvedQuery), converts it into a solr query and
+ * executes the query (using Solarium) and then returns a result (as a PagerfantaResultAdapter)
+ */
 class SolrSearchService implements SearchServiceInterface
 {
     /**
-     * Solr needs specification of a very large number for a 'view all' function.  An infinitely large number, in fact.  Like 600.
+     * Solr needs specification of a very large number for a 'view all' function.
+     * An infinitely large number, in fact.  Like 600.
      **/
     const INFINITY = 600;
 
@@ -53,22 +58,29 @@ class SolrSearchService implements SearchServiceInterface
 
     /**
      * @param SolariumClient             $solarium
-     * @param SolariumSelectQueryBuilder $solarium_query_builder
+     * @param SolariumSelectQueryBuilder $solariumQueryBuilder
      **/
-    public function __construct(SolariumClient $solarium, SolariumSelectQueryBuilder $solarium_query_builder, TemplatingEngine $templating = null)
-    {
+    public function __construct(
+        SolariumClient $solarium,
+        SolariumSelectQueryBuilder $solariumQueryBuilder,
+        TemplatingEngine $templating = null
+    ) {
         $this->solarium = $solarium;
-        $this->solariumQueryBuilder = $solarium_query_builder;
+        $this->solariumQueryBuilder = $solariumQueryBuilder;
         $this->templating = $templating;
     }
 
+    /**
+     * @param  SelectQueryInterface    $query
+     * @return PagerfantaResultAdapter
+     */
     public function executeQuery(SelectQueryInterface $query)
     {
         $solariumQueryBuilder = $this->getSolariumQueryBuilder();
-        if ($this->hasContext()) {
-            $solariumQueryBuilder->setSearchContext($this->getContext());
-        }
+
+        $query = new ResolvedSelectQuery($query, $this->hasContext() ? $this->getContext() : null);
         $solariumQuery = $solariumQueryBuilder->buildSolariumQueryFromGeneric($query);
+
         $pagerfantaAdapter = new SolariumAdapter($this->getSolariumClient(), $solariumQuery);
         $pagerfanta = new Pagerfanta($pagerfantaAdapter);
         $maxPerPage = $query->getMaxPerPage();
@@ -82,13 +94,16 @@ class SolrSearchService implements SearchServiceInterface
         }
 
         $result = new PagerfantaResultAdapter($pagerfanta);
-        $resultClosure = function() use ($pagerfantaAdapter) {
+        $resultClosure = function () use ($pagerfantaAdapter) {
             return $pagerfantaAdapter->getResultSet();
         };
 
         //set the strategy to fetch facet sets, as these are not handled by pagerfanta
         if ($this->hasContext()) {
-            $result->setFacetSetStrategy(new SolariumFacetSetsStrategy($resultClosure, $this->getContext(), ($query instanceof RecordableSelectQueryInterface) ? $query->getRecord() : null));
+            $result->setFacetSetStrategy(
+                new SolariumFacetSetsStrategy($resultClosure, $this->getContext(),
+                ($query instanceof RecordableSelectQueryInterface) ? $query->getRecord() : null)
+            );
         }
 
         //set any spellcheck result

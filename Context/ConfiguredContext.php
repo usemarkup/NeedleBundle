@@ -253,4 +253,12 @@ class ConfiguredContext implements SearchContextInterface
     {
         return $this->interceptorProvider->createInterceptor($this->config->getIntercepts());
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function shouldRequestFacetValueForMissing()
+    {
+        return false;
+    }
 }

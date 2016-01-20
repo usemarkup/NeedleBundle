@@ -10,8 +10,8 @@ use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Sort\EmptySortCollection;
 
 /**
-* A context for searches, providing information that can determine how searches display, which is agnostic of search engine implementations.
-*/
+ * A context for searches, providing information that can determine how searches display, which is agnostic of search engine implementations.
+ */
 class SearchContext implements SearchContextInterface
 {
     /**
@@ -47,48 +47,83 @@ class SearchContext implements SearchContextInterface
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultFilterQueries()
     {
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultSortCollectionForQuery(SelectQueryInterface $query)
     {
         return new EmptySortCollection();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet)
     {
         return false;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSetDecoratorForFacet(AttributeInterface $facet)
     {
         return false;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAvailableFilterNames()
     {
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getBoostQueryFields()
     {
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFacetCollatorProvider()
     {
         return new NullCollatorProvider();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFacetSortOrderProvider()
     {
         return new NullSortOrderProvider();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getInterceptor()
     {
         return new NullInterceptor();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function shouldRequestFacetValueForMissing()
+    {
+        return false;
     }
 }

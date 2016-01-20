@@ -2,14 +2,12 @@
 
 namespace Markup\NeedleBundle\Builder;
 
-use Markup\NeedleBundle\Boost\BoostQueryField;
-use Markup\NeedleBundle\Context\SearchContextInterface as SearchContext;
 use Markup\NeedleBundle\Facet\RangeFacetInterface;
 use Markup\NeedleBundle\Filter;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Query\RecordableSelectQueryInterface;
-use Markup\NeedleBundle\Query\SelectQueryInterface as GenericSelectQuery;
-use Markup\NeedleBundle\Sort\EmptySortCollection;
+use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Solarium\Client as SolariumClient;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
@@ -31,11 +29,6 @@ class SolariumSelectQueryBuilder
      * @var FilterQueryLucenifier
      **/
     private $lucenifier;
-
-    /**
-     * @var SearchContext
-     **/
-    private $searchContext;
 
     /**
      * Whether the builder should request that Solr returns debug information.
@@ -61,7 +54,7 @@ class SolariumSelectQueryBuilder
      *
      * @return SolariumQuery
      **/
-    public function buildSolariumQueryFromGeneric(GenericSelectQuery $query)
+    public function buildSolariumQueryFromGeneric(ResolvedSelectQueryInterface $query)
     {
         $solariumQuery = $this->getSolariumClient()->createSelect();
 
@@ -71,33 +64,35 @@ class SolariumSelectQueryBuilder
         }
 
         //determine whether we are using the facet values for an underlying "base" (recorded) query
-        $shouldUseFacetValuesForRecordedQuery = (bool) $this->hasSearchContext()
-            && $query instanceof RecordableSelectQueryInterface
+        $shouldUseFacetValuesForRecordedQuery = (bool) $query instanceof RecordableSelectQueryInterface
             && $query->hasRecord()
             && (count($query->getFilterQueries()) > count($query->getRecord()->getFilterQueries()));
 
         //if there are filter queries, add them
         $filterQueries = $query->getFilterQueries();
+        $extraLuceneFilters = [];
 
         if ($shouldUseFacetValuesForRecordedQuery) {
             //pick out Lucene representations for the filters being applied on top of an underlying "base" query
-            $extraLuceneFilters = array_values(array_diff($this->lucenifyFilterQueries($filterQueries), $this->lucenifyFilterQueries($query->getRecord()->getFilterQueries())));
-        } else {
-            $extraLuceneFilters = [];
+            $extraLuceneFilters = array_values(
+                array_diff(
+                    $this->lucenifyFilterQueries($filterQueries),
+                    $this->lucenifyFilterQueries($query->getRecord()->getFilterQueries())
+                )
+            );
         }
 
-        if ($this->hasSearchContext()) {
-            //add default filter queries from the search context
-            $filterQueries = array_merge($filterQueries, $this->getSearchContext()->getDefaultFilterQueries());
-        }
         if (!empty($filterQueries)) {
+            // TODO - move deduping to ResolvedSelectQuery
             $filterQueries = $this->dedupeFilterQueries($filterQueries);
+
             foreach ($filterQueries as $filterQuery) {
                 $luceneFilter = $this->lucenifyFilterQuery($filterQuery);
                 $solariumFilterQuery = $solariumQuery
                     ->createFilterQuery($filterQuery->getFilter()->getName())
                     ->setQuery($luceneFilter)
                     ->addTag($filterQuery->getFilter()->getName());
+
                 if ($shouldUseFacetValuesForRecordedQuery && in_array($luceneFilter, $extraLuceneFilters)) {
                     $solariumFilterQuery->addTag(sprintf('fq%u', array_search($luceneFilter, $extraLuceneFilters)));
                 }
@@ -111,96 +106,94 @@ class SolariumSelectQueryBuilder
         }
 
         //if there are facets to request, request them
-        if ($this->hasSearchContext()) {
-            $facets = $this->getSearchContext()->getFacets();
+        $facets = $query->getFacets();
+        if (!empty($facets)) {
             $facetNamesToExclude = $query->getFacetNamesToExclude();
-            if (!empty($facets)) {
-                foreach ($facets as $facet) {
-                    //if query indicates we should skip this facet, then skip it
-                    if (false !== array_search($facet->getSearchKey(), $facetNamesToExclude)) {
-                        continue;
-                    }
-                    $solariumFacets = [];
-                    //check whether to request missing facet values
-                    $checkMissingFacetValues = (method_exists($this->getSearchContext(), 'shouldRequestFacetValueForMissing')) ? $this->getSearchContext()->shouldRequestFacetValueForMissing() : null;
-                    //if it's a range facet, create accordingly
-                    if ($facet instanceof RangeFacetInterface) {
+
+            foreach ($facets as $facet) {
+                //if query indicates we should skip this facet, then skip it
+                if (false !== array_search($facet->getSearchKey(), $facetNamesToExclude)) {
+                    continue;
+                }
+                $solariumFacets = [];
+                //check whether to request missing facet values
+                $checkMissingFacetValues = $query->shouldRequestFacetValueForMissing() ?: null;
+
+                //if it's a range facet, create accordingly
+                if ($facet instanceof RangeFacetInterface) {
+                    $solariumFacets[] = $solariumQuery
+                        ->getFacetSet()
+                        ->createFacetRange($facet->getSearchKey())
+                        ->setStart($facet->getRangesStart())
+                        ->setEnd($facet->getRangesEnd())
+                        ->setGap($facet->getRangeSize());
+                } else {
+                    $facetSortOrder = $query->getSortOrderForFacet($facet);
+
+                    if ($shouldUseFacetValuesForRecordedQuery) {
                         $solariumFacets[] = $solariumQuery
                             ->getFacetSet()
-                            ->createFacetRange($facet->getSearchKey())
-                            ->setStart($facet->getRangesStart())
-                            ->setEnd($facet->getRangesEnd())
-                            ->setGap($facet->getRangeSize());
+                            ->createFacetField(sprintf('include_%s', $facet->getSearchKey()))
+                            ->setMinCount(1)
+                            ->setMissing($checkMissingFacetValues)
+                            ->setSort($facetSortOrder ?: 'index');
+                        $solariumFacets[] = $solariumQuery
+                            ->getFacetSet()
+                            ->createFacetField(sprintf('exclude_%s', $facet->getSearchKey()))
+                            ->setMinCount(1)
+                            ->setMissing($checkMissingFacetValues)
+                            ->setSort($facetSortOrder ?: 'index')
+                            ->addExcludes(array_map(function ($key) { return sprintf('fq%u', $key); }, array_keys($extraLuceneFilters)));
                     } else {
-                        $facetSortOrder = $this->getSearchContext()->getFacetSortOrderProvider()->getSortOrderForFacet($facet);
-                        if ($shouldUseFacetValuesForRecordedQuery) {
-                            $solariumFacets[] = $solariumQuery
-                                ->getFacetSet()
-                                ->createFacetField(sprintf('include_%s', $facet->getSearchKey()))
-                                ->setMinCount(1)
-                                ->setMissing($checkMissingFacetValues)
-                                ->setSort($facetSortOrder ?: 'index');
-                            $solariumFacets[] = $solariumQuery
-                                ->getFacetSet()
-                                ->createFacetField(sprintf('exclude_%s', $facet->getSearchKey()))
-                                ->setMinCount(1)
-                                ->setMissing($checkMissingFacetValues)
-                                ->setSort($facetSortOrder ?: 'index')
-                                ->addExcludes(array_map(function ($key) { return sprintf('fq%u', $key); }, array_keys($extraLuceneFilters)));
-                        } else {
-                            $solariumFacets[] = $solariumQuery
-                                ->getFacetSet()
-                                ->createFacetField($facet->getSearchKey())
-                                ->setMinCount(1) //sets default mincount of 1, so a facet value needs at least one corresponding result to show
-                                ->setMissing($checkMissingFacetValues)
-                                ->setSort($facetSortOrder ?: 'index');
-                        }
+                        $solariumFacets[] = $solariumQuery
+                            ->getFacetSet()
+                            ->createFacetField($facet->getSearchKey())
+                            ->setMinCount(1) //sets default mincount of 1, so a facet value needs at least one corresponding result to show
+                            ->setMissing($checkMissingFacetValues)
+                            ->setSort($facetSortOrder ?: 'index');
                     }
+                }
 
-                    foreach ($solariumFacets as $solariumFacet) {
-                        $solariumFacet
-                            ->setField($facet->getSearchKey());
+                foreach ($solariumFacets as $solariumFacet) {
+                    $solariumFacet
+                        ->setField($facet->getSearchKey());
 
-                        //set Solr local params to exclude filter values if context demands
-                        if ($this->getSearchContext()->getWhetherFacetIgnoresCurrentFilters($facet)) {
-                            $solariumFacet->addExclude($facet->getName());
-                        }
+                    //set Solr local params to exclude filter values
+                    if ($query->getWhetherFacetIgnoresCurrentFilters($facet)) {
+                        $solariumFacet->addExclude($facet->getName());
                     }
                 }
             }
         }
 
         //if there are boost query fields to apply, apply them, and switch the search engine to edismax from lucene
-        if ($this->hasSearchContext()) {
-            $boostQueryFields = $this->getSearchContext()->getBoostQueryFields();
-            if (!empty($boostQueryFields)) {
-                //set to using edismax
-                $edismax = $solariumQuery->getEDismax();
-                //set query/ query alternative to all if applicable
-                if ($solariumQuery->getQuery() === self::ALL_SIGNIFIER) {
-                    $solariumQuery->setQuery('');
-                    $edismax->setQueryAlternative(self::ALL_SIGNIFIER);
-                }
-                //apply boosts
-                $queryFields = [];
-                foreach ($boostQueryFields as $boostField) {
-                    /**
-                     * @var BoostQueryField $boostField
-                     */
-                    $queryFields[] = $boostField->getAttribute()->getSearchKey(['prefer_parsed' => true]).(($boostField->getBoostFactor() !== 1) ? ('^'.strval($boostField->getBoostFactor())) : '');
-                }
-                $edismax->setQueryFields(implode(' ', $queryFields));
+        $boostQueryFields = $query->getBoostQueryFields();
+
+        if (!empty($boostQueryFields)) {
+            //set to using edismax
+            $edismax = $solariumQuery->getEDismax();
+            //set query/ query alternative to all if applicable
+            if ($solariumQuery->getQuery() === self::ALL_SIGNIFIER) {
+                $solariumQuery->setQuery('');
+                $edismax->setQueryAlternative(self::ALL_SIGNIFIER);
             }
+            //apply boosts
+            $queryFields = [];
+            foreach ($boostQueryFields as $boostField) {
+                $queryFields[] = $boostField->getAttribute()->getSearchKey(['prefer_parsed' => true]).(($boostField->getBoostFactor() !== 1) ? ('^'.strval($boostField->getBoostFactor())) : '');
+            }
+            $edismax->setQueryFields(implode(' ', $queryFields));
         }
 
         //if there are sorts to apply, apply them
-        if ($this->hasSearchContext()) {
-            $sortCollection = ($query->hasSortCollection()) ? $query->getSortCollection() : $this->getSearchContext()->getDefaultSortCollectionForQuery($query);
-        } else {
-            $sortCollection = ($query->hasSortCollection()) ? $query->getSortCollection() : new EmptySortCollection();
-        }
-        foreach ($sortCollection as $sort) {
-            $solariumQuery->addSort($sort->getFilter()->getSearchKey(), ($sort->isDescending()) ? SolariumQuery::SORT_DESC : SolariumQuery::SORT_ASC);
+        $sortCollection = $query->getSortCollection();
+        if ($sortCollection instanceof SortCollectionInterface) {
+            foreach ($sortCollection as $sort) {
+                $solariumQuery->addSort(
+                    $sort->getFilter()->getSearchKey(),
+                    ($sort->isDescending()) ? SolariumQuery::SORT_DESC : SolariumQuery::SORT_ASC
+                );
+            }
         }
 
         //if there is a spellcheck request to apply, apply it
@@ -321,31 +314,5 @@ class SolariumSelectQueryBuilder
     private function getSolariumClient()
     {
         return $this->solarium;
-    }
-
-    /**
-     * Sets a search context on this builder, which can configure the query that gets built.
-     *
-     * @param SearchContext $context
-     **/
-    public function setSearchContext(SearchContext $context)
-    {
-        return $this->searchContext = $context;
-    }
-
-    /**
-     * @return bool
-     **/
-    private function hasSearchContext()
-    {
-        return null !== $this->searchContext;
-    }
-
-    /**
-     * @return SearchContext
-     **/
-    private function getSearchContext()
-    {
-        return $this->searchContext;
     }
 }
