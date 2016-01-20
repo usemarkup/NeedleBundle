@@ -1,6 +1,9 @@
 # Bootstrap
 app/bootstrap*
 
+# Executables
+bin/*
+
 # Symfony directories
 vendor/*
 */logs/*
