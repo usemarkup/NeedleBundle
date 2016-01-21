@@ -5,8 +5,8 @@ namespace Markup\NeedleBundle\Tests\Context;
 use Markup\NeedleBundle\Tests\AbstractInterfaceTestCase;
 
 /**
-* A test for an interface for display contexts for search engines.
-*/
+ * A test for an interface for display contexts for search engines.
+ */
 class SearchContextInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()

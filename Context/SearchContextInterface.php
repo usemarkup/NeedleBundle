@@ -51,7 +51,7 @@ interface SearchContextInterface
     /**
      * Gets whether the given facet that is being displayed should ignore any corresponding filter values that are currently selected (true), or whether they should just reflect the returned results (false).
      *
-     * @param AttributeInterface $facet
+     * @param  AttributeInterface $facet
      * @return bool
      **/
     public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet);
