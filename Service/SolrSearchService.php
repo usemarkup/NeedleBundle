@@ -6,6 +6,8 @@ use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Query\RecordableSelectQueryInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
+use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorInterface;
+use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorPriorityQueue;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
 use Markup\NeedleBundle\Result\SolariumDebugOutputStrategy;
@@ -59,6 +61,7 @@ class SolrSearchService implements SearchServiceInterface
     /**
      * @param SolariumClient             $solarium
      * @param SolariumSelectQueryBuilder $solariumQueryBuilder
+     * @param TemplatingEngine|null      $templating
      **/
     public function __construct(
         SolariumClient $solarium,
@@ -68,6 +71,7 @@ class SolrSearchService implements SearchServiceInterface
         $this->solarium = $solarium;
         $this->solariumQueryBuilder = $solariumQueryBuilder;
         $this->templating = $templating;
+        $this->decorators = new ResolvedSelectQueryDecoratorPriorityQueue();
     }
 
     /**
@@ -79,6 +83,10 @@ class SolrSearchService implements SearchServiceInterface
         $solariumQueryBuilder = $this->getSolariumQueryBuilder();
 
         $query = new ResolvedSelectQuery($query, $this->hasContext() ? $this->getContext() : null);
+        foreach ($this->decorators as $decorator) {
+            $query = $decorator->decorate($query);
+        }
+
         $solariumQuery = $solariumQueryBuilder->buildSolariumQueryFromGeneric($query);
 
         $pagerfantaAdapter = new SolariumAdapter($this->getSolariumClient(), $solariumQuery);
@@ -117,9 +125,22 @@ class SolrSearchService implements SearchServiceInterface
         return $result;
     }
 
+    /**
+     * {@inherit}
+     */
     public function setContext(SearchContextInterface $context)
     {
         $this->context = $context;
+    }
+
+    /**
+     * {@inherit}
+     */
+    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator, $priority = 0)
+    {
+        $this->decorators->insert($decorator, $priority);
+
+        return $this;
     }
 
     /**

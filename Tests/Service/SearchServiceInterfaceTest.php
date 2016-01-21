@@ -5,8 +5,8 @@ namespace Markup\NeedleBundle\Tests\Service;
 use Markup\NeedleBundle\Tests\AbstractInterfaceTestCase;
 
 /**
-* A test for a search service interface.
-*/
+ * A test for a search service interface.
+ */
 class SearchServiceInterfaceTest extends AbstractInterfaceTestCase
 {
     protected function getExpectedPublicMethods()
@@ -14,6 +14,7 @@ class SearchServiceInterfaceTest extends AbstractInterfaceTestCase
         return [
             'executeQuery',
             'setContext',
+            'addDecorator',
         ];
     }
 
