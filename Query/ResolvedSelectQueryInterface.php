@@ -56,4 +56,12 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
      * @return boolean
      **/
     public function shouldUseFacetValuesForRecordedQuery();
+
+    /**
+     * If the internal query is an instance of RecordableSelectQueryInterface and has a record, returns SelectQueryInterface
+     * otherwise null
+     *
+     * @return SelectQueryInterface|null
+     **/
+    public function getRecord();
 }

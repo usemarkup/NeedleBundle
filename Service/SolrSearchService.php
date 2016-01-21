@@ -4,7 +4,6 @@ namespace Markup\NeedleBundle\Service;
 
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
 use Markup\NeedleBundle\Context\SearchContextInterface;
-use Markup\NeedleBundle\Query\RecordableSelectQueryInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
@@ -101,8 +100,7 @@ class SolrSearchService implements SearchServiceInterface
         //set the strategy to fetch facet sets, as these are not handled by pagerfanta
         if ($this->hasContext()) {
             $result->setFacetSetStrategy(
-                new SolariumFacetSetsStrategy($resultClosure, $this->getContext(),
-                ($query instanceof RecordableSelectQueryInterface) ? $query->getRecord() : null)
+                new SolariumFacetSetsStrategy($resultClosure, $this->getContext(), $query->getRecord())
             );
         }
 

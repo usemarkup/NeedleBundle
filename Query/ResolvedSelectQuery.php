@@ -272,4 +272,19 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
 
         return false;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecord()
+    {
+        if (!$this->getSelectQuery() instanceof RecordableSelectQueryInterface) {
+            return;
+        }
+        if (!$this->getSelectQuery()->hasRecord()) {
+            return;
+        }
+
+        return $this->getSelectQuery()->getRecord();
+    }
 }
