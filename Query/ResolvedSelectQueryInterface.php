@@ -49,4 +49,11 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
      * @return BoostQueryField[]
      **/
     public function getBoostQueryFields();
+
+    /**
+     * Determines whether we are using the facet values for an underlying "base" (recorded) query
+     *
+     * @return boolean
+     **/
+    public function shouldUseFacetValuesForRecordedQuery();
 }

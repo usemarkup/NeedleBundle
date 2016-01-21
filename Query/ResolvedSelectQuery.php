@@ -250,4 +250,26 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
 
         return $this->getSearchContext()->getBoostQueryFields();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function shouldUseFacetValuesForRecordedQuery()
+    {
+        if ($this->getSearchContext() === null) {
+            return false;
+        }
+        if (!$this->getSelectQuery() instanceof RecordableSelectQueryInterface) {
+            return false;
+        }
+        if (!$this->getSelectQuery()->hasRecord()) {
+            return false;
+        }
+
+        if (count($this->getSelectQuery()->getFilterQueries()) > count($this->getSelectQuery()->getRecord()->getFilterQueries())) {
+            return true;
+        }
+
+        return false;
+    }
 }

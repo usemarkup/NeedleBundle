@@ -31,6 +31,7 @@ class ResolvedSelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'getSortOrderForFacet',
             'getWhetherFacetIgnoresCurrentFilters',
             'getBoostQueryFields',
+            'shouldUseFacetValuesForRecordedQuery',
         ];
         $query = new \ReflectionClass('Markup\NeedleBundle\Query\ResolvedSelectQueryInterface');
         $actual_public_methods = [];

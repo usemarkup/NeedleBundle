@@ -5,7 +5,6 @@ namespace Markup\NeedleBundle\Builder;
 use Markup\NeedleBundle\Facet\RangeFacetInterface;
 use Markup\NeedleBundle\Filter;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
-use Markup\NeedleBundle\Query\RecordableSelectQueryInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Solarium\Client as SolariumClient;
@@ -64,9 +63,7 @@ class SolariumSelectQueryBuilder
         }
 
         //determine whether we are using the facet values for an underlying "base" (recorded) query
-        $shouldUseFacetValuesForRecordedQuery = (bool) $query instanceof RecordableSelectQueryInterface
-            && $query->hasRecord()
-            && (count($query->getFilterQueries()) > count($query->getRecord()->getFilterQueries()));
+        $shouldUseFacetValuesForRecordedQuery = $query->shouldUseFacetValuesForRecordedQuery();
 
         //if there are filter queries, add them
         $filterQueries = $query->getFilterQueries();
