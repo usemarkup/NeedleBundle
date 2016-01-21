@@ -90,4 +90,11 @@ interface SearchContextInterface
      * @return \Markup\NeedleBundle\Intercept\InterceptorInterface
      **/
     public function getInterceptor();
+
+    /**
+     * Gets whether a query should request facet values for missing (i.e. no match on that facet)
+     *
+     * @return boolean
+     **/
+    public function shouldRequestFacetValueForMissing();
 }
