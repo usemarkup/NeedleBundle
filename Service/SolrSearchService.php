@@ -59,6 +59,11 @@ class SolrSearchService implements SearchServiceInterface
     private $context = null;
 
     /**
+     * @var ArrayCollection
+     **/
+    private $decorators = null;
+
+    /**
      * @param SolariumClient             $solarium
      * @param SolariumSelectQueryBuilder $solariumQueryBuilder
      * @param TemplatingEngine|null      $templating
@@ -127,7 +132,7 @@ class SolrSearchService implements SearchServiceInterface
     }
 
     /**
-     * {@inherit}
+     * {@inheritdoc}
      */
     public function setContext(SearchContextInterface $context)
     {
@@ -135,7 +140,7 @@ class SolrSearchService implements SearchServiceInterface
     }
 
     /**
-     * {@inherit}
+     * {@inheritdoc}
      */
     public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator)
     {
