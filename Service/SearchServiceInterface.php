@@ -2,8 +2,9 @@
 
 namespace Markup\NeedleBundle\Service;
 
-use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorInterface;
+use Markup\NeedleBundle\Query\SelectQueryInterface;
 
 /**
  * An interface for a search service.
@@ -24,4 +25,12 @@ interface SearchServiceInterface
      * @param SearchContextInterface $context
      **/
     public function setContext(SearchContextInterface $context);
+
+    /**
+     * Adds a decorator that will decorate the ResolvedSelectQuery during execution
+     * directly after the SelectQuery has been combined with the SearchContext
+     *
+     * @param ResolvedSelectQueryDecoratorInterface $decorator
+     **/
+    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator);
 }

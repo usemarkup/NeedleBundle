@@ -23,6 +23,7 @@ class SearchContextInterfaceTest extends AbstractInterfaceTestCase
             'getFacetCollatorProvider',
             'getFacetSortOrderProvider',
             'getInterceptor',
+            'shouldRequestFacetValueForMissing',
         ];
     }
 
