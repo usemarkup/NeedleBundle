@@ -2,12 +2,12 @@
 
 namespace Markup\NeedleBundle\Service;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Query\RecordableSelectQueryInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorInterface;
-use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorPriorityQueue;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
 use Markup\NeedleBundle\Result\SolariumDebugOutputStrategy;
@@ -71,7 +71,7 @@ class SolrSearchService implements SearchServiceInterface
         $this->solarium = $solarium;
         $this->solariumQueryBuilder = $solariumQueryBuilder;
         $this->templating = $templating;
-        $this->decorators = new ResolvedSelectQueryDecoratorPriorityQueue();
+        $this->decorators = new ArrayCollection();
     }
 
     /**
@@ -83,6 +83,7 @@ class SolrSearchService implements SearchServiceInterface
         $solariumQueryBuilder = $this->getSolariumQueryBuilder();
 
         $query = new ResolvedSelectQuery($query, $this->hasContext() ? $this->getContext() : null);
+
         foreach ($this->decorators as $decorator) {
             $query = $decorator->decorate($query);
         }
@@ -136,9 +137,9 @@ class SolrSearchService implements SearchServiceInterface
     /**
      * {@inherit}
      */
-    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator, $priority = 0)
+    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator)
     {
-        $this->decorators->insert($decorator, $priority);
+        $this->decorators->add($decorator);
 
         return $this;
     }

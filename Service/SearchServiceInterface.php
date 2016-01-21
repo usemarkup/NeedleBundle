@@ -32,5 +32,5 @@ interface SearchServiceInterface
      *
      * @param ResolvedSelectQueryDecoratorInterface $decorator
      **/
-    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator, $priority = 0);
+    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator);
 }
