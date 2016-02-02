@@ -36,9 +36,11 @@ class IndexSchedulingEventListener
      *
      * @param Event $event
      **/
-    public function triggerSchedule(Event $event)
+    public function triggerSchedule(Event $event, $eventName = null)
     {
-        foreach ($this->getCorporaForEvent($event) as $corpus) {
+        //if using Symfony 2.3, there would be no event name provided by the dispatcher and we'd get it from the event
+        $eventName = (null !== $eventName) ? $eventName : $event->getName();
+        foreach ($this->getCorporaForEvent($eventName) as $corpus) {
             $this->scheduler->addToSchedule($corpus);
         }
     }
@@ -47,13 +49,12 @@ class IndexSchedulingEventListener
      * Registers a corpus to schedule an index against an event.
      *
      * @param  string|CorpusInterface $corpus
-     * @param  string|Event           $event
+     * @param  string                 $event  The name of an event.
      * @return self
      **/
     public function addCorpusForEvent($corpus, $event)
     {
         $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
-        $event = ($event instanceof Event) ? $event->getName() : $event;
         if (!isset($this->eventCorpora[$event])) {
             $this->eventCorpora[$event] = [];
         }
@@ -63,14 +64,15 @@ class IndexSchedulingEventListener
     }
 
     /**
+     * @var string $event
      * @return array
      **/
-    private function getCorporaForEvent(Event $event)
+    private function getCorporaForEvent($event)
     {
-        if (!isset($this->eventCorpora[$event->getName()])) {
+        if (!isset($this->eventCorpora[$event])) {
             return [];
         }
 
-        return $this->eventCorpora[$event->getName()];
+        return $this->eventCorpora[$event];
     }
 }
