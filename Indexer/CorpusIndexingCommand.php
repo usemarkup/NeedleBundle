@@ -149,7 +149,7 @@ class CorpusIndexingCommand
         $this->eventDispatcher->dispatch(SearchEvents::CORPUS_PRE_UPDATE, new CorpusPreUpdateEvent($this->getCorpus(), $isFullUpdate));
         $logger = $this->getLogger();
         $logger->info(sprintf('Indexing of corpus "%s" started.', $this->getCorpus()->getName()));
-        $logger->debug(sprintf('Memory usage before search indexing process: %01.0fKB.', memory_get_usage(true) / 1024));
+        $logger->debug(sprintf('Memory usage before search indexing process: %01.0fMB.', (memory_get_usage(true) / 1024) / 1024));
         $startTime = microtime(true);
         $wrappingIterator = $this->getWrappingIterator();
         if (!$this->iteratorAppended) {
@@ -173,7 +173,7 @@ class CorpusIndexingCommand
         $updateQuery->addOptimize();
         $result = $this->getSolariumClient()->update($updateQuery);
         $logger->debug(sprintf('Status code of Solr query: %s. Query time: %ums.', $result->getStatus(), $result->getQueryTime()));
-        $logger->debug(sprintf('Memory usage after search indexing process: %01.0fKB.', memory_get_usage(true) / 1024));
+        $logger->debug(sprintf('Memory usage after search indexing process: %01.0fMB.', (memory_get_usage(true) / 1024) / 1024));
         $endTime = microtime(true);
         $logger->info(sprintf('Indexing of corpus "%s" completed successfully in %01.3fs.', $this->getCorpus()->getName(), $endTime-$startTime));
         $this->eventDispatcher->dispatch(SearchEvents::CORPUS_POST_UPDATE, new CorpusPostUpdateEvent($this->getCorpus(), $isFullUpdate, new SolariumUpdateResult($result)));
