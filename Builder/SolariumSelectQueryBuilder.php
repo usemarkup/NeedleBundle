@@ -107,11 +107,14 @@ class SolariumSelectQueryBuilder
         if (!empty($facets)) {
             $facetNamesToExclude = $query->getFacetNamesToExclude();
 
+            $usingFacetComponent = false;
+
             foreach ($facets as $facet) {
                 //if query indicates we should skip this facet, then skip it
                 if (false !== array_search($facet->getSearchKey(), $facetNamesToExclude)) {
                     continue;
                 }
+                $usingFacetComponent = true;
                 $solariumFacets = [];
                 //check whether to request missing facet values
                 $checkMissingFacetValues = $query->shouldRequestFacetValueForMissing() ?: null;
@@ -160,6 +163,12 @@ class SolariumSelectQueryBuilder
                         $solariumFacet->addExclude($facet->getName());
                     }
                 }
+            }
+            //by default, remove the limit on facet results
+            //Solr has a default limit of 100, but a negative value removes it
+            //@see https://wiki.apache.org/solr/SimpleFacetParameters#facet.limit
+            if ($usingFacetComponent) {
+                $solariumQuery->getFacetSet()->setLimit(-1);
             }
         }
 
