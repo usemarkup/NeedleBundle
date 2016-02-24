@@ -203,3 +203,35 @@ services:
             - 10
     markup_needle.registry.attribute_specialization_context:
         class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextRegistry
+    markup_needle.terms_regex.solr:
+        class: Markup\NeedleBundle\Terms\SolrRegexTermsService
+        arguments:
+            - @markup_needle.solarium.client
+            - @logger
+            - @markup_needle.terms_field
+        tags:
+            - { name: markup_needle.terms, alias: solr_regex }
+    markup_needle.terms_prefix.solr:
+        class: Markup\NeedleBundle\Terms\SolrPrefixTermsService
+        arguments:
+            - @markup_needle.solarium.client
+            - @logger
+            - @markup_needle.terms_field
+        tags:
+            - { name: markup_needle.terms, alias: solr_prefix }
+    markup_needle.terms.noop:
+        class: Markup\NeedleBundle\Terms\NoopTermsService
+        tags:
+            - { name: markup_needle.terms, alias: noop }
+    markup_needle.terms_provider:
+        class: Markup\NeedleBundle\Terms\TermsServiceProvider
+        arguments:
+            - @service_container
+    markup_needle.terms:
+        class: Markup\NeedleBundle\Terms\TermsServiceInterface
+        factory_service: markup_needle.terms_provider
+        factory_method: getServiceForAlias
+        arguments:
+            - %markup_needle.terms.alias%
+    markup_needle.terms_field.null:
+            class: Markup\NeedleBundle\Terms\NullTermsFieldProvider
