@@ -26,6 +26,8 @@ class SelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'getMaxPerPage',
             'shouldTreatAsTextSearch',
             'getSpellcheck',
+            'getGroupingField',
+            'getGroupingSortCollection',
         ];
         $query = new \ReflectionClass('Markup\NeedleBundle\Query\SelectQueryInterface');
         $actual_public_methods = [];

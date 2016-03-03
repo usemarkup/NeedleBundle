@@ -110,4 +110,18 @@ interface SelectQueryInterface extends SimpleQueryInterface
      * @return SpellcheckInterface|null
      */
     public function getSpellcheck();
+
+    /**
+     * Gets a grouping field, or null if none set.
+     *
+     * @return string|null
+     */
+    public function getGroupingField();
+
+    /**
+     * Gets the sort collection used to sort the group internally
+     *
+     * @return \Markup\NeedleBundle\Sort\SortCollectionInterface|null
+     **/
+    public function getGroupingSortCollection();
 }

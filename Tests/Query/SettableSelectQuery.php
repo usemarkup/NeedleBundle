@@ -194,4 +194,21 @@ class SettableSelectQuery implements SelectQueryInterface
     {
         return null;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupingField()
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupingSortCollection()
+    {
+        return null;
+    }
+
 }
