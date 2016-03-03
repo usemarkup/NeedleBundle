@@ -228,7 +228,7 @@ class SolariumSelectQueryBuilder
                         ($groupingSort->isDescending()) ? SolariumQuery::SORT_DESC : SolariumQuery::SORT_ASC
                     );
                 }
-                $groupComponent->setSort(explode(',', $sortStringComponents));
+                $groupComponent->setSort(implode(',', $sortStringComponents));
             }
         }
 
