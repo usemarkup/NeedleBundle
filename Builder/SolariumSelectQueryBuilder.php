@@ -216,7 +216,9 @@ class SolariumSelectQueryBuilder
         if ($query->getGroupingField() !== null) {
             $groupComponent = $solariumQuery->getGrouping();
             $groupComponent->addField($query->getGroupingField());
-            $groupComponent->setMainResult(true);
+            $groupComponent->setLimit(1000);
+            $groupComponent->setMainResult(false);
+            $groupComponent->setNumberOfGroups(true);
 
             $groupingSortCollection = $query->getGroupingSortCollection();
             if ($groupingSortCollection instanceof SortCollectionInterface) {

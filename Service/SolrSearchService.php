@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\Service;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Markup\NeedleBundle\Adapter\GroupedQuerySolariumAdapter;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
@@ -94,7 +95,12 @@ class SolrSearchService implements SearchServiceInterface
 
         $solariumQuery = $solariumQueryBuilder->buildSolariumQueryFromGeneric($query);
 
-        $pagerfantaAdapter = new SolariumAdapter($this->getSolariumClient(), $solariumQuery);
+        if ($query->getGroupingField()) {
+            $pagerfantaAdapter = new GroupedQuerySolariumAdapter($this->getSolariumClient(), $solariumQuery);
+        } else {
+            $pagerfantaAdapter = new SolariumAdapter($this->getSolariumClient(), $solariumQuery);
+        }
+
         $pagerfanta = new Pagerfanta($pagerfantaAdapter);
         $maxPerPage = $query->getMaxPerPage();
         if (null === $maxPerPage && $this->hasContext() && $query->getPageNumber() !== null) {
