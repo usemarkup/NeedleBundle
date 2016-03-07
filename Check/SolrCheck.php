@@ -2,15 +2,16 @@
 
 namespace Markup\NeedleBundle\Check;
 
-use Liip\Monitor\Check\Check as BaseCheck;
-use Liip\Monitor\Result\CheckResult;
 use Solarium\Client as Solarium;
 use Solarium\Exception\ExceptionInterface as SolariumException;
+use ZendDiagnostics\Check\CheckInterface;
+use ZendDiagnostics\Result\Failure;
+use ZendDiagnostics\Result\Success;
 
 /**
 * A check object for checking whether Solr is accessible from this PHP application.
 */
-class SolrCheck extends BaseCheck
+class SolrCheck implements CheckInterface
 {
     /**
      * A Solarium client instance.
@@ -34,13 +35,13 @@ class SolrCheck extends BaseCheck
         try {
             $checkResult = $solarium->ping($ping);
         } catch (SolariumException $e) {
-            return $this->buildResult(sprintf('Ping on Solr failed with message: "%s"', $e->getMessage()), CheckResult::CRITICAL);
+            return new Failure(sprintf('Ping on Solr failed with message: "%s"', $e->getMessage()));
         }
 
-        return $this->buildResult('OK', CheckResult::OK);
+        return new Success('OK');
     }
 
-    public function getName()
+    public function getLabel()
     {
         return 'Solr ping';
     }

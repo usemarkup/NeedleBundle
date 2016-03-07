@@ -3,6 +3,8 @@
 namespace Markup\NeedleBundle\Tests\Check;
 
 use Markup\NeedleBundle\Check\SolrCheck;
+use ZendDiagnostics\Result\FailureInterface;
+use ZendDiagnostics\Result\SuccessInterface;
 
 /**
 * A test for a monitor check object that can check whether a Solr instance is available.
@@ -19,7 +21,7 @@ class SolrCheckTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCheck()
     {
-        $this->assertTrue($this->check instanceof \Liip\Monitor\Check\CheckInterface);
+        $this->assertTrue($this->check instanceof \ZendDiagnostics\Check\CheckInterface);
     }
 
     public function testCheckWhenOK()
@@ -36,8 +38,7 @@ class SolrCheckTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($solrPing))
             ->will($this->returnValue($result));
         $checkResult = $this->check->check();
-        $this->assertTrue($checkResult instanceof \Liip\Monitor\Result\CheckResult, '->check() returns a check result object');
-        $this->assertEquals(\Liip\Monitor\Result\CheckResult::OK, $checkResult->getStatus());
+        $this->assertInstanceOf(SuccessInterface::class, $checkResult);
     }
 
     public function testCheckWhenFail()
@@ -53,7 +54,6 @@ class SolrCheckTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($solrPing))
             ->will($this->throwException(new \Solarium\Exception\RuntimeException()));
         $checkResult = $this->check->check();
-        $this->assertTrue($checkResult instanceof \Liip\Monitor\Result\CheckResult, '->check() returns a check result object');
-        $this->assertEquals(\Liip\Monitor\Result\CheckResult::CRITICAL, $checkResult->getStatus());
+        $this->assertInstanceOf(FailureInterface::class, $checkResult);
     }
 }
