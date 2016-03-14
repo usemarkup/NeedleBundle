@@ -59,12 +59,14 @@ class SolrSearchServiceTest extends \PHPUnit_Framework_TestCase
         $decorated->shouldReceive('getSearchTerm')->andReturn('I have been decorated');
         $decorated->shouldReceive('getMaxPerPage')->andReturn(10);
         $decorated->shouldReceive('getPageNumber')->andReturn(1);
+        $decorated->shouldReceive('getGroupingField')->andReturn(false);
 
         $decorator->shouldReceive('decorate')->andReturn($decorated);
 
         $this->service->addDecorator($decorator);
 
         $genericQuery = $this->getMock('Markup\NeedleBundle\Query\SelectQueryInterface');
+
         $solariumQuery = $this->getMockBuilder('Solarium\QueryType\Select\Query\Query')
             ->disableOriginalConstructor()
             ->getMock();
