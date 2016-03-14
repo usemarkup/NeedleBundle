@@ -30,10 +30,10 @@ class GroupedQuerySolariumAdapter implements AdapterInterface
      */
     public function __construct($client, $query)
     {
-        if ($query->getGrouping()->getFields() !== 1) {
+        if (count($query->getGrouping()->getFields()) !== 1) {
             throw new \InvalidArgumentException('This adapter only handles grouped queries with exactly one field grouping only');
         }
-        if ($query->getGrouping()->getMainResult() === false) {
+        if ($query->getGrouping()->getMainResult() !== false) {
             throw new \InvalidArgumentException('This adapter only handles grouped queries where main result is false');
         }
         $this->checkClient($client);
@@ -148,7 +148,7 @@ class GroupedQuerySolariumAdapter implements AdapterInterface
     private function createResultSet()
     {
         $resultSet = $this->client->select($this->query, $this->endPoint);
-        $resultSet = new GroupedResultAdapter($resultSet->getGrouping());
+        $resultSet = new GroupedResultAdapter($resultSet);
 
         return $resultSet;
     }
