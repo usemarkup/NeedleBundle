@@ -31,7 +31,6 @@ class GroupedResultPropertyIterator extends \AppendIterator
     public function __construct(\IteratorAggregate $result, $property)
     {
         parent::__construct();
-        $this->resultIterator = new \ArrayIterator();
         $this->property = $property;
         foreach($result->getIterator() as $outerDocument) {
             if (!isset($outerDocument['groups'])) {
@@ -41,12 +40,9 @@ class GroupedResultPropertyIterator extends \AppendIterator
         }
     }
 
-    /**
-     * @return \Iterator
-     */
-    public function getInnerIterator()
+    public function append(\Iterator $iterator)
     {
-        return $this->resultIterator;
+        $this->getArrayIterator()->append($iterator);
     }
 
     public function current()
@@ -55,25 +51,5 @@ class GroupedResultPropertyIterator extends \AppendIterator
         $property = $this->property;
 
         return $current->$property;
-    }
-
-    public function next()
-    {
-        return parent::next();
-    }
-
-    public function key()
-    {
-        return parent::key();
-    }
-
-    public function valid()
-    {
-        return parent::valid();
-    }
-
-    public function rewind()
-    {
-        return parent::rewind();
     }
 }
