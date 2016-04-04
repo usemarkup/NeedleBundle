@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Builder;
 
+use Markup\NeedleBundle\Exception\UnformableSearchKeyException;
 use Markup\NeedleBundle\Facet\RangeFacetInterface;
 use Markup\NeedleBundle\Filter;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
@@ -195,8 +196,14 @@ class SolariumSelectQueryBuilder
         $sortCollection = $query->getSortCollection();
         if ($sortCollection instanceof SortCollectionInterface) {
             foreach ($sortCollection as $sort) {
+                try {
+                    $sortKey = $sort->getFilter()->getSearchKey();
+                } catch (UnformableSearchKeyException $e) {
+                    //it's just a sort, so continue
+                    continue;
+                }
                 $solariumQuery->addSort(
-                    $sort->getFilter()->getSearchKey(),
+                    $sortKey,
                     ($sort->isDescending()) ? SolariumQuery::SORT_DESC : SolariumQuery::SORT_ASC
                 );
             }

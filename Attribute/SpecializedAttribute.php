@@ -2,6 +2,9 @@
 
 namespace Markup\NeedleBundle\Attribute;
 
+use Markup\NeedleBundle\Exception\IllegalContextValueException;
+use Markup\NeedleBundle\Exception\UnformableSearchKeyException;
+
 /**
  * An attribute implementation that has a specialization set on it
  * allowing the search key to be changed by adding a context
@@ -72,7 +75,12 @@ class SpecializedAttribute extends Attribute implements SpecializedAttributeInte
         if ($this->context instanceof AttributeSpecializationNullContextInterface) {
             return parent::getSearchKey();
         }
+        try {
+            $contextValue = $this->context->getValue();
+        } catch (IllegalContextValueException $e) {
+            throw new UnformableSearchKeyException(sprintf('The attribute "%s" cannot form a search key due to incomplete context data.', $this->getName()));
+        }
 
-        return sprintf('%s_%s', parent::getSearchKey(), $this->context->getValue());
+        return sprintf('%s_%s', parent::getSearchKey(), $contextValue);
     }
 }

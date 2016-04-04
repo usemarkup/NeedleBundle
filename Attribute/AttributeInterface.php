@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Attribute;
 
+use Markup\NeedleBundle\Exception\UnformableSearchKeyException;
+
 /**
  * Base interface for an attribute that can be filtered or faceted on.
  *
@@ -28,6 +30,7 @@ interface AttributeInterface
      *
      * @param array $options  Options that might determine which key is returned. Possible values: 'prefer_parsed'
      * @return string
+     * @throws UnformableSearchKeyException
      **/
     public function getSearchKey(array $options = []);
 
