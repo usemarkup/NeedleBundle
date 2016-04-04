@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Attribute;
 
+use Markup\NeedleBundle\Exception\IllegalContextValueException;
+
 /**
  * An implementation that attempts to turn the passed variable into a string using a few simple strategies
  */
@@ -39,7 +41,7 @@ class AttributeGenericSpecializationContext implements AttributeSpecializationCo
                 return $this->data->getValue();
             }
         }
-        throw new \InvalidArgumentException('Cannot get a value for the given data');
+        throw new IllegalContextValueException($this->data, 'Cannot get a value for the given data');
     }
 
     /**
