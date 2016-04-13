@@ -21,13 +21,18 @@ abstract class AbstractSolrManagedResourcesClient
     private $solarium;
 
     /**
-     * ManagedResourcesClient constructor.
-     *
-     * @param Solarium $solarium
+     * @var SolrCoreAdminClient
      */
-    public function __construct(Solarium $solarium)
+    private $solrCoreAdminClient;
+
+    /**
+     * @param Solarium            $solarium
+     * @param SolrCoreAdminClient $solrCoreAdminClient
+     */
+    public function __construct(Solarium $solarium, SolrCoreAdminClient $solrCoreAdminClient)
     {
         $this->solarium = $solarium;
+        $this->solrCoreAdminClient = $solrCoreAdminClient;
         $this->client = new Client();
     }
 
@@ -139,6 +144,8 @@ abstract class AbstractSolrManagedResourcesClient
             return new Response($e->getMessage(), $e->getResponse()->getStatusCode());
         }
 
+        $this->solrCoreAdminClient->reload($endpointKey);
+
         return new Response($response->getBody()->getContents(), $response->getStatusCode());
     }
 
@@ -160,6 +167,8 @@ abstract class AbstractSolrManagedResourcesClient
         } catch (ClientException $e) {
             return new Response($e->getMessage(), $e->getResponse()->getStatusCode());
         }
+
+        $this->solrCoreAdminClient->reload($endpointKey);
 
         return new Response($response->getBody()->getContents(), $response->getStatusCode());
     }
