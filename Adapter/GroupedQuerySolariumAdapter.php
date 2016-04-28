@@ -5,9 +5,8 @@ namespace Markup\NeedleBundle\Adapter;
 use Pagerfanta\Adapter\AdapterInterface;
 use Pagerfanta\Exception\InvalidArgumentException;
 use Solarium\QueryType\Select\Query\Query;
-use Solarium\Core\Client\Client;
-use Solarium_Query_Select;
-use Solarium_Client;
+use Solarium\QueryType\Select\Result\Result;
+use Solarium\Client;
 
 /**
  * SolariumAdapter specifically for supporting grouped results. Should only be used with 'grouped' queries.
@@ -15,18 +14,41 @@ use Solarium_Client;
  */
 class GroupedQuerySolariumAdapter implements AdapterInterface
 {
+    /**
+     * @var Client
+     */
     private $client;
+
+    /**
+     * @var Query
+     */
     private $query;
+
+    /**
+     * @var [Result]
+     */
     private $resultSet;
+
+    /**
+     * @var string
+     */
     private $endPoint;
+
+    /**
+     * @var int
+     */
     private $resultSetStart;
+
+    /**
+     * @var int
+     */
     private $resultSetRows;
 
     /**
      * Constructor.
      *
-     * @param Solarium_Client|Client      $client A Solarium client.
-     * @param Solarium_Query_Select|Query $query  A Solarium select query.
+     * @param Client      $client A Solarium client.
+     * @param Query $query  A Solarium select query.
      */
     public function __construct($client, $query)
     {
@@ -52,13 +74,12 @@ class GroupedQuerySolariumAdapter implements AdapterInterface
 
     private function isClientInvalid($client)
     {
-        return !($client instanceof Client) &&
-        !($client instanceof Solarium_Client);
+        return !($client instanceof Client);
     }
 
     private function getClientInvalidMessage($client)
     {
-        return sprintf('The client object should be a Solarium_Client or Solarium\Core\Client\Client instance, %s given',
+        return sprintf('The client object should be a Solarium\Core\Client\Client instance, %s given',
             get_class($client)
         );
     }
@@ -72,13 +93,12 @@ class GroupedQuerySolariumAdapter implements AdapterInterface
 
     private function isQueryInvalid($query)
     {
-        return !($query instanceof Query) &&
-        !($query instanceof Solarium_Query_Select);
+        return !($query instanceof Query);
     }
 
     private function getQueryInvalidMessage($query)
     {
-        return sprintf('The query object should be a Solarium_Query_Select or Solarium\QueryType\Select\Query\Query instance, %s given',
+        return sprintf('The query object should be a Solarium\QueryType\Select\Query\Query instance, %s given',
             get_class($query)
         );
     }
@@ -103,7 +123,7 @@ class GroupedQuerySolariumAdapter implements AdapterInterface
      * @param int $start
      * @param int $rows
      *
-     * @return \Solarium_Result_Select|\Solarium\QueryType\Select\Result\Result
+     * @return Result
      **/
     public function getResultSet($start = null, $rows = null)
     {
