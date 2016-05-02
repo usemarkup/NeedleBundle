@@ -9,6 +9,7 @@ use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Solarium\Client as SolariumClient;
+use Solarium\QueryType\Select\Query\Component\Grouping;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
 /**
@@ -216,6 +217,28 @@ class SolariumSelectQueryBuilder
                 $solariumSpellcheck->setCount($query->getSpellcheck()->getResultLimit());
             }
             $solariumSpellcheck->setDictionary($query->getSpellcheck()->getDictionary());
+        }
+
+        // if grouping on a field then group - and apply grouping sort if applicable
+        if ($query->getGroupingField() !== null) {
+            $groupComponent = $solariumQuery->getGrouping();
+            $groupComponent->addField($query->getGroupingField());
+            $groupComponent->setLimit(1000);
+            $groupComponent->setMainResult(false);
+            $groupComponent->setNumberOfGroups(true);
+
+            $groupingSortCollection = $query->getGroupingSortCollection();
+            if ($groupingSortCollection instanceof SortCollectionInterface) {
+                $sortStringComponents = [];
+                foreach($groupingSortCollection as $groupingSort) {
+                    $sortStringComponents[] = sprintf(
+                        '%s %s',
+                        $groupingSort->getFilter()->getSearchKey(),
+                        ($groupingSort->isDescending()) ? SolariumQuery::SORT_DESC : SolariumQuery::SORT_ASC
+                    );
+                }
+                $groupComponent->setSort(implode(',', $sortStringComponents));
+            }
         }
 
         //if configured to generate debug output, and there is a search term, request debug output

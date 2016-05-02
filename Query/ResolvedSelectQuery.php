@@ -287,4 +287,20 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
 
         return $this->getSelectQuery()->getRecord();
     }
+
+    /**
+    * {@inheritdoc}
+    */
+    public function getGroupingField()
+    {
+        return $this->getSelectQuery()->getGroupingField();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupingSortCollection()
+    {
+        return $this->getSelectQuery()->getGroupingSortCollection();
+    }
 }

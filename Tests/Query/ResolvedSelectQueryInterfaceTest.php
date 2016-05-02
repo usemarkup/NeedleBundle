@@ -33,6 +33,8 @@ class ResolvedSelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'getBoostQueryFields',
             'shouldUseFacetValuesForRecordedQuery',
             'getRecord',
+            'getGroupingField',
+            'getGroupingSortCollection'
         ];
         $query = new \ReflectionClass('Markup\NeedleBundle\Query\ResolvedSelectQueryInterface');
         $actual_public_methods = [];

@@ -64,4 +64,19 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
      * @return SelectQueryInterface|null
      **/
     public function getRecord();
+
+    /**
+     * Gets a single field on which the incoming documents should be aggregated
+     *
+     * @return string
+     */
+    public function getGroupingField();
+
+    /**
+     * Gets the sort collection used to sort the group internally
+     *
+     * @return \Markup\NeedleBundle\Sort\SortCollectionInterface|null
+     **/
+    public function getGroupingSortCollection();
+
 }
