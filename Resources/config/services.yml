@@ -234,4 +234,19 @@ services:
         arguments:
             - %markup_needle.terms.alias%
     markup_needle.terms_field.null:
-            class: Markup\NeedleBundle\Terms\NullTermsFieldProvider
+        class: Markup\NeedleBundle\Terms\NullTermsFieldProvider
+    markup_needle.client.solr_managed_synonyms_client:
+        class: Markup\NeedleBundle\Client\SolrManagedSynonymsClient
+        arguments:
+            - '@markup_needle.solarium.client'
+            - '@markup_needle.client.solr_core_admin_client'
+    markup_needle.client.solr_managed_stopwords_client:
+        class: Markup\NeedleBundle\Client\SolrManagedStopwordsClient
+        arguments:
+            - '@markup_needle.solarium.client'
+            - '@markup_needle.client.solr_core_admin_client'
+    markup_needle.client.solr_core_admin_client:
+        class: Markup\NeedleBundle\Client\SolrCoreAdminClient
+        arguments:
+            - '@markup_needle.solarium.client'
+            - '@logger'
