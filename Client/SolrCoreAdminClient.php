@@ -2,19 +2,19 @@
 
 namespace Markup\NeedleBundle\Client;
 
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
 use Psr\Log\LoggerInterface;
-use Solarium\Client as Solarium;
-use GuzzleHttp\Client;
+use Psr\Log\NullLogger;
+use Solarium\Client as SolariumClient;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 
 class SolrCoreAdminClient
 {
     /**
-     * @var Solarium
+     * @var SolariumClient
      */
-    private $solarium;
+    private $solariumClient;
 
     /**
      * @var LoggerInterface
@@ -22,14 +22,25 @@ class SolrCoreAdminClient
     private $logger;
 
     /**
-     * @param Solarium        $solarium
-     * @param LoggerInterface $logger
+     * @var GuzzleClient
      */
-    public function __construct(Solarium $solarium, LoggerInterface $logger)
-    {
-        $this->solarium = $solarium;
-        $this->client = new Client();
-        $this->logger = $logger;
+    private $guzzleClient;
+
+    /**
+     * SolrCoreAdminClient constructor.
+     *
+     * @param SolariumClient $solariumClient
+     * @param LoggerInterface|null $logger
+     * @param GuzzleClient|null $guzzleClient
+     */
+    public function __construct(
+        SolariumClient $solariumClient,
+        LoggerInterface $logger = null,
+        GuzzleClient $guzzleClient = null
+    ) {
+        $this->solariumClient = $solariumClient;
+        $this->logger = $logger ?: new NullLogger();
+        $this->guzzleClient = $guzzleClient ?: new GuzzleClient();
     }
 
     /**
@@ -54,7 +65,7 @@ class SolrCoreAdminClient
         $url = $this->getUriForAction($action, $parameters, $endpointKey);
 
         try {
-            $response = $this->client->get($url);
+            $response = $this->guzzleClient->get($url);
         } catch (ClientException $e) {
             $this->logger->error(sprintf('Core admin operation failed using URL: %s', $url));
 
@@ -73,12 +84,12 @@ class SolrCoreAdminClient
      */
     private function getUriForAction($action, $parameters = [], $endpointKey = null)
     {
-        $endpoint = $this->solarium->getEndpoint($endpointKey);
+        $endpoint = $this->solariumClient->getEndpoint($endpointKey);
         $urlParameters = http_build_query(
             array_merge(
                 [
                     'action' => $action,
-                    'core' => $endpoint->getCore(),
+                    'core'   => $endpoint->getCore(),
                 ],
                 $parameters
             )
