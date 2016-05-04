@@ -36,6 +36,6 @@ class IndexSchedulingEventListenerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('addToSchedule')
             ->with($this->equalTo($corpus1));
-        $this->listener->triggerSchedule($event1);
+        $this->listener->triggerSchedule($event1, $eventName1);
     }
 }
