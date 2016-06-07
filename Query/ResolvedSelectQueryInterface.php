@@ -3,7 +3,7 @@
 namespace Markup\NeedleBundle\Query;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Context\SearchContext;
+use Markup\NeedleBundle\Boost\BoostQueryField;
 
 /**
  * A combination of SelectQuery and SearchContext. This should be used immediately prior to query execution in
@@ -53,7 +53,7 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
     /**
      * Determines whether we are using the facet values for an underlying "base" (recorded) query
      *
-     * @return boolean
+     * @return bool
      **/
     public function shouldUseFacetValuesForRecordedQuery();
 
