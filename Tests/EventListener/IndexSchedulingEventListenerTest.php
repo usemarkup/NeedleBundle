@@ -3,6 +3,9 @@
 namespace Markup\NeedleBundle\Tests\EventListener;
 
 use Markup\NeedleBundle\EventListener\IndexSchedulingEventListener;
+use Markup\NeedleBundle\Scheduler\IndexScheduler;
+use Mockery as m;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
 * A test for an event listener that schedules a search index.
@@ -11,9 +14,7 @@ class IndexSchedulingEventListenerTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->scheduler = $this->getMockBuilder('Markup\NeedleBundle\Scheduler\IndexScheduler')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->scheduler = m::mock(IndexScheduler::class);
         $this->listener = new IndexSchedulingEventListener($this->scheduler);
     }
 
@@ -23,19 +24,16 @@ class IndexSchedulingEventListenerTest extends \PHPUnit_Framework_TestCase
         $corpus2 = 'corpus2';
         $eventName1 = 'event1';
         $eventName2 = 'event2';
-        $event1 = $this->getMockBuilder('Symfony\Component\EventDispatcher\Event')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $event1 = m::mock(Event::class);
         $event1
-            ->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue($eventName1));
+            ->shouldReceive('getName')
+            ->andReturn($eventName1);
         $this->listener->addCorpusForEvent($corpus1, $eventName1);
         $this->listener->addCorpusForEvent($corpus2, $eventName2);
         $this->scheduler
-            ->expects($this->once())
-            ->method('addToSchedule')
-            ->with($this->equalTo($corpus1));
+            ->shouldReceive('addToSchedule')
+            ->with($corpus1)
+            ->once();
         $this->listener->triggerSchedule($event1);
     }
 }
