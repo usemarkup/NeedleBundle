@@ -274,6 +274,16 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     }
 
     /**
+     * Gets the original select query prior to resolution, for read-only access.
+     *
+     * @return SelectQueryInterface
+     */
+    public function getOriginalSelectQuery()
+    {
+        return $this->getSelectQuery();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRecord()
