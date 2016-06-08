@@ -58,6 +58,13 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
     public function shouldUseFacetValuesForRecordedQuery();
 
     /**
+     * Gets the original select query prior to resolution, for read-only access.
+     *
+     * @return SelectQueryInterface
+     */
+    public function getOriginalSelectQuery();
+
+    /**
      * If the internal query is an instance of RecordableSelectQueryInterface and has a record, returns SelectQueryInterface
      * otherwise null
      *

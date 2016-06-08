@@ -87,4 +87,9 @@ class ResolvedSelectQueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(3, count($query->getFilterQueries()));
     }
+
+    public function testGetOriginalSelectQuery()
+    {
+        $this->assertSame($this->query, (new ResolvedSelectQuery($this->query))->getOriginalSelectQuery());
+    }
 }
