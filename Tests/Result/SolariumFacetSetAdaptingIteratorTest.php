@@ -2,7 +2,10 @@
 
 namespace Markup\NeedleBundle\Tests\Result;
 
+use Markup\NeedleBundle\Collator\CollatorInterface;
+use Markup\NeedleBundle\Facet\FacetSetIteratorInterface;
 use Markup\NeedleBundle\Result\SolariumFacetSetAdaptingIterator;
+use Mockery as m;
 
 /**
 * A test for an iterator that can wrap a Solarium facet set and emit generic facet values.
@@ -11,8 +14,8 @@ class SolariumFacetSetAdaptingIteratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsFacetSetIterator()
     {
-        $refl = new \ReflectionClass('Markup\NeedleBundle\Result\SolariumFacetSetAdaptingIterator');
-        $this->assertTrue($refl->implementsInterface('Markup\NeedleBundle\Facet\FacetSetIteratorInterface'));
+        $refl = new \ReflectionClass(SolariumFacetSetAdaptingIterator::class);
+        $this->assertTrue($refl->implementsInterface(FacetSetIteratorInterface::class));
     }
 
     public function testIterate()
@@ -46,11 +49,14 @@ class SolariumFacetSetAdaptingIteratorTest extends \PHPUnit_Framework_TestCase
             'yellow'            => 3,
         ];
         $expectedValues = array_reverse($values);
-        $collator = $this->getMock('Markup\NeedleBundle\Collator\CollatorInterface');
+        $collator = m::mock(CollatorInterface::class);
         $collator
-            ->expects($this->any())
-            ->method('compare')
-            ->will($this->returnValue(-1));
+            ->shouldReceive('compare')
+            ->andReturnUsing(
+                function ($color1, $color2) {
+                    return strlen($color2) - strlen($color1);
+                }
+            );
         $it = new SolariumFacetSetAdaptingIterator($values, $collator);
         $this->assertEquals(array_keys($expectedValues), array_keys(iterator_to_array($it)));
     }
@@ -64,5 +70,10 @@ class SolariumFacetSetAdaptingIteratorTest extends \PHPUnit_Framework_TestCase
         ];
         $it = new SolariumFacetSetAdaptingIterator($values);
         $this->assertCount(3, $it);
+    }
+
+    protected function tearDown()
+    {
+        m::close();
     }
 }
