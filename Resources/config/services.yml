@@ -21,7 +21,6 @@ services:
             - %markup_needle.allow_null_values_in_update_fields%
     markup_needle.exporter.closure.prototype:
         parent: markup_needle.exporter.closure
-        scope: prototype
     markup_needle.exporter.closure.generator:
         parent: markup_needle.service_closure
         arguments:
@@ -99,7 +98,6 @@ services:
         class: Markup\NeedleBundle\Intercept\Interceptor
         arguments:
             - '@event_dispatcher'
-        scope: prototype
     markup_needle.interceptor.closure:
         parent: markup_needle.service_closure
         arguments:

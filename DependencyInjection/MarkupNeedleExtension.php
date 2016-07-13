@@ -4,12 +4,14 @@ namespace Markup\NeedleBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -42,6 +44,7 @@ class MarkupNeedleExtension extends Extension
         $this->loadSuggestHandler($config, $container);
         $this->loadTerms($config, $container);
         $this->loadTermsField($config, $container);
+        $this->markSharedServices($container);
     }
 
     /**
@@ -221,5 +224,36 @@ class MarkupNeedleExtension extends Extension
     private function loadTermsField(array $config, ContainerBuilder $container)
     {
         $container->setAlias('markup_needle.terms_field', $config['terms_field_provider']);
+    }
+
+    private function markSharedServices(ContainerBuilder $container)
+    {
+        $sharedServiceIds = [
+            'markup_needle.exporter.closure.prototype',
+            'markup_needle.interceptor.prototype',
+        ];
+        $sharedServiceDefinitions = array_map(
+            function ($id) use ($container) {
+                return $container->getDefinition($id);
+            },
+            $sharedServiceIds
+        );
+
+        //if before symfony 2.8, service is set to have "scope" of "prototype", rather than setting as shared
+        if (version_compare(Kernel::VERSION, '2.8.0', '>=')) {
+            array_map(
+                function (Definition $definition) {
+                    $definition->setShared(true);
+                },
+                $sharedServiceDefinitions
+            );
+        } else {
+            array_map(
+                function (Definition $definition) {
+                    $definition->setScope(ContainerInterface::SCOPE_PROTOTYPE, false);
+                },
+                $sharedServiceDefinitions
+            );
+        }
     }
 }
