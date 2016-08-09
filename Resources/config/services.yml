@@ -176,12 +176,6 @@ services:
         class: Markup\NeedleBundle\Suggest\SuggestServiceProvider
         arguments:
             - '@service_container'
-    markup_needle.suggester:
-        class: Markup\NeedleBundle\Suggest\SuggestServiceInterface
-        factory_service: markup_needle.suggester_provider
-        factory_method: getServiceForAlias
-        arguments:
-            - %markup_needle.suggester.alias%
     markup_needle.handler_provider.null:
         class: Markup\NeedleBundle\Query\NullHandlerProvider
     markup_needle.index_callback_provider:
@@ -225,12 +219,6 @@ services:
         class: Markup\NeedleBundle\Terms\TermsServiceProvider
         arguments:
             - '@service_container'
-    markup_needle.terms:
-        class: Markup\NeedleBundle\Terms\TermsServiceInterface
-        factory_service: markup_needle.terms_provider
-        factory_method: getServiceForAlias
-        arguments:
-            - %markup_needle.terms.alias%
     markup_needle.terms_field.null:
         class: Markup\NeedleBundle\Terms\NullTermsFieldProvider
     markup_needle.client.solr_managed_synonyms_client:

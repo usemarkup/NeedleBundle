@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\DependencyInjection;
 
+use Markup\NeedleBundle\Suggest\SuggestServiceInterface;
+use Markup\NeedleBundle\Terms\TermsServiceInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,6 +46,7 @@ class MarkupNeedleExtension extends Extension
         $this->loadSuggestHandler($config, $container);
         $this->loadTerms($config, $container);
         $this->loadTermsField($config, $container);
+        $this->defineServicesUsingFactories($container);
         $this->markSharedServices($container);
     }
 
@@ -224,6 +227,37 @@ class MarkupNeedleExtension extends Extension
     private function loadTermsField(array $config, ContainerBuilder $container)
     {
         $container->setAlias('markup_needle.terms_field', $config['terms_field_provider']);
+    }
+
+    private function defineServicesUsingFactories(ContainerBuilder $container)
+    {
+        //suggester service
+        $suggester = new Definition(
+            SuggestServiceInterface::class,
+            ['%markup_needle.suggester.alias%']
+        );
+        $this->setFactoryOnDefinition($suggester, 'markup_needle.suggester_provider', 'getServiceForAlias');
+        $container->setDefinition('markup_needle.suggester', $suggester);
+
+        //terms service
+        $terms = new Definition(
+            TermsServiceInterface::class,
+            ['%markup_needle.terms.alias%']
+        );
+        $this->setFactoryOnDefinition($terms, 'markup_needle.terms_provider', 'getServiceForAlias');
+        $container->setDefinition('markup_needle.terms', $terms);
+    }
+
+    private function setFactoryOnDefinition(Definition $definition, $factoryService, $factoryMethod)
+    {
+        $useLegacyCalls = version_compare(Kernel::VERSION, '2.6.0', '<');
+        if ($useLegacyCalls) {
+            $definition->setFactoryService($factoryService);
+            $definition->setFactoryMethod($factoryMethod);
+
+            return;
+        }
+        $definition->setFactory([new Reference($factoryService), $factoryMethod]);
     }
 
     private function markSharedServices(ContainerBuilder $container)
