@@ -47,7 +47,7 @@ class MarkupNeedleExtension extends Extension
         $this->loadTerms($config, $container);
         $this->loadTermsField($config, $container);
         $this->defineServicesUsingFactories($container);
-        $this->markSharedServices($container);
+        $this->markNonSharedServices($container);
     }
 
     /**
@@ -260,7 +260,7 @@ class MarkupNeedleExtension extends Extension
         $definition->setFactory([new Reference($factoryService), $factoryMethod]);
     }
 
-    private function markSharedServices(ContainerBuilder $container)
+    private function markNonSharedServices(ContainerBuilder $container)
     {
         $sharedServiceIds = [
             'markup_needle.exporter.closure.prototype',
@@ -277,7 +277,7 @@ class MarkupNeedleExtension extends Extension
         if (version_compare(Kernel::VERSION, '2.8.0', '>=')) {
             array_map(
                 function (Definition $definition) {
-                    $definition->setShared(true);
+                    $definition->setShared(false);
                 },
                 $sharedServiceDefinitions
             );
