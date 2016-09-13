@@ -136,6 +136,7 @@ abstract class AbstractSolrManagedResourcesClient
      */
     public function add($resourceId, array $data, $endpointKey = null)
     {
+        $data = array_change_key_case($data);
         $url = $this->getResourceUrl($resourceId, $endpointKey);
 
         try {
@@ -160,6 +161,7 @@ abstract class AbstractSolrManagedResourcesClient
      */
     public function delete($resourceId, $term, $endpointKey = null)
     {
+        $term = mb_strtolower($term);
         $url = sprintf('%s/%s', $this->getResourceUrl($resourceId, $endpointKey), $term);
 
         try {
