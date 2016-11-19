@@ -51,7 +51,7 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
     }
 
     /**
-     * @param AttributeSpecializationCurrentlyProviderInterface $provider
+     * @param AttributeSpecializationContextProviderInterface $provider
      */
     public function addAttributeSpecializationContextProvider(AttributeSpecializationContextProviderInterface $provider)
     {
