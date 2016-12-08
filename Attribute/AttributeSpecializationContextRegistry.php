@@ -67,7 +67,7 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
     }
 
     /**
-     * Gets a hash of all current SpecializationContexts with currently applicable values
+     * {@inheritDoc}
      */
     public function getSpecializationContextHash()
     {
