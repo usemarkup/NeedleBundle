@@ -18,4 +18,10 @@ interface AttributeSpecializationContextRegistryInterface
      * @return AttributeSpecializationContext
      */
     public function getContexts(AttributeSpecialization $specialization);
+
+    /**
+     * Gets a hash of all current SpecializationContexts with currently applicable values
+     * @return array
+     */
+    public function getSpecializationContextHash();
 }

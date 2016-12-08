@@ -65,4 +65,17 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
     {
         $this->attributeSpecializationCurrentlyApplicableContextProviders->add($provider);
     }
+
+    /**
+     * Gets a hash of all current SpecializationContexts with currently applicable values
+     */
+    public function getSpecializationContextHash()
+    {
+        $hash = [];
+        foreach($this->attributeSpecializationContextProviders as $provider) {
+            $specialization = $provider->getSpecialization();
+            $hash[$specialization->getName()] = $this->getContext($specialization)->getValue();
+        }
+        return $hash;
+    }
 }
