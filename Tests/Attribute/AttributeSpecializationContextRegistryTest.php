@@ -54,7 +54,7 @@ class AttributeSpecializationContextRegistryTest extends \PHPUnit_Framework_Test
         m::close();
     }
 
-    public function testGetSpecializationContextHashWithMultipleSpecializations()
+    public function testGetSpecializationContextHashWithOneSpecialization()
     {
         $this->assertSame(
             ['locale' => 'es_ES'],
