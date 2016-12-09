@@ -19,7 +19,7 @@ class CorpusProviderTest extends \PHPUnit_Framework_TestCase
         $corpusName = 'corpus';
         $unknownCorpusName = 'unknown';
         $this->assertNull($this->provider->fetchNamedCorpus($corpusName));
-        $corpus = $this->getMock('Markup\NeedleBundle\Corpus\CorpusInterface');
+        $corpus = $this->createMock('Markup\NeedleBundle\Corpus\CorpusInterface');
         $this->provider->addCorpus($corpusName, $corpus);
         $this->assertSame($corpus, $this->provider->fetchNamedCorpus($corpusName));
         $this->assertNull($this->provider->fetchNamedCorpus($unknownCorpusName));

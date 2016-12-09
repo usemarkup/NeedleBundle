@@ -11,7 +11,7 @@ class FloatAttributeDecoratorTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->filter = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $this->filter = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->decorator = new FloatAttributeDecorator($this->filter);
     }
 

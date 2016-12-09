@@ -14,8 +14,8 @@ class SolariumDebugOutputStrategyTest extends \PHPUnit_Framework_TestCase
         $this->result = $this->getMockBuilder('Solarium\QueryType\Select\Result\Result')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->templating = $this->getMock('Symfony\Component\Templating\EngineInterface');
-        $this->searchContext = $this->getMock('Markup\NeedleBundle\Context\SearchContextInterface');
+        $this->templating = $this->createMock('Symfony\Component\Templating\EngineInterface');
+        $this->searchContext = $this->createMock('Markup\NeedleBundle\Context\SearchContextInterface');
         $this->strategy = new SolariumDebugOutputStrategy($this->result, $this->templating, $this->searchContext);
     }
 

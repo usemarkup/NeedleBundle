@@ -11,7 +11,7 @@ class MinCountFacetSetDecoratorTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->facetSet = $this->getMock('Markup\NeedleBundle\Facet\FacetSetInterface');
+        $this->facetSet = $this->createMock('Markup\NeedleBundle\Facet\FacetSetInterface');
         $this->minCount = 4;
         $this->decorator = new MinCountFacetSetDecorator($this->minCount);
         $this->decorator->decorate($this->facetSet);
@@ -19,8 +19,8 @@ class MinCountFacetSetDecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function testFiltering()
     {
-        $facetValue1 = $this->getMock('Markup\NeedleBundle\Facet\FacetValueInterface');
-        $facetValue2 = $this->getMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue1 = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue2 = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
         $facetValue1
             ->expects($this->any())
             ->method('count')

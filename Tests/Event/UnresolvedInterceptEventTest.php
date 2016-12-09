@@ -11,7 +11,7 @@ class UnresolvedInterceptEventTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $this->definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
         $this->queryString = 'query';
         $this->message = 'Something could not be found!';
         $this->event = new UnresolvedInterceptEvent($this->definition, $this->queryString, $this->message);

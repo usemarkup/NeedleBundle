@@ -18,7 +18,7 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
     public function testStringInConstructorForSubjectsThrowsInvalidArgumentException()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $docGenerator = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
+        $docGenerator = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
         $it = new SubjectDocumentIterator('subjects', $docGenerator);
     }
 
@@ -27,7 +27,7 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
         $subject = new \stdClass();
 
         $allSubjects = [$subject, $subject, $subject, $subject];
-        $docGenerator = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
+        $docGenerator = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
         $doc = $this->getMockBuilder('Solarium\QueryType\Update\Query\Document')
                 ->disableOriginalConstructor()
                 ->getMock();
@@ -42,7 +42,7 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAndGetSubjects()
     {
-        $docGenerator = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
+        $docGenerator = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
         $it = new SubjectDocumentIterator([], $docGenerator);
         $this->assertCount(0, iterator_to_array($it->getSubjects()));
         $subject = new \stdClass();
@@ -53,7 +53,7 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function testCallbacksExecuted()
     {
-        $subject = $this->getMock('Doctrine\Common\Collections\Collection');
+        $subject = $this->createMock('Doctrine\Common\Collections\Collection');
         $subject
             ->expects($this->once())
             ->method('get');
@@ -61,7 +61,7 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
             $subject->get('skdjhfskjdfh');
         };
         $subjects = [$subject];
-        $docGenerator = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
+        $docGenerator = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
         $it = new SubjectDocumentIterator($subjects, $docGenerator, [$callback]);
         iterator_to_array($it);
     }

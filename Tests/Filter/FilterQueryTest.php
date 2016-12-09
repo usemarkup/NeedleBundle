@@ -11,8 +11,8 @@ class FilterQueryTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->filter = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $this->filterValue = $this->getMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $this->filter = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $this->filterValue = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
         $this->filterQuery = new FilterQuery($this->filter, $this->filterValue);
     }
 

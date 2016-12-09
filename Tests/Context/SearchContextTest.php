@@ -25,7 +25,7 @@ class SearchContextTest extends \PHPUnit_Framework_TestCase
     public function testFacetsDoNotIgnoreCurrentFilters()
     {
         $context = new SearchContext(42);
-        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->assertFalse($context->getWhetherFacetIgnoresCurrentFilters($facet));
     }
 

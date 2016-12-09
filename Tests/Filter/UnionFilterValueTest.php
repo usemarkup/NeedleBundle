@@ -11,8 +11,8 @@ class UnionFilterValueTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->filterValue1 = $this->getMock('Markup\NeedleBundle\Filter\FilterValueInterface');
-        $this->filterValue2 = $this->getMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $this->filterValue1 = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $this->filterValue2 = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
         $this->unionValue = new UnionFilterValue([$this->filterValue1, $this->filterValue2]);
     }
 
@@ -83,7 +83,7 @@ class UnionFilterValueTest extends \PHPUnit_Framework_TestCase
 
     public function testAddFilterValue()
     {
-        $filterValue3 = $this->getMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $filterValue3 = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
         $this->unionValue->addFilterValue($filterValue3);
         $this->assertEquals([$this->filterValue1, $this->filterValue2, $filterValue3], $this->unionValue->getValues());
     }

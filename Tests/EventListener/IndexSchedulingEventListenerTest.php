@@ -23,13 +23,7 @@ class IndexSchedulingEventListenerTest extends \PHPUnit_Framework_TestCase
         $corpus2 = 'corpus2';
         $eventName1 = 'event1';
         $eventName2 = 'event2';
-        $event1 = $this->getMockBuilder('Symfony\Component\EventDispatcher\Event')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $event1
-            ->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue($eventName1));
+        $event1 = $this->createMock('Symfony\Component\EventDispatcher\Event');
         $this->listener->addCorpusForEvent($corpus1, $eventName1);
         $this->listener->addCorpusForEvent($corpus2, $eventName2);
         $this->scheduler

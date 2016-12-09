@@ -26,7 +26,7 @@ class SolrCheckTest extends \PHPUnit_Framework_TestCase
 
     public function testCheckWhenOK()
     {
-        $solrPing = $this->getMock('Solarium\Core\Query\QueryInterface');
+        $solrPing = $this->createMock('Solarium\Core\Query\QueryInterface');
         $this->solariumClient
             ->expects($this->any())
             ->method('createPing')
@@ -43,7 +43,7 @@ class SolrCheckTest extends \PHPUnit_Framework_TestCase
 
     public function testCheckWhenFail()
     {
-        $solrPing = $this->getMock('Solarium\Core\Query\QueryInterface');
+        $solrPing = $this->createMock('Solarium\Core\Query\QueryInterface');
         $this->solariumClient
             ->expects($this->any())
             ->method('createPing')

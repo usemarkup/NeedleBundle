@@ -11,7 +11,7 @@ class TranslatedFacetTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->translator = $this->getMock('Symfony\Component\Translation\TranslatorInterface');
+        $this->translator = $this->createMock('Symfony\Component\Translation\TranslatorInterface');
     }
 
     public function testIsAttribute()

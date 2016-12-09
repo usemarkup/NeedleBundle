@@ -12,8 +12,8 @@ class FacetSetTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $this->facetValueIterator = $this->getMock('Markup\NeedleBundle\Facet\FacetSetIteratorInterface');
+        $this->facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $this->facetValueIterator = $this->createMock('Markup\NeedleBundle\Facet\FacetSetIteratorInterface');
         $this->facetSet = new FacetSet($this->facet, $this->facetValueIterator);
     }
 
@@ -35,7 +35,7 @@ class FacetSetTest extends \PHPUnit_Framework_TestCase
 
     public function testGetIterator()
     {
-        $facetValue = $this->getMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
         $facetValueIterator = new FacetSetArrayIterator([$facetValue]);
         $facetSet = new FacetSet($this->facet, $facetValueIterator);
         foreach ($facetSet as $emittedFacetValue) {

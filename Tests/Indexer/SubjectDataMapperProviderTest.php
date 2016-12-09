@@ -18,8 +18,8 @@ class SubjectDataMapperProviderTest extends \PHPUnit_Framework_TestCase
     {
         $corpus1 = 'catalog';
         $corpus2 = 'stores';
-        $catalogMapper = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDataMapperInterface');
-        $storesMapper = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDataMapperInterface');
+        $catalogMapper = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDataMapperInterface');
+        $storesMapper = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDataMapperInterface');
         $this->provider->addMapper($corpus1, $catalogMapper);
         $this->provider->addMapper($corpus2, $storesMapper);
         $this->assertSame($catalogMapper, $this->provider->fetchMapperForCorpus($corpus1));

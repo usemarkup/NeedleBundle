@@ -18,7 +18,7 @@ class FacetSetDecoratorProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testNullReturnedForUnknownFacet()
     {
-        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $facet
             ->expects($this->any())
             ->method('getName')
@@ -28,9 +28,9 @@ class FacetSetDecoratorProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testAddAndGetSetDecorator()
     {
-        $facetSetDecorator = $this->getMock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
+        $facetSetDecorator = $this->createMock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
         $field = 'known';
-        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $facet
             ->expects($this->any())
             ->method('getName')

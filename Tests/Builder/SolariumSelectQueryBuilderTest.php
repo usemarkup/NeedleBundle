@@ -20,14 +20,14 @@ class SolariumSelectQueryBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildWithNoOperationsReturnsSolariumSelectQuery()
     {
-        $genericQuery = $this->getMock('Markup\NeedleBundle\Query\ResolvedSelectQueryInterface');
+        $genericQuery = $this->createMock('Markup\NeedleBundle\Query\ResolvedSelectQueryInterface');
         $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
         $this->assertTrue($query instanceof \Solarium\QueryType\Select\Query\Query);
     }
 
     public function testBuildWithSearchTerm()
     {
-        $genericQuery = $this->getMock('Markup\NeedleBundle\Query\ResolvedSelectQueryInterface');
+        $genericQuery = $this->createMock('Markup\NeedleBundle\Query\ResolvedSelectQueryInterface');
         $term = 'pirates';
         $genericQuery
             ->expects($this->any())
@@ -43,8 +43,8 @@ class SolariumSelectQueryBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testAddFilterQuery()
     {
-        $genericQuery = $this->getMock('Markup\NeedleBundle\Query\ResolvedSelectQueryInterface');
-        $filterQuery = $this->getMock('Markup\NeedleBundle\Filter\FilterQueryInterface');
+        $genericQuery = $this->createMock('Markup\NeedleBundle\Query\ResolvedSelectQueryInterface');
+        $filterQuery = $this->createMock('Markup\NeedleBundle\Filter\FilterQueryInterface');
         $filterQuery
             ->expects($this->any())
             ->method('getSearchKey')
@@ -57,8 +57,8 @@ class SolariumSelectQueryBuilderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('lucenify')
             ->will($this->returnValue('color:"red"'));
-        $filter = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $filterValue = $this->getMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $filter = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $filterValue = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
         $filter
             ->expects($this->any())
             ->method('getName')

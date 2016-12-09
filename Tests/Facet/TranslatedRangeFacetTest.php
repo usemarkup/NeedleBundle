@@ -11,8 +11,8 @@ class TranslatedRangeFacetTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->translator = $this->getMock('Symfony\Component\Translation\TranslatorInterface');
-        $this->rangeFacetConfig = $this->getMock('Markup\NeedleBundle\Facet\RangeFacetConfigurationInterface');
+        $this->translator = $this->createMock('Symfony\Component\Translation\TranslatorInterface');
+        $this->rangeFacetConfig = $this->createMock('Markup\NeedleBundle\Facet\RangeFacetConfigurationInterface');
     }
 
     public function testIsRangeFacet()
