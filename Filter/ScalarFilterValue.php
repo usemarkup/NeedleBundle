@@ -10,12 +10,12 @@ class ScalarFilterValue implements FilterValueInterface
     /**
      * A scalar that forms the filter value.
      *
-     * @var scalar
+     * @var string|int|bool
      **/
     private $scalar;
 
     /**
-     * @param scalar $scalar
+     * @param string|int|bool $scalar
      **/
     public function __construct($scalar)
     {
@@ -35,7 +35,7 @@ class ScalarFilterValue implements FilterValueInterface
     /**
      * Gets the scalar.
      *
-     * @return scalar
+     * @return string|int|bool
      **/
     private function getScalar()
     {
