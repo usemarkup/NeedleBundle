@@ -11,7 +11,7 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->urlGenerator = $this->getMock('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
+        $this->urlGenerator = $this->createMock('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
         $this->mapper = new RouteInterceptMapper($this->urlGenerator);
     }
 
@@ -30,7 +30,7 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
         $route = 'route';
         $routeParams = ['param' => 'yes'];
         $properties = ['route' => $route, 'params' => $routeParams];
-        $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
         $definition
             ->expects($this->any())
             ->method('getProperties')
@@ -49,7 +49,7 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
     public function testRoutelessDefinitionThrowsException()
     {
         $this->setExpectedException('Markup\NeedleBundle\Intercept\UnresolvedInterceptException');
-        $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
         $properties = [];
         $definition
             ->expects($this->any())
@@ -64,7 +64,7 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
         $route = 'route';
         $routeParams = ['param' => 'yes'];
         $properties = ['route' => $route, 'params' => $routeParams];
-        $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
         $definition
             ->expects($this->any())
             ->method('getProperties')

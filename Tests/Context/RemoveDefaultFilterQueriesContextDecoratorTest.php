@@ -11,7 +11,7 @@ class RemoveDefaultFilterQueriesContextDecoratorTest extends \PHPUnit_Framework_
 {
     public function setUp()
     {
-        $this->context = $this->getMock('Markup\NeedleBundle\Context\SearchContextInterface');
+        $this->context = $this->createMock('Markup\NeedleBundle\Context\SearchContextInterface');
         $this->decorator = new RemoveDefaultFilterQueriesContextDecorator($this->context);
     }
 
@@ -22,7 +22,7 @@ class RemoveDefaultFilterQueriesContextDecoratorTest extends \PHPUnit_Framework_
 
     public function testGetDefaultFilterQueriesIgnoresUnderlyingQueries()
     {
-        $filterQuery = $this->getMock('Markup\NeedleBundle\Filter\FilterQueryInterface');
+        $filterQuery = $this->createMock('Markup\NeedleBundle\Filter\FilterQueryInterface');
         $this->context
             ->expects($this->any())
             ->method('getDefaultFilterQueries')

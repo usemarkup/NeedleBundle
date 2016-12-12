@@ -51,7 +51,7 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
     }
 
     /**
-     * @param AttributeSpecializationCurrentlyProviderInterface $provider
+     * @param AttributeSpecializationContextProviderInterface $provider
      */
     public function addAttributeSpecializationContextProvider(AttributeSpecializationContextProviderInterface $provider)
     {
@@ -64,5 +64,18 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
     public function addAttributeSpecializationCurrentlyApplicableContextProvider(AttributeSpecializationCurrentlyApplicableContextProviderInterface $provider)
     {
         $this->attributeSpecializationCurrentlyApplicableContextProviders->add($provider);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSpecializationContextHash()
+    {
+        $hash = [];
+        foreach($this->attributeSpecializationContextProviders as $provider) {
+            $specialization = $provider->getSpecialization();
+            $hash[$specialization->getName()] = $this->getContext($specialization)->getValue();
+        }
+        return $hash;
     }
 }

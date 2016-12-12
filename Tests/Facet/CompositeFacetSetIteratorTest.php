@@ -19,7 +19,7 @@ class CompositeFacetSetIteratorTest extends \PHPUnit_Framework_TestCase
         foreach ($facetValues as $facetValueValue => $facetValueCount) {
             $values[] = new \Markup\NeedleBundle\Facet\FacetValue($facetValueValue, $facetValueCount);
         }
-        $facetSet = $this->getMock('Markup\NeedleBundle\Facet\FacetSetInterface');
+        $facetSet = $this->createMock('Markup\NeedleBundle\Facet\FacetSetInterface');
         $facetSet
             ->expects($this->any())
             ->method('getIterator')

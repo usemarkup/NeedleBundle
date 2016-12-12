@@ -60,7 +60,7 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
     public function testGetQueryTimeWithStrategy()
     {
         $time = 42.0;
-        $strategy = $this->getMock('Markup\NeedleBundle\Result\QueryTimeStrategyInterface');
+        $strategy = $this->createMock('Markup\NeedleBundle\Result\QueryTimeStrategyInterface');
         $strategy
             ->expects($this->any())
             ->method('getQueryTimeInMilliseconds')
@@ -166,8 +166,8 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFacetSetsWithStrategySet()
     {
-        $facetSet = $this->getMock('Markup\NeedleBundle\Facet\FacetSetInterface');
-        $facetSetStrategy = $this->getMock('Markup\NeedleBundle\Result\FacetSetStrategyInterface');
+        $facetSet = $this->createMock('Markup\NeedleBundle\Facet\FacetSetInterface');
+        $facetSetStrategy = $this->createMock('Markup\NeedleBundle\Result\FacetSetStrategyInterface');
         $facetSetStrategy
             ->expects($this->any())
             ->method('getFacetSets')
@@ -184,7 +184,7 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
 
     public function testDebugOutputWithStrategySet()
     {
-        $debugStrategy = $this->getMock('Markup\NeedleBundle\Result\DebugOutputStrategyInterface');
+        $debugStrategy = $this->createMock('Markup\NeedleBundle\Result\DebugOutputStrategyInterface');
         $debugStrategy
             ->expects($this->any())
             ->method('hasDebugOutput')

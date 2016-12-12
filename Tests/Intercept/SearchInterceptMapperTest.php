@@ -27,7 +27,7 @@ class SearchInterceptMapperTest extends \PHPUnit_Framework_TestCase
     public function testNoMappersThrowsUnresolvedException()
     {
         $this->setExpectedException('Markup\NeedleBundle\Intercept\UnresolvedInterceptException');
-        $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
         $properties = ['corpus' => 'corpus'];
         $definition
             ->expects($this->any())
@@ -39,18 +39,18 @@ class SearchInterceptMapperTest extends \PHPUnit_Framework_TestCase
     public function testAddMapperMapsCorpus()
     {
         $corpus = 'corpus';
-        $definition = $this->getMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
         $properties = ['corpus' => $corpus];
         $definition
             ->expects($this->any())
             ->method('getProperties')
             ->will($this->returnValue($properties));
-        $searchMapper = $this->getMock('Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface');
+        $searchMapper = $this->createMock('Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface');
         $searchMapper
             ->expects($this->any())
             ->method('getType')
             ->will($this->returnValue('search'));
-        $intercept = $this->getMock('Markup\NeedleBundle\Intercept\InterceptInterface');
+        $intercept = $this->createMock('Markup\NeedleBundle\Intercept\InterceptInterface');
         $searchMapper
             ->expects($this->any())
             ->method('mapDefinitionToIntercept')
@@ -62,7 +62,7 @@ class SearchInterceptMapperTest extends \PHPUnit_Framework_TestCase
     public function testAddNonSearchInterceptMapperThrowsInvalidArgumentException()
     {
         $type = 'something';
-        $mapper = $this->getMock('Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface');
+        $mapper = $this->createMock('Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface');
         $mapper
             ->expects($this->any())
             ->method('getType')

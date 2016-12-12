@@ -11,7 +11,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->matcher = $this->getMock('Markup\NeedleBundle\Intercept\MatcherInterface');
+        $this->matcher = $this->createMock('Markup\NeedleBundle\Intercept\MatcherInterface');
         $this->type = 'type';
         $this->name = 'definition';
         $this->properties = ['this' => 'that'];

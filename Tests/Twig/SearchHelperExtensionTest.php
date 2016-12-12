@@ -11,7 +11,7 @@ class SearchHelperExtensionTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $this->container = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $this->extension = new SearchHelperExtension($this->container);
     }
 
@@ -24,8 +24,8 @@ class SearchHelperExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $original = 'original';
         $canonicalized = 'canonicalized';
-        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $facetValueCanonicalizer = $this->getMock('Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface');
+        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facetValueCanonicalizer = $this->createMock('Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface');
         $facetValueCanonicalizer
             ->expects($this->any())
             ->method('canonicalizeForFacet')

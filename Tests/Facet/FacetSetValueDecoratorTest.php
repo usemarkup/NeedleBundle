@@ -11,7 +11,7 @@ class FacetSetValueDecoratorTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->facetValueDecorator = $this->getMock('Markup\NeedleBundle\Facet\FacetValueDecoratorInterface');
+        $this->facetValueDecorator = $this->createMock('Markup\NeedleBundle\Facet\FacetValueDecoratorInterface');
         $this->decorator = new FacetSetValueDecorator($this->facetValueDecorator);
     }
 
@@ -23,13 +23,13 @@ class FacetSetValueDecoratorTest extends \PHPUnit_Framework_TestCase
     public function testDecoration()
     {
         $value = 'decorate me!';
-        $facetValue = $this->getMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
         $facetValue
             ->expects($this->any())
             ->method('getValue')
             ->will($this->returnValue($value));
-        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $facetSet = $this->getMock('Markup\NeedleBundle\Facet\FacetSetInterface');
+        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facetSet = $this->createMock('Markup\NeedleBundle\Facet\FacetSetInterface');
         $facetSet
             ->expects($this->any())
             ->method('getFacet')

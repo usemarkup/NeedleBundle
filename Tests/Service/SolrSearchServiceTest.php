@@ -33,7 +33,7 @@ class SolrSearchServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testExecuteQuery()
     {
-        $genericQuery = $this->getMock('Markup\NeedleBundle\Query\SelectQueryInterface');
+        $genericQuery = $this->createMock('Markup\NeedleBundle\Query\SelectQueryInterface');
         $solariumQuery = $this->getMockBuilder('Solarium\QueryType\Select\Query\Query')
             ->disableOriginalConstructor()
             ->getMock();
@@ -65,7 +65,7 @@ class SolrSearchServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->service->addDecorator($decorator);
 
-        $genericQuery = $this->getMock('Markup\NeedleBundle\Query\SelectQueryInterface');
+        $genericQuery = $this->createMock('Markup\NeedleBundle\Query\SelectQueryInterface');
 
         $solariumQuery = $this->getMockBuilder('Solarium\QueryType\Select\Query\Query')
             ->disableOriginalConstructor()

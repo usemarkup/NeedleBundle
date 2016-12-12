@@ -22,7 +22,7 @@ class FilterValueLucenifierTest extends \PHPUnit_Framework_TestCase
 
     public function testSimpleCase()
     {
-        $filterValue = $this->getMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $filterValue = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
         $filterValue
             ->expects($this->any())
             ->method('getSearchValue')

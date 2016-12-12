@@ -11,8 +11,8 @@ class CompositeFacetSetDecoratorTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->decorator1 = $this->getMock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
-        $this->decorator2 = $this->getMock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
+        $this->decorator1 = $this->createMock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
+        $this->decorator2 = $this->createMock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
         $this->composite = new CompositeFacetSetDecorator([$this->decorator1, $this->decorator2]);
     }
 
@@ -23,7 +23,7 @@ class CompositeFacetSetDecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function testDecorate()
     {
-        $facetSet = $this->getMock('Markup\NeedleBundle\Facet\FacetSetInterface');
+        $facetSet = $this->createMock('Markup\NeedleBundle\Facet\FacetSetInterface');
         $this->decorator1
             ->expects($this->once())
             ->method('decorate')

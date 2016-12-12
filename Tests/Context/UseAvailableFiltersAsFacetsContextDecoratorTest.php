@@ -11,8 +11,8 @@ class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework
 {
     public function setUp()
     {
-        $this->context = $this->getMock('Markup\NeedleBundle\Context\SearchContextInterface');
-        $this->facetProvider = $this->getMock('Markup\NeedleBundle\Facet\FacetProviderInterface');
+        $this->context = $this->createMock('Markup\NeedleBundle\Context\SearchContextInterface');
+        $this->facetProvider = $this->createMock('Markup\NeedleBundle\Facet\FacetProviderInterface');
         $this->decorator = new UseAvailableFiltersAsFacetsContextDecorator($this->context, $this->facetProvider);
     }
 
@@ -33,7 +33,7 @@ class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework
 
     public function testGetFacets()
     {
-        $facet = $this->getMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
         $this->facetProvider
             ->expects($this->any())
             ->method('getFacetByName')

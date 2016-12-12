@@ -2,8 +2,10 @@
 
 namespace Markup\NeedleBundle\Attribute;
 
+use Phoenix\Bundle\ProductCatalogBundle\Exception\MissingAttributeException;
+
 /**
- * Interface for an attribute provider that can provide an attribute when given a name.
+ * Interface for an attribute provider that can provide an attribute when given a name or search key
  */
 interface AttributeProviderInterface
 {
@@ -12,6 +14,13 @@ interface AttributeProviderInterface
      *
      * @param string $name
      * @return AttributeInterface
+     * @throws MissingAttributeException
      */
     public function getAttributeByName($name);
+
+    /**
+     * @param string $name
+     * @return AttributeInterface|null
+     */
+    public function getAttributeBySearchKey($name);
 } 

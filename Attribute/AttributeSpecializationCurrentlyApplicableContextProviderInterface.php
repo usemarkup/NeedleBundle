@@ -14,7 +14,7 @@ interface AttributeSpecializationCurrentlyApplicableContextProviderInterface
     public function getSpecialization();
 
     /**
-     * @return AttributeSpecializationContext
+     * @return AttributeSpecializationContextInterface
      */
     public function getContext();
 }

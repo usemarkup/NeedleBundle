@@ -14,11 +14,11 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
         $this->corpusProvider = $this->getMockBuilder('Markup\NeedleBundle\Corpus\CorpusProvider')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->solariumClient = $this->getMock('Solarium\Client');
+        $this->solariumClient = $this->createMock('Solarium\Client');
         $this->subjectMapperProvider = $this->getMockBuilder('Markup\NeedleBundle\Indexer\SubjectDataMapperProvider')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->subjectToDataMapper = $this->getMock('Markup\NeedleBundle\Indexer\SubjectDataMapperInterface');
+        $this->subjectToDataMapper = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDataMapperInterface');
         $this->subjectMapperProvider
             ->expects($this->any())
             ->method('fetchMapperForCorpus')
@@ -26,12 +26,12 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
         $this->filterQueryLucenifier = $this->getMockBuilder('Markup\NeedleBundle\Lucene\FilterQueryLucenifier')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $this->eventDispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->indexCallbackProvider = $this->getMockBuilder('Markup\NeedleBundle\Indexer\IndexCallbackProvider')
             ->disableOriginalConstructor()
             ->getMock();
         $this->shouldReplaceDocuments = true;
-        $this->logger = $this->getMock('Psr\Log\LoggerInterface');
+        $this->logger = $this->createMock('Psr\Log\LoggerInterface');
         $this->command = new CorpusIndexingCommand(
             $this->corpusProvider,
             $this->solariumClient,
@@ -47,7 +47,7 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
     public function testGetAllSubjectsFromService()
     {
         $subject = new \stdClass();
-        $corpus = $this->getMock('Markup\NeedleBundle\Corpus\CorpusInterface');
+        $corpus = $this->createMock('Markup\NeedleBundle\Corpus\CorpusInterface');
         $corpus
             ->expects($this->once())
             ->method('getSubjectIteration')

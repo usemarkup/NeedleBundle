@@ -11,8 +11,8 @@ class MinCountFacetValueFilterIteratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testFilter()
     {
-        $facetValue1 = $this->getMock('Markup\NeedleBundle\Facet\FacetValueInterface');
-        $facetValue2 = $this->getMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue1 = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue2 = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
         $facetValue1
             ->expects($this->any())
             ->method('count')
