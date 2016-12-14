@@ -12,28 +12,28 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
      *
      * @var string
      **/
-    private $name;
+    protected $name;
 
     /**
      * The key for the attribute.
      *
      * @var string
      */
-    private $key;
+    protected $key;
 
     /**
      * The display name for the attribute.
      *
      * @var string
      */
-    private $displayName;
+    protected $displayName;
 
     /**
      * The value display strategy for the attribute.
      *
      * @var callable
      */
-    private $valueDisplayStrategy;
+    protected $valueDisplayStrategy;
 
     /**
      * @param string   $name
@@ -65,6 +65,15 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
     {
         return $this->key;
     }
+    /**
+     * Gets a display strategy closure which takes a value as a parameter and emits a displayable value.
+     *
+     * @return \Closure|null
+     */
+    public function getValueDisplayStrategy()
+    {
+        return $this->valueDisplayStrategy;
+    }
 
     /**
      * Magic toString method.  Returns display name.
@@ -77,12 +86,10 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
     }
 
     /**
-     * Gets a display strategy closure which takes a value as a parameter and emits a displayable value.
-     *
-     * @return \Closure|null
+     * @return array
      */
-    public function getValueDisplayStrategy()
+    public function __sleep()
     {
-        return $this->valueDisplayStrategy;
+        return ['name', 'key', 'displayName'];
     }
 }
