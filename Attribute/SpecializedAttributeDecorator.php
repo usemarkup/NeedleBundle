@@ -12,7 +12,7 @@ abstract class SpecializedAttributeDecorator implements SpecializedAttributeInte
      *
      * @var SpecializedAttributeInterface
      **/
-    private $attribute;
+    protected $attribute;
 
     /**
      * @param SpecializedAttributeInterface $attribute
