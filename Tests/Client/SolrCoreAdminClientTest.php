@@ -3,7 +3,9 @@
 namespace Markup\NeedleBundle\Tests\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Ring\Client\MockHandler;
 use GuzzleHttp\Stream\Stream;
@@ -16,6 +18,8 @@ use Solarium\Core\Client\Endpoint;
 
 class SolrCoreAdminClientTest extends \PHPUnit_Framework_TestCase
 {
+    use m\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
     public function testInstance()
     {
         $this->assertInstanceOf(SolrCoreAdminClient::class, new SolrCoreAdminClient(m::mock(SolariumClient::class)));
@@ -23,12 +27,7 @@ class SolrCoreAdminClientTest extends \PHPUnit_Framework_TestCase
 
     public function testReload()
     {
-        $mockHandler = new MockHandler([
-            'status' => 200,
-            'body' => Stream::factory(''),
-        ]);
-
-        $guzzleClient = new GuzzleClient(['handler' => $mockHandler]);
+        $guzzleClient = $this->createGuzzleClient(200, '');
 
         $endpoint = m::mock(Endpoint::class);
         $endpoint->shouldReceive('getBaseUri')->andReturn('http://i.love.solr/');
@@ -45,12 +44,7 @@ class SolrCoreAdminClientTest extends \PHPUnit_Framework_TestCase
 
     public function testSolrClientExceptionReload()
     {
-        $mockHandler = new MockHandler([
-            'status' => 401,
-            'body' => Stream::factory(''),
-        ]);
-
-        $guzzleClient = new GuzzleClient(['handler' => $mockHandler]);
+        $guzzleClient = $this->createGuzzleClient(401, '');
 
         $endpoint = m::mock(Endpoint::class);
         $endpoint->shouldReceive('getBaseUri')->andReturn('http://i.love.solr/');
@@ -71,12 +65,7 @@ class SolrCoreAdminClientTest extends \PHPUnit_Framework_TestCase
 
     public function testSolr500ReturnReload()
     {
-        $mockHandler = new MockHandler([
-            'status' => 500,
-            'body' => Stream::factory(''),
-        ]);
-
-        $guzzleClient = new GuzzleClient(['handler' => $mockHandler]);
+        $guzzleClient = $this->createGuzzleClient(500, '');
 
         $endpoint = m::mock(Endpoint::class);
         $endpoint->shouldReceive('getBaseUri')->andReturn('http://i.love.solr/');
@@ -90,8 +79,27 @@ class SolrCoreAdminClientTest extends \PHPUnit_Framework_TestCase
         /**
          * For now we don't handle this.. so an exception will be thrown
          */
-        $this->setExpectedException(ServerException::class);
+        $this->expectException(ServerException::class);
 
         $client->reload();
+    }
+
+    private function createGuzzleClient($statusCode, $body)
+    {
+        $usingAtLeastGuzzle6 = version_compare(ClientInterface::VERSION, '6.0.0', '>=');
+        if ($usingAtLeastGuzzle6) {
+            $handler = HandlerStack::create(
+                new \GuzzleHttp\Handler\MockHandler([
+                    new \GuzzleHttp\Psr7\Response($statusCode, [], \GuzzleHttp\Psr7\stream_for($body))
+                ])
+            );
+        } else {
+            $handler = new MockHandler([
+                'status' => $statusCode,
+                'body' => Stream::factory($body),
+            ]);
+        }
+
+        return new GuzzleClient(['handler' => $handler]);
     }
 }
