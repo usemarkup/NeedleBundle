@@ -6,7 +6,16 @@ php:
     - 7.1
     - hhvm
 
-install: composer install --dev --prefer-source
+env:
+    global:
+        - deps=high
+
+install:
+    - if [ "$deps" = "high" ]; then composer --prefer-source install; fi;
+    - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi
+
+script:
+    - vendor/phpunit/phpunit/phpunit --debug
 
 notifications:
   email: "douglas@usemarkup.com"
@@ -14,5 +23,8 @@ notifications:
 matrix:
   allow_failures:
     - php: hhvm
+  include:
+    - php: 5.6
+      env: deps=low
 
 sudo: false
