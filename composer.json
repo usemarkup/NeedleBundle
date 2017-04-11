@@ -20,7 +20,7 @@
         "solarium/solarium": "^3.1.0",
         "pagerfanta/pagerfanta": "~1.0.1",
         "symfony/framework-bundle": "~2.3|~3.0",
-        "twig/twig": "~1.12",
+        "twig/twig": "~1.12|~2.0",
         "doctrine/collections": "~1.1",
         "guzzlehttp/guzzle": "~5.0|~6.0"
     },
