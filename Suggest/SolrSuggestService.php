@@ -64,7 +64,10 @@ class SolrSuggestService implements SuggestServiceInterface
         try {
             $resultSet = $this->solarium->suggester($suggestQuery);
         } catch (SolariumException $e) {
-            $this->logger->critical('A suggest query did not complete successfully. Have you enabled the suggest Solr component?');
+            $this->logger->critical(
+                'A suggest query did not complete successfully. Have you enabled the suggest Solr component?',
+                ['message' => $e->getMessage()]
+            );
 
             return new EmptySuggestResult();
         }

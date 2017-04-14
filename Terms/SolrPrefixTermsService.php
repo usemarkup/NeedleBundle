@@ -33,7 +33,8 @@ class SolrPrefixTermsService extends AbstractSolrTermsService implements TermsSe
             $resultSet = $this->solarium->terms($suggestQuery);
         } catch (SolariumException $e) {
             $this->logger->critical(
-                'A suggest query did not complete successfully. Have you enabled the terms Solr component?'
+                'A suggest query did not complete successfully. Have you enabled the terms Solr component?',
+                ['message' => $e->getMessage()]
             );
 
             return new EmptyTermsResult();
