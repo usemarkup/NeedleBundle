@@ -6,8 +6,8 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
-* An intercept mapper for the route definition type.
-*/
+ * An intercept mapper for the route definition type.
+ */
 class RouteInterceptMapper implements TypedInterceptMapperInterface
 {
     /**
