@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Result;
 
+use Markup\NeedleBundle\Result\QueryTimeStrategyInterface;
 use Markup\NeedleBundle\Result\SolariumQueryTimeStrategy;
 
 /**
@@ -11,15 +12,13 @@ class SolariumQueryTimeStrategyTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->solariumResult = $this->getMockBuilder('Solarium\QueryType\Select\Result\Result')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->solariumResult = $this->createMock('Solarium\QueryType\Select\Result\Result');
         $this->strategy = new SolariumQueryTimeStrategy($this->solariumResult);
     }
 
     public function testIsQueryTimeStrategy()
     {
-        $this->assertTrue($this->strategy instanceof \Markup\NeedleBundle\Result\QueryTimeStrategyInterface);
+        $this->assertInstanceOf(QueryTimeStrategyInterface::class, $this->strategy);
     }
 
     public function testGetQueryTimeInMilliseconds()

@@ -4,8 +4,10 @@ namespace Markup\NeedleBundle\Tests\Result;
 
 use Markup\NeedleBundle\Collator\CollatorInterface;
 use Markup\NeedleBundle\Facet\FacetSetIteratorInterface;
+use Markup\NeedleBundle\Facet\FacetValueInterface;
 use Markup\NeedleBundle\Result\SolariumFacetSetAdaptingIterator;
 use Mockery as m;
+use Solarium\QueryType\Select\Result\Facet\Field;
 
 /**
 * A test for an iterator that can wrap a Solarium facet set and emit generic facet values.
@@ -22,9 +24,7 @@ class SolariumFacetSetAdaptingIteratorTest extends \PHPUnit_Framework_TestCase
     {
         $value = 'red';
         $count = 5;
-        $solariumFacetField = $this->getMockBuilder('Solarium\QueryType\Select\Result\Facet\Field')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $solariumFacetField = $this->createMock(Field::class);
         $valuesIterator = new \ArrayIterator([$value => $count]);
         $solariumFacetField
             ->expects($this->any())
@@ -33,7 +33,7 @@ class SolariumFacetSetAdaptingIteratorTest extends \PHPUnit_Framework_TestCase
         $it = new SolariumFacetSetAdaptingIterator($solariumFacetField);
         $values = iterator_to_array($it);
         $this->assertCount(1, $values, 'checking there is one value');
-        $this->assertContainsOnly('Markup\NeedleBundle\Facet\FacetValueInterface', $values);
+        $this->assertContainsOnly(FacetValueInterface::class, $values);
         foreach ($values as $singleValue) {
             break;
         }

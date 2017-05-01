@@ -2,7 +2,18 @@
 
 namespace Markup\NeedleBundle\Tests\Indexer;
 
+use Markup\NeedleBundle\Corpus\CorpusInterface;
+use Markup\NeedleBundle\Corpus\CorpusProvider;
 use Markup\NeedleBundle\Indexer\CorpusIndexingCommand;
+use Markup\NeedleBundle\Indexer\IndexCallbackProvider;
+use Markup\NeedleBundle\Indexer\SubjectDataMapperInterface;
+use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
+use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
+use Psr\Log\LoggerInterface;
+use Solarium\Client;
+use Solarium\QueryType\Update\Query\Query;
+use Solarium\QueryType\Update\Result;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
 * A test for an indexing command that indexes a corpus.
@@ -11,27 +22,19 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->corpusProvider = $this->getMockBuilder('Markup\NeedleBundle\Corpus\CorpusProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->solariumClient = $this->createMock('Solarium\Client');
-        $this->subjectMapperProvider = $this->getMockBuilder('Markup\NeedleBundle\Indexer\SubjectDataMapperProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->subjectToDataMapper = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDataMapperInterface');
+        $this->corpusProvider = $this->createMock(CorpusProvider::class);
+        $this->solariumClient = $this->createMock(Client::class);
+        $this->subjectMapperProvider = $this->createMock(SubjectDataMapperProvider::class);
+        $this->subjectToDataMapper = $this->createMock(SubjectDataMapperInterface::class);
         $this->subjectMapperProvider
             ->expects($this->any())
             ->method('fetchMapperForCorpus')
             ->will($this->returnValue($this->subjectToDataMapper));
-        $this->filterQueryLucenifier = $this->getMockBuilder('Markup\NeedleBundle\Lucene\FilterQueryLucenifier')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->eventDispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $this->indexCallbackProvider = $this->getMockBuilder('Markup\NeedleBundle\Indexer\IndexCallbackProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->filterQueryLucenifier = $this->createMock(FilterQueryLucenifier::class);
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->indexCallbackProvider = $this->createMock(IndexCallbackProvider::class);
         $this->shouldReplaceDocuments = true;
-        $this->logger = $this->createMock('Psr\Log\LoggerInterface');
+        $this->logger = $this->createMock(LoggerInterface::class);
         $this->command = new CorpusIndexingCommand(
             $this->corpusProvider,
             $this->solariumClient,
@@ -47,7 +50,7 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
     public function testGetAllSubjectsFromService()
     {
         $subject = new \stdClass();
-        $corpus = $this->createMock('Markup\NeedleBundle\Corpus\CorpusInterface');
+        $corpus = $this->createMock(CorpusInterface::class);
         $corpus
             ->expects($this->once())
             ->method('getSubjectIteration')
@@ -58,16 +61,12 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
             ->method('fetchNamedCorpus')
             ->with($this->equalTo($corpusName))
             ->will($this->returnValue($corpus));
-        $updateQuery = $this->getMockBuilder('Solarium\QueryType\Update\Query\Query')
-                ->disableOriginalConstructor()
-                ->getMock();
+        $updateQuery = $this->createMock(Query::class);
         $this->solariumClient
             ->expects($this->any())
             ->method('createUpdate')
             ->will($this->returnValue($updateQuery));
-        $result = $this->getMockBuilder('Solarium\QueryType\Update\Result')
-                ->disableOriginalConstructor()
-                ->getMock();
+        $result = $this->createMock(Result::class);
         $this->solariumClient
             ->expects($this->any())
             ->method('update')
@@ -83,7 +82,7 @@ class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testExecuteWithoutCorpusNameThrowsBadMethodCall()
     {
-        $this->setExpectedException('BadMethodCallException');
+        $this->expectException(\BadMethodCallException::class);
         call_user_func($this->command);
     }
 }

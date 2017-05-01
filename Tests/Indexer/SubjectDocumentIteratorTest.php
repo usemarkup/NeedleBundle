@@ -2,7 +2,10 @@
 
 namespace Markup\NeedleBundle\Tests\Indexer;
 
+use Doctrine\Common\Collections\Collection;
+use Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface;
 use Markup\NeedleBundle\Indexer\SubjectDocumentIterator;
+use Solarium\QueryType\Update\Query\Document\Document;
 
 /**
 * A test for an iterator that can go over an iteration of subjects and emit documents for Solarium.
@@ -11,14 +14,14 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsIterator()
     {
-        $it = new \ReflectionClass('Markup\NeedleBundle\Indexer\SubjectDocumentIterator');
-        $this->assertTrue($it->implementsInterface('\Iterator'));
+        $it = new \ReflectionClass(SubjectDocumentIterator::class);
+        $this->assertTrue($it->implementsInterface(\Iterator::class));
     }
 
     public function testStringInConstructorForSubjectsThrowsInvalidArgumentException()
     {
-        $this->setExpectedException('\InvalidArgumentException');
-        $docGenerator = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
+        $this->expectException(\InvalidArgumentException::class);
+        $docGenerator = $this->createMock(SubjectDocumentGeneratorInterface::class);
         $it = new SubjectDocumentIterator('subjects', $docGenerator);
     }
 
@@ -27,22 +30,20 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
         $subject = new \stdClass();
 
         $allSubjects = [$subject, $subject, $subject, $subject];
-        $docGenerator = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
-        $doc = $this->getMockBuilder('Solarium\QueryType\Update\Query\Document')
-                ->disableOriginalConstructor()
-                ->getMock();
+        $docGenerator = $this->createMock(SubjectDocumentGeneratorInterface::class);
+        $doc = $this->createMock(Document::class);
         $docGenerator
             ->expects($this->any())
             ->method('createDocumentForSubject')
             ->will($this->returnValue($doc));
         $it = new SubjectDocumentIterator($allSubjects, $docGenerator);
         $this->assertEquals(4, iterator_count($it));
-        $this->assertContainsOnly('Solarium\QueryType\Update\Query\Document', iterator_to_array($it));
+        $this->assertContainsOnly(Document::class, iterator_to_array($it));
     }
 
     public function testSetAndGetSubjects()
     {
-        $docGenerator = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
+        $docGenerator = $this->createMock(SubjectDocumentGeneratorInterface::class);
         $it = new SubjectDocumentIterator([], $docGenerator);
         $this->assertCount(0, iterator_to_array($it->getSubjects()));
         $subject = new \stdClass();
@@ -53,7 +54,7 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function testCallbacksExecuted()
     {
-        $subject = $this->createMock('Doctrine\Common\Collections\Collection');
+        $subject = $this->createMock(Collection::class);
         $subject
             ->expects($this->once())
             ->method('get');
@@ -61,7 +62,7 @@ class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
             $subject->get('skdjhfskjdfh');
         };
         $subjects = [$subject];
-        $docGenerator = $this->createMock('Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface');
+        $docGenerator = $this->createMock(SubjectDocumentGeneratorInterface::class);
         $it = new SubjectDocumentIterator($subjects, $docGenerator, [$callback]);
         iterator_to_array($it);
     }

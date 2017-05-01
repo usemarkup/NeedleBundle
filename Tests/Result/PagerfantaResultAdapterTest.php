@@ -2,7 +2,11 @@
 
 namespace Markup\NeedleBundle\Tests\Result;
 
+use Markup\NeedleBundle\Result\DebugOutputStrategyInterface;
+use Markup\NeedleBundle\Result\PageDoesNotExistException;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
+use Markup\NeedleBundle\Result\ResultInterface;
+use Pagerfanta\Pagerfanta;
 
 /**
 * A test for a search result that adapts a Pagerfanta object.
@@ -11,15 +15,13 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->pagerfanta = $this->getMockBuilder('Pagerfanta\Pagerfanta')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->pagerfanta = $this->createMock(Pagerfanta::class);
         $this->adapter = new PagerfantaResultAdapter($this->pagerfanta);
     }
 
     public function testIsResult()
     {
-        $this->assertTrue($this->adapter instanceof \Markup\NeedleBundle\Result\ResultInterface);
+        $this->assertInstanceOf(ResultInterface::class, $this->adapter);
     }
 
     public function testGetTotalCount()
@@ -155,7 +157,7 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getNextPage')
             ->will($this->throwException(new \LogicException));
-        $this->setExpectedException('Markup\NeedleBundle\Result\PageDoesNotExistException');
+        $this->expectException(PageDoesNotExistException::class);
         $this->adapter->getNextPageNumber();
     }
 
@@ -184,7 +186,7 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
 
     public function testDebugOutputWithStrategySet()
     {
-        $debugStrategy = $this->createMock('Markup\NeedleBundle\Result\DebugOutputStrategyInterface');
+        $debugStrategy = $this->createMock(DebugOutputStrategyInterface::class);
         $debugStrategy
             ->expects($this->any())
             ->method('hasDebugOutput')

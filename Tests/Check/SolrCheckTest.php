@@ -3,6 +3,9 @@
 namespace Markup\NeedleBundle\Tests\Check;
 
 use Markup\NeedleBundle\Check\SolrCheck;
+use Solarium\Client;
+use Solarium\Core\Query\QueryInterface;
+use ZendDiagnostics\Check\CheckInterface;
 use ZendDiagnostics\Result\FailureInterface;
 use ZendDiagnostics\Result\SuccessInterface;
 
@@ -11,22 +14,30 @@ use ZendDiagnostics\Result\SuccessInterface;
 */
 class SolrCheckTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Client
+     */
+    private $solariumClient;
+
+    /**
+     * @var SolrCheck
+     */
+    private $check;
+
     public function setUp()
     {
-        $this->solariumClient = $this->getMockBuilder('Solarium\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->solariumClient = $this->createMock(Client::class);
         $this->check = new SolrCheck($this->solariumClient);
     }
 
     public function testIsCheck()
     {
-        $this->assertTrue($this->check instanceof \ZendDiagnostics\Check\CheckInterface);
+        $this->assertInstanceOf(CheckInterface::class, $this->check);
     }
 
     public function testCheckWhenOK()
     {
-        $solrPing = $this->createMock('Solarium\Core\Query\QueryInterface');
+        $solrPing = $this->createMock(QueryInterface::class);
         $this->solariumClient
             ->expects($this->any())
             ->method('createPing')
@@ -43,7 +54,7 @@ class SolrCheckTest extends \PHPUnit_Framework_TestCase
 
     public function testCheckWhenFail()
     {
-        $solrPing = $this->createMock('Solarium\Core\Query\QueryInterface');
+        $solrPing = $this->createMock(QueryInterface::class);
         $this->solariumClient
             ->expects($this->any())
             ->method('createPing')
