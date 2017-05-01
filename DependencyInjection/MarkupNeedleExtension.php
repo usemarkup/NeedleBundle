@@ -282,6 +282,9 @@ class MarkupNeedleExtension extends Extension
                 $sharedServiceDefinitions
             );
         } else {
+            if (!defined(ContainerInterface::class.'::SCOPE_PROTOTYPE')) {
+                throw new \LogicException();
+            }
             array_map(
                 function (Definition $definition) {
                     $definition->setScope(ContainerInterface::SCOPE_PROTOTYPE, false);

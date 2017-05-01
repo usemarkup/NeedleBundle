@@ -26,8 +26,13 @@ abstract class CombinedFilterValue implements CombinedFilterValueInterface
     {
         $filterValues = $this->getValues();
         if (count($filterValues) == 1) {
-            foreach ($filterValues as $filterValue) {
+            $filterValue = null;
+            foreach ($filterValues as $step) {
+                $filterValue = $step;
                 break;
+            }
+            if (null === $filterValue) {
+                throw new \LogicException();
             }
 
             return $filterValue->getSearchValue();

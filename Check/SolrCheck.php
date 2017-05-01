@@ -47,7 +47,7 @@ class SolrCheck implements CheckInterface
     }
 
     /**
-     * @return SolariumClient
+     * @return Solarium
      **/
     private function getSolariumClient()
     {

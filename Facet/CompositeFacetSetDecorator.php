@@ -28,6 +28,7 @@ class CompositeFacetSetDecorator extends FacetSetDecorator
             return parent::decorate($facet_set);
         }
         $decorators = array_values($this->decorators);
+        $decorator = null;
         foreach ($decorators as $index => $decorator) {
             if ($index === 0) {
                 $decorator->decorate($facet_set);

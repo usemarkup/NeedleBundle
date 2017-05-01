@@ -17,7 +17,7 @@ class Interceptor implements InterceptorInterface
     private $eventDispatcher;
 
     /**
-     * @var DefinitionInterface[]
+     * @var \SplObjectStorage|DefinitionInterface[]
      **/
     private $definitions;
 

@@ -26,6 +26,11 @@ abstract class AbstractSolrManagedResourcesClient
     private $solrCoreAdminClient;
 
     /**
+     * @var Client
+     */
+    private $client;
+
+    /**
      * @param Solarium            $solarium
      * @param SolrCoreAdminClient $solrCoreAdminClient
      */

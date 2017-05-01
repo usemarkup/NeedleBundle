@@ -2,8 +2,10 @@
 
 namespace Markup\NeedleBundle\Adapter;
 
+use Markup\NeedleBundle\Facet\FacetSet;
 use Solarium\Core\Query\Result\ResultInterface;
 use Solarium\QueryType\Select\Result\Document;
+use Solarium\QueryType\Select\Result\DocumentInterface;
 
 /**
  * Wraps a very specific solrarium result format associated with the GroupingComponent in
@@ -34,7 +36,7 @@ class GroupedResultAdapter implements ResultInterface, \IteratorAggregate, \Coun
     /**
      * Splits the document out to give the desired format whereby the primary document
      * has other documents embeded within a 'groups' property
-     * @return Document
+     * @return Document[]
      */
     private function parseResult()
     {
@@ -143,7 +145,7 @@ class GroupedResultAdapter implements ResultInterface, \IteratorAggregate, \Coun
      * @param  string $key
      * @return mixed
      */
-    public function getComponent()
+    public function getComponent($key)
     {
         return $this->result->getComponents($key);
     }
@@ -233,7 +235,7 @@ class GroupedResultAdapter implements ResultInterface, \IteratorAggregate, \Coun
     }
 
     /**
-     * Get all documents, documents are manipulated via 'parseResult' methods before being returned
+     * Get all documents - documents are manipulated via 'parseResult' methods before being returned
      *
      * @return DocumentInterface[]
      */
