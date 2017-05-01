@@ -261,7 +261,7 @@ class CorpusIndexingCommand
             return $this->subjectIteration;
         }
 
-        return $this->getCorpus()->getSubjectIteration();
+        return $this->formIteratorFor($this->getCorpus()->getSubjectIteration());
     }
 
     /**
@@ -314,5 +314,24 @@ class CorpusIndexingCommand
     private function getLogger()
     {
         return $this->logger;
+    }
+
+    /**
+     * @param array|\Traversable $iterable
+     * @return \Iterator
+     */
+    private function formIteratorFor($iterable)
+    {
+        if ($iterable instanceof \Iterator) {
+            return $iterable;
+        }
+        if ($iterable instanceof \Traversable) {
+            return new \IteratorIterator($iterable);
+        }
+        if (is_array($iterable)) {
+            return new \ArrayIterator($iterable);
+        }
+
+        return new \ArrayIterator([$iterable]);
     }
 }

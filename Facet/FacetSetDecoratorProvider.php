@@ -20,7 +20,7 @@ class FacetSetDecoratorProvider implements FacetSetDecoratorProviderInterface
      * Gets a facet set decorator for a provided facet, or returns null.
      *
      * @param AttributeInterface $facet
-     * @return FacetSetDecoratorInterface
+     * @return FacetSetDecoratorInterface|null
      */
     public function getDecoratorForFacet(AttributeInterface $facet)
     {

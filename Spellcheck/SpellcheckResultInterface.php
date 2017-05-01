@@ -17,7 +17,7 @@ interface SpellcheckResultInterface
     /**
      * Gets a list of suggestions,
      *
-     * @return string[]
+     * @return Suggestion[]
      */
     public function getSuggestions();
 } 

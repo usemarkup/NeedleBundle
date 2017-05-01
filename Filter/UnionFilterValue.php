@@ -18,6 +18,7 @@ class UnionFilterValue extends CombinedFilterValue implements UnionFilterValueIn
     public function __construct($filterValues)
     {
         $this->filterValues = $filterValues;
+        parent::__construct($filterValues);
     }
 
     public function getValues()
