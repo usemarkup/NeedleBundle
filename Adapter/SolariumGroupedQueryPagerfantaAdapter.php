@@ -12,7 +12,7 @@ use Solarium\Client;
  * SolariumAdapter specifically for supporting grouped results. Should only be used with 'grouped' queries.
  * This only works with a very specific grouping configuration, and this is checked on initialization.
  */
-class GroupedQuerySolariumAdapter implements AdapterInterface
+class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
 {
     /**
      * @var Client
