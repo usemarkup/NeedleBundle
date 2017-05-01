@@ -3,6 +3,8 @@
 namespace Markup\NeedleBundle\Tests\EventListener;
 
 use Markup\NeedleBundle\EventListener\IndexSchedulingEventListener;
+use Markup\NeedleBundle\Scheduler\IndexScheduler;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
 * A test for an event listener that schedules a search index.
@@ -11,9 +13,7 @@ class IndexSchedulingEventListenerTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->scheduler = $this->getMockBuilder('Markup\NeedleBundle\Scheduler\IndexScheduler')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->scheduler = $this->createMock(IndexScheduler::class);
         $this->listener = new IndexSchedulingEventListener($this->scheduler);
     }
 
@@ -23,7 +23,7 @@ class IndexSchedulingEventListenerTest extends \PHPUnit_Framework_TestCase
         $corpus2 = 'corpus2';
         $eventName1 = 'event1';
         $eventName2 = 'event2';
-        $event1 = $this->createMock('Symfony\Component\EventDispatcher\Event');
+        $event1 = $this->createMock(Event::class);
         $this->listener->addCorpusForEvent($corpus1, $eventName1);
         $this->listener->addCorpusForEvent($corpus2, $eventName2);
         $this->scheduler

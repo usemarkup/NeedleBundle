@@ -2,7 +2,15 @@
 
 namespace Markup\NeedleBundle\Tests\Result;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Facet\FacetSetInterface;
+use Markup\NeedleBundle\Facet\FacetValueInterface;
+use Markup\NeedleBundle\Result\FacetSetStrategyInterface;
 use Markup\NeedleBundle\Result\SolariumFacetSetsStrategy;
+use Solarium\QueryType\Select\Result\Facet\Field;
+use Solarium\QueryType\Select\Result\FacetSet;
+use Solarium\QueryType\Select\Result\Result;
 
 /**
 * A test for a strategy for fetching facet sets from a Solarium result.
@@ -11,21 +19,19 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->solariumResult = $this->getMockBuilder('Solarium\QueryType\Select\Result\Result')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->searchContext = $this->createMock('Markup\NeedleBundle\Context\SearchContextInterface');
+        $this->solariumResult = $this->createMock(Result::class);
+        $this->searchContext = $this->createMock(SearchContextInterface::class);
         $this->strategy = new SolariumFacetSetsStrategy($this->solariumResult, $this->searchContext);
     }
 
     public function testIsFacetSetsStrategy()
     {
-        $this->assertTrue($this->strategy instanceof \Markup\NeedleBundle\Result\FacetSetStrategyInterface);
+        $this->assertInstanceOf(FacetSetStrategyInterface::class, $this->strategy);
     }
 
     public function testGetOneFacetSet()
     {
-        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = $this->createMock(AttributeInterface::class);
         $this->searchContext
             ->expects($this->any())
             ->method('getFacets')
@@ -40,17 +46,13 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getSearchKey')
             ->will($this->returnValue($key));
-        $solariumFacetSet = $this->getMockBuilder('Solarium\QueryType\Select\Result\FacetSet')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $solariumFacetValue = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $solariumFacetSet = $this->createMock(FacetSet::class);
+        $solariumFacetValue = $this->createMock(FacetValueInterface::class);
         $this->solariumResult
             ->expects($this->any())
             ->method('getFacetSet')
             ->will($this->returnValue($solariumFacetSet));
-        $solariumFacet = $this->getMockBuilder('Solarium\QueryType\Select\Result\Facet\Field')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $solariumFacet = $this->createMock(Field::class);
         $solariumFacetValues = new \ArrayIterator([$key => $solariumFacetValue]);
         $solariumFacet
             ->expects($this->any())
@@ -61,12 +63,12 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
             ->method('getIterator')
             ->will($this->returnValue(new \ArrayIterator([$key => $solariumFacet])));
         $facetSets = $this->strategy->getFacetSets();
-        $this->assertContainsOnly('Markup\NeedleBundle\Facet\FacetSetInterface', $facetSets);
+        $this->assertContainsOnly(FacetSetInterface::class, $facetSets);
     }
 
     public function testGetOneFacetSetWithResultPassedToConstructorAsClosure()
     {
-        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = $this->createMock(AttributeInterface::class);
         $this->searchContext
             ->expects($this->any())
             ->method('getFacets')
@@ -76,17 +78,13 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getSearchKey')
             ->will($this->returnValue($key));
-        $solariumFacetSet = $this->getMockBuilder('Solarium\QueryType\Select\Result\FacetSet')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $solariumFacetValue = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $solariumFacetSet = $this->createMock(FacetSet::class);
+        $solariumFacetValue = $this->createMock(FacetValueInterface::class);
         $this->solariumResult
             ->expects($this->any())
             ->method('getFacetSet')
             ->will($this->returnValue($solariumFacetSet));
-        $solariumFacet = $this->getMockBuilder('Solarium\QueryType\Select\Result\Facet\Field')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $solariumFacet = $this->createMock(Field::class);
         $solariumFacetValues = new \ArrayIterator([$key => $solariumFacetValue]);
         $solariumFacet
             ->expects($this->any())
@@ -98,6 +96,6 @@ class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(new \ArrayIterator([$key => $solariumFacet])));
         $strategy = new SolariumFacetSetsStrategy(function() { return $this->solariumResult; }, $this->searchContext);
         $facetSets = $strategy->getFacetSets();
-        $this->assertContainsOnly('Markup\NeedleBundle\Facet\FacetSetInterface', $facetSets);
+        $this->assertContainsOnly(FacetSetInterface::class, $facetSets);
     }
 }

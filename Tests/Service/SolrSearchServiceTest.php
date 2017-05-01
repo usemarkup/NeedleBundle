@@ -2,8 +2,10 @@
 
 namespace Markup\NeedleBundle\Tests\Service;
 
+use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
 use Markup\NeedleBundle\Service\SolrSearchService;
 use Mockery as m;
+use Solarium\Client;
 
 /**
  * A test for a search service using Solr/ Solarium.
@@ -12,12 +14,8 @@ class SolrSearchServiceTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->solarium = $this->getMockBuilder('Solarium\Client')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->solariumQueryBuilder = $this->getMockBuilder('Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->solarium = $this->createMock(Client::class);
+        $this->solariumQueryBuilder = $this->createMock(SolariumSelectQueryBuilder::class);
         $this->service = new SolrSearchService($this->solarium, $this->solariumQueryBuilder);
     }
 
@@ -34,16 +32,12 @@ class SolrSearchServiceTest extends \PHPUnit_Framework_TestCase
     public function testExecuteQuery()
     {
         $genericQuery = $this->createMock('Markup\NeedleBundle\Query\SelectQueryInterface');
-        $solariumQuery = $this->getMockBuilder('Solarium\QueryType\Select\Query\Query')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $solariumQuery = $this->createMock('Solarium\QueryType\Select\Query\Query');
         $this->solariumQueryBuilder
             ->expects($this->atLeastOnce())
             ->method('buildSolariumQueryFromGeneric')
             ->will($this->returnValue($solariumQuery));
-        $solariumResult = $this->getMockBuilder('Solarium\QueryType\Select\Result\Result')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $solariumResult = $this->createMock('Solarium\QueryType\Select\Result\Result');
         $this->solarium
             ->expects($this->any())
             ->method('select')
@@ -67,9 +61,7 @@ class SolrSearchServiceTest extends \PHPUnit_Framework_TestCase
 
         $genericQuery = $this->createMock('Markup\NeedleBundle\Query\SelectQueryInterface');
 
-        $solariumQuery = $this->getMockBuilder('Solarium\QueryType\Select\Query\Query')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $solariumQuery = $this->createMock('Solarium\QueryType\Select\Query\Query');
         $this->solariumQueryBuilder
             ->expects($this->atLeastOnce())
             ->method('buildSolariumQueryFromGeneric')
@@ -77,9 +69,7 @@ class SolrSearchServiceTest extends \PHPUnit_Framework_TestCase
                 return $query->getSearchTerm() ===  'I have been decorated';
             }))
             ->will($this->returnValue($solariumQuery));
-        $solariumResult = $this->getMockBuilder('Solarium\QueryType\Select\Result\Result')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $solariumResult = $this->createMock('Solarium\QueryType\Select\Result\Result');
         $this->solarium
             ->expects($this->any())
             ->method('select')

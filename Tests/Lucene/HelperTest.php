@@ -4,6 +4,8 @@ namespace Markup\NeedleBundle\Tests\Lucene;
 
 use Markup\NeedleBundle\Exception\LuceneSyntaxException;
 use Markup\NeedleBundle\Lucene\Helper;
+use Markup\NeedleBundle\Lucene\HelperInterface;
+use Solarium\Core\Query\Helper as SolariumHelper;
 use Solarium\Exception\InvalidArgumentException;
 
 /**
@@ -11,17 +13,25 @@ use Solarium\Exception\InvalidArgumentException;
 */
 class HelperTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var SolariumHelper
+     */
+    private $solariumHelper;
+
+    /**
+     * @var Helper
+     */
+    private $helper;
+
     public function setUp()
     {
-        $this->solariumHelper = $this->getMockBuilder('Solarium\Core\Query\Helper')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->solariumHelper = $this->createMock(SolariumHelper::class);
         $this->helper = new Helper($this->solariumHelper);
     }
 
     public function testIsHelper()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Lucene\HelperInterface', $this->helper);
+        $this->assertInstanceOf(HelperInterface::class, $this->helper);
     }
 
     public function testAssembleCallsDownOnHelper()
