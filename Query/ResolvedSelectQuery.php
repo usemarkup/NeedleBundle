@@ -138,6 +138,14 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
+    public function getResultAsync()
+    {
+        return $this->getSelectQuery()->getResultAsync();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setSearchService(SearchServiceInterface $service)
     {
         return $this->getSelectQuery()->setSearchService($service);

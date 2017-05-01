@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Tests\Query;
 
+use Markup\NeedleBundle\Query\RecordableSelectQueryInterface;
+
 /**
 * A test for a recordable select query interface.
 */
@@ -20,6 +22,7 @@ class RecordableSelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'hasSortCollection',
             'getFacetNamesToExclude',
             'getResult',
+            'getResultAsync',
             'setSearchService',
             'record',
             'getRecord',
@@ -32,7 +35,7 @@ class RecordableSelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'getGroupingField',
             'getGroupingSortCollection'
         ];
-        $query = new \ReflectionClass('Markup\NeedleBundle\Query\RecordableSelectQueryInterface');
+        $query = new \ReflectionClass(RecordableSelectQueryInterface::class);
         $actual_public_methods = [];
         foreach ($query->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $actual_public_methods[] = $method->name;

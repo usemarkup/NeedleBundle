@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Tests\Query;
 
+use Markup\NeedleBundle\Query\SelectQueryInterface;
+
 /**
 * A test for a select query interface.
 */
@@ -20,6 +22,7 @@ class SelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'hasSortCollection',
             'getFacetNamesToExclude',
             'getResult',
+            'getResultAsync',
             'setSearchService',
             'getFilterQueryWithKey',
             'doesValueExistInFilterQueries',
@@ -29,7 +32,7 @@ class SelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
             'getGroupingField',
             'getGroupingSortCollection',
         ];
-        $query = new \ReflectionClass('Markup\NeedleBundle\Query\SelectQueryInterface');
+        $query = new \ReflectionClass(SelectQueryInterface::class);
         $actual_public_methods = [];
         foreach ($query->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $actual_public_methods[] = $method->name;

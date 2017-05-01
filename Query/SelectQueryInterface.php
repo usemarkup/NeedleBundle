@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Query;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Service\SearchServiceInterface as SearchService;
 use Markup\NeedleBundle\Spellcheck\SpellcheckInterface;
@@ -72,6 +73,13 @@ interface SelectQueryInterface extends SimpleQueryInterface
      * @return object (Result class)
      **/
     public function getResult();
+
+    /**
+     * Gets the result of the query as a promise.
+     *
+     * @return PromiseInterface
+     */
+    public function getResultAsync();
 
     /**
      * @param SearchService $service

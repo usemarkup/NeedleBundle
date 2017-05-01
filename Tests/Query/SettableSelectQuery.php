@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\Tests\Query;
 
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Query\FallbackAsyncQueryTrait;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Service\SearchServiceInterface as SearchService;
 use Markup\NeedleBundle\Sort\SortCollection;
@@ -10,6 +11,8 @@ use Markup\NeedleBundle\Spellcheck\SpellcheckInterface;
 
 class SettableSelectQuery implements SelectQueryInterface
 {
+    use FallbackAsyncQueryTrait;
+
     /**
      * @var string
      */
