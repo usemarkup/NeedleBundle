@@ -3,13 +3,8 @@
 namespace Markup\NeedleBundle\Tests\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Ring\Client\MockHandler;
-use GuzzleHttp\Stream\Stream;
-use GuzzleHttp\Subscriber\Mock;
 use Mockery as m;
 use Markup\NeedleBundle\Client\SolrCoreAdminClient;
 use Psr\Log\LoggerInterface;
@@ -22,7 +17,10 @@ class SolrCoreAdminClientTest extends \PHPUnit_Framework_TestCase
 
     public function testInstance()
     {
-        $this->assertInstanceOf(SolrCoreAdminClient::class, new SolrCoreAdminClient(m::mock(SolariumClient::class)));
+        $this->assertInstanceOf(
+            SolrCoreAdminClient::class,
+            new SolrCoreAdminClient(m::mock(SolariumClient::class))
+        );
     }
 
     public function testReload()
@@ -54,7 +52,10 @@ class SolrCoreAdminClientTest extends \PHPUnit_Framework_TestCase
         $solariumClient->shouldReceive('getEndpoint')->andReturn($endpoint);
 
         $logger = m::mock(LoggerInterface::class);
-        $logger->shouldReceive('error')->withArgs(['Core admin operation failed using URL: http://i.love.solr/../admin/cores?action=RELOAD&core=core1']);
+        $logger->shouldReceive('error')
+            ->withArgs(
+                ['Core admin operation failed using URL: http://i.love.solr/../admin/cores?action=RELOAD&core=core1']
+            );
 
 
         $client = new SolrCoreAdminClient($solariumClient, $logger, $guzzleClient);
@@ -86,19 +87,11 @@ class SolrCoreAdminClientTest extends \PHPUnit_Framework_TestCase
 
     private function createGuzzleClient($statusCode, $body)
     {
-        $usingAtLeastGuzzle6 = version_compare(ClientInterface::VERSION, '6.0.0', '>=');
-        if ($usingAtLeastGuzzle6) {
-            $handler = HandlerStack::create(
-                new \GuzzleHttp\Handler\MockHandler([
-                    new \GuzzleHttp\Psr7\Response($statusCode, [], \GuzzleHttp\Psr7\stream_for($body))
-                ])
-            );
-        } else {
-            $handler = new MockHandler([
-                'status' => $statusCode,
-                'body' => Stream::factory($body),
-            ]);
-        }
+        $handler = HandlerStack::create(
+            new \GuzzleHttp\Handler\MockHandler([
+                new \GuzzleHttp\Psr7\Response($statusCode, [], \GuzzleHttp\Psr7\stream_for($body))
+            ])
+        );
 
         return new GuzzleClient(['handler' => $handler]);
     }
