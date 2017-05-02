@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": ">=5.6",
+        "php": ">=7.1",
         "nelmio/solarium-bundle": "^2.0.4",
         "solarium/solarium": "^3.1.0",
         "pagerfanta/pagerfanta": "~1.0.1",
