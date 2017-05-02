@@ -12,55 +12,66 @@ use Markup\NeedleBundle\Exception\UnformableSearchKeyException;
 class SpecializedAttribute extends Attribute implements SpecializedAttributeInterface
 {
     /**
-     * @var AttributeSpecializationInterface
+     * @var AttributeSpecializationInterface[]
      */
-    protected $specialization;
+    protected $specializations;
 
     /**
-     * @var AttributeSpecializationContextInterface
+     * @var AttributeSpecializationContextInterface[]
      */
-    protected $context;
+    protected $contexts;
 
     /**
-     * @param AttributeSpecializationInterface $specialization
+     * @param AttributeSpecializationInterface[] $specializations
      * @param string                           $name
      * @param string                           $key
      * @param string                           $displayName
      * @param callable|null                    $valueDisplayStrategy
      */
     public function __construct(
-        AttributeSpecializationInterface $specialization,
-        $name,
-        $key = null,
-        $displayName = null,
+        array $specializations,
+        string $name,
+        string $key = null,
+        string $displayName = null,
         callable $valueDisplayStrategy = null
     ) {
-        $this->specialization = $specialization;
+        $this->specializations = $specializations;
+        $this->contexts = [];
         parent::__construct($name, $key, $displayName, $valueDisplayStrategy);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getSpecialization()
+    public function getSpecializations()
     {
-        return $this->specialization;
+        return $this->specializations;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setContext(AttributeSpecializationContextInterface $context)
-    {
-        $this->context = $context;
+    public function setContext(
+        AttributeSpecializationContextInterface $context,
+        string $specialization
+    ) {
+        $this->contexts[$specialization] = $context;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getContext()
+    public function getContext(string $specialization)
     {
-        return $this->context;
+        if (!array_key_exists($specialization, $this->contexts)) {
+            throw new \LogicException(
+                'Cannot get context for specialization `%s` on attribute `%s` as it has not been set',
+                $specialization,
+                $this->getName()
+            );
+        }
+
+        return $this->contexts[$specialization];
     }
 
     /**
@@ -68,19 +79,41 @@ class SpecializedAttribute extends Attribute implements SpecializedAttributeInte
      */
     public function getSearchKey(array $options = [])
     {
-        if (!$this->context) {
-            throw new \LogicException(sprintf('Cannot get a search key for a specialized attribute without a context where name is %s', $this->getName()));
+        foreach ($this->specializations as $specialization) {
+            if (!array_key_exists($specialization->getName(), $this->contexts)) {
+                throw new \LogicException(
+                    sprintf(
+                        'Cannot get context for specialization `%s` on attribute `%s` as it has not been set',
+                        $specialization->getName(),
+                        $this->getName()
+                    )
+                );
+            }
         }
 
-        if ($this->context instanceof AttributeSpecializationNullContextInterface) {
+        ksort($this->contexts);
+        $contextValues = [];
+
+        foreach ($this->contexts as $context) {
+            if ($context instanceof AttributeSpecializationNullContextInterface) {
+                continue;
+            }
+
+            try {
+                $contextValues[] = $context->getValue();
+            } catch (IllegalContextValueException $e) {
+                throw new UnformableSearchKeyException(
+                    sprintf(
+                        'The attribute "%s" cannot form a search key due to incomplete context data.',
+                        $this->getName())
+                );
+            }
+        }
+
+        if (empty($contextValues)) {
             return parent::getSearchKey();
         }
-        try {
-            $contextValue = $this->context->getValue();
-        } catch (IllegalContextValueException $e) {
-            throw new UnformableSearchKeyException(sprintf('The attribute "%s" cannot form a search key due to incomplete context data.', $this->getName()));
-        }
 
-        return sprintf('%s_%s', parent::getSearchKey(), $contextValue);
+        return sprintf('%s_%s', parent::getSearchKey(), implode('_', $contextValues));
     }
 }

@@ -10,7 +10,7 @@ abstract class SpecializedAttributeDecorator implements SpecializedAttributeInte
     /**
      * The attribute being decorated.
      *
-     * @var SpecializedAttributeInterface
+     * @var SpecializedAttributeInterface|AttributeInterface
      **/
     private $attribute;
 
@@ -58,25 +58,27 @@ abstract class SpecializedAttributeDecorator implements SpecializedAttributeInte
     /**
      * {@inheritDoc}
      */
-    public function getSpecialization()
+    public function getSpecializations()
     {
-        return $this->attribute->getSpecialization();
+        return $this->attribute->getSpecializations();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setContext(AttributeSpecializationContextInterface $context)
-    {
-        $this->attribute->setContext($context);
+    public function setContext(
+        AttributeSpecializationContextInterface $context,
+        string $specialization
+    ) {
+        $this->attribute->setContext($context, $specialization);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getContext()
+    public function getContext(string $specialization)
     {
-        return $this->attribute->getContext();
+        return $this->attribute->getContext($specialization);
     }
 
     public function __toString()
