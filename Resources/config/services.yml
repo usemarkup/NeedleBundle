@@ -236,3 +236,7 @@ services:
         arguments:
             - '@markup_needle.solarium.client'
             - '@logger'
+    markup_needle.registry.attribute.attribute_specialization_context_group:
+        class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextGroupRegistry
+        arguments:
+            - '@markup_needle.registry.attribute_specialization_context'
