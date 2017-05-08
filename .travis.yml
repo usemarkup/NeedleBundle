@@ -9,8 +9,8 @@ env:
         - deps=high
 
 install:
-    - if [ "$deps" = "high" ]; then composer --prefer-source install; fi;
-    - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi
+    - if [ "$deps" = "high" ]; then composer --prefer-source install --ignore-platform-reqs; fi;
+    - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable --ignore-platform-reqs update; fi
 
 script:
     - vendor/phpunit/phpunit/phpunit --debug
