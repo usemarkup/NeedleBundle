@@ -8,6 +8,9 @@ namespace Markup\NeedleBundle\Attribute;
  */
 class AttributeSpecializationContextGroup
 {
+
+    const DISPLAY_SEPARATOR = "/";
+
     /**
      * @var array
      */
@@ -33,5 +36,15 @@ class AttributeSpecializationContextGroup
         }
 
         return json_encode($key);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayName()
+    {
+        return implode(self::DISPLAY_SEPARATOR, array_map(function(AttributeSpecializationContextInterface $s) {
+            return $s->getValue();
+        }, $this->specializationContexts));
     }
 }
