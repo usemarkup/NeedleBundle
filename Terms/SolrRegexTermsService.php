@@ -24,10 +24,9 @@ class SolrRegexTermsService extends AbstractSolrTermsService implements TermsSer
             return new EmptyTermsResult();
         }
 
-        $suggestQuery
-            ->setFields($field)
-            ->setRegex($query->getSearchTerm())
-            ->setSort('count');
+        $suggestQuery->setFields($field);
+        $suggestQuery->setRegex($this->escapeTerm($query->getSearchTerm()));
+        $suggestQuery->setSort('count');
 
         try {
             $resultSet = $this->solarium->terms($suggestQuery);
@@ -41,5 +40,12 @@ class SolrRegexTermsService extends AbstractSolrTermsService implements TermsSer
         }
 
         return new SolrTermsResult($resultSet);
+    }
+
+    public function escapeTerm($input)
+    {
+        $pattern = '/(\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|\?|:|\/|\\\)/';
+
+        return preg_replace($pattern, '\\\$1', $input);
     }
 }
