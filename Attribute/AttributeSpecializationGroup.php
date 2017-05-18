@@ -44,4 +44,12 @@ class AttributeSpecializationGroup
             return $s->getName();
         }, $this->specializations));
     }
+
+    /**
+     * @return array
+     */
+    public function getSpecializations()
+    {
+        return $this->specializations;
+    }
 }

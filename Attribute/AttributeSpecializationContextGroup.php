@@ -47,4 +47,12 @@ class AttributeSpecializationContextGroup
             return $s->getValue();
         }, $this->specializationContexts));
     }
+
+    /**
+     * @return array
+     */
+    public function getSpecializationContexts()
+    {
+        return $this->specializationContexts;
+    }
 }
