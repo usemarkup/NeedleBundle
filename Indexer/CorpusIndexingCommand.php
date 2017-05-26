@@ -145,7 +145,7 @@ class CorpusIndexingCommand
         if (empty($this->corpusName)) {
             throw new \BadMethodCallException('You need to set a corpus name on the corpus indexing command in order to execute it.');
         }
-        $isFullUpdate = null === $this->deleteQuery;
+        $isFullUpdate = $this->shouldPreDelete;
         $this->eventDispatcher->dispatch(SearchEvents::CORPUS_PRE_UPDATE, new CorpusPreUpdateEvent($this->getCorpus(), $isFullUpdate));
         $logger = $this->getLogger();
         $logger->info(sprintf('Indexing of corpus "%s" started.', $this->getCorpus()->getName()));
