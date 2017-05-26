@@ -15,7 +15,7 @@ services:
             - '@markup_needle.filter_query.lucenifier'
             - '@event_dispatcher'
             - '@markup_needle.index_callback_provider'
-            - true
+            - false
             - '@logger'
             - ~
             - %markup_needle.allow_null_values_in_update_fields%
