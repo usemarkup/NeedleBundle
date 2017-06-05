@@ -12,7 +12,7 @@ abstract class AttributeDecorator implements AttributeInterface
      *
      * @var AttributeInterface
      **/
-    private $attribute;
+    protected $attribute;
 
     /**
      * @param AttributeInterface $attribute
