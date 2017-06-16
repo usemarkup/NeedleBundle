@@ -19,9 +19,6 @@ abstract class AttributeDecorator implements AttributeInterface
      **/
     public function __construct(AttributeInterface $attribute)
     {
-        if ($attribute instanceof SpecializedAttributeInterface) {
-            throw new \Exception('Use SpecializedDecorators when decorating specialized attributes');
-        }
         $this->attribute = $attribute;
     }
 
