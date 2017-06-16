@@ -24,10 +24,9 @@ class SolrRegexTermsService extends AbstractSolrTermsService implements TermsSer
             return new EmptyTermsResult();
         }
 
-        $suggestQuery
-            ->setFields($field)
-            ->setRegex($query->getSearchTerm())
-            ->setSort('count');
+        $suggestQuery->setFields($field);
+        $suggestQuery->setRegex(sprintf('.*%s.*', preg_quote($query->getSearchTerm())));
+        $suggestQuery->setSort('count');
 
         try {
             $resultSet = $this->solarium->terms($suggestQuery);
