@@ -3,7 +3,11 @@
 namespace Markup\NeedleBundle\Service;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Markup\NeedleBundle\Adapter\SolariumGroupedQueryPagerfantaAdapter;
+use function GuzzleHttp\Promise\coroutine;
+use function GuzzleHttp\Promise\promise_for;
+use GuzzleHttp\Promise\PromiseInterface;
+use Markup\NeedleBundle\Adapter\GroupedResultAdapter;
+use Markup\NeedleBundle\Adapter\SolariumResultPromisePagerfantaAdapter;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
@@ -13,8 +17,8 @@ use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
 use Markup\NeedleBundle\Result\SolariumDebugOutputStrategy;
 use Markup\NeedleBundle\Result\SolariumFacetSetsStrategy;
 use Markup\NeedleBundle\Result\SolariumSpellcheckResultStrategy;
-use Pagerfanta\Adapter\SolariumAdapter;
 use Pagerfanta\Pagerfanta;
+use Shieldo\SolariumAsyncPlugin;
 use Solarium\Client as SolariumClient;
 use Symfony\Component\Templating\EngineInterface as TemplatingEngine;
 
@@ -24,7 +28,7 @@ use Symfony\Component\Templating\EngineInterface as TemplatingEngine;
  * Composes a SelectQuery & SearchContext (into a ResolvedQuery), converts it into a solr query and
  * executes the query (using Solarium) and then returns a result (as a PagerfantaResultAdapter)
  */
-class SolrSearchService implements SearchServiceInterface
+class SolrSearchService implements AsyncSearchServiceInterface
 {
     /**
      * Solr needs specification of a very large number for a 'view all' function.
@@ -85,54 +89,83 @@ class SolrSearchService implements SearchServiceInterface
      */
     public function executeQuery(SelectQueryInterface $query)
     {
-        $solariumQueryBuilder = $this->getSolariumQueryBuilder();
+        return $this->executeQueryAsync($query)->wait();
+    }
 
-        $query = new ResolvedSelectQuery($query, $this->hasContext() ? $this->getContext() : null);
+    /**
+     * Provides a promise for a executing a select query on a service, returning a result.
+     *
+     * @param SelectQueryInterface
+     * @return PromiseInterface
+     **/
+    public function executeQueryAsync(SelectQueryInterface $query)
+    {
+        return coroutine(
+            function () use ($query) {
+                $solariumQueryBuilder = $this->getSolariumQueryBuilder();
 
-        foreach ($this->decorators as $decorator) {
-            $query = $decorator->decorate($query);
-        }
+                $query = new ResolvedSelectQuery($query, $this->hasContext() ? $this->getContext() : null);
 
-        $solariumQuery = $solariumQueryBuilder->buildSolariumQueryFromGeneric($query);
+                foreach ($this->decorators as $decorator) {
+                    $query = $decorator->decorate($query);
+                }
+                $solariumQuery = $solariumQueryBuilder->buildSolariumQueryFromGeneric($query);
 
-        if ($query->getGroupingField()) {
-            $pagerfantaAdapter = new SolariumGroupedQueryPagerfantaAdapter($this->getSolariumClient(), $solariumQuery);
-        } else {
-            $pagerfantaAdapter = new SolariumAdapter($this->getSolariumClient(), $solariumQuery);
-        }
+                //apply offset/limit
+                $maxPerPage = $query->getMaxPerPage();
+                if (null === $maxPerPage && $this->hasContext() && $query->getPageNumber() !== null) {
+                    $maxPerPage = $this->getContext()->getItemsPerPage() ?: null;
+                }
+                $solariumQuery->setRows($maxPerPage ?: self::INFINITY);
 
-        $pagerfanta = new Pagerfanta($pagerfantaAdapter);
-        $maxPerPage = $query->getMaxPerPage();
-        if (null === $maxPerPage && $this->hasContext() && $query->getPageNumber() !== null) {
-            $maxPerPage = $this->getContext()->getItemsPerPage() ?: null;
-        }
-        $pagerfanta->setMaxPerPage($maxPerPage ?: self::INFINITY);
-        $page = $query->getPageNumber();
-        if ($page) {
-            $pagerfanta->setCurrentPage($page, false, true);
-        }
 
-        $result = new PagerfantaResultAdapter($pagerfanta);
-        $resultClosure = function () use ($pagerfantaAdapter) {
-            return $pagerfantaAdapter->getResultSet();
-        };
+                $page = $query->getPageNumber();
+                if ($page && $maxPerPage) {
+                    $solariumQuery->setStart($maxPerPage * ($page-1));
+                }
 
-        //set the strategy to fetch facet sets, as these are not handled by pagerfanta
-        if ($this->hasContext()) {
-            $result->setFacetSetStrategy(
-                new SolariumFacetSetsStrategy($resultClosure, $this->getContext(), $query->getRecord())
-            );
-        }
+                $pluginIndex = 'async';
+                /** @var SolariumAsyncPlugin $asyncPlugin */
+                $asyncPlugin = $this->solarium
+                    ->registerPlugin($pluginIndex, new SolariumAsyncPlugin())
+                    ->getPlugin($pluginIndex);
 
-        //set any spellcheck result
-        $result->setSpellcheckResultStrategy(new SolariumSpellcheckResultStrategy($resultClosure, $query));
+                $solariumResult = $this->solarium->createResult(
+                    $solariumQuery,
+                    (yield promise_for($asyncPlugin->queryAsync($solariumQuery)))
+                );
+                if ($query->getGroupingField()) {
+                    $solariumResult = new GroupedResultAdapter($solariumResult);
+                }
 
-        //set strategy for debug information output as this is not available through pagerfanta - only if templating service was available
-        if (null !== $this->templating) {
-            $result->setDebugOutputStrategy(new SolariumDebugOutputStrategy($resultClosure, $this->templating));
-        }
+                $pagerfanta = new Pagerfanta(new SolariumResultPromisePagerfantaAdapter(promise_for($solariumResult)));
+                $pagerfanta->setCurrentPage($page ?: 1);
+                $pagerfanta->setMaxPerPage($maxPerPage ?: self::INFINITY);
 
-        return $result;
+                $result = new PagerfantaResultAdapter($pagerfanta);
+
+                $resultClosure = function () use ($solariumResult) {
+                    return $solariumResult;
+                };
+
+                //set the strategy to fetch facet sets, as these are not handled by pagerfanta
+                if ($this->hasContext()) {
+                    $result->setFacetSetStrategy(
+                        new SolariumFacetSetsStrategy($resultClosure, $this->getContext(), $query->getRecord())
+                    );
+                }
+
+                //set any spellcheck result
+                $result->setSpellcheckResultStrategy(new SolariumSpellcheckResultStrategy($resultClosure, $query));
+
+                //set strategy for debug information output as this is not available through pagerfanta - only if templating service was available
+                if (null !== $this->templating) {
+                    $result->setDebugOutputStrategy(new SolariumDebugOutputStrategy($resultClosure, $this->templating));
+                }
+
+                yield $result;
+            }
+        );
     }
 
     /**
