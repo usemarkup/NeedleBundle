@@ -26,3 +26,4 @@ matrix:
       env: deps=low
 
 sudo: false
+dist: trusty
