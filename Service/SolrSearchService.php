@@ -139,8 +139,8 @@ class SolrSearchService implements AsyncSearchServiceInterface
                 }
 
                 $pagerfanta = new Pagerfanta(new SolariumResultPromisePagerfantaAdapter(promise_for($solariumResult)));
-                $pagerfanta->setCurrentPage($page ?: 1);
                 $pagerfanta->setMaxPerPage($maxPerPage ?: self::INFINITY);
+                $pagerfanta->setCurrentPage($page ?: 1);
 
                 $result = new PagerfantaResultAdapter($pagerfanta);
 
