@@ -42,17 +42,17 @@ class RangeFilterValue implements RangeFilterValueInterface
     }
 
     /**
-     * @return float
+     * {{@inheritdoc}}
      **/
-    private function getMin()
+    public function getMin()
     {
         return $this->min;
     }
 
     /**
-     * @return float
+     * {{@inheritdoc}}
      **/
-    private function getMax()
+    public function getMax()
     {
         return $this->max;
     }
