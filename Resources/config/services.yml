@@ -2,6 +2,7 @@ parameters:
     markup_needle.exporter.closure.class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
     markup_needle.check.solr.class: Markup\NeedleBundle\Check\SolrCheck
     markup_needle.solr.class: Markup\NeedleBundle\Service\SolrSearchService
+    markup_needle.elastic.class: Markup\NeedleBundle\Service\ElasticSearchService
     markup_needle.intercept.definition.class: Markup\NeedleBundle\Intercept\Definition
     markup_needle.intercept.matcher.normalized_list.class: Markup\NeedleBundle\Intercept\NormalizedListMatcher
 
@@ -240,3 +241,9 @@ services:
         class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextGroupRegistry
         arguments:
             - '@markup_needle.registry.attribute_specialization_context'
+    markup_needle.elastic.client:
+        class: Elasticsearch\ClientBuilder
+    markup_needle.service.elastic:
+        class: %markup_needle.elastic.class%
+        arguments:
+            - '@markup_needle.elastic.client'
