@@ -2,7 +2,7 @@
 
 namespace Markup\NeedleBundle\Scheduler;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\UnitOfWork;
 use Markup\NeedleBundle\Corpus\CorpusInterface;
 use Markup\NeedleBundle\Entity\ScheduledIndex;
@@ -11,9 +11,9 @@ use Psr\Log\LoggerInterface;
 class IndexScheduler
 {
     /**
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    private $em;
+    private $doctrine;
 
     /**
      * @var LoggerInterface
@@ -25,15 +25,11 @@ class IndexScheduler
      */
     const PROCESSING_EXPIRY = 90;
 
-    /**
-     * @param EntityManager   $em
-     * @param LoggerInterface $logger
-     **/
     public function __construct(
-        EntityManager $em,
+        ManagerRegistry $doctrine,
         LoggerInterface $logger
     ) {
-        $this->em = $em;
+        $this->doctrine = $doctrine;
         $this->logger = $logger;
     }
 
@@ -47,8 +43,9 @@ class IndexScheduler
         $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
         if (!$this->getScheduledExports($corpus)) {
             $s = new ScheduledIndex($corpus);
-            $this->em->persist($s);
-            $this->em->flush();
+            $entityManager = $this->getEntityManager();
+            $entityManager->persist($s);
+            $entityManager->flush();
 
             return true;
         }
@@ -61,12 +58,13 @@ class IndexScheduler
      **/
     public function updateStatus($record,    $status)
     {
-        $this->em->clear();
-        switch ($this->em->getUnitOfWork()->getEntityState($record)) {
+        $entityManager = $this->getEntityManager();
+        $entityManager->clear();
+        switch ($entityManager->getUnitOfWork()->getEntityState($record)) {
             case UnitOfWork::STATE_MANAGED:
                 break;
             case UnitOfWork::STATE_DETACHED:
-                $record = $this->em->merge($record);
+                $record = $entityManager->merge($record);
                 break;
             default:
                 throw new \Exception('This method must only be used to update existing entities (not new or removed)');
@@ -75,8 +73,8 @@ class IndexScheduler
             throw new \Exception($status.' is not a valid status');
         }
         $record->setStatus($status);
-        $this->em->persist($record);
-        $this->em->flush();
+        $entityManager->persist($record);
+        $entityManager->flush();
     }
 
     /**
@@ -85,7 +83,7 @@ class IndexScheduler
     public function getScheduledExports($corpus)
     {
         $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
-        if ($r = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->findBy(['status' => ScheduledIndex::SCHEDULED, 'corpus' => $corpus])) {
+        if ($r = $this->getScheduledIndexRepository()->findBy(['status' => ScheduledIndex::SCHEDULED, 'corpus' => $corpus])) {
             return $r;
         } else {
             return [];
@@ -98,7 +96,7 @@ class IndexScheduler
     public function getProcessingExports($corpus)
     {
         $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
-        if ($r = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->findBy(['status' => ScheduledIndex::PROCESSING, 'corpus' => $corpus])) {
+        if ($r = $this->getScheduledIndexRepository()->findBy(['status' => ScheduledIndex::PROCESSING, 'corpus' => $corpus])) {
             return $r;
         } else {
             return false;
@@ -106,12 +104,12 @@ class IndexScheduler
     }
 
     /**
-     * @param Changes 'processing' exports to failed after the expiry period has elapsed
+     * @param CorpusInterface|string $corpus Changes 'processing' exports to failed after the expiry period has elapsed
      **/
     public function failExpiredProcessingExports($corpus)
     {
         $corpus = ($corpus instanceof CorpusInterface) ? $corpus->getName() : $corpus;
-        $qb = $this->em->getRepository('MarkupNeedleBundle:ScheduledIndex')->createQueryBuilder('i');
+        $qb = $this->getScheduledIndexRepository()->createQueryBuilder('i');
 
         $added = new \DateTime('now');
         $added->sub(new \DateInterval('PT'.self::PROCESSING_EXPIRY.'M'));
@@ -135,5 +133,15 @@ class IndexScheduler
         $this->logger->error(sprintf('Scheduled index contained a processing entry older than %s minutes. This was set to failed. Please investigate why the indexing process is taking too long or failing without moving to `failed` status.', self::PROCESSING_EXPIRY));
 
         return;
+    }
+
+    private function getEntityManager()
+    {
+        return $this->doctrine->getManager();
+    }
+
+    private function getScheduledIndexRepository()
+    {
+        return $this->doctrine->getRepository(ScheduledIndex::class);
     }
 }
