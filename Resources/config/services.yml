@@ -52,7 +52,7 @@ services:
     markup_needle.index_scheduler:
         class: Markup\NeedleBundle\Scheduler\IndexScheduler
         arguments:
-            - '@doctrine.orm.entity_manager'
+            - '@doctrine'
             - '@logger'
     markup_needle.solarium.helper:
         class: Solarium\Core\Query\Helper
