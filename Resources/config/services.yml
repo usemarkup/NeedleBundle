@@ -7,7 +7,7 @@ parameters:
 
 services:
     markup_needle.exporter.closure:
-        class: %markup_needle.exporter.closure.class%
+        class: '%markup_needle.exporter.closure.class%'
         arguments:
             - '@markup_needle.corpus.provider'
             - '@markup_needle.solarium.client'
@@ -18,7 +18,7 @@ services:
             - false
             - '@logger'
             - ~
-            - %markup_needle.allow_null_values_in_update_fields%
+            - '%markup_needle.allow_null_values_in_update_fields%'
     markup_needle.exporter.closure.prototype:
         parent: markup_needle.exporter.closure
     markup_needle.exporter.closure.generator:
@@ -32,7 +32,7 @@ services:
     markup_needle.exporter.subject_data_mapper_provider:
         class: Markup\NeedleBundle\Indexer\SubjectDataMapperProvider
     markup_needle.check.solr:
-        class: %markup_needle.check.solr.class%
+        class: '%markup_needle.check.solr.class%'
         arguments:
             - '@markup_needle.solarium.client'
         tags:
@@ -42,9 +42,9 @@ services:
         arguments:
             - '@markup_needle.solarium.client'
             - '@markup_needle.filter_query.lucenifier'
-            - %markup_needle.debug%
+            - '%markup_needle.debug%'
     needle:
-        class: %markup_needle.solr.class%
+        class: '%markup_needle.solr.class%'
         arguments:
             - '@markup_needle.solarium.client'
             - '@markup_needle.query.builder.solarium'
