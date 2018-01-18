@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Tests\Twig;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface;
 use Markup\NeedleBundle\Twig\SearchHelperExtension;
 
 /**
@@ -9,33 +11,37 @@ use Markup\NeedleBundle\Twig\SearchHelperExtension;
 */
 class SearchHelperExtensionTest extends \PHPUnit_Framework_TestCase
 {
-    public function setUp()
+    /**
+     * @var FacetValueCanonicalizerInterface
+     */
+    private $canonicalizer;
+
+    /**
+     * @var SearchHelperExtension
+     */
+    private $extension;
+
+    protected function setUp()
     {
-        $this->container = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
-        $this->extension = new SearchHelperExtension($this->container);
+        $this->canonicalizer = $this->createMock(FacetValueCanonicalizerInterface::class);
+        $this->extension = new SearchHelperExtension($this->canonicalizer);
     }
 
     public function testIsTwigExtension()
     {
-        $this->assertTrue($this->extension instanceof \Twig_ExtensionInterface);
+        $this->assertInstanceOf(\Twig_ExtensionInterface::class, $this->extension);
     }
 
     public function testCanonicalizeValueForFacet()
     {
         $original = 'original';
         $canonicalized = 'canonicalized';
-        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $facetValueCanonicalizer = $this->createMock('Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface');
-        $facetValueCanonicalizer
+        $facet = $this->createMock(AttributeInterface::class);
+        $this->canonicalizer
             ->expects($this->any())
             ->method('canonicalizeForFacet')
             ->with($this->equalTo($original), $this->equalTo($facet))
             ->will($this->returnValue($canonicalized));
-        $this->container
-            ->expects($this->any())
-            ->method('get')
-            ->with($this->equalTo('markup_needle.facet.value_canonicalizer'))
-            ->will($this->returnValue($facetValueCanonicalizer));
         $this->assertEquals($canonicalized, $this->extension->canonicalizeForFacet($original, $facet));
     }
 }

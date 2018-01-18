@@ -12,16 +12,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SearchHelperExtension extends \Twig_Extension
 {
     /**
-     * @var ContainerInterface
-     **/
-    private $container;
+     * @var FacetValueCanonicalizerInterface
+     */
+    private $canonicalizer;
 
-    /**
-     * @param ContainerInterface $container
-     **/
-    public function __construct(ContainerInterface $container)
+    public function __construct(FacetValueCanonicalizerInterface $canonicalizer)
     {
-        $this->container = $container;
+        $this->canonicalizer = $canonicalizer;
     }
 
     /**
@@ -47,21 +44,11 @@ class SearchHelperExtension extends \Twig_Extension
             return $value;
         }
 
-        return $this->getFacetValueCanonicalizer()->canonicalizeForFacet($value, $facet);
+        return $this->canonicalizer->canonicalizeForFacet($value, $facet);
     }
 
     public function getName()
     {
         return 'markup_needle.helper';
-    }
-
-    /**
-     * Gets the facet value canonicalizer service.
-     *
-     * @return FacetValueCanonicalizerInterface
-     **/
-    private function getFacetValueCanonicalizer()
-    {
-        return $this->container->get('markup_needle.facet.value_canonicalizer');
     }
 }
