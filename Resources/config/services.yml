@@ -77,10 +77,12 @@ services:
         public: false
     markup_needle.facet.value_canonicalizer:
         class: Markup\NeedleBundle\Facet\FacetValueCanonicalizer
+        lazy: true
+        public: false
     markup_needle.twig.extension.helper:
         class: Markup\NeedleBundle\Twig\SearchHelperExtension
         arguments:
-            - '@service_container'
+            - '@markup_needle.facet.value_canonicalizer'
         tags:
             - { name: twig.extension }
     markup_needle.interceptor:
