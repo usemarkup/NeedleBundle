@@ -129,7 +129,7 @@ class IndexScheduler
         foreach ($r as $scheduled) {
             $scheduled->setStatus(ScheduledIndex::FAILED);
         }
-        $this->em->flush();
+        $this->getEntityManager()->flush();
         $this->logger->error(sprintf('Scheduled index contained a processing entry older than %s minutes. This was set to failed. Please investigate why the indexing process is taking too long or failing without moving to `failed` status.', self::PROCESSING_EXPIRY));
 
         return;
