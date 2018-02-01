@@ -19,7 +19,7 @@
         "nelmio/solarium-bundle": "^2.0.4",
         "solarium/solarium": "^3.1.0",
         "pagerfanta/pagerfanta": "~1.0.1",
-        "symfony/framework-bundle": "~2.7|~3.0",
+        "symfony/framework-bundle": "~2.8|~3.0",
         "twig/twig": "~1.12|~2.0",
         "doctrine/collections": "~1.1",
         "guzzlehttp/guzzle": "~6.1",
@@ -30,8 +30,8 @@
         "mockery/mockery": "~0.9.9",
         "zendframework/zenddiagnostics": "~1.0.2",
         "doctrine/orm": "~2.4",
-        "symfony/templating": "^2.7|^3",
-        "symfony/translation": "^2.7|^3"
+        "symfony/templating": "^2.8|^3",
+        "symfony/translation": "^2.8|^3",
     },
     "autoload": {
         "psr-0": { "Markup\\NeedleBundle": "" }
