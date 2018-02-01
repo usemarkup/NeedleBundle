@@ -37,8 +37,9 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/usemarkup/markup-coding-standard"
-        } 
+            "url": "https://github.com/usemarkup/markup-coding-standard",
+            "no-api": true
+        }
     ],
     "autoload": {
         "psr-0": { "Markup\\NeedleBundle": "" }
