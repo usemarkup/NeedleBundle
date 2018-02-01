@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Suggest;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Solarium\QueryType\Suggester\Result\Term;
 
@@ -38,7 +39,7 @@ class SolrResultGroup implements ResultGroupInterface
     }
 
     /**
-     * @return array<Collection>
+     * @return array|Collection
      */
     public function getDocuments()
     {

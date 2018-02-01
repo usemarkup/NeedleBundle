@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Suggest;
 
+use Doctrine\Common\Collections\Collection;
+
 interface ResultGroupInterface extends \Countable
 {
     /**
@@ -12,7 +14,7 @@ interface ResultGroupInterface extends \Countable
     public function getTerm();
 
     /**
-     * @return array<Collection>
+     * @return array|Collection
      */
     public function getDocuments();
 }
