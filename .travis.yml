@@ -9,8 +9,8 @@ env:
         - deps=high
 
 install:
-    - if [ "$deps" = "high" ]; then composer --prefer-source install --ignore-platform-reqs; fi;
-    - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable --ignore-platform-reqs update; fi
+    - if [ "$deps" = "high" ]; then composer install --ignore-platform-reqs; fi;
+    - if [ "$deps" = "low" ]; then composer --prefer-lowest --prefer-stable --ignore-platform-reqs update; fi
 
 script:
     - bin/phpstan.phar analyse -c phpstan.neon --level 1 .
