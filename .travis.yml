@@ -2,17 +2,21 @@ language: php
 
 php:
     - 7.1
-    - hhvm
+    - 7.2
 
 env:
     global:
         - deps=high
 
 install:
-    - if [ "$deps" = "high" ]; then composer --prefer-source install --ignore-platform-reqs; fi;
-    - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable --ignore-platform-reqs update; fi
+    - if [ "$deps" = "high" ]; then composer install --ignore-platform-reqs; fi;
+    - if [ "$deps" = "low" ]; then composer --prefer-lowest --prefer-stable --ignore-platform-reqs update; fi
+
+before_script:
+    - phpenv config-rm xdebug.ini
 
 script:
+    - bin/phpstan.phar analyse -c phpstan.neon --level 1 .
     - vendor/phpunit/phpunit/phpunit --debug
 
 notifications:
@@ -20,7 +24,7 @@ notifications:
 
 matrix:
   allow_failures:
-    - php: hhvm
+    - php: 7.2
   include:
     - php: 7.1
       env: deps=low
