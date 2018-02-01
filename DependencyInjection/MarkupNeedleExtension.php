@@ -5,6 +5,7 @@ namespace Markup\NeedleBundle\DependencyInjection;
 use Markup\NeedleBundle\Suggest\SuggestServiceInterface;
 use Markup\NeedleBundle\Terms\TermsServiceInterface;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
@@ -116,7 +117,11 @@ class MarkupNeedleExtension extends Extension
         $domains = array_unique(array_merge($domains, [$defaultDomain]));
         $interceptors = [];
         foreach ($domains as $domain) {
-            $domainedInterceptor = new DefinitionDecorator('markup_needle.interceptor');
+            // for Symfony 3 BC - can drop mention of DefinitionDecorator when Symfony 3 is dropped
+            $childDefinitionClass = (class_exists(ChildDefinition::class))
+                ? ChildDefinition::class
+                : DefinitionDecorator::class;
+            $domainedInterceptor = new $childDefinitionClass('markup_needle.interceptor');
             $container->setDefinition(sprintf('markup_needle.interceptor.%s', $domain), $domainedInterceptor);
             $interceptors[$domain] = $domainedInterceptor;
         }
