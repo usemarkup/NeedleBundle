@@ -32,7 +32,14 @@
         "zendframework/zenddiagnostics": "~1.0.2",
         "symfony/templating": "^2.8|^3",
         "symfony/translation": "^2.8|^3",
+        "markup/coding-standard": "^0.6"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/usemarkup/markup-coding-standard"
+        } 
+    ],
     "autoload": {
         "psr-0": { "Markup\\NeedleBundle": "" }
     },

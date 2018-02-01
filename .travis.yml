@@ -2,7 +2,7 @@ language: php
 
 php:
     - 7.1
-    - hhvm
+    - 7.2
 
 env:
     global:
@@ -13,6 +13,7 @@ install:
     - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable --ignore-platform-reqs update; fi
 
 script:
+    - bin/phpstan.phar analyse -c phpstan.neon --level 1 .
     - vendor/phpunit/phpunit/phpunit --debug
 
 notifications:
@@ -20,7 +21,7 @@ notifications:
 
 matrix:
   allow_failures:
-    - php: hhvm
+    - php: 7.2
   include:
     - php: 7.1
       env: deps=low

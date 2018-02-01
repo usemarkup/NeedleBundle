@@ -1,0 +1,6 @@
+parameters:
+    excludes_analyse:
+        - %currentWorkingDirectory%/Tests/*
+        - %currentWorkingDirectory%/vendor/*
+        - %currentWorkingDirectory%/bin/*
+
