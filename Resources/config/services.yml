@@ -60,7 +60,7 @@ services:
         class: Markup\NeedleBundle\EventListener\SolariumLogBadRequestsPlugin
         calls:
             - [ setLogger, [ '@logger' ] ]
-            - [ setEnabled, [ %markup_needle.solr.log_bad_requests_plugin.enabled% ] ]
+            - [ setEnabled, [ '%markup_needle.solr.log_bad_requests_plugin.enabled%' ] ]
     markup_needle.lucene.helper:
         class: Markup\NeedleBundle\Lucene\Helper
         arguments:
