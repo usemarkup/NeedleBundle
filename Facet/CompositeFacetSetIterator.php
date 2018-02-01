@@ -36,6 +36,8 @@ class CompositeFacetSetIterator extends \ArrayIterator
     {
         $this->facetSet = $facet_set;
         $this->valueDelimiter = $value_delimiter;
+
+        parent::__construct();
     }
 
     public function current()
