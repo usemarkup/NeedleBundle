@@ -12,6 +12,9 @@ install:
     - if [ "$deps" = "high" ]; then composer install --ignore-platform-reqs; fi;
     - if [ "$deps" = "low" ]; then composer --prefer-lowest --prefer-stable --ignore-platform-reqs update; fi
 
+before_script:
+    - phpenv config-rm xdebug.ini
+
 script:
     - bin/phpstan.phar analyse -c phpstan.neon --level 1 .
     - vendor/phpunit/phpunit/phpunit --debug
