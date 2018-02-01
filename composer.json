@@ -21,7 +21,7 @@
         "pagerfanta/pagerfanta": "~1.0.1",
         "symfony/framework-bundle": "~2.8|~3.0",
         "twig/twig": "~1.12|~2.0",
-        "doctrine/collections": "~1.1",
+        "doctrine/collections": "^1.5",
         "guzzlehttp/guzzle": "~6.1",
         "shieldo/solarium-async-plugin": "^0.2"
     },
