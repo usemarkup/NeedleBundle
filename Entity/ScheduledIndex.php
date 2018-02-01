@@ -19,7 +19,7 @@ class ScheduledIndex
     {
         $this->corpus = $corpus;
         $this->status = self::SCHEDULED;
-        $this->added = new \Datetime('now');
+        $this->added = new \DateTime('now');
     }
 
     public function getId()
@@ -75,7 +75,7 @@ class ScheduledIndex
     {
         $this->status = $status;
         if ($status === self::COMPLETE) {
-            $this->setComplete(new \Datetime('now'));
+            $this->setComplete(new \DateTime('now'));
         }
 
         return $this;
