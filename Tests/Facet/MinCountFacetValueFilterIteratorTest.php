@@ -2,17 +2,19 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use PHPUnit\Framework\TestCase;
+use Markup\NeedleBundle\Facet\FacetValueInterface;
 use Markup\NeedleBundle\Facet\MinCountFacetValueFilterIterator;
 
 /**
 * A test for a filter iterator that operates on an iteration of facet values and filters out values that don't have a minimum count.
 */
-class MinCountFacetValueFilterIteratorTest extends \PHPUnit_Framework_TestCase
+class MinCountFacetValueFilterIteratorTest extends TestCase
 {
     public function testFilter()
     {
-        $facetValue1 = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
-        $facetValue2 = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue1 = $this->createMock(FacetValueInterface::class);
+        $facetValue2 = $this->createMock(FacetValueInterface::class);
         $facetValue1
             ->expects($this->any())
             ->method('count')

@@ -3,9 +3,16 @@
 namespace Markup\NeedleBundle\Tests\Collator;
 
 use Markup\NeedleBundle\Collator\NumberCollator;
+use Markup\NeedleBundle\Collator\TypedCollatorInterface;
+use PHPUnit\Framework\TestCase;
 
-class NumberCollatorTest extends \PHPUnit_Framework_TestCase
+class NumberCollatorTest extends TestCase
 {
+    /**
+     * @var NumberCollator
+     */
+    private $collator;
+
     protected function setUp()
     {
         $this->collator = new NumberCollator();
@@ -13,7 +20,7 @@ class NumberCollatorTest extends \PHPUnit_Framework_TestCase
 
     public function testIsTypedCollator()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Collator\TypedCollatorInterface', $this->collator);
+        $this->assertInstanceOf(TypedCollatorInterface::class, $this->collator);
     }
 
     public function testHasTypeForWordIsFalse()

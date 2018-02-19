@@ -8,6 +8,7 @@ use Markup\NeedleBundle\Facet\FacetSetInterface;
 use Markup\NeedleBundle\Facet\FacetValueInterface;
 use Markup\NeedleBundle\Result\FacetSetStrategyInterface;
 use Markup\NeedleBundle\Result\SolariumFacetSetsStrategy;
+use PHPUnit\Framework\TestCase;
 use Solarium\QueryType\Select\Result\Facet\Field;
 use Solarium\QueryType\Select\Result\FacetSet;
 use Solarium\QueryType\Select\Result\Result;
@@ -15,7 +16,7 @@ use Solarium\QueryType\Select\Result\Result;
 /**
 * A test for a strategy for fetching facet sets from a Solarium result.
 */
-class SolariumFacetSetsStrategyTest extends \PHPUnit_Framework_TestCase
+class SolariumFacetSetsStrategyTest extends TestCase
 {
     public function setUp()
     {

@@ -2,16 +2,24 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Facet\FacetSetInterface;
+use Markup\NeedleBundle\Facet\FacetValueInterface;
 use Markup\NeedleBundle\Facet\MinCountFacetSetDecorator;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a facet set decorator that filters out values that don't meet a minimum count.
 */
-class MinCountFacetSetDecoratorTest extends \PHPUnit_Framework_TestCase
+class MinCountFacetSetDecoratorTest extends TestCase
 {
+    /**
+     * @var MinCountFacetSetDecorator
+     */
+    private $decorator;
+
     public function setUp()
     {
-        $this->facetSet = $this->createMock('Markup\NeedleBundle\Facet\FacetSetInterface');
+        $this->facetSet = $this->createMock(FacetSetInterface::class);
         $this->minCount = 4;
         $this->decorator = new MinCountFacetSetDecorator($this->minCount);
         $this->decorator->decorate($this->facetSet);
@@ -19,8 +27,8 @@ class MinCountFacetSetDecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function testFiltering()
     {
-        $facetValue1 = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
-        $facetValue2 = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue1 = $this->createMock(FacetValueInterface::class);
+        $facetValue2 = $this->createMock(FacetValueInterface::class);
         $facetValue1
             ->expects($this->any())
             ->method('count')

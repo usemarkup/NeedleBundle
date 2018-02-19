@@ -8,6 +8,7 @@ use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
+use PHPUnit\Framework\TestCase;
 use Solarium\Client;
 use Solarium\QueryType\Select\Query\FilterQuery;
 use Solarium\QueryType\Select\Query\Query;
@@ -15,7 +16,7 @@ use Solarium\QueryType\Select\Query\Query;
 /**
  * A test for an object that can build a Solarium select query that maps a generic select search query.
  */
-class SolariumSelectQueryBuilderTest extends \PHPUnit_Framework_TestCase
+class SolariumSelectQueryBuilderTest extends TestCase
 {
     /**
      * @var Client

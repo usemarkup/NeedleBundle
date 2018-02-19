@@ -2,12 +2,14 @@
 
 namespace Markup\NeedleBundle\Tests\Collator;
 
+use Markup\NeedleBundle\Collator\CollatorInterface;
 use Markup\NeedleBundle\Collator\FixedValueCollator;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a collator that orders based on a fixed list.
 */
-class FixedValueCollatorTest extends \PHPUnit_Framework_TestCase
+class FixedValueCollatorTest extends TestCase
 {
     public function setUp()
     {
@@ -17,7 +19,7 @@ class FixedValueCollatorTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCollator()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Collator\CollatorInterface', $this->collator);
+        $this->assertInstanceOf(CollatorInterface::class, $this->collator);
     }
 
     /**

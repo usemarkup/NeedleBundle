@@ -2,29 +2,44 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Facet\RangeFacetConfigurationInterface;
+use Markup\NeedleBundle\Facet\RangeFacetInterface;
 use Markup\NeedleBundle\Facet\TranslatedRangeFacet;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
 * A test for a range facet that has a display name provided by a translator.
 */
-class TranslatedRangeFacetTest extends \PHPUnit_Framework_TestCase
+class TranslatedRangeFacetTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var RangeFacetConfigurationInterface
+     */
+    private $rangeFacetConfig;
+
+    protected function setUp()
     {
-        $this->translator = $this->createMock('Symfony\Component\Translation\TranslatorInterface');
-        $this->rangeFacetConfig = $this->createMock('Markup\NeedleBundle\Facet\RangeFacetConfigurationInterface');
+        $this->translator = $this->createMock(TranslatorInterface::class);
+        $this->rangeFacetConfig = $this->createMock(RangeFacetConfigurationInterface::class);
     }
 
     public function testIsRangeFacet()
     {
-        $translatedRangeFacet = new \ReflectionClass('Markup\NeedleBundle\Facet\TranslatedRangeFacet');
-        $this->assertTrue($translatedRangeFacet->implementsInterface('Markup\NeedleBundle\Facet\RangeFacetInterface'));
+        $translatedRangeFacet = new \ReflectionClass(TranslatedRangeFacet::class);
+        $this->assertTrue($translatedRangeFacet->implementsInterface(RangeFacetInterface::class));
     }
 
     public function testIsAttribute()
     {
-        $translatedRangeFacet = new \ReflectionClass('Markup\NeedleBundle\Facet\TranslatedRangeFacet');
-        $this->assertTrue($translatedRangeFacet->implementsInterface('Markup\NeedleBundle\Attribute\AttributeInterface'));
+        $translatedRangeFacet = new \ReflectionClass(TranslatedRangeFacet::class);
+        $this->assertTrue($translatedRangeFacet->implementsInterface(AttributeInterface::class));
     }
 
     public function testGetName()

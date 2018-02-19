@@ -4,15 +4,17 @@ namespace Markup\NeedleBundle\Tests\Result;
 
 use Markup\NeedleBundle\Result\QueryTimeStrategyInterface;
 use Markup\NeedleBundle\Result\SolariumQueryTimeStrategy;
+use PHPUnit\Framework\TestCase;
+use Solarium\QueryType\Select\Result\Result;
 
 /**
 * A test for a strategy for fetching a query time that uses a Solarium result.
 */
-class SolariumQueryTimeStrategyTest extends \PHPUnit_Framework_TestCase
+class SolariumQueryTimeStrategyTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
-        $this->solariumResult = $this->createMock('Solarium\QueryType\Select\Result\Result');
+        $this->solariumResult = $this->createMock(Result::class);
         $this->strategy = new SolariumQueryTimeStrategy($this->solariumResult);
     }
 

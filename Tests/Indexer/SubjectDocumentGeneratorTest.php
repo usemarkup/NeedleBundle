@@ -3,27 +3,40 @@
 namespace Markup\NeedleBundle\Tests\Indexer;
 
 use Markup\NeedleBundle\Exception\IllegalSubjectException;
+use Markup\NeedleBundle\Indexer\SubjectDataMapperInterface;
 use Markup\NeedleBundle\Indexer\SubjectDocumentGenerator;
 use Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Solarium\QueryType\Update\Query\Document\Document;
+use Solarium\QueryType\Update\Query\Query;
 
 /**
 * A test for an object that can generate a Solarium document for a subject.
 */
-class SubjectDocumentGeneratorTest extends \PHPUnit_Framework_TestCase
+class SubjectDocumentGeneratorTest extends MockeryTestCase
 {
+    /**
+     * @var Query|m\MockInterface
+     */
+    private $updateQuery;
+
+    /**
+     * @var SubjectDataMapperInterface|m\MockInterface
+     */
+    private $subjectDataMapper;
+
+    /**
+     * @var SubjectDocumentGenerator
+     */
+    private $generator;
+
     protected function setUp()
     {
-        $this->updateQuery = m::mock('Solarium\QueryType\Update\Query\Query');
-        $this->subjectDataMapper = m::mock('Markup\NeedleBundle\Indexer\SubjectDataMapperInterface')->shouldIgnoreMissing();
+        $this->updateQuery = m::mock(Query::class);
+        $this->subjectDataMapper = m::mock(SubjectDataMapperInterface::class)->shouldIgnoreMissing();
         $this->generator = new SubjectDocumentGenerator($this->subjectDataMapper);
         $this->generator->setUpdateQuery($this->updateQuery);
-    }
-
-    protected function tearDown()
-    {
-        m::close();
     }
 
     public function testIsSubjectDocumentGenerator()
@@ -44,7 +57,7 @@ class SubjectDocumentGeneratorTest extends \PHPUnit_Framework_TestCase
 
     public function testCallCreateDocumentForSubjectWithoutUpdateQuerySetThrowsRuntimeException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->expectException('RuntimeException');
         $generator = new SubjectDocumentGenerator($this->subjectDataMapper);
         $subject = new \stdClass();
         $generator->createDocumentForSubject($subject);

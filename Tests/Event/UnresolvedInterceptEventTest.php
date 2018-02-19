@@ -3,15 +3,23 @@
 namespace Markup\NeedleBundle\Tests\Event;
 
 use Markup\NeedleBundle\Event\UnresolvedInterceptEvent;
+use Markup\NeedleBundle\Intercept\DefinitionInterface;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
 * A test for an event that represents an unresolved intercept.
 */
-class UnresolvedInterceptEventTest extends \PHPUnit_Framework_TestCase
+class UnresolvedInterceptEventTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var UnresolvedInterceptEvent
+     */
+    private $event;
+
+    protected function setUp()
     {
-        $this->definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $this->definition = $this->createMock(DefinitionInterface::class);
         $this->queryString = 'query';
         $this->message = 'Something could not be found!';
         $this->event = new UnresolvedInterceptEvent($this->definition, $this->queryString, $this->message);
@@ -19,7 +27,7 @@ class UnresolvedInterceptEventTest extends \PHPUnit_Framework_TestCase
 
     public function testIsEvent()
     {
-        $this->assertInstanceOf('Symfony\Component\EventDispatcher\Event', $this->event);
+        $this->assertInstanceOf(Event::class, $this->event);
     }
 
     public function testGetInterceptDefinition()

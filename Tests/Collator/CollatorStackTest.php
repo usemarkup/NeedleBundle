@@ -2,27 +2,24 @@
 
 namespace Markup\NeedleBundle\Tests\Collator;
 
+use Markup\NeedleBundle\Collator\CollatorInterface;
 use Markup\NeedleBundle\Collator\CollatorStack;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
  * Test for a collator that composes a stack of typed collators (i.e. the order of the collators is significant, and a value of an earlier type will be sorted to before one of a later type).
  */
-class CollatorStackTest extends \PHPUnit_Framework_TestCase
+class CollatorStackTest extends MockeryTestCase
 {
     protected function setUp()
     {
         $this->stack = new CollatorStack();
     }
 
-    protected function tearDown()
-    {
-        m::close();
-    }
-
     public function testIsCollator()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Collator\CollatorInterface', $this->stack);
+        $this->assertInstanceOf(CollatorInterface::class, $this->stack);
     }
 
     public function testFallsBackToSimpleStringCompareWithEmptyStack()

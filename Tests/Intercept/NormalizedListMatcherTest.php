@@ -2,21 +2,28 @@
 
 namespace Markup\NeedleBundle\Tests\Intercept;
 
+use Markup\NeedleBundle\Intercept\MatcherInterface;
 use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
+use PHPUnit\Framework\TestCase;
 
 /**
 * Test for a matcher that takes a list of exact terms, though matched case-insensitively and with variant characters normalized.
 */
-class NormalizedListMatcherTest extends \PHPUnit_Framework_TestCase
+class NormalizedListMatcherTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var NormalizedListMatcher
+     */
+    private $matcher;
+
+    protected function setUp()
     {
         $this->matcher = new NormalizedListMatcher();
     }
 
     public function testIsMatcher()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Intercept\MatcherInterface', $this->matcher);
+        $this->assertInstanceOf(MatcherInterface::class, $this->matcher);
     }
 
     public function testDoesNotMatchWithEmptyList()

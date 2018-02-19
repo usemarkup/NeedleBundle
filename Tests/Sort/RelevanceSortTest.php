@@ -3,20 +3,22 @@
 namespace Markup\NeedleBundle\Tests\Sort;
 
 use Markup\NeedleBundle\Sort\RelevanceSort;
+use Markup\NeedleBundle\Sort\SortInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a sort on relevance (descending).
 */
-class RelevanceSortTest extends \PHPUnit_Framework_TestCase
+class RelevanceSortTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         $this->relevanceSort = new RelevanceSort();
     }
 
     public function testIsSort()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Sort\SortInterface', $this->relevanceSort);
+        $this->assertInstanceOf(SortInterface::class, $this->relevanceSort);
     }
 
     public function testFilterIsScore()

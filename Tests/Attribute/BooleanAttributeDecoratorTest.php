@@ -2,27 +2,40 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Attribute\BooleanAttributeDecorator;
+use Markup\NeedleBundle\Attribute\BooleanAttributeInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a decorator for a filter that declares a Boolean type (clocking any underlying type).
 */
-class BooleanAttributeDecoratorTest extends \PHPUnit_Framework_TestCase
+class BooleanAttributeDecoratorTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var AttributeInterface
+     */
+    private $filter;
+
+    /**
+     * @var BooleanAttributeDecorator
+     */
+    private $decorator;
+
+    protected function setUp()
     {
-        $this->filter = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $this->filter = $this->createMock(AttributeInterface::class);
         $this->decorator = new BooleanAttributeDecorator($this->filter);
     }
 
     public function testIsBooleanAttribute()
     {
-        $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Attribute\BooleanAttributeInterface);
+        $this->assertInstanceOf(BooleanAttributeInterface::class, $this->decorator);
     }
 
     public function testIsAttribute()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $this->decorator);
+        $this->assertInstanceOf(AttributeInterface::class, $this->decorator);
     }
 
     public function testOneToOneDecoration()

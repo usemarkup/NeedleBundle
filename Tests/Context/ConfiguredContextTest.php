@@ -3,22 +3,36 @@
 namespace Markup\NeedleBundle\Tests\Context;
 
 use Markup\NeedleBundle\Attribute\Attribute;
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
+use Markup\NeedleBundle\Boost\BoostQueryFieldInterface;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
 use Markup\NeedleBundle\Context\ConfiguredContext;
+use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Facet\FacetProviderInterface;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorInterface;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
+use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
+use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
+use Markup\NeedleBundle\Intercept\InterceptorInterface;
+use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Sort\RelevanceSort;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
+class ConfiguredContextTest extends MockeryTestCase
 {
     protected function setUp()
     {
-        $this->config = m::mock('Markup\NeedleBundle\Config\ContextConfigurationInterface');
-        $this->attributeProvider = m::mock('Markup\NeedleBundle\Attribute\AttributeProviderInterface');
-        $this->facetProvider = m::mock('Markup\NeedleBundle\Facet\FacetProviderInterface');
-        $this->facetSetDecoratorProvider = m::mock('Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface');
-        $this->facetCollatorProvider = m::mock('Markup\NeedleBundle\Collator\CollatorProviderInterface');
-        $this->facetSortOrderProvider = m::mock('Markup\NeedleBundle\Facet\SortOrderProviderInterface');
-        $this->interceptorProvider = m::mock('Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider');
+        $this->config = m::mock(ContextConfigurationInterface::class);
+        $this->attributeProvider = m::mock(AttributeProviderInterface::class);
+        $this->facetProvider = m::mock(FacetProviderInterface::class);
+        $this->facetSetDecoratorProvider = m::mock(FacetSetDecoratorProviderInterface::class);
+        $this->facetCollatorProvider = m::mock(CollatorProviderInterface::class);
+        $this->facetSortOrderProvider = m::mock(SortOrderProviderInterface::class);
+        $this->interceptorProvider = m::mock(ConfiguredInterceptorProvider::class);
         $this->context = new ConfiguredContext(
             $this->config,
             $this->attributeProvider,
@@ -30,14 +44,9 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    protected function tearDown()
-    {
-        m::close();
-    }
-
     public function testIsContext()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Context\SearchContextInterface', $this->context);
+        $this->assertInstanceOf(SearchContextInterface::class, $this->context);
     }
 
     public function testGetItemsPerPageWithPositiveNumber()
@@ -63,13 +72,13 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->config
             ->shouldReceive('getDefaultFacetingAttributes')
             ->andReturn($facetNames);
-        $facet = m::mock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = m::mock(AttributeInterface::class);
         $this->facetProvider
             ->shouldReceive('getFacetByName')
             ->andReturn($facet);
         $facets = $this->context->getFacets();
         $this->assertCount(count($facetNames), $facets);
-        $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Attribute\AttributeInterface', $facets);
+        $this->assertContainsOnlyInstancesOf(AttributeInterface::class, $facets);
     }
 
     public function testGetDefaultFilterQueries()
@@ -88,7 +97,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
             ->andReturn($filterConfig);
         $queries = $this->context->getDefaultFilterQueries();
         $this->assertCount(2, $queries);
-        $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Filter\FilterQueryInterface', $queries);
+        $this->assertContainsOnlyInstancesOf(FilterQueryInterface::class, $queries);
         $firstQuery = $queries[0];
         $this->assertEquals('active', $firstQuery->getFilter()->getName());
     }
@@ -107,7 +116,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->config
             ->shouldReceive('getDefaultSortsForSearchTermQuery')
             ->andReturn($sortConfig);
-        $query = m::mock('Markup\NeedleBundle\Query\SelectQueryInterface');
+        $query = m::mock(SelectQueryInterface::class);
         $query
             ->shouldReceive('shouldTreatAsTextSearch')
             ->andReturn(true);
@@ -129,7 +138,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->config
             ->shouldReceive('getDefaultSortsForSearchTermQuery')
             ->andReturn($sortConfig);
-        $query = m::mock('Markup\NeedleBundle\Query\SelectQueryInterface');
+        $query = m::mock(SelectQueryInterface::class);
         $query
             ->shouldReceive('shouldTreatAsTextSearch')
             ->andReturn(true);
@@ -152,7 +161,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->config
             ->shouldReceive('getDefaultSortsForNonSearchTermQuery')
             ->andReturn($sortConfig);
-        $query = m::mock('Markup\NeedleBundle\Query\SelectQueryInterface');
+        $query = m::mock(SelectQueryInterface::class);
         $query
             ->shouldReceive('shouldTreatAsTextSearch')
             ->andReturn(false);
@@ -175,7 +184,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
         $this->config
             ->shouldReceive('getDefaultSortsForNonSearchTermQuery')
             ->andReturn($sortConfig);
-        $query = m::mock('Markup\NeedleBundle\Query\SelectQueryInterface');
+        $query = m::mock(SelectQueryInterface::class);
         $query
             ->shouldReceive('shouldTreatAsTextSearch')
             ->andReturn(false);
@@ -200,7 +209,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
             });
         $boostFields = $this->context->getBoostQueryFields();
         $this->assertCount(2, $boostFields);
-        $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Boost\BoostQueryFieldInterface', $boostFields);
+        $this->assertContainsOnlyInstancesOf(BoostQueryFieldInterface::class, $boostFields);
         $firstBoostField = $boostFields[0];
         $this->assertEquals(5, $firstBoostField->getBoostFactor());
     }
@@ -216,7 +225,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testWhetherFacetIgnoresCurrentFilters()
     {
-        $facet = m::mock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = m::mock(AttributeInterface::class);
         $this->config
             ->shouldReceive('shouldIgnoreCurrentFilteredAttributesInFaceting')
             ->andReturn(true);
@@ -225,9 +234,9 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSetDecoratorForFacet()
     {
-        $decorator = m::mock('Markup\NeedleBundle\Facet\FacetSetDecoratorInterface');
+        $decorator = m::mock(FacetSetDecoratorInterface::class);
         $field = 'field';
-        $facet = m::mock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = m::mock(AttributeInterface::class);
         $facet
             ->shouldReceive('getName')
             ->andReturn($field);
@@ -250,7 +259,7 @@ class ConfiguredContextTest extends \PHPUnit_Framework_TestCase
 
     public function testGetInterceptor()
     {
-        $interceptor = m::mock('Markup\NeedleBundle\Intercept\InterceptorInterface');
+        $interceptor = m::mock(InterceptorInterface::class);
         $config = [
             'sale' => [
                 'terms' => ['sale'],

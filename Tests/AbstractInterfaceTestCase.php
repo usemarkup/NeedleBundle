@@ -2,10 +2,12 @@
 
 namespace Markup\NeedleBundle\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 /**
 * An abstract test case class for tests that check the expected public methods of interfaces (to prevent regressions).
 */
-abstract class AbstractInterfaceTestCase extends \PHPUnit_Framework_TestCase
+abstract class AbstractInterfaceTestCase extends TestCase
 {
     public function testExpectedPublicMethods()
     {

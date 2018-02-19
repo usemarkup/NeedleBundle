@@ -7,12 +7,14 @@ use Markup\NeedleBundle\Terms\EmptyTermsResult;
 use Markup\NeedleBundle\Terms\SolrRegexTermsService;
 use Markup\NeedleBundle\Terms\SolrTermsResult;
 use Markup\NeedleBundle\Terms\TermsFieldProviderInterface;
+use Markup\NeedleBundle\Terms\TermsServiceInterface;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Solarium\Exception\HttpException as SolariumException;
 use Solarium\QueryType\Terms\Query;
 use Solarium\QueryType\Terms\Result;
 
-class SolrRegexTermsServiceTest extends \PHPUnit_Framework_TestCase
+class SolrRegexTermsServiceTest extends MockeryTestCase
 {
     private $solarium;
     private $fieldProvider;
@@ -25,14 +27,9 @@ class SolrRegexTermsServiceTest extends \PHPUnit_Framework_TestCase
         $this->terms = new SolrRegexTermsService($this->solarium, null, $this->fieldProvider);
     }
 
-    protected function tearDown()
-    {
-        m::close();
-    }
-
     public function testIsTermsService()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Terms\TermsServiceInterface', $this->terms);
+        $this->assertInstanceOf(TermsServiceInterface::class, $this->terms);
     }
 
     public function testFetchTermsWhenNoFieldsReturned()

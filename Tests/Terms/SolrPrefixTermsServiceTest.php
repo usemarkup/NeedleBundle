@@ -4,9 +4,11 @@ namespace Markup\NeedleBundle\Tests\Terms;
 
 use Markup\NeedleBundle\Terms\SolrPrefixTermsService;
 use Markup\NeedleBundle\Terms\TermsFieldProviderInterface;
+use Markup\NeedleBundle\Terms\TermsServiceInterface;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class SolrPrefixTermsServiceTest extends \PHPUnit_Framework_TestCase
+class SolrPrefixTermsServiceTest extends MockeryTestCase
 {
     protected function setUp()
     {
@@ -15,13 +17,8 @@ class SolrPrefixTermsServiceTest extends \PHPUnit_Framework_TestCase
         $this->terms = new SolrPrefixTermsService($this->solarium, null, $this->fieldProvider);
     }
 
-    protected function tearDown()
-    {
-        m::close();
-    }
-
     public function testIsTermsService()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Terms\TermsServiceInterface', $this->terms);
+        $this->assertInstanceOf(TermsServiceInterface::class, $this->terms);
     }
 }

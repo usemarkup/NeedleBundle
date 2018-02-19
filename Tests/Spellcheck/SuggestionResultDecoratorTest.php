@@ -2,34 +2,33 @@
 
 namespace Markup\NeedleBundle\Tests\Spellcheck;
 
+use Markup\NeedleBundle\Result\ResultInterface;
 use Markup\NeedleBundle\Result\SuggestionResultDecorator;
+use Markup\NeedleBundle\Service\SearchServiceInterface;
+use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
 use Markup\NeedleBundle\Spellcheck\Suggestion;
 use Markup\NeedleBundle\Tests\Query\SettableSelectQuery;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class SuggestionResultDecoratorTest extends \PHPUnit_Framework_TestCase
+class SuggestionResultDecoratorTest extends MockeryTestCase
 {
     protected function setUp()
     {
-        $this->originalResult = m::mock('Markup\NeedleBundle\Result\ResultInterface')->shouldIgnoreMissing();
+        $this->originalResult = m::mock(ResultInterface::class)->shouldIgnoreMissing();
         $this->originalQuery = new SettableSelectQuery('original query');
-        $this->searchService = m::mock('Markup\NeedleBundle\Service\SearchServiceInterface');
+        $this->searchService = m::mock(SearchServiceInterface::class);
         $this->decorator = new SuggestionResultDecorator($this->originalResult, $this->originalQuery, $this->searchService);
-    }
-
-    protected function tearDown()
-    {
-        m::close();
     }
 
     public function testIsResult()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Result\ResultInterface', $this->decorator);
+        $this->assertInstanceOf(ResultInterface::class, $this->decorator);
     }
 
     public function testDoNotMakeNewQueryIfNoSuggestions()
     {
-        $spellcheckResult = m::mock('Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface')->shouldIgnoreMissing();
+        $spellcheckResult = m::mock(SpellcheckResultInterface::class)->shouldIgnoreMissing();
         $spellcheckResult
             ->shouldReceive('getSuggestions')
             ->andReturn([]);
@@ -47,7 +46,7 @@ class SuggestionResultDecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function testMakeNewQueryIfSuggestions()
     {
-        $spellcheckResult = m::mock('Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface')->shouldIgnoreMissing();
+        $spellcheckResult = m::mock(SpellcheckResultInterface::class)->shouldIgnoreMissing();
         $suggestion = new Suggestion('i am a suggestion', 42);
         $spellcheckResult
             ->shouldReceive('getSuggestions')

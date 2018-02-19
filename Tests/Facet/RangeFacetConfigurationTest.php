@@ -3,13 +3,20 @@
 namespace Markup\NeedleBundle\Tests\Facet;
 
 use Markup\NeedleBundle\Facet\RangeFacetConfiguration;
+use Markup\NeedleBundle\Facet\RangeFacetConfigurationInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a range facet configuration implementation.
 */
-class RangeFacetConfigurationTest extends \PHPUnit_Framework_TestCase
+class RangeFacetConfigurationTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var RangeFacetConfiguration
+     */
+    private $config;
+
+    protected function setUp()
     {
         $this->gap = 50;
         $this->start = 100;
@@ -19,7 +26,7 @@ class RangeFacetConfigurationTest extends \PHPUnit_Framework_TestCase
 
     public function testIsRangeFacetConfiguration()
     {
-        $this->assertTrue($this->config instanceof \Markup\NeedleBundle\Facet\RangeFacetConfigurationInterface);
+        $this->assertInstanceOf(RangeFacetConfigurationInterface::class, $this->config);
     }
 
     public function testGetStart()

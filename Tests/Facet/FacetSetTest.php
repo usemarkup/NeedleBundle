@@ -2,24 +2,29 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Facet\FacetSet;
 use Markup\NeedleBundle\Facet\FacetSetArrayIterator;
+use Markup\NeedleBundle\Facet\FacetSetInterface;
+use Markup\NeedleBundle\Facet\FacetSetIteratorInterface;
+use Markup\NeedleBundle\Facet\FacetValueInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a generic facet set.
 */
-class FacetSetTest extends \PHPUnit_Framework_TestCase
+class FacetSetTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
-        $this->facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $this->facetValueIterator = $this->createMock('Markup\NeedleBundle\Facet\FacetSetIteratorInterface');
+        $this->facet = $this->createMock(AttributeInterface::class);
+        $this->facetValueIterator = $this->createMock(FacetSetIteratorInterface::class);
         $this->facetSet = new FacetSet($this->facet, $this->facetValueIterator);
     }
 
     public function testIsFacetSet()
     {
-        $this->assertTrue($this->facetSet instanceof \Markup\NeedleBundle\Facet\FacetSetInterface);
+        $this->assertInstanceOf(FacetSetInterface::class, $this->facetSet);
     }
 
     public function testGetFacet()
@@ -35,7 +40,7 @@ class FacetSetTest extends \PHPUnit_Framework_TestCase
 
     public function testGetIterator()
     {
-        $facetValue = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue = $this->createMock(FacetValueInterface::class);
         $facetValueIterator = new FacetSetArrayIterator([$facetValue]);
         $facetSet = new FacetSet($this->facet, $facetValueIterator);
         foreach ($facetSet as $emittedFacetValue) {

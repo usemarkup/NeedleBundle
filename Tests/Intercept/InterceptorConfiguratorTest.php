@@ -2,33 +2,37 @@
 
 namespace Markup\NeedleBundle\Tests\Intercept;
 
+use Markup\NeedleBundle\Intercept\Interceptor;
 use Markup\NeedleBundle\Intercept\InterceptorConfigurator;
+use Markup\NeedleBundle\Intercept\InterceptorConfiguratorInterface;
+use Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class InterceptorConfiguratorTest extends \PHPUnit_Framework_TestCase
+class InterceptorConfiguratorTest extends MockeryTestCase
 {
+    /**
+     * @var InterceptorConfigurator
+     */
+    private $configurator;
+
     protected function setUp()
     {
         $this->configurator = new InterceptorConfigurator();
     }
 
-    protected function tearDown()
-    {
-        m::close();
-    }
-
     public function testIsConfigurator()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Intercept\InterceptorConfiguratorInterface', $this->configurator);
+        $this->assertInstanceOf(InterceptorConfiguratorInterface::class, $this->configurator);
     }
 
     public function testInterceptMappersAddedToInterceptor()
     {
-        $mapper1 = m::mock('Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface')->shouldReceive('getType')->andReturn('type1')->getMock();
-        $mapper2 = m::mock('Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface')->shouldReceive('getType')->andReturn('type2')->getMock();
+        $mapper1 = m::mock(TypedInterceptMapperInterface::class)->shouldReceive('getType')->andReturn('type1')->getMock();
+        $mapper2 = m::mock(TypedInterceptMapperInterface::class)->shouldReceive('getType')->andReturn('type2')->getMock();
         $this->configurator->addInterceptMapper($mapper1);
         $this->configurator->addInterceptMapper($mapper2);
-        $interceptor = m::mock('Markup\NeedleBundle\Intercept\Interceptor');
+        $interceptor = m::mock(Interceptor::class);
         $interceptor
             ->shouldReceive('addInterceptMapper')
             ->twice();
@@ -44,7 +48,7 @@ class InterceptorConfiguratorTest extends \PHPUnit_Framework_TestCase
                 'route' => 'sale',
             ],
         ];
-        $interceptor = m::mock('Markup\NeedleBundle\Intercept\Interceptor');
+        $interceptor = m::mock(Interceptor::class);
         $interceptor
             ->shouldReceive('addDefinition')
             ->once();

@@ -4,12 +4,13 @@ namespace Markup\NeedleBundle\Tests\EventListener;
 
 use Markup\NeedleBundle\EventListener\IndexSchedulingEventListener;
 use Markup\NeedleBundle\Scheduler\IndexScheduler;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
 * A test for an event listener that schedules a search index.
 */
-class IndexSchedulingEventListenerTest extends \PHPUnit_Framework_TestCase
+class IndexSchedulingEventListenerTest extends TestCase
 {
     public function setUp()
     {

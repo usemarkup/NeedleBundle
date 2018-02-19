@@ -3,16 +3,18 @@
 namespace Markup\NeedleBundle\Tests\Filter;
 
 use Markup\NeedleBundle\Filter\RangeFilterValue;
+use Markup\NeedleBundle\Filter\RangeFilterValueInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a filter value that represents a range.
 */
-class RangeFilterValueTest extends \PHPUnit_Framework_TestCase
+class RangeFilterValueTest extends TestCase
 {
     public function testIsRangeFilterValue()
     {
-        $rangeValue = new \ReflectionClass('Markup\NeedleBundle\Filter\RangeFilterValue');
-        $this->assertTrue($rangeValue->implementsInterface('Markup\NeedleBundle\Filter\RangeFilterValueInterface'));
+        $rangeValue = new \ReflectionClass(RangeFilterValue::class);
+        $this->assertTrue($rangeValue->implementsInterface(RangeFilterValueInterface::class));
     }
 
     public function testGetSearchValue()

@@ -2,12 +2,14 @@
 
 namespace Markup\NeedleBundle\Tests\Collator;
 
+use Markup\NeedleBundle\Collator\TypedCollatorInterface;
 use Markup\NeedleBundle\Collator\WordListCollator;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test for a collator that uses a word list using known words.
  */
-class WordListCollatorTest extends \PHPUnit_Framework_TestCase
+class WordListCollatorTest extends TestCase
 {
     protected function setUp()
     {
@@ -27,7 +29,7 @@ class WordListCollatorTest extends \PHPUnit_Framework_TestCase
 
     public function testIsTypedCollator()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Collator\TypedCollatorInterface', $this->collator);
+        $this->assertInstanceOf(TypedCollatorInterface::class, $this->collator);
     }
 
     /**

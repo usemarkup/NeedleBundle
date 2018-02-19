@@ -7,12 +7,13 @@ use Markup\NeedleBundle\Facet\FacetSetIteratorInterface;
 use Markup\NeedleBundle\Facet\FacetValueInterface;
 use Markup\NeedleBundle\Result\SolariumFacetSetAdaptingIterator;
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
 use Solarium\QueryType\Select\Result\Facet\Field;
 
 /**
 * A test for an iterator that can wrap a Solarium facet set and emit generic facet values.
 */
-class SolariumFacetSetAdaptingIteratorTest extends \PHPUnit_Framework_TestCase
+class SolariumFacetSetAdaptingIteratorTest extends TestCase
 {
     public function testIsFacetSetIterator()
     {

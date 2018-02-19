@@ -2,14 +2,16 @@
 
 namespace Markup\NeedleBundle\Tests\Attribute;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Attribute\DocumentIdAttribute;
+use PHPUnit\Framework\TestCase;
 
-class DocumentIdAttributeTest extends \PHPUnit_Framework_TestCase
+class DocumentIdAttributeTest extends TestCase
 {
     public function testIsAttribute()
     {
         $attr = new DocumentIdAttribute();
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $attr);
+        $this->assertInstanceOf(AttributeInterface::class, $attr);
     }
 
     public function testGetSearchKeyByDefault()

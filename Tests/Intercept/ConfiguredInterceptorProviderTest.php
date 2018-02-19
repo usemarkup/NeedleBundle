@@ -3,23 +3,21 @@
 namespace Markup\NeedleBundle\Tests\Intercept;
 
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
+use Markup\NeedleBundle\Intercept\Interceptor;
+use Markup\NeedleBundle\Intercept\InterceptorConfiguratorInterface;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
-class ConfiguredInterceptorProviderTest extends \PHPUnit_Framework_TestCase
+class ConfiguredInterceptorProviderTest extends MockeryTestCase
 {
     protected function setUp()
     {
-        $this->interceptor = m::mock('Markup\NeedleBundle\Intercept\Interceptor');
+        $this->interceptor = m::mock(Interceptor::class);
         $closure = function () {
             return $this->interceptor;
         };
-        $this->configurator = m::mock('Markup\NeedleBundle\Intercept\InterceptorConfiguratorInterface');
+        $this->configurator = m::mock(InterceptorConfiguratorInterface::class);
         $this->provider = new ConfiguredInterceptorProvider($closure, $this->configurator);
-    }
-
-    protected function tearDown()
-    {
-        m::close();
     }
 
     public function testCreateInterceptor()

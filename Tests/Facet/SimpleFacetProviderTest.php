@@ -2,12 +2,15 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Facet\SimpleFacetProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test for a simple facet provider implementation.
  */
-class SimpleFacetProviderTest extends \PHPUnit_Framework_TestCase
+class SimpleFacetProviderTest extends TestCase
 {
     protected function setUp()
     {
@@ -16,14 +19,14 @@ class SimpleFacetProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testIsFacetProvider()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Facet\FacetProviderInterface', $this->provider);
+        $this->assertInstanceOf(FacetProviderInterface::class, $this->provider);
     }
 
     public function testGetFacetByName()
     {
         $name = 'i_am_a_facet';
         $facet = $this->provider->getFacetByName($name);
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $facet);
+        $this->assertInstanceOf(AttributeInterface::class, $facet);
         $this->assertEquals($name, $facet->getName());
     }
 }

@@ -3,8 +3,9 @@
 namespace Markup\NeedleBundle\Tests\Context;
 
 use Markup\NeedleBundle\Context\ContextDecoratorPriorityQueue;
+use PHPUnit\Framework\TestCase;
 
-class ContextDecoratorPriorityQueueTest extends \PHPUnit_Framework_TestCase
+class ContextDecoratorPriorityQueueTest extends TestCase
 {
     public function testAddingWithoutOrder()
     {

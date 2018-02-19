@@ -2,23 +2,27 @@
 
 namespace Markup\NeedleBundle\Tests\Context;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Context\UseAvailableFiltersAsFacetsContextDecorator;
+use Markup\NeedleBundle\Facet\FacetProviderInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a search context decorator that makes the context use the available filter names for facets.
 */
-class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework_TestCase
+class UseAvailableFiltersAsFacetsContextDecoratorTest extends TestCase
 {
     public function setUp()
     {
-        $this->context = $this->createMock('Markup\NeedleBundle\Context\SearchContextInterface');
-        $this->facetProvider = $this->createMock('Markup\NeedleBundle\Facet\FacetProviderInterface');
+        $this->context = $this->createMock(SearchContextInterface::class);
+        $this->facetProvider = $this->createMock(FacetProviderInterface::class);
         $this->decorator = new UseAvailableFiltersAsFacetsContextDecorator($this->context, $this->facetProvider);
     }
 
     public function testIsSearchContext()
     {
-        $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Context\SearchContextInterface);
+        $this->assertInstanceOf(SearchContextInterface::class, $this->decorator);
     }
 
     public function testGetAvailableFilterNames()
@@ -33,7 +37,7 @@ class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework
 
     public function testGetFacets()
     {
-        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = $this->createMock(AttributeInterface::class);
         $this->facetProvider
             ->expects($this->any())
             ->method('getFacetByName')
@@ -45,7 +49,7 @@ class UseAvailableFiltersAsFacetsContextDecoratorTest extends \PHPUnit_Framework
             ->will($this->returnValue($filterNames));
         $facets = $this->decorator->getFacets();
         $this->assertCount(3, $facets);
-        $this->assertContainsOnly('Markup\NeedleBundle\Attribute\AttributeInterface', $facets);
+        $this->assertContainsOnly(AttributeInterface::class, $facets);
     }
 
     //other methods simply delegate down, so skipping unit tests as little chance of regression

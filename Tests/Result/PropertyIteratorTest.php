@@ -3,11 +3,12 @@
 namespace Markup\NeedleBundle\Tests\Result;
 
 use Markup\NeedleBundle\Result\PropertyIterator;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for an iterator that can take a search result and emit a certain property of each result document.
 */
-class PropertyIteratorTest extends \PHPUnit_Framework_TestCase
+class PropertyIteratorTest extends TestCase
 {
     public function testEmitProperty()
     {

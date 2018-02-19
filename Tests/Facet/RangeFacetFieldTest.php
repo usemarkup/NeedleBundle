@@ -2,28 +2,37 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Facet\RangeFacetConfigurationInterface;
 use Markup\NeedleBundle\Facet\RangeFacetField;
+use Markup\NeedleBundle\Facet\RangeFacetInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a range facet field implementation.
 */
-class RangeFacetFieldTest extends \PHPUnit_Framework_TestCase
+class RangeFacetFieldTest extends TestCase
 {
+    /**
+     * @var RangeFacetField
+     */
+    private $range;
+
     public function setUp()
     {
-        $this->filter = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $this->rangeFacetConfig = $this->createMock('Markup\NeedleBundle\Facet\RangeFacetConfigurationInterface');
+        $this->filter = $this->createMock(AttributeInterface::class);
+        $this->rangeFacetConfig = $this->createMock(RangeFacetConfigurationInterface::class);
         $this->range = new RangeFacetField($this->filter, $this->rangeFacetConfig);
     }
 
     public function testIsRangeFacet()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Facet\RangeFacetInterface', $this->range);
+        $this->assertInstanceOf(RangeFacetInterface::class, $this->range);
     }
 
     public function testIsAttribute()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $this->range);
+        $this->assertInstanceOf(AttributeInterface::class, $this->range);
     }
 
     public function testGetRangeSize()

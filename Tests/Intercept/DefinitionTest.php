@@ -3,15 +3,18 @@
 namespace Markup\NeedleBundle\Tests\Intercept;
 
 use Markup\NeedleBundle\Intercept\Definition;
+use Markup\NeedleBundle\Intercept\DefinitionInterface;
+use Markup\NeedleBundle\Intercept\MatcherInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * Test for an intercept definition.
 */
-class DefinitionTest extends \PHPUnit_Framework_TestCase
+class DefinitionTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
-        $this->matcher = $this->createMock('Markup\NeedleBundle\Intercept\MatcherInterface');
+        $this->matcher = $this->createMock(MatcherInterface::class);
         $this->type = 'type';
         $this->name = 'definition';
         $this->properties = ['this' => 'that'];
@@ -20,7 +23,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDefinition()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Intercept\DefinitionInterface', $this->definition);
+        $this->assertInstanceOf(DefinitionInterface::class, $this->definition);
     }
 
     public function testGetMatcher()

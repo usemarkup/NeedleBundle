@@ -2,23 +2,42 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Filter\FilterQuery;
+use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Filter\FilterValueInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a filter query object.
 */
-class FilterQueryTest extends \PHPUnit_Framework_TestCase
+class FilterQueryTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var AttributeInterface
+     */
+    private $filter;
+
+    /**
+     * @var FilterValueInterface
+     */
+    private $filterValue;
+
+    /**
+     * @var FilterQuery
+     */
+    private $filterQuery;
+
+    protected function setUp()
     {
-        $this->filter = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $this->filterValue = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $this->filter = $this->createMock(AttributeInterface::class);
+        $this->filterValue = $this->createMock(FilterValueInterface::class);
         $this->filterQuery = new FilterQuery($this->filter, $this->filterValue);
     }
 
     public function testIsFilterQuery()
     {
-        $this->assertTrue($this->filterQuery instanceof \Markup\NeedleBundle\Filter\FilterQueryInterface);
+        $this->assertInstanceOf(FilterQueryInterface::class, $this->filterQuery);
     }
 
     public function testGetSearchKey()

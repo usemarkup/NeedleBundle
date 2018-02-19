@@ -3,11 +3,12 @@
 namespace Markup\NeedleBundle\Tests\Query;
 
 use Markup\NeedleBundle\Query\RecordableSelectQueryInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a recordable select query interface.
 */
-class RecordableSelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
+class RecordableSelectQueryInterfaceTest extends TestCase
 {
     public function testHasCorrectPublicMethods()
     {
