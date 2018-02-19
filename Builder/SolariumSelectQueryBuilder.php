@@ -9,7 +9,6 @@ use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Solarium\Client as SolariumClient;
-use Solarium\QueryType\Select\Query\Component\Grouping;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
 /**
