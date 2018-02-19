@@ -8,7 +8,8 @@ use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
-use PHPUnit\Framework\TestCase;
+use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Solarium\Client;
 use Solarium\QueryType\Select\Query\FilterQuery;
 use Solarium\QueryType\Select\Query\Query;
@@ -16,7 +17,7 @@ use Solarium\QueryType\Select\Query\Query;
 /**
  * A test for an object that can build a Solarium select query that maps a generic select search query.
  */
-class SolariumSelectQueryBuilderTest extends TestCase
+class SolariumSelectQueryBuilderTest extends MockeryTestCase
 {
     /**
      * @var Client
@@ -24,7 +25,7 @@ class SolariumSelectQueryBuilderTest extends TestCase
     private $solarium;
 
     /**
-     * @var FilterQueryLucenifier
+     * @var FilterQueryLucenifier|m\MockInterface
      */
     private $lucenifier;
 
@@ -36,67 +37,58 @@ class SolariumSelectQueryBuilderTest extends TestCase
     public function setUp()
     {
         $this->solarium = new Client();
-        $this->lucenifier = $this->createMock(FilterQueryLucenifier::class);
+        $this->lucenifier = m::mock(FilterQueryLucenifier::class);
         $this->builder = new SolariumSelectQueryBuilder($this->solarium, $this->lucenifier);
     }
 
     public function testBuildWithNoOperationsReturnsSolariumSelectQuery()
     {
-        $genericQuery = $this->createMock(ResolvedSelectQueryInterface::class);
+        $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
         $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
         $this->assertInstanceOf(Query::class, $query);
     }
 
     public function testBuildWithSearchTerm()
     {
-        $genericQuery = $this->createMock(ResolvedSelectQueryInterface::class);
+        $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
         $term = 'pirates';
         $genericQuery
-            ->expects($this->any())
-            ->method('getSearchTerm')
-            ->will($this->returnValue($term));
+            ->shouldReceive('getSearchTerm')
+            ->andReturn($term);
         $genericQuery
-            ->expects($this->any())
-            ->method('hasSearchTerm')
-            ->will($this->returnValue(true));
+            ->shouldReceive('hasSearchTerm')
+            ->andReturn(true);
         $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
         $this->assertEquals($term, $query->getQuery());
     }
 
     public function testAddFilterQuery()
     {
-        $genericQuery = $this->createMock(ResolvedSelectQueryInterface::class);
-        $filterQuery = $this->createMock(FilterQueryInterface::class);
+        $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $filterQuery = m::mock(FilterQueryInterface::class);
         $filterQuery
-            ->expects($this->any())
-            ->method('getSearchKey')
-            ->will($this->returnValue('color'));
+            ->shouldReceive('getSearchKey')
+            ->andReturn('color');
         $filterQuery
-            ->expects($this->any())
-            ->method('getSearchValue')
-            ->will($this->returnValue('red'));
+            ->shouldReceive('getSearchValue')
+            ->andReturn('red');
         $this->lucenifier
-            ->expects($this->any())
-            ->method('lucenify')
-            ->will($this->returnValue('color:"red"'));
-        $filter = $this->createMock(AttributeInterface::class);
-        $filterValue = $this->createMock(FilterValueInterface::class);
+            ->shouldReceive('lucenify')
+            ->andReturn('color:"red"');
+        $filter = m::mock(AttributeInterface::class);
+        $filterValue = m::mock(FilterValueInterface::class);
         $filter
-            ->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('color_key'));
+            ->shouldReceive('getName')
+            ->andReturn('color_key');
         $filterQuery
-            ->expects($this->any())
-            ->method('getFilter')
-            ->will($this->returnValue($filter));
+            ->shouldReceive('getFilter')
+            ->andReturn($filter);
         $filterQuery
-            ->expects($this->any())
-            ->method('getFilterValue')
-            ->will($this->returnValue($filterValue));
+            ->shouldReceive('getFilterValue')
+            ->andReturn($filterValue);
         $genericQuery
-            ->expects($this->any())
-            ->method('getFilterQueries')
-            ->will($this->returnValue([$filterQuery]));
+            ->shouldReceive('getFilterQueries')
+            ->andReturn([$filterQuery]);
         $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
         $filterQueries = $query->getFilterQueries();
         $this->assertCount(
