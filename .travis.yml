@@ -23,8 +23,6 @@ notifications:
   email: "douglas@usemarkup.com"
 
 matrix:
-  allow_failures:
-    - php: 7.2
   include:
     - php: 7.1
       env: deps=low
