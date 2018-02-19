@@ -4,15 +4,16 @@ namespace Markup\NeedleBundle\Tests\Config;
 
 use Markup\NeedleBundle\Config\ContextConfiguration;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test for a context configuration class.
  */
-class ContextConfigurationTest extends \PHPUnit_Framework_TestCase
+class ContextConfigurationTest extends TestCase
 {
     public function testIsContextConfiguration()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Config\ContextConfigurationInterface', new ContextConfiguration());
+        $this->assertInstanceOf(ContextConfigurationInterface::class, new ContextConfiguration());
     }
 
     public function testEmptyConfigGivesDefault24ItemsPerPage()

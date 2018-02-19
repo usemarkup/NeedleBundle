@@ -5,12 +5,13 @@ namespace Markup\NeedleBundle\Tests\Indexer;
 use Doctrine\Common\Collections\Collection;
 use Markup\NeedleBundle\Indexer\SubjectDocumentGeneratorInterface;
 use Markup\NeedleBundle\Indexer\SubjectDocumentIterator;
+use PHPUnit\Framework\TestCase;
 use Solarium\QueryType\Update\Query\Document\Document;
 
 /**
 * A test for an iterator that can go over an iteration of subjects and emit documents for Solarium.
 */
-class SubjectDocumentIteratorTest extends \PHPUnit_Framework_TestCase
+class SubjectDocumentIteratorTest extends TestCase
 {
     public function testIsIterator()
     {

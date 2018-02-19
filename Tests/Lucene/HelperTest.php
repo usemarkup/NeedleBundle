@@ -5,13 +5,14 @@ namespace Markup\NeedleBundle\Tests\Lucene;
 use Markup\NeedleBundle\Exception\LuceneSyntaxException;
 use Markup\NeedleBundle\Lucene\Helper;
 use Markup\NeedleBundle\Lucene\HelperInterface;
+use PHPUnit\Framework\TestCase;
 use Solarium\Core\Query\Helper as SolariumHelper;
 use Solarium\Exception\InvalidArgumentException;
 
 /**
 * A test for a Lucene helper implementation that uses a helper implementation in Solarium.
 */
-class HelperTest extends \PHPUnit_Framework_TestCase
+class HelperTest extends TestCase
 {
     /**
      * @var SolariumHelper
@@ -57,7 +58,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->method('assemble')
             ->with($this->equalTo($query), $this->equalTo($parts))
             ->will($this->throwException(new InvalidArgumentException()));
-        $this->setExpectedException(LuceneSyntaxException::class);
+        $this->expectException(LuceneSyntaxException::class);
         $this->helper->assemble($query, $parts);
     }
 }

@@ -3,26 +3,29 @@
 namespace Markup\NeedleBundle\Tests\Context;
 
 use Markup\NeedleBundle\Context\RemoveDefaultFilterQueriesContextDecorator;
+use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a search context decorator that has no default filter queries.
 */
-class RemoveDefaultFilterQueriesContextDecoratorTest extends \PHPUnit_Framework_TestCase
+class RemoveDefaultFilterQueriesContextDecoratorTest extends TestCase
 {
     public function setUp()
     {
-        $this->context = $this->createMock('Markup\NeedleBundle\Context\SearchContextInterface');
+        $this->context = $this->createMock(SearchContextInterface::class);
         $this->decorator = new RemoveDefaultFilterQueriesContextDecorator($this->context);
     }
 
     public function testIsSearchContext()
     {
-        $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Context\SearchContextInterface);
+        $this->assertInstanceOf(SearchContextInterface::class, $this->decorator);
     }
 
     public function testGetDefaultFilterQueriesIgnoresUnderlyingQueries()
     {
-        $filterQuery = $this->createMock('Markup\NeedleBundle\Filter\FilterQueryInterface');
+        $filterQuery = $this->createMock(FilterQueryInterface::class);
         $this->context
             ->expects($this->any())
             ->method('getDefaultFilterQueries')

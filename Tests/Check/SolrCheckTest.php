@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\Tests\Check;
 
 use Markup\NeedleBundle\Check\SolrCheck;
+use PHPUnit\Framework\TestCase;
 use Solarium\Client;
 use Solarium\Core\Query\QueryInterface;
 use ZendDiagnostics\Check\CheckInterface;
@@ -12,7 +13,7 @@ use ZendDiagnostics\Result\SuccessInterface;
 /**
 * A test for a monitor check object that can check whether a Solr instance is available.
 */
-class SolrCheckTest extends \PHPUnit_Framework_TestCase
+class SolrCheckTest extends TestCase
 {
     /**
      * @var Client

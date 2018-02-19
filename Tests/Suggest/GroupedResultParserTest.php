@@ -3,8 +3,10 @@
 namespace Markup\NeedleBundle\Tests\Suggest;
 
 use Markup\NeedleBundle\Suggest\GroupedResultParser;
+use Markup\NeedleBundle\Suggest\SolrSuggestResult;
+use PHPUnit\Framework\TestCase;
 
-class GroupedResultParserTest extends \PHPUnit_Framework_TestCase
+class GroupedResultParserTest extends TestCase
 {
     protected function setUp()
     {
@@ -53,6 +55,6 @@ class GroupedResultParserTest extends \PHPUnit_Framework_TestCase
         ];
         $results = $this->parser->parse($data);
         $this->assertCount(2, $results);
-        $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Suggest\SolrSuggestResult', $results);
+        $this->assertContainsOnlyInstancesOf(SolrSuggestResult::class, $results);
     }
 }

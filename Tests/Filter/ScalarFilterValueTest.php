@@ -2,17 +2,19 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Filter\ScalarFilterValue;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a scalar filter value.
 */
-class ScalarFilterValueTest extends \PHPUnit_Framework_TestCase
+class ScalarFilterValueTest extends TestCase
 {
     public function testIsFilterValue()
     {
-        $scalarFilterValue = new \ReflectionClass('Markup\NeedleBundle\Filter\ScalarFilterValue');
-        $this->assertTrue($scalarFilterValue->implementsInterface('Markup\NeedleBundle\Filter\FilterValueInterface'));
+        $scalarFilterValue = new \ReflectionClass(ScalarFilterValue::class);
+        $this->assertTrue($scalarFilterValue->implementsInterface(FilterValueInterface::class));
     }
 
     public function testGetSearchValue()

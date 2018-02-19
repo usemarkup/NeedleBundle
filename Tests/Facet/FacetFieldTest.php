@@ -2,22 +2,24 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Facet\FacetField;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a facet field implementation.
 */
-class FacetFieldTest extends \PHPUnit_Framework_TestCase
+class FacetFieldTest extends TestCase
 {
     public function setUp()
     {
-        $this->filter = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $this->filter = $this->createMock(AttributeInterface::class);
         $this->facet = new FacetField($this->filter);
     }
 
     public function testIsAttribute()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $this->facet);
+        $this->assertInstanceOf(AttributeInterface::class, $this->facet);
     }
 
     public function testGetName()

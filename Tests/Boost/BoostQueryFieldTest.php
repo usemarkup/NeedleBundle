@@ -4,16 +4,18 @@ namespace Markup\NeedleBundle\Tests\Boost;
 
 use Markup\NeedleBundle\Attribute\Attribute;
 use Markup\NeedleBundle\Boost\BoostQueryField;
+use Markup\NeedleBundle\Boost\BoostQueryFieldInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a boost query field object.
 */
-class BoostQueryFieldTest extends \PHPUnit_Framework_TestCase
+class BoostQueryFieldTest extends TestCase
 {
     public function testIsBoostQueryField()
     {
-        $field = new \ReflectionClass('Markup\NeedleBundle\Boost\BoostQueryField');
-        $this->assertTrue($field->implementsInterface('Markup\NeedleBundle\Boost\BoostQueryFieldInterface'));
+        $field = new \ReflectionClass(BoostQueryField::class);
+        $this->assertTrue($field->implementsInterface(BoostQueryFieldInterface::class));
     }
 
     public function testGetAttributeName()

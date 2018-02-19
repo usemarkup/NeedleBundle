@@ -3,16 +3,19 @@
 namespace Markup\NeedleBundle\Tests\Result;
 
 use Markup\NeedleBundle\Result\SolariumUpdateResult;
+use Markup\NeedleBundle\Result\UpdateResultInterface;
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
+use Solarium\QueryType\Update\Result;
 
-class SolariumUpdateResultTest extends \PHPUnit_Framework_TestCase
+class SolariumUpdateResultTest extends TestCase
 {
     protected function setUp()
     {
-        if (!class_exists('Solarium\QueryType\Update\Result')) {
+        if (!class_exists(Result::class)) {
             $this->markTestSkipped('This test needs the solarium/solarium package in order to run.');
         }
-        $this->solariumResult = m::mock('Solarium\QueryType\Update\Result');
+        $this->solariumResult = m::mock(Result::class);
         $this->updateResult = new SolariumUpdateResult($this->solariumResult);
     }
 
@@ -23,7 +26,7 @@ class SolariumUpdateResultTest extends \PHPUnit_Framework_TestCase
 
     public function testIsUpdateResult()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Result\UpdateResultInterface', $this->updateResult);
+        $this->assertInstanceOf(UpdateResultInterface::class, $this->updateResult);
     }
 
     public function testGetStatusCodeReturnsStatus()

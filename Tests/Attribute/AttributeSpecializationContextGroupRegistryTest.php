@@ -22,7 +22,7 @@ class AttributeSpecializationContextGroupRegistryTest extends MockeryTestCase
      */
     private $attributeSpecializationContextGroupRegistry;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->attributeSpecializationContextRegistry = m::mock(AttributeSpecializationContextRegistryInterface::class);
         $this->attributeSpecializationContextRegistry

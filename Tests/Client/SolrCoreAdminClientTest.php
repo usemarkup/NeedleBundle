@@ -5,16 +5,15 @@ namespace Markup\NeedleBundle\Tests\Client;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\HandlerStack;
-use Mockery as m;
 use Markup\NeedleBundle\Client\SolrCoreAdminClient;
+use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Psr\Log\LoggerInterface;
 use Solarium\Client as SolariumClient;
 use Solarium\Core\Client\Endpoint;
 
-class SolrCoreAdminClientTest extends \PHPUnit_Framework_TestCase
+class SolrCoreAdminClientTest extends MockeryTestCase
 {
-    use m\Adapter\Phpunit\MockeryPHPUnitIntegration;
-
     public function testInstance()
     {
         $this->assertInstanceOf(

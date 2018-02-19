@@ -2,13 +2,20 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Filter\FilterProviderInterface;
 use Markup\NeedleBundle\Filter\NullFilterProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test for null filter provider.
  */
-class NullFilterProviderTest extends \PHPUnit_Framework_TestCase
+class NullFilterProviderTest extends TestCase
 {
+    /**
+     * @var NullFilterProvider
+     */
+    private $provider;
+
     protected function setUp()
     {
         $this->provider = new NullFilterProvider();
@@ -16,7 +23,7 @@ class NullFilterProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testIsFilterProvider()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Filter\FilterProviderInterface', $this->provider);
+        $this->assertInstanceOf(FilterProviderInterface::class, $this->provider);
     }
 
     public function testGetFilterByNameReturnsNull()

@@ -3,8 +3,9 @@
 namespace Markup\NeedleBundle\Tests\Spellcheck;
 
 use Markup\NeedleBundle\Spellcheck\Suggestion;
+use PHPUnit\Framework\TestCase;
 
-class SuggestionTest extends \PHPUnit_Framework_TestCase
+class SuggestionTest extends TestCase
 {
     protected function setUp()
     {

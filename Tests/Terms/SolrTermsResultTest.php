@@ -4,23 +4,21 @@ namespace Markup\NeedleBundle\Tests\Suggest;
 
 use Markup\NeedleBundle\Suggest\SolrSuggestResult;
 use Markup\NeedleBundle\Terms\SolrTermsResult;
+use Markup\NeedleBundle\Terms\TermsResultInterface;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Solarium\QueryType\Terms\Result;
 
-class SolrTermsResultTest extends \PHPUnit_Framework_TestCase
+class SolrTermsResultTest extends MockeryTestCase
 {
     protected function setUp()
     {
-        $this->solrResult = m::mock('Solarium\QueryType\Terms\Result');
+        $this->solrResult = m::mock(Result::class);
         $this->termsResult = new SolrTermsResult($this->solrResult);
-    }
-
-    protected function tearDown()
-    {
-        m::close();
     }
 
     public function testIsSuggestResult()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Terms\TermsResultInterface', $this->termsResult);
+        $this->assertInstanceOf(TermsResultInterface::class, $this->termsResult);
     }
 }

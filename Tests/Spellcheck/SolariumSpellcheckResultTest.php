@@ -2,16 +2,19 @@
 
 namespace Markup\NeedleBundle\Tests\Spellcheck;
 
+use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Markup\NeedleBundle\Spellcheck\SolariumSpellcheckResult;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Solarium\QueryType\Select\Result\Spellcheck\Result;
+use Solarium\QueryType\Select\Result\Spellcheck\Suggestion;
 
-class SolariumSpellcheckResultTest extends \PHPUnit_Framework_TestCase
+class SolariumSpellcheckResultTest extends MockeryTestCase
 {
     protected function setUp()
     {
-        $this->suggestion1 = m::mock('Solarium\QueryType\Select\Result\Spellcheck\Suggestion')->shouldIgnoreMissing();
-        $this->suggestion2 = m::mock('Solarium\QueryType\Select\Result\Spellcheck\Suggestion')->shouldIgnoreMissing();
+        $this->suggestion1 = m::mock(Suggestion::class)->shouldIgnoreMissing();
+        $this->suggestion2 = m::mock(Suggestion::class)->shouldIgnoreMissing();
         $this->correctlySpelled = true;
         $this->solariumResult = new Result(
             [
@@ -21,13 +24,8 @@ class SolariumSpellcheckResultTest extends \PHPUnit_Framework_TestCase
             [],
             $this->correctlySpelled
         );
-        $this->query = m::mock('Markup\NeedleBundle\Query\SimpleQueryInterface')->shouldIgnoreMissing();
+        $this->query = m::mock(SimpleQueryInterface::class)->shouldIgnoreMissing();
         $this->spellcheckResult = new SolariumSpellcheckResult($this->solariumResult, $this->query);
-    }
-
-    protected function tearDown()
-    {
-        m::close();
     }
 
     public function testIsCorrectlySpelled()

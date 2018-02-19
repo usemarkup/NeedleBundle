@@ -3,17 +3,19 @@
 namespace Markup\NeedleBundle\Tests\Lucene;
 
 use Markup\NeedleBundle\Filter;
+use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Lucene\FilterValueLucenifier;
 use Markup\NeedleBundle\Lucene\Helper;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for an object that can turn a filter value into a Lucene expression.
 */
-class FilterValueLucenifierTest extends \PHPUnit_Framework_TestCase
+class FilterValueLucenifierTest extends TestCase
 {
     public function setUp()
     {
-        if (!class_exists('Solarium\Core\Query\Helper')) {
+        if (!class_exists(Helper::class)) {
             $this->fail('The Solarium library (3.x) needs to be included.');
         }
         $this->helper = new Helper(new \Solarium\Core\Query\Helper()); //make a real instance
@@ -22,7 +24,7 @@ class FilterValueLucenifierTest extends \PHPUnit_Framework_TestCase
 
     public function testSimpleCase()
     {
-        $filterValue = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $filterValue = $this->createMock(FilterValueInterface::class);
         $filterValue
             ->expects($this->any())
             ->method('getSearchValue')

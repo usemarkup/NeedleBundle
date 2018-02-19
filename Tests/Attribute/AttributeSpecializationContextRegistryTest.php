@@ -9,18 +9,19 @@ use Markup\NeedleBundle\Attribute\AttributeSpecializationContextRegistry;
 use Markup\NeedleBundle\Attribute\AttributeSpecializationCurrentlyApplicableContextProviderInterface;
 use Markup\NeedleBundle\Exception\UnrecognizedSpecializationException;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
  * Test for filter implementation
  */
-class AttributeSpecializationContextRegistryTest extends \PHPUnit_Framework_TestCase
+class AttributeSpecializationContextRegistryTest extends MockeryTestCase
 {
     /**
      * @var AttributeSpecializationContextRegistry
      */
     private $attributeSpecializationContextRegistry;
 
-    public function setUp()
+    protected function setUp()
     {
         $localeSpecializationProvider = m::mock(AttributeSpecializationContextProviderInterface::class);
         $localeSpecialization =  new AttributeSpecialization('locale');
@@ -49,11 +50,6 @@ class AttributeSpecializationContextRegistryTest extends \PHPUnit_Framework_Test
         $this->attributeSpecializationContextRegistry = $attributeSpecializationContextRegistry;
     }
 
-    public function tearDown()
-    {
-        m::close();
-    }
-
     public function testGetSpecializationContextHashWithOneSpecialization()
     {
         $this->assertSame(
@@ -73,7 +69,7 @@ class AttributeSpecializationContextRegistryTest extends \PHPUnit_Framework_Test
             $priceIdentitySpecializationProvider
         );
 
-        $this->setExpectedException(UnrecognizedSpecializationException::class);
+        $this->expectException(UnrecognizedSpecializationException::class);
 
         $this->attributeSpecializationContextRegistry->getSpecializationContextHash();
     }

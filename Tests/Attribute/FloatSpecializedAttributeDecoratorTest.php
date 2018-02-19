@@ -6,11 +6,12 @@ use Markup\NeedleBundle\Attribute\FloatAttributeInterface;
 use Markup\NeedleBundle\Attribute\FloatSpecializedAttributeDecorator;
 use Markup\NeedleBundle\Attribute\SpecializedAttributeInterface;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
 * A test for a decorator for a filter that declares a Boolean type (clocking any underlying type).
 */
-class FloatSpecializedAttributeDecoratorTest extends \PHPUnit_Framework_TestCase
+class FloatSpecializedAttributeDecoratorTest extends MockeryTestCase
 {
     /**
      * @var SpecializedAttributeInterface|m\Mock
@@ -23,15 +24,10 @@ class FloatSpecializedAttributeDecoratorTest extends \PHPUnit_Framework_TestCase
     private $decorator;
 
 
-    public function setUp()
+    protected function setUp()
     {
         $this->filter = m::mock(SpecializedAttributeInterface::class);
         $this->decorator = new FloatSpecializedAttributeDecorator($this->filter);
-    }
-
-    public function tearDown()
-    {
-        m::close();
     }
 
     public function testIsSpecializedAttribute()

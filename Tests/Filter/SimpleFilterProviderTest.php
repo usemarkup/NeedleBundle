@@ -2,13 +2,21 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Filter\FilterProviderInterface;
 use Markup\NeedleBundle\Filter\SimpleFilterProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test for a simple filter provider implementation.
  */
-class SimpleFilterProviderTest extends \PHPUnit_Framework_TestCase
+class SimpleFilterProviderTest extends TestCase
 {
+    /**
+     * @var SimpleFilterProvider
+     */
+    private $provider;
+
     protected function setUp()
     {
         $this->provider = new SimpleFilterProvider();
@@ -16,14 +24,14 @@ class SimpleFilterProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testIsFilterProvider()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Filter\FilterProviderInterface', $this->provider);
+        $this->assertInstanceOf(FilterProviderInterface::class, $this->provider);
     }
 
     public function testGetFilterByName()
     {
         $name = 'i_am_a_filter';
         $filter = $this->provider->getFilterByName($name);
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $filter);
+        $this->assertInstanceOf(AttributeInterface::class, $filter);
         $this->assertEquals($name, $filter->getName());
     }
 }

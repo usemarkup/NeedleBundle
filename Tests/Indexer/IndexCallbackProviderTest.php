@@ -4,18 +4,25 @@ namespace Markup\NeedleBundle\Tests\Indexer;
 
 use Markup\NeedleBundle\Indexer\IndexCallbackProvider;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class IndexCallbackProviderTest extends \PHPUnit_Framework_TestCase
+class IndexCallbackProviderTest extends MockeryTestCase
 {
+    /**
+     * @var ContainerInterface|m\MockInterface
+     */
+    private $container;
+
+    /**
+     * @var IndexCallbackProvider
+     */
+    private $provider;
+
     protected function setUp()
     {
-        $this->container = m::mock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $this->container = m::mock(ContainerInterface::class);
         $this->provider = new IndexCallbackProvider($this->container);
-    }
-
-    protected function tearDown()
-    {
-        m::close();
     }
 
     public function testGetCallbacksForCorpusReturnsEmptyArrayByDefault()

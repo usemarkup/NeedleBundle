@@ -2,22 +2,35 @@
 
 namespace Markup\NeedleBundle\Tests\Sort;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Sort\Sort;
+use Markup\NeedleBundle\Sort\SortInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a simple sort implementation.
 */
-class SortTest extends \PHPUnit_Framework_TestCase
+class SortTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var AttributeInterface
+     */
+    private $filter;
+
+    /**
+     * @var Sort
+     */
+    private $sort;
+
+    protected function setUp()
     {
-        $this->filter = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $this->filter = $this->createMock(AttributeInterface::class);
         $this->sort = new Sort($this->filter);
     }
 
     public function testIsSort()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Sort\SortInterface', $this->sort);
+        $this->assertInstanceOf(SortInterface::class, $this->sort);
     }
 
     public function testGetFilter()

@@ -2,29 +2,33 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
 use Markup\NeedleBundle\Facet\ConsumeFiltersFacetProvider;
+use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
  * Test for a facet provider that consumes a filter provider.
  */
-class ConsumeFiltersFacetProviderTest extends \PHPUnit_Framework_TestCase
+class ConsumeFiltersFacetProviderTest extends MockeryTestCase
 {
     protected function setUp()
     {
-        $this->filterProvider = m::mock('Markup\NeedleBundle\Attribute\AttributeProviderInterface');
+        $this->filterProvider = m::mock(AttributeProviderInterface::class);
         $this->provider = new ConsumeFiltersFacetProvider($this->filterProvider);
     }
 
     public function testIsFacetProvider()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Facet\FacetProviderInterface', $this->provider);
+        $this->assertInstanceOf(FacetProviderInterface::class, $this->provider);
     }
 
     public function testGetFacetByKnownName()
     {
         $name = 'a_name';
-        $filter = m::mock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $filter = m::mock(AttributeInterface::class);
         $filter
             ->shouldReceive('getName')
             ->andReturn($name);
@@ -33,7 +37,7 @@ class ConsumeFiltersFacetProviderTest extends \PHPUnit_Framework_TestCase
             ->with($name)
             ->andReturn($filter);
         $facet = $this->provider->getFacetByName($name);
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $facet);
+        $this->assertInstanceOf(AttributeInterface::class, $facet);
         $this->assertEquals($name, $facet->getName());
     }
 

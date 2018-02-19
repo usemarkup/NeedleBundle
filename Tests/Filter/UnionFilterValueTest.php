@@ -2,23 +2,41 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Filter\UnionFilterValue;
+use Markup\NeedleBundle\Filter\UnionFilterValueInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a filter value that represents the union of other values.
 */
-class UnionFilterValueTest extends \PHPUnit_Framework_TestCase
+class UnionFilterValueTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var FilterValueInterface
+     */
+    private $filterValue1;
+
+    /**
+     * @var FilterValueInterface
+     */
+    private $filterValue2;
+
+    /**
+     * @var UnionFilterValue
+     */
+    private $unionValue;
+
+    protected function setUp()
     {
-        $this->filterValue1 = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
-        $this->filterValue2 = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $this->filterValue1 = $this->createMock(FilterValueInterface::class);
+        $this->filterValue2 = $this->createMock(FilterValueInterface::class);
         $this->unionValue = new UnionFilterValue([$this->filterValue1, $this->filterValue2]);
     }
 
     public function testIsUnionFilter()
     {
-        $this->assertTrue($this->unionValue instanceof \Markup\NeedleBundle\Filter\UnionFilterValueInterface);
+        $this->assertInstanceOf(UnionFilterValueInterface::class, $this->unionValue);
     }
 
     public function testSearchKeyForTwoFilterValues()

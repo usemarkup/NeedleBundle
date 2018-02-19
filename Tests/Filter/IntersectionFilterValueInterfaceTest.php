@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Filter\FilterValueInterface;
+use Markup\NeedleBundle\Filter\IntersectionFilterValueInterface;
 use Markup\NeedleBundle\Tests\AbstractInterfaceTestCase;
 
 /**
@@ -23,13 +25,13 @@ class IntersectionFilterValueInterfaceTest extends AbstractInterfaceTestCase
 
     protected function getInterfaceUnderTest()
     {
-        return 'Markup\NeedleBundle\Filter\IntersectionFilterValueInterface';
+        return IntersectionFilterValueInterface::class;
     }
 
     public function testIsFilterValue()
     {
         $intersectionValue = new \ReflectionClass($this->getInterfaceUnderTest());
-        $this->assertTrue($intersectionValue->implementsInterface('Markup\NeedleBundle\Filter\FilterValueInterface'));
+        $this->assertTrue($intersectionValue->implementsInterface(FilterValueInterface::class));
     }
 
     public function testIsIteratorAggregate()

@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Facet\FacetSetDecoratorInterface;
 use Markup\NeedleBundle\Tests\AbstractInterfaceTestCase;
 
 /**
@@ -21,7 +22,7 @@ class FacetSetDecoratorInterfaceTest extends AbstractInterfaceTestCase
 
     protected function getInterfaceUnderTest()
     {
-        return 'Markup\NeedleBundle\Facet\FacetSetDecoratorInterface';
+        return FacetSetDecoratorInterface::class;
     }
 
     public function testIsFacetSet()

@@ -9,6 +9,7 @@ use Markup\NeedleBundle\Indexer\IndexCallbackProvider;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperInterface;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Solarium\Client;
 use Solarium\QueryType\Update\Query\Query;
@@ -18,9 +19,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
 * A test for an indexing command that indexes a corpus.
 */
-class CorpusIndexingCommandTest extends \PHPUnit_Framework_TestCase
+class CorpusIndexingCommandTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         $this->corpusProvider = $this->createMock(CorpusProvider::class);
         $this->solariumClient = $this->createMock(Client::class);

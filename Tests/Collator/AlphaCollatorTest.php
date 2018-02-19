@@ -3,9 +3,16 @@
 namespace Markup\NeedleBundle\Tests\Collator;
 
 use Markup\NeedleBundle\Collator\AlphaCollator;
+use Markup\NeedleBundle\Collator\TypedCollatorInterface;
+use PHPUnit\Framework\TestCase;
 
-class AlphaCollatorTest extends \PHPUnit_Framework_TestCase
+class AlphaCollatorTest extends TestCase
 {
+    /**
+     * @var AlphaCollator
+     */
+    private $collator;
+
     protected function setUp()
     {
         $this->collator = new AlphaCollator();
@@ -13,7 +20,7 @@ class AlphaCollatorTest extends \PHPUnit_Framework_TestCase
 
     public function testIsTypedCollator()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Collator\TypedCollatorInterface', $this->collator);
+        $this->assertInstanceOf(TypedCollatorInterface::class, $this->collator);
     }
 
     public function testGetType()

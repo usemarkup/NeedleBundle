@@ -2,12 +2,16 @@
 
 namespace Markup\NeedleBundle\Tests\Context;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Context\SearchContext;
+use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Intercept\InterceptorInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a simple search context implementation.
 */
-class SearchContextTest extends \PHPUnit_Framework_TestCase
+class SearchContextTest extends TestCase
 {
     public function testSetItemsPerPageInConstructor()
     {
@@ -19,19 +23,19 @@ class SearchContextTest extends \PHPUnit_Framework_TestCase
     public function testIsSearchContext()
     {
         $context = new SearchContext(7);
-        $this->assertTrue($context instanceof \Markup\NeedleBundle\Context\SearchContextInterface);
+        $this->assertInstanceOf(SearchContextInterface::class, $context);
     }
 
     public function testFacetsDoNotIgnoreCurrentFilters()
     {
         $context = new SearchContext(42);
-        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $facet = $this->createMock(AttributeInterface::class);
         $this->assertFalse($context->getWhetherFacetIgnoresCurrentFilters($facet));
     }
 
     public function testGetInterceptorReturnsInterceptor()
     {
         $context = new SearchContext(42);
-        $this->assertInstanceOf('Markup\NeedleBundle\Intercept\InterceptorInterface', $context->getInterceptor());
+        $this->assertInstanceOf(InterceptorInterface::class, $context->getInterceptor());
     }
 }

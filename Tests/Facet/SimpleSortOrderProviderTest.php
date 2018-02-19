@@ -6,9 +6,25 @@ use Markup\NeedleBundle\Facet\FacetField;
 use Markup\NeedleBundle\Facet\SimpleSortOrderProvider;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
 use Markup\NeedleBundle\Filter\SimpleFilter;
+use PHPUnit\Framework\TestCase;
 
-class SimpleSortOrderProviderTest extends \PHPUnit_Framework_TestCase
+class SimpleSortOrderProviderTest extends TestCase
 {
+    /**
+     * @var bool
+     */
+    private $shouldDefaultToIndex;
+
+    /**
+     * @var string[]
+     */
+    private $exceptions;
+
+    /**
+     * @var SimpleSortOrderProvider
+     */
+    private $provider;
+
     protected function setUp()
     {
         $this->shouldDefaultToIndex = true;
@@ -18,7 +34,7 @@ class SimpleSortOrderProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSortOrderProvider()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Facet\SortOrderProviderInterface', $this->provider);
+        $this->assertInstanceOf(SortOrderProviderInterface::class, $this->provider);
     }
 
     public function testNonExceptionReturnsIndexIfSpecifiedAsDefault()

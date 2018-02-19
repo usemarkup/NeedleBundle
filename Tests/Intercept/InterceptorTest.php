@@ -2,22 +2,28 @@
 
 namespace Markup\NeedleBundle\Tests\Intercept;
 
+use Markup\NeedleBundle\Intercept\DefinitionInterface;
+use Markup\NeedleBundle\Intercept\InterceptInterface;
 use Markup\NeedleBundle\Intercept\Interceptor;
+use Markup\NeedleBundle\Intercept\MatcherInterface;
+use Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
 * A test for an interceptor object which can provide intercepts for searches.
 */
-class InterceptorTest extends \PHPUnit_Framework_TestCase
+class InterceptorTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
-        $this->eventDispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->interceptor = new Interceptor($this->eventDispatcher);
     }
 
     public function testIsInterceptor()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Intercept\Interceptor', $this->interceptor);
+        $this->assertInstanceOf(Interceptor::class, $this->interceptor);
     }
 
     public function testReturnsNullIfNoDefinitions()
@@ -27,13 +33,13 @@ class InterceptorTest extends \PHPUnit_Framework_TestCase
 
     public function testInterceptReturnedForMatch()
     {
-        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $definition = $this->createMock(DefinitionInterface::class);
         $type = 'type';
         $definition
             ->expects($this->any())
             ->method('getType')
             ->will($this->returnValue($type));
-        $matcher = $this->createMock('Markup\NeedleBundle\Intercept\MatcherInterface');
+        $matcher = $this->createMock(MatcherInterface::class);
         $matcher
             ->expects($this->any())
             ->method('matches')
@@ -42,12 +48,12 @@ class InterceptorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getMatcher')
             ->will($this->returnValue($matcher));
-        $interceptMapper = $this->createMock('Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface');
+        $interceptMapper = $this->createMock(TypedInterceptMapperInterface::class);
         $interceptMapper
             ->expects($this->any())
             ->method('getType')
             ->will($this->returnValue($type));
-        $intercept = $this->createMock('Markup\NeedleBundle\Intercept\InterceptInterface');
+        $intercept = $this->createMock(InterceptInterface::class);
         $interceptMapper
             ->expects($this->any())
             ->method('mapDefinitionToIntercept')
@@ -60,13 +66,13 @@ class InterceptorTest extends \PHPUnit_Framework_TestCase
 
     public function testReturnsNullWithEventDispatchedIfUnresolvedInterceptExceptionThrown()
     {
-        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $definition = $this->createMock(DefinitionInterface::class);
         $type = 'broken';
         $definition
             ->expects($this->any())
             ->method('getType')
             ->will($this->returnValue($type));
-        $matcher = $this->createMock('Markup\NeedleBundle\Intercept\MatcherInterface');
+        $matcher = $this->createMock(MatcherInterface::class);
         $matcher
             ->expects($this->any())
             ->method('matches')
@@ -75,7 +81,7 @@ class InterceptorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getMatcher')
             ->will($this->returnValue($matcher));
-        $interceptMapper = $this->createMock('Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface');
+        $interceptMapper = $this->createMock(TypedInterceptMapperInterface::class);
         $interceptMapper
             ->expects($this->any())
             ->method('getType')

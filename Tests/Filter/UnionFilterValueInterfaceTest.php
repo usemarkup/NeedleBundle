@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Tests\AbstractInterfaceTestCase;
 
 /**
@@ -29,12 +30,12 @@ class UnionFilterValueInterfaceTest extends AbstractInterfaceTestCase
     public function testIsFilterValue()
     {
         $unionValue = new \ReflectionClass($this->getInterfaceUnderTest());
-        $this->assertTrue($unionValue->implementsInterface('Markup\NeedleBundle\Filter\FilterValueInterface'));
+        $this->assertTrue($unionValue->implementsInterface(FilterValueInterface::class));
     }
 
     public function testIsIteratorAggregate()
     {
         $unionValue = new \ReflectionClass($this->getInterfaceUnderTest());
-        $this->assertTrue($unionValue->implementsInterface('IteratorAggregate'));
+        $this->assertTrue($unionValue->implementsInterface(\IteratorAggregate::class));
     }
 }

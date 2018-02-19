@@ -3,26 +3,29 @@
 namespace Markup\NeedleBundle\Tests\Attribute;
 
 use Markup\NeedleBundle\Attribute\Attribute;
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Attribute\AttributeProvidesValueDisplayStrategyInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test for filter implementation
  */
-class AttributeTest extends \PHPUnit_Framework_TestCase
+class AttributeTest extends TestCase
 {
     public function testIsFilter()
     {
         $attr = new Attribute('name');
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $attr);
+        $this->assertInstanceOf(AttributeInterface::class, $attr);
     }
 
     public function testIsAttribute()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', new Attribute('name'));
+        $this->assertInstanceOf(AttributeInterface::class, new Attribute('name'));
     }
 
     public function testProvidesValueDisplayStrategy()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeProvidesValueDisplayStrategyInterface', new Attribute('name'));
+        $this->assertInstanceOf(AttributeProvidesValueDisplayStrategyInterface::class, new Attribute('name'));
     }
 
     public function testOutputsForOneWordName()

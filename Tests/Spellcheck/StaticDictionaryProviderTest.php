@@ -2,9 +2,11 @@
 
 namespace Markup\NeedleBundle\Tests\Spellcheck;
 
+use Markup\NeedleBundle\Spellcheck\DictionaryProviderInterface;
 use Markup\NeedleBundle\Spellcheck\StaticDictionaryProvider;
+use PHPUnit\Framework\TestCase;
 
-class StaticDictionaryProviderTest extends \PHPUnit_Framework_TestCase
+class StaticDictionaryProviderTest extends TestCase
 {
     protected function setUp()
     {
@@ -14,7 +16,7 @@ class StaticDictionaryProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDictionaryProvider()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Spellcheck\DictionaryProviderInterface', $this->provider);
+        $this->assertInstanceOf(DictionaryProviderInterface::class, $this->provider);
     }
 
     public function testGetDictionary()

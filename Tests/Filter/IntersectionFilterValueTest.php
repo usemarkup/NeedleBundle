@@ -2,23 +2,41 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Filter\IntersectionFilterValue;
+use Markup\NeedleBundle\Filter\IntersectionFilterValueInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a filter value that represents the intersection of other values.
 */
-class IntersectionFilterValueTest extends \PHPUnit_Framework_TestCase
+class IntersectionFilterValueTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var FilterValueInterface
+     */
+    private $filterValue1;
+
+    /**
+     * @var FilterValueInterface
+     */
+    private $filterValue2;
+
+    /**
+     * @var IntersectionFilterValue
+     */
+    private $intersectionValue;
+
+    protected function setUp()
     {
-        $this->filterValue1 = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
-        $this->filterValue2 = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $this->filterValue1 = $this->createMock(FilterValueInterface::class);
+        $this->filterValue2 = $this->createMock(FilterValueInterface::class);
         $this->intersectionValue = new IntersectionFilterValue([$this->filterValue1, $this->filterValue2]);
     }
 
     public function testIsIntersectionFilter()
     {
-        $this->assertTrue($this->intersectionValue instanceof \Markup\NeedleBundle\Filter\IntersectionFilterValueInterface);
+        $this->assertInstanceOf(IntersectionFilterValueInterface::class, $this->intersectionValue);
     }
 
     public function testSearchKeyForTwoFilterValues()
@@ -76,14 +94,14 @@ class IntersectionFilterValueTest extends \PHPUnit_Framework_TestCase
         foreach ($this->intersectionValue as $filterValue) {
             $iterated[] = $filterValue;
         }
-        $this->assertContainsOnly('Markup\NeedleBundle\Filter\FilterValueInterface', $iterated);
+        $this->assertContainsOnly(FilterValueInterface::class, $iterated);
         $this->assertCount(2, $iterated);
         $this->assertEquals(['filter1', 'filter2'], array_map(function($filterValue) { return $filterValue->getSearchValue(); }, $iterated));
     }
 
     public function testAddFilterValue()
     {
-        $filterValue3 = $this->createMock('Markup\NeedleBundle\Filter\FilterValueInterface');
+        $filterValue3 = $this->createMock(FilterValueInterface::class);
         $this->intersectionValue->addFilterValue($filterValue3);
         $this->assertEquals([$this->filterValue1, $this->filterValue2, $filterValue3], $this->intersectionValue->getValues());
     }

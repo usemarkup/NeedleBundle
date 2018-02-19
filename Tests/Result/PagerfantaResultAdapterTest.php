@@ -7,11 +7,12 @@ use Markup\NeedleBundle\Result\PageDoesNotExistException;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
 use Markup\NeedleBundle\Result\ResultInterface;
 use Pagerfanta\Pagerfanta;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a search result that adapts a Pagerfanta object.
 */
-class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
+class PagerfantaResultAdapterResultTest extends TestCase
 {
     public function setUp()
     {
@@ -127,7 +128,7 @@ class PagerfantaResultAdapterResultTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getPreviousPage')
             ->will($this->throwException(new \LogicException));
-        $this->setExpectedException('Markup\NeedleBundle\Result\PageDoesNotExistException');
+        $this->expectException(PageDoesNotExistException::class);
         $this->adapter->getPreviousPageNumber();
     }
 

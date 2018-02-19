@@ -2,22 +2,37 @@
 
 namespace Markup\NeedleBundle\Tests\Intercept;
 
+use Markup\NeedleBundle\Intercept\DefinitionInterface;
 use Markup\NeedleBundle\Intercept\RouteInterceptMapper;
+use Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface;
+use Markup\NeedleBundle\Intercept\UnresolvedInterceptException;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
 * A test for an intercept mapper for the route definition type.
 */
-class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
+class RouteInterceptMapperTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
+
+    /**
+     * @var RouteInterceptMapper
+     */
+    private $mapper;
+
+    protected function setUp()
     {
-        $this->urlGenerator = $this->createMock('Symfony\Component\Routing\Generator\UrlGeneratorInterface');
+        $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $this->mapper = new RouteInterceptMapper($this->urlGenerator);
     }
 
     public function testIsInterceptMapper()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Intercept\TypedInterceptMapperInterface', $this->mapper);
+        $this->assertInstanceOf(TypedInterceptMapperInterface::class, $this->mapper);
     }
 
     public function testIsRouteType()
@@ -30,7 +45,7 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
         $route = 'route';
         $routeParams = ['param' => 'yes'];
         $properties = ['route' => $route, 'params' => $routeParams];
-        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $definition = $this->createMock(DefinitionInterface::class);
         $definition
             ->expects($this->any())
             ->method('getProperties')
@@ -48,8 +63,8 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
 
     public function testRoutelessDefinitionThrowsException()
     {
-        $this->setExpectedException('Markup\NeedleBundle\Intercept\UnresolvedInterceptException');
-        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $this->expectException(UnresolvedInterceptException::class);
+        $definition = $this->createMock(DefinitionInterface::class);
         $properties = [];
         $definition
             ->expects($this->any())
@@ -60,11 +75,11 @@ class RouteInterceptMapperTest extends \PHPUnit_Framework_TestCase
 
     public function testRouteNotFoundExceptionThrowsUnresolvedException()
     {
-        $this->setExpectedException('Markup\NeedleBundle\Intercept\UnresolvedInterceptException');
+        $this->expectException(UnresolvedInterceptException::class);
         $route = 'route';
         $routeParams = ['param' => 'yes'];
         $properties = ['route' => $route, 'params' => $routeParams];
-        $definition = $this->createMock('Markup\NeedleBundle\Intercept\DefinitionInterface');
+        $definition = $this->createMock(DefinitionInterface::class);
         $definition
             ->expects($this->any())
             ->method('getProperties')

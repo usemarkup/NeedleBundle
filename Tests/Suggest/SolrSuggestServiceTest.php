@@ -3,9 +3,11 @@
 namespace Markup\NeedleBundle\Tests\Suggest;
 
 use Markup\NeedleBundle\Suggest\SolrSuggestService;
+use Markup\NeedleBundle\Suggest\SuggestServiceInterface;
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
 
-class SolrSuggestServiceTest extends \PHPUnit_Framework_TestCase
+class SolrSuggestServiceTest extends TestCase
 {
     protected function setUp()
     {
@@ -20,6 +22,6 @@ class SolrSuggestServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSuggestService()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Suggest\SuggestServiceInterface', $this->suggester);
+        $this->assertInstanceOf(SuggestServiceInterface::class, $this->suggester);
     }
 }

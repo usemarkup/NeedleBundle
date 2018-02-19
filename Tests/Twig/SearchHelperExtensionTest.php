@@ -5,11 +5,12 @@ namespace Markup\NeedleBundle\Tests\Twig;
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface;
 use Markup\NeedleBundle\Twig\SearchHelperExtension;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a twig extension that provides some helper functions/filters for search.
 */
-class SearchHelperExtensionTest extends \PHPUnit_Framework_TestCase
+class SearchHelperExtensionTest extends TestCase
 {
     /**
      * @var FacetValueCanonicalizerInterface

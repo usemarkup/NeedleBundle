@@ -2,27 +2,40 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Attribute\FloatAttributeDecorator;
+use Markup\NeedleBundle\Attribute\FloatAttributeInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a decorator for a filter that declares a float type (clocking any underlying type).
 */
-class FloatAttributeDecoratorTest extends \PHPUnit_Framework_TestCase
+class FloatAttributeDecoratorTest extends TestCase
 {
+    /**
+     * @var AttributeInterface
+     */
+    private $filter;
+
+    /**
+     * @var FloatAttributeDecorator
+     */
+    private $decorator;
+
     public function setUp()
     {
-        $this->filter = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
+        $this->filter = $this->createMock(AttributeInterface::class);
         $this->decorator = new FloatAttributeDecorator($this->filter);
     }
 
     public function testIsFloatAttribute()
     {
-        $this->assertTrue($this->decorator instanceof \Markup\NeedleBundle\Attribute\FloatAttributeInterface);
+        $this->assertInstanceOf(FloatAttributeInterface::class, $this->decorator);
     }
 
     public function testIsAttribute()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', $this->decorator);
+        $this->assertInstanceOf(AttributeInterface::class, $this->decorator);
     }
 
     public function testOneToOneDecoration()

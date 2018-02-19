@@ -3,16 +3,18 @@
 namespace Markup\NeedleBundle\Tests\Query;
 
 use Markup\NeedleBundle\Query\SimpleQuery;
+use Markup\NeedleBundle\Query\SimpleQueryInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * Test for a simple query implementation.
 */
-class SimpleQueryTest extends \PHPUnit_Framework_TestCase
+class SimpleQueryTest extends TestCase
 {
     public function testIsSimpleQuery()
     {
         $query = new SimpleQuery();
-        $this->assertInstanceOf('Markup\NeedleBundle\Query\SimpleQueryInterface', $query);
+        $this->assertInstanceOf(SimpleQueryInterface::class, $query);
     }
 
     public function testNonEmptyQuery()

@@ -2,16 +2,21 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Facet\FacetSetInterface;
 use Markup\NeedleBundle\Facet\FacetSetValueDecorator;
+use Markup\NeedleBundle\Facet\FacetValueDecoratorInterface;
+use Markup\NeedleBundle\Facet\FacetValueInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a facet set decorator that applies decoration to facet values.
 */
-class FacetSetValueDecoratorTest extends \PHPUnit_Framework_TestCase
+class FacetSetValueDecoratorTest extends TestCase
 {
     public function setUp()
     {
-        $this->facetValueDecorator = $this->createMock('Markup\NeedleBundle\Facet\FacetValueDecoratorInterface');
+        $this->facetValueDecorator = $this->createMock(FacetValueDecoratorInterface::class);
         $this->decorator = new FacetSetValueDecorator($this->facetValueDecorator);
     }
 
@@ -23,13 +28,13 @@ class FacetSetValueDecoratorTest extends \PHPUnit_Framework_TestCase
     public function testDecoration()
     {
         $value = 'decorate me!';
-        $facetValue = $this->createMock('Markup\NeedleBundle\Facet\FacetValueInterface');
+        $facetValue = $this->createMock(FacetValueInterface::class);
         $facetValue
             ->expects($this->any())
             ->method('getValue')
             ->will($this->returnValue($value));
-        $facet = $this->createMock('Markup\NeedleBundle\Attribute\AttributeInterface');
-        $facetSet = $this->createMock('Markup\NeedleBundle\Facet\FacetSetInterface');
+        $facet = $this->createMock(AttributeInterface::class);
+        $facetSet = $this->createMock(FacetSetInterface::class);
         $facetSet
             ->expects($this->any())
             ->method('getFacet')

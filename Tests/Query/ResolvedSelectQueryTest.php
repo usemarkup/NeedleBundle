@@ -4,30 +4,32 @@ namespace Markup\NeedleBundle\Tests\Query;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Markup\NeedleBundle\Attribute\Attribute;
+use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Filter\FilterQuery;
 use Markup\NeedleBundle\Filter\ScalarFilterValue;
 use Markup\NeedleBundle\Filter\SimpleFilter;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
+use Markup\NeedleBundle\Query\SelectQueryInterface;
+use Markup\NeedleBundle\Sort\EmptySortCollection;
 use Markup\NeedleBundle\Sort\Sort;
 use Markup\NeedleBundle\Sort\SortCollection;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
  * A test for a select query interface.
  */
-class ResolvedSelectQueryTest extends \PHPUnit_Framework_TestCase
+class ResolvedSelectQueryTest extends MockeryTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
-        $this->query = m::mock('Markup\NeedleBundle\Query\SelectQueryInterface');
-        $this->context = m::mock('Markup\NeedleBundle\Context\SearchContextInterface');
+        $this->query = m::mock(SelectQueryInterface::class);
+        $this->context = m::mock(SearchContextInterface::class);
     }
 
-    public function tearDown()
-    {
-        m::close();
-    }
-
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testCanInstantiate()
     {
         $query = new ResolvedSelectQuery($this->query);
@@ -40,7 +42,7 @@ class ResolvedSelectQueryTest extends \PHPUnit_Framework_TestCase
         $this->query->shouldReceive('hasSortCollection')->andReturn(false);
         $query = new ResolvedSelectQuery($this->query);
 
-        $this->assertInstanceOf('Markup\NeedleBundle\Sort\EmptySortCollection', $query->getSortCollection());
+        $this->assertInstanceOf(EmptySortCollection::class, $query->getSortCollection());
     }
 
     public function testGetSortCollectionWithoutContextReturnsDefaultCollection()
@@ -54,7 +56,7 @@ class ResolvedSelectQueryTest extends \PHPUnit_Framework_TestCase
 
         $query = new ResolvedSelectQuery($this->query, $this->context);
 
-        $this->assertInstanceOf('Markup\NeedleBundle\Sort\SortCollection', $query->getSortCollection());
+        $this->assertInstanceOf(SortCollection::class, $query->getSortCollection());
         $this->assertEquals(2, count($query->getSortCollection()));
     }
 

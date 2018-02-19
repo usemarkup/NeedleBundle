@@ -4,11 +4,13 @@ namespace Markup\NeedleBundle\Tests\Facet;
 
 use Markup\NeedleBundle\Facet\CompositeFacetSetIterator;
 use Markup\NeedleBundle\Facet\FacetSetArrayIterator;
+use Markup\NeedleBundle\Facet\FacetSetInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for an iterator that can go over a composite of arbitrary facets and emit individual facet sets.
 */
-class CompositeFacetSetIteratorTest extends \PHPUnit_Framework_TestCase
+class CompositeFacetSetIteratorTest extends TestCase
 {
     /**
      * @dataProvider fixtures
@@ -19,7 +21,7 @@ class CompositeFacetSetIteratorTest extends \PHPUnit_Framework_TestCase
         foreach ($facetValues as $facetValueValue => $facetValueCount) {
             $values[] = new \Markup\NeedleBundle\Facet\FacetValue($facetValueValue, $facetValueCount);
         }
-        $facetSet = $this->createMock('Markup\NeedleBundle\Facet\FacetSetInterface');
+        $facetSet = $this->createMock(FacetSetInterface::class);
         $facetSet
             ->expects($this->any())
             ->method('getIterator')
@@ -27,7 +29,7 @@ class CompositeFacetSetIteratorTest extends \PHPUnit_Framework_TestCase
         $it = new CompositeFacetSetIterator($facetSet, $valueDelimiter);
         $emittedFacetSets = iterator_to_array($it);
         $this->assertCount($facetCount, $emittedFacetSets);
-        $this->assertContainsOnly('Markup\NeedleBundle\Facet\FacetSetInterface', $emittedFacetSets);
+        $this->assertContainsOnly(FacetSetInterface::class, $emittedFacetSets);
         $emittedValueSets = [];
         foreach ($emittedFacetSets as $facetSet) {
             $valueSet = [];

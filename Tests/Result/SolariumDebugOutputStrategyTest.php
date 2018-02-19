@@ -5,13 +5,14 @@ namespace Markup\NeedleBundle\Tests\Result;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Result\DebugOutputStrategyInterface;
 use Markup\NeedleBundle\Result\SolariumDebugOutputStrategy;
+use PHPUnit\Framework\TestCase;
 use Solarium\QueryType\Select\Result\Result;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
 * A test for a debug output strategy for Solarium.
 */
-class SolariumDebugOutputStrategyTest extends \PHPUnit_Framework_TestCase
+class SolariumDebugOutputStrategyTest extends TestCase
 {
     /**
      * @var Result

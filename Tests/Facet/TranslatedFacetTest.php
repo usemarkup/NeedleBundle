@@ -2,22 +2,25 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Facet\TranslatedFacet;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
 * A test for a facet that has a display name provided by a translation using the facet's name.
 */
-class TranslatedFacetTest extends \PHPUnit_Framework_TestCase
+class TranslatedFacetTest extends TestCase
 {
     public function setUp()
     {
-        $this->translator = $this->createMock('Symfony\Component\Translation\TranslatorInterface');
+        $this->translator = $this->createMock(TranslatorInterface::class);
     }
 
     public function testIsAttribute()
     {
-        $translatedFacet = new \ReflectionClass('Markup\NeedleBundle\Facet\TranslatedFacet');
-        $this->assertTrue($translatedFacet->implementsInterface('Markup\NeedleBundle\Attribute\AttributeInterface'));
+        $translatedFacet = new \ReflectionClass(TranslatedFacet::class);
+        $this->assertTrue($translatedFacet->implementsInterface(AttributeInterface::class));
     }
 
     public function testGetName()

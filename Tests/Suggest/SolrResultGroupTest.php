@@ -2,15 +2,18 @@
 
 namespace Markup\NeedleBundle\Tests\Suggest;
 
+use Doctrine\Common\Collections\Collection;
 use Markup\NeedleBundle\Suggest\SolrResultGroup;
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
+use Solarium\QueryType\Suggester\Result\Term;
 
-class SolrResultGroupTest extends \PHPUnit_Framework_TestCase
+class SolrResultGroupTest extends TestCase
 {
     protected function setUp()
     {
         $this->term = 'term_key';
-        $this->solariumTerm = m::mock('Solarium\QueryType\Suggester\Result\Term');
+        $this->solariumTerm = m::mock(Term::class);
         $this->group = new SolrResultGroup($this->term, $this->solariumTerm);
     }
 
@@ -36,7 +39,7 @@ class SolrResultGroupTest extends \PHPUnit_Framework_TestCase
         $documents = $this->group->getDocuments();
         $this->assertCount(1, $documents);
         $doc = $documents[0];
-        $this->assertInstanceOf('Doctrine\Common\Collections\Collection', $doc);
+        $this->assertInstanceOf(Collection::class, $doc);
         $this->assertEquals($terms, $doc->toArray());
     }
 
@@ -66,6 +69,6 @@ class SolrResultGroupTest extends \PHPUnit_Framework_TestCase
         $documents = $group->getDocuments();
         $this->assertCount(1, $documents);
         $doc = $documents[0];
-        $this->assertInstanceOf('Doctrine\Common\Collections\Collection', $doc);
+        $this->assertInstanceOf(Collection::class, $doc);
     }
 }

@@ -3,11 +3,12 @@
 namespace Markup\NeedleBundle\Tests\Query;
 
 use Markup\NeedleBundle\Query\SelectQueryInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a select query interface.
 */
-class SelectQueryInterfaceTest extends \PHPUnit_Framework_TestCase
+class SelectQueryInterfaceTest extends TestCase
 {
     public function testHasCorrectPublicMethods()
     {

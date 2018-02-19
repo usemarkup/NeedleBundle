@@ -2,25 +2,25 @@
 
 namespace Markup\NeedleBundle\Tests\Suggest;
 
+use Markup\NeedleBundle\Suggest\ResultGroupInterface;
 use Markup\NeedleBundle\Suggest\SolrSuggestResult;
+use Markup\NeedleBundle\Suggest\SuggestResultInterface;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Solarium\QueryType\Suggester\Result\Result;
+use Solarium\QueryType\Suggester\Result\Term;
 
-class SolrSuggestResultTest extends \PHPUnit_Framework_TestCase
+class SolrSuggestResultTest extends MockeryTestCase
 {
     protected function setUp()
     {
-        $this->solrResult = m::mock('Solarium\QueryType\Suggester\Result\Result');
+        $this->solrResult = m::mock(Result::class);
         $this->suggestResult = new SolrSuggestResult($this->solrResult);
-    }
-
-    protected function tearDown()
-    {
-        m::close();
     }
 
     public function testIsSuggestResult()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Suggest\SuggestResultInterface', $this->suggestResult);
+        $this->assertInstanceOf(SuggestResultInterface::class, $this->suggestResult);
     }
 
     public function testCount()
@@ -34,7 +34,7 @@ class SolrSuggestResultTest extends \PHPUnit_Framework_TestCase
 
     public function testGetGroups()
     {
-        $term = m::mock('Solarium\QueryType\Suggester\Result\Term');
+        $term = m::mock(Term::class);
         $count = 42;
         $term
             ->shouldReceive('getNumFound')
@@ -52,7 +52,7 @@ class SolrSuggestResultTest extends \PHPUnit_Framework_TestCase
             ->andReturn([$termKey => $term]);
         $groups = $this->suggestResult->getGroups();
         $this->assertCount(1, $groups);
-        $this->assertContainsOnlyInstancesOf('Markup\NeedleBundle\Suggest\ResultGroupInterface', $groups);
+        $this->assertContainsOnlyInstancesOf(ResultGroupInterface::class, $groups);
         $group = $groups[0];
         $this->assertEquals($termKey, $group->getTerm());
     }

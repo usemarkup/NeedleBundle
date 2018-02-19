@@ -2,15 +2,17 @@
 
 namespace Markup\NeedleBundle\Facet;
 
+use PHPUnit\Framework\TestCase;
+
 /**
 * A test for a facet value implementation.
 */
-class FacetValueTest extends \PHPUnit_Framework_TestCase
+class FacetValueTest extends TestCase
 {
     public function testIsFacetValue()
     {
-        $facetValue = new \ReflectionClass('Markup\NeedleBundle\Facet\FacetValue');
-        $this->assertTrue($facetValue->implementsInterface('Markup\NeedleBundle\Facet\FacetValueInterface'));
+        $facetValue = new \ReflectionClass(FacetValue::class);
+        $this->assertTrue($facetValue->implementsInterface(FacetValueInterface::class));
     }
 
     public function testGetValue()

@@ -2,24 +2,19 @@
 
 namespace Markup\NeedleBundle\Tests\Facet;
 
+use Markup\NeedleBundle\Facet\FacetSetInterface;
 use Markup\NeedleBundle\Facet\FilterNonUnionValuesFacetSetDecorator;
 use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
  * Test for a facet set decorator that filters out non union values if union/combined values are present.
  */
-class FilterNonUnionValuesFacetSetDecoratorTest extends \PHPUnit_Framework_TestCase
+class FilterNonUnionValuesFacetSetDecoratorTest extends MockeryTestCase
 {
-    protected function tearDown()
-    {
-        m::close();
-    }
-
     public function testIsFacetSet()
     {
         $decorator = new FilterNonUnionValuesFacetSetDecorator();
-        $this->assertInstanceOf('Markup\NeedleBundle\Facet\FacetSetInterface', $decorator);
+        $this->assertInstanceOf(FacetSetInterface::class, $decorator);
     }
-
-    //MORE TESTS....
 }

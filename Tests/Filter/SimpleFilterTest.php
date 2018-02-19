@@ -2,16 +2,18 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Filter\SimpleFilter;
+use PHPUnit\Framework\TestCase;
 
 /**
 * A test for a simple named filter.
 */
-class SimpleFilterTest extends \PHPUnit_Framework_TestCase
+class SimpleFilterTest extends TestCase
 {
     public function testIsAttribute()
     {
-        $this->assertInstanceOf('Markup\NeedleBundle\Attribute\AttributeInterface', new SimpleFilter('name'));
+        $this->assertInstanceOf(AttributeInterface::class, new SimpleFilter('name'));
     }
 
     public function testOutputsForOneWordName()
