@@ -2,7 +2,7 @@
 
 namespace Markup\NeedleBundle\Attribute;
 
-use Phoenix\Bundle\ProductCatalogBundle\Exception\MissingAttributeException;
+use Markup\NeedleBundle\Exception\MissingAttributeException;
 
 /**
  * Interface for an attribute provider that can provide an attribute when given a name or search key
