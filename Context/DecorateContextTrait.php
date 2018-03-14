@@ -138,4 +138,9 @@ trait DecorateContextTrait
     {
         return $this->context->shouldRequestFacetValueForMissing();
     }
+
+    public function shouldUseFuzzyMatching()
+    {
+        return $this->context->shouldUseFuzzyMatching();
+    }
 }

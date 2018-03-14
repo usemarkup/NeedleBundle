@@ -24,6 +24,16 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class ConfiguredContextTest extends MockeryTestCase
 {
+    /**
+     * @var ContextConfigurationInterface|m\MockInterface
+     */
+    private $config;
+
+    /**
+     * @var ConfiguredContext
+     */
+    private $context;
+
     protected function setUp()
     {
         $this->config = m::mock(ContextConfigurationInterface::class);
@@ -275,5 +285,14 @@ class ConfiguredContextTest extends MockeryTestCase
             ->shouldReceive('getIntercepts')
             ->andReturn($config);
         $this->assertSame($interceptor, $this->context->getInterceptor());
+    }
+
+    public function testShouldUseFuzzyMatching()
+    {
+        $shouldMatch = true;
+        $this->config
+            ->shouldReceive('shouldUseFuzzyMatching')
+            ->andReturn($shouldMatch);
+        $this->assertEquals($shouldMatch, $this->context->shouldUseFuzzyMatching());
     }
 }

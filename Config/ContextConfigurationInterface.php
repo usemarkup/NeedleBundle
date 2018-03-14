@@ -93,4 +93,11 @@ interface ContextConfigurationInterface
      * @return bool
      */
     public function shouldIgnoreCurrentFilteredAttributesInFaceting();
-}
+
+    /**
+     * Gets whether this context configuration suggests that queries should use fuzzy matching on search terms where applicable.
+     *
+     * @return bool
+     */
+    public function shouldUseFuzzyMatching();
+} 

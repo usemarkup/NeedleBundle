@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Context;
 
+use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Tests\AbstractInterfaceTestCase;
 
 /**
@@ -24,11 +25,12 @@ class SearchContextInterfaceTest extends AbstractInterfaceTestCase
             'getFacetSortOrderProvider',
             'getInterceptor',
             'shouldRequestFacetValueForMissing',
+            'shouldUseFuzzyMatching',
         ];
     }
 
     protected function getInterfaceUnderTest()
     {
-        return 'Markup\NeedleBundle\Context\SearchContextInterface';
+        return SearchContextInterface::class;
     }
 }
