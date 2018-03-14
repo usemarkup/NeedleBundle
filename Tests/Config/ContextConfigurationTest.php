@@ -75,19 +75,19 @@ class ContextConfigurationTest extends TestCase
 
     public function testFullConfigGivesItemsPerPage()
     {
-        $config = new ContextConfiguration($this->getFullConfiguration());
+        $config = $this->createFullConfig();
         $this->assertEquals(12, $config->getDefaultItemsPerPage());
     }
 
     public function testFullConfigGivesDefaultFilterQueries()
     {
-        $config = new ContextConfiguration($this->getFullConfiguration());
+        $config = $this->createFullConfig();
         $this->assertEquals(['active' => true, 'in_stock' => true], $config->getDefaultFilterQueries());
     }
 
     public function testFullConfigGivesSortsForSearchTermsFromFallback()
     {
-        $config = new ContextConfiguration($this->getFullConfiguration());
+        $config = $this->createFullConfig();
         $this->assertEquals(
             ['name' => ContextConfigurationInterface::ORDER_ASC, 'price' => ContextConfigurationInterface::ORDER_DESC],
             $config->getDefaultSortsForSearchTermQuery()
@@ -96,7 +96,7 @@ class ContextConfigurationTest extends TestCase
 
     public function testFullConfigGivesSortsForNonSearchTerm()
     {
-        $config = new ContextConfiguration($this->getFullConfiguration());
+        $config = $this->createFullConfig();
         $this->assertEquals(
             ['velocity' => ContextConfigurationInterface::ORDER_DESC],
             $config->getDefaultSortsForNonSearchTermQuery()
@@ -105,19 +105,19 @@ class ContextConfigurationTest extends TestCase
 
     public function testFullConfigGivesBoosts()
     {
-        $config = new ContextConfiguration($this->getFullConfiguration());
+        $config = $this->createFullConfig();
         $this->assertEquals(['name' => 5, 'category' => 0.4], $config->getDefaultBoosts());
     }
 
     public function testFullConfigGivesFacets()
     {
-        $config = new ContextConfiguration($this->getFullConfiguration());
+        $config = $this->createFullConfig();
         $this->assertEquals(['gender', 'category', 'price'], $config->getDefaultFacetingAttributes());
     }
 
     public function testFullConfigGivesIntercepts()
     {
-        $config = new ContextConfiguration($this->getFullConfiguration());
+        $config = $this->createFullConfig();
         $this->assertEquals(
             [
                 'sale' => [
@@ -140,14 +140,20 @@ class ContextConfigurationTest extends TestCase
 
     public function testFullConfigGivesFilterableAttributes()
     {
-        $config = new ContextConfiguration($this->getFullConfiguration());
+        $config = $this->createFullConfig();
         $this->assertEquals(['gender', 'color', 'size', 'on_sale'], $config->getFilterableAttributes());
     }
 
     public function testFullConfigGivesShouldIgnoreCurrentFiltersInFaceting()
     {
-        $config = new ContextConfiguration($this->getFullConfiguration());
+        $config = $this->createFullConfig();
         $this->assertTrue($config->shouldIgnoreCurrentFilteredAttributesInFaceting());
+    }
+
+    public function testFullConfigGivesShouldUseFuzzyMatching()
+    {
+        $config = $this->createFullConfig();
+        $this->assertTrue($config->shouldUseFuzzyMatching());
     }
 
     /**
@@ -179,6 +185,12 @@ class ContextConfigurationTest extends TestCase
             ],
             'filters' => ['gender', 'color', 'size', 'on_sale'],
             'should_ignore_current_filters_in_faceting' => true,
+            'should_use_fuzzy_matching' => true,
         ];
+    }
+
+    private function createFullConfig(): ContextConfiguration
+    {
+        return new ContextConfiguration($this->getFullConfiguration());
     }
 }

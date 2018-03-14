@@ -94,7 +94,14 @@ interface SearchContextInterface
     /**
      * Gets whether a query should request facet values for missing (i.e. no match on that facet)
      *
-     * @return boolean
+     * @return bool
      **/
     public function shouldRequestFacetValueForMissing();
+
+    /**
+     * Gets whether a search backend using this context should use fuzzy matching on search terms if this functionality is available.
+     *
+     * @return bool
+     */
+    public function shouldUseFuzzyMatching();
 }

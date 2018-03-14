@@ -126,4 +126,9 @@ class SearchContext implements SearchContextInterface
     {
         return false;
     }
+
+    public function shouldUseFuzzyMatching()
+    {
+        return false;
+    }
 }

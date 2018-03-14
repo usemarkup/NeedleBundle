@@ -15,7 +15,7 @@ class ContextConfiguration implements ContextConfigurationInterface
      * A hash containing all the configuration passed in. Keys are:
      *
      * items_per_page, base_filter_queries, sorts, sorts_search_term, sorts_non_search_term, boosts,
-     * filters, facets, intercepts, should_ignore_current_filters_in_faceting
+     * filters, facets, intercepts, should_ignore_current_filters_in_faceting, should_use_fuzzy_matching
      *
      * Values are exactly in the format as the various methods should return.
      */
@@ -152,6 +152,11 @@ class ContextConfiguration implements ContextConfigurationInterface
         return (bool) $this->config['should_ignore_current_filters_in_faceting'];
     }
 
+    public function shouldUseFuzzyMatching()
+    {
+        return (bool) $this->config['should_use_fuzzy_matching'];
+    }
+
     /**
      * @return array
      */
@@ -165,6 +170,7 @@ class ContextConfiguration implements ContextConfigurationInterface
             'facets' => [],
             'intercepts' => [],
             'should_ignore_current_filters_in_faceting' => false,
+            'should_use_fuzzy_matching' => false,
         ];
     }
 }

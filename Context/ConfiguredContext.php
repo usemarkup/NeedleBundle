@@ -261,4 +261,9 @@ class ConfiguredContext implements SearchContextInterface
     {
         return false;
     }
+
+    public function shouldUseFuzzyMatching()
+    {
+        return $this->config->shouldUseFuzzyMatching();
+    }
 }
