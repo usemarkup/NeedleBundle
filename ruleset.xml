@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<ruleset name="needle">
+    <description>Needle Coding Standard</description>
+
+    <config name="ignore_warnings_on_exit" value="true"/>
+
+    <arg name="tab-width" value="4"/>
+    <arg name="encoding" value="utf-8"/>
+
+    <rule ref="vendor/markup/coding-standard/Markup/ruleset.xml"/>
+
+    <!-- Use Unix newlines -->
+    <rule ref="Generic.Files.LineEndings">
+        <properties>
+            <property name="eolChar" value="\n"/>
+        </properties>
+    </rule>
+
+    <!--Override to disable Fie length checks-->
+    <rule ref="Generic.Files.LineLength">
+        <severity>4</severity>
+    </rule>
+
+    <rule ref="Markup.Doctrine.EntityManager.EntityManagerFound"/>
+    <rule ref="Markup.Doctrine.PreventInheritanceOfDoctrine.EntityRepositoryFound"/>
+
+    <exclude-pattern>Tests/*</exclude-pattern>
+    <exclude-pattern>vendor/*</exclude-pattern>
+</ruleset>
