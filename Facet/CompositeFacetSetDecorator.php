@@ -22,16 +22,16 @@ class CompositeFacetSetDecorator extends FacetSetDecorator
         $this->decorators = $decorators;
     }
 
-    public function decorate(FacetSetInterface $facet_set)
+    public function decorate(FacetSetInterface $facetSet)
     {
         if (count($this->decorators) == 0) {
-            return parent::decorate($facet_set);
+            return parent::decorate($facetSet);
         }
         $decorators = array_values($this->decorators);
         $decorator = null;
         foreach ($decorators as $index => $decorator) {
             if ($index === 0) {
-                $decorator->decorate($facet_set);
+                $decorator->decorate($facetSet);
                 continue;
             }
             $decorator->decorate($decorators[$index - 1]);

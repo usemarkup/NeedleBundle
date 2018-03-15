@@ -10,8 +10,8 @@ interface FacetValueDecoratorInterface extends FacetValueInterface
     /**
      * Decorates a provided facet value.
      *
-     * @param  FacetValueInterface $facet_value
+     * @param  FacetValueInterface $facetValue
      * @return self
      **/
-    public function decorate(FacetValueInterface $facet_value);
+    public function decorate(FacetValueInterface $facetValue);
 }

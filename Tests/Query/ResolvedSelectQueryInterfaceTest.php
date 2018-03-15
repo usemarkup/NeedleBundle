@@ -12,7 +12,7 @@ class ResolvedSelectQueryInterfaceTest extends TestCase
 {
     public function testHasCorrectPublicMethods()
     {
-        $expected_public_methods = [
+        $expectedPublicMethods = [
             'getFilterQueries',
             'hasFilterQueries',
             'getFields',
@@ -42,12 +42,12 @@ class ResolvedSelectQueryInterfaceTest extends TestCase
             'getGroupingSortCollection'
         ];
         $query = new \ReflectionClass(ResolvedSelectQueryInterface::class);
-        $actual_public_methods = [];
+        $actualPublicMethods = [];
         foreach ($query->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            $actual_public_methods[] = $method->name;
+            $actualPublicMethods[] = $method->name;
         }
-        sort($actual_public_methods);
-        sort($expected_public_methods);
-        $this->assertEquals($expected_public_methods, $actual_public_methods);
+        sort($actualPublicMethods);
+        sort($expectedPublicMethods);
+        $this->assertEquals($expectedPublicMethods, $actualPublicMethods);
     }
 }

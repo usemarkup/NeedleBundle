@@ -19,14 +19,10 @@ class FilterQuery implements FilterQueryInterface
      **/
     private $filterValue;
 
-    /**
-     * @param AttributeInterface   $filter
-     * @param FilterValueInterface $filter_value
-     **/
-    public function __construct(AttributeInterface $filter, FilterValueInterface $filter_value)
+    public function __construct(AttributeInterface $filter, FilterValueInterface $filterValue)
     {
         $this->filter = $filter;
-        $this->filterValue = $filter_value;
+        $this->filterValue = $filterValue;
     }
 
     public function getSearchKey()

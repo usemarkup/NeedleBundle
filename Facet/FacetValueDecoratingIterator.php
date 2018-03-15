@@ -20,13 +20,13 @@ class FacetValueDecoratingIterator implements \OuterIterator
     private $facetValueDecorator;
 
     /**
-     * @param \Markup\NeedleBundle\Facet\FacetValueInterface[] $facet_value_iterator
-     * @param FacetValueDecoratorInterface                          $facet_value_decorator
+     * @param \Markup\NeedleBundle\Facet\FacetValueInterface[] $facetValueUterator
+     * @param FacetValueDecoratorInterface                     $facetValueDecorator
      **/
-    public function __construct(\Iterator $facet_value_iterator, FacetValueDecoratorInterface $facet_value_decorator)
+    public function __construct(\Iterator $facetValueIterator, FacetValueDecoratorInterface $facetValueDecorator)
     {
-        $this->facetValueIterator = $facet_value_iterator;
-        $this->facetValueDecorator = $facet_value_decorator;
+        $this->facetValueIterator = $facetValueIterator;
+        $this->facetValueDecorator = $facetValueDecorator;
     }
 
     public function getInnerIterator()

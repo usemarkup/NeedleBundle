@@ -15,13 +15,13 @@ class MinCountFacetValueFilterIterator extends \FilterIterator
     private $minCount;
 
     /**
-     * @param int       $minimum_count
-     * @param \Iterator $facet_value_iterator
+     * @param int       $minimumCount
+     * @param \Iterator $facetValueIterator
      **/
-    public function __construct($minimum_count, \Iterator $facet_value_iterator)
+    public function __construct($minimumCount, \Iterator $facetValueIterator)
     {
-        $this->minCount = intval($minimum_count);
-        parent::__construct($facet_value_iterator);
+        $this->minCount = intval($minimumCount);
+        parent::__construct($facetValueIterator);
     }
 
     public function accept()
