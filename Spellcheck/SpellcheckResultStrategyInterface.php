@@ -8,4 +8,4 @@ interface SpellcheckResultStrategyInterface
      * @return SpellcheckResultInterface|null
      */
     public function getSpellcheckResult();
-} 
+}

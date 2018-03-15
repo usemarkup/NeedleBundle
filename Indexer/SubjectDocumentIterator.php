@@ -119,5 +119,4 @@ class SubjectDocumentIterator implements \OuterIterator
     {
         return $this->documentGenerator;
     }
-
 }

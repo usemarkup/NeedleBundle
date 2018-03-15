@@ -42,4 +42,4 @@ class ServiceClosure
 
         return $service;
     }
-} 
+}

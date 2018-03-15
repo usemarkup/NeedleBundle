@@ -103,5 +103,4 @@ interface ResultInterface extends \Countable, \IteratorAggregate
      * @return string|null
      **/
     public function getDebugOutput();
-
 }

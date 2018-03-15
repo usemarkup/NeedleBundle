@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class SolrManagedResourcesClient
- * @package Markup\NeedleBundle\Client
  */
 abstract class AbstractSolrManagedResourcesClient
 {

@@ -3,7 +3,6 @@
 namespace Markup\NeedleBundle\Facet;
 
 use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
-use Markup\NeedleBundle\Filter\FilterProviderInterface;
 
 /**
  * A facet provider that consumes a filter provider and exposes its filters as facets.

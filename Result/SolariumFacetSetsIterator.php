@@ -9,8 +9,8 @@ use Markup\NeedleBundle\Facet\CompositeFacetSetIterator;
 use Markup\NeedleBundle\Facet\FacetSet;
 use Markup\NeedleBundle\Facet\FilterNonUnionValuesFacetSetDecorator;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
-use Solarium\QueryType\Select\Result\FacetSet as SolariumFacetSet;
 use Solarium\QueryType\Select\Result\Facet\Field as SolariumFacetField;
+use Solarium\QueryType\Select\Result\FacetSet as SolariumFacetSet;
 
 /**
 * An iterator that goes over a collection of Solarium facet sets and emits generic facet sets.
@@ -184,11 +184,11 @@ class SolariumFacetSetsIterator implements \OuterIterator
         $normalizedFacets = [];
         foreach ($facets as $name => $facet) {
             //check for includes and excludes
-            if (substr($name, 0, 7) == 'include' && isset($facets['exclude_' . substr($name, 8)])) {
-                $normalizedFacets[substr($name, 8)] = $this->combineFacetValueFieldWithCountField($facets['exclude_' . substr($name, 8)], $facet);
+            if (substr($name, 0, 7) == 'include' && isset($facets['exclude_'.substr($name, 8)])) {
+                $normalizedFacets[substr($name, 8)] = $this->combineFacetValueFieldWithCountField($facets['exclude_'.substr($name, 8)], $facet);
                 continue;
             }
-            if (substr($name, 0, 7) == 'exclude' && isset($facets['include_' . substr($name, 8)])) {
+            if (substr($name, 0, 7) == 'exclude' && isset($facets['include_'.substr($name, 8)])) {
                 continue;
             }
             //just copy down (default action)

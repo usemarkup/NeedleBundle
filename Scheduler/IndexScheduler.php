@@ -56,7 +56,7 @@ class IndexScheduler
     /**
      * @deprecated/@todo - this breaks SRP, as there shouldn't be a need to manually update status - rather use a service that executes scheduled indexes and transparently performs status updates
      **/
-    public function updateStatus($record,    $status)
+    public function updateStatus($record, $status)
     {
         $entityManager = $this->getEntityManager();
         $entityManager->clear();

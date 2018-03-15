@@ -105,7 +105,8 @@ class SpecializedAttribute extends Attribute implements SpecializedAttributeInte
                 throw new UnformableSearchKeyException(
                     sprintf(
                         'The attribute "%s" cannot form a search key due to incomplete context data.',
-                        $this->getName())
+                        $this->getName()
+                    )
                 );
             }
         }

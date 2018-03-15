@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Indexer;
 
+use AppendIterator;
 use Markup\NeedleBundle\Corpus\CorpusInterface;
 use Markup\NeedleBundle\Corpus\CorpusProvider;
 use Markup\NeedleBundle\Event\CorpusPostUpdateEvent;
@@ -10,11 +11,10 @@ use Markup\NeedleBundle\Event\SearchEvents;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Result\SolariumUpdateResult;
-use Solarium\Client as Solarium;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use AppendIterator;
+use Solarium\Client as Solarium;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
 * A command for indexing a corpus.

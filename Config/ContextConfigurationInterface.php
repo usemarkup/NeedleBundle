@@ -93,4 +93,4 @@ interface ContextConfigurationInterface
      * @return bool
      */
     public function shouldIgnoreCurrentFilteredAttributesInFaceting();
-} 
+}

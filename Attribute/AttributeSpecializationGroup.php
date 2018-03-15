@@ -28,7 +28,7 @@ class AttributeSpecializationGroup
      */
     public function getKey()
     {
-        $names = array_map(function(AttributeSpecializationInterface $s) {
+        $names = array_map(function (AttributeSpecializationInterface $s) {
             return $s->getName();
         }, $this->specializations);
 
@@ -40,7 +40,7 @@ class AttributeSpecializationGroup
      */
     public function getDisplayName()
     {
-        return implode(self::DISPLAY_SEPARATOR, array_map(function(AttributeSpecializationInterface $s) {
+        return implode(self::DISPLAY_SEPARATOR, array_map(function (AttributeSpecializationInterface $s) {
             return $s->getName();
         }, $this->specializations));
     }

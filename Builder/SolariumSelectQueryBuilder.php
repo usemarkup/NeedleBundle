@@ -144,7 +144,9 @@ class SolariumSelectQueryBuilder
                             ->setMinCount(1)
                             ->setMissing($checkMissingFacetValues)
                             ->setSort($facetSortOrder ?: 'index')
-                            ->addExcludes(array_map(function ($key) { return sprintf('fq%u', $key); }, array_keys($extraLuceneFilters)));
+                            ->addExcludes(array_map(function ($key) {
+                                return sprintf('fq%u', $key);
+                            }, array_keys($extraLuceneFilters)));
                     } else {
                         $solariumFacets[] = $solariumQuery
                             ->getFacetSet()
@@ -229,7 +231,7 @@ class SolariumSelectQueryBuilder
             $groupingSortCollection = $query->getGroupingSortCollection();
             if ($groupingSortCollection instanceof SortCollectionInterface) {
                 $sortStringComponents = [];
-                foreach($groupingSortCollection as $groupingSort) {
+                foreach ($groupingSortCollection as $groupingSort) {
                     $sortStringComponents[] = sprintf(
                         '%s %s',
                         $groupingSort->getFilter()->getSearchKey(),
@@ -270,7 +272,9 @@ class SolariumSelectQueryBuilder
             return $filterQueries;
         }
 
-        $namesToProcess = array_keys(array_filter($nameCounts, function ($v) { return $v > 1; }));
+        $namesToProcess = array_keys(array_filter($nameCounts, function ($v) {
+            return $v > 1;
+        }));
         $intersectFilterQueries = [];
         $intersectibleQueries = [];
         $filters = [];

@@ -20,4 +20,4 @@ class GroupedResultParser
 
         return $results;
     }
-} 
+}

@@ -178,23 +178,23 @@ class MarkupNeedleExtension extends Extension
     {
         foreach ($config['context_services'] as $contextName => $contextConfig) {
             $prefix = sprintf('markup_needle.contexts.%s.', $contextName);
-            $container->setAlias($prefix . 'filter_provider', $contextConfig['filter_provider']);
-            $container->setAlias($prefix . 'facet_provider', $contextConfig['facet_provider']);
-            $container->setAlias($prefix . 'facet_set_decorator_provider', $contextConfig['facet_set_decorator_provider']);
-            $container->setAlias($prefix . 'facet_collator_provider', $contextConfig['facet_collator_provider']);
-            $container->setAlias($prefix . 'facet_order_provider', $contextConfig['facet_order_provider']);
+            $container->setAlias($prefix.'filter_provider', $contextConfig['filter_provider']);
+            $container->setAlias($prefix.'facet_provider', $contextConfig['facet_provider']);
+            $container->setAlias($prefix.'facet_set_decorator_provider', $contextConfig['facet_set_decorator_provider']);
+            $container->setAlias($prefix.'facet_collator_provider', $contextConfig['facet_collator_provider']);
+            $container->setAlias($prefix.'facet_order_provider', $contextConfig['facet_order_provider']);
             $contextProvider = new Definition(
                 'Markup\NeedleBundle\Context\ConfiguredContextProvider',
                 [
-                    new Reference($prefix . 'filter_provider'),
-                    new Reference($prefix . 'facet_provider'),
-                    new Reference($prefix . 'facet_set_decorator_provider'),
-                    new Reference($prefix . 'facet_collator_provider'),
-                    new Reference($prefix . 'facet_order_provider'),
-                    new Reference('markup_needle.configured_interceptor_provider')
+                    new Reference($prefix.'filter_provider'),
+                    new Reference($prefix.'facet_provider'),
+                    new Reference($prefix.'facet_set_decorator_provider'),
+                    new Reference($prefix.'facet_collator_provider'),
+                    new Reference($prefix.'facet_order_provider'),
+                    new Reference('markup_needle.configured_interceptor_provider'),
                 ]
             );
-            $container->setDefinition($prefix . 'context_provider', $contextProvider);
+            $container->setDefinition($prefix.'context_provider', $contextProvider);
         }
     }
 

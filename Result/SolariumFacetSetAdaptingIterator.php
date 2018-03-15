@@ -3,8 +3,8 @@
 namespace Markup\NeedleBundle\Result;
 
 use Markup\NeedleBundle\Collator\CollatorInterface;
-use Markup\NeedleBundle\Facet\FacetValue;
 use Markup\NeedleBundle\Facet\FacetSetIteratorInterface;
+use Markup\NeedleBundle\Facet\FacetValue;
 
 /**
 * An iterator that can wrap a Solarium facet set and emit generic facet values.
@@ -50,7 +50,9 @@ class SolariumFacetSetAdaptingIterator implements \OuterIterator, FacetSetIterat
                 $solariumFacetset = iterator_to_array($solariumFacetset);
             }
             $this->count = count($solariumFacetset);
-            uksort($solariumFacetset, function ($value1, $value2) use ($collator) { return $collator->compare($value1, $value2); });
+            uksort($solariumFacetset, function ($value1, $value2) use ($collator) {
+                return $collator->compare($value1, $value2);
+            });
             $this->facetValueIterator = new \ArrayIterator($solariumFacetset);
 
             return;

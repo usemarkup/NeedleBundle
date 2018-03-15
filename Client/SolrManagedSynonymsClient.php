@@ -4,7 +4,6 @@ namespace Markup\NeedleBundle\Client;
 
 /**
  * Class SolrManagedResourcesClient
- * @package Markup\NeedleBundle\Client
  */
 class SolrManagedSynonymsClient extends AbstractSolrManagedResourcesClient
 {

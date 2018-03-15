@@ -2,12 +2,8 @@
 
 namespace Markup\NeedleBundle\Context;
 
-use SplPriorityQueue;
-
 /**
  * Class ContextDecoratorPriorityQueue
- *
- * @package Markup\NeedleBundle\Context
  */
 class ContextDecoratorPriorityQueue extends \SplPriorityQueue
 {

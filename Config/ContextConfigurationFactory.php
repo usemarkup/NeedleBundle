@@ -15,4 +15,4 @@ class ContextConfigurationFactory
     {
         return new ContextConfiguration($configHash);
     }
-} 
+}

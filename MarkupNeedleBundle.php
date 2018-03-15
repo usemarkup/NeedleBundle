@@ -8,10 +8,10 @@ use Markup\NeedleBundle\DependencyInjection\Compiler\AddIndexSchedulingEventsPas
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddSolariumPluginsPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddSuggestersPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddTermsPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\RegisterSubjectDataMappersPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\RegisterSearchInterceptMappersPass;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Markup\NeedleBundle\DependencyInjection\Compiler\RegisterSubjectDataMappersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class MarkupNeedleBundle extends Bundle
 {

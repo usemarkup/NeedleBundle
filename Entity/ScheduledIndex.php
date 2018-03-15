@@ -85,5 +85,4 @@ class ScheduledIndex
     {
         return in_array($v, [self::SCHEDULED, self::PROCESSING, self::FAILED, self::COMPLETE]);
     }
-
 }

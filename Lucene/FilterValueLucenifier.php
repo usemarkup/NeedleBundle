@@ -35,10 +35,12 @@ class FilterValueLucenifier
             }
 
             if ($filterValue instanceof Filter\IntersectionFilterValueInterface) {
-                $luceneParts = array_map(function ($v) { return '+' . $v; }, $luceneParts);
+                $luceneParts = array_map(function ($v) {
+                    return '+'.$v;
+                }, $luceneParts);
             }
 
-            return '(' . implode(' ', $luceneParts) . ')';
+            return '('.implode(' ', $luceneParts).')';
         }
 
         //perform phrase escaping unless this is a range filter (and therefore we need to preserve lucene syntax)

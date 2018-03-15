@@ -27,13 +27,13 @@ class AttributeSpecializationContextGroupRegistry
     public function getAllAttributeSpecializationContextGroups($specializations): array
     {
         $contextCollections = [];
-        foreach($specializations as $specialization) {
+        foreach ($specializations as $specialization) {
             $contextCollections[$specialization->getName()] = $this->attributeSpecializationContextRegistry->getContexts($specialization);
         }
 
         $product = $this->calculateCartesianProduct($contextCollections);
 
-        return array_map(function($s) {
+        return array_map(function ($s) {
             return new AttributeSpecializationContextGroup($s);
         }, $product);
     }
@@ -45,7 +45,7 @@ class AttributeSpecializationContextGroupRegistry
     public function getCurrentAttributeSpecializationContextGroup($specializations): AttributeSpecializationContextGroup
     {
         $contexts = [];
-        foreach($specializations as $specialization) {
+        foreach ($specializations as $specialization) {
             $contexts[$specialization->getName()] = $this->attributeSpecializationContextRegistry->getContext($specialization);
         }
 
@@ -57,13 +57,13 @@ class AttributeSpecializationContextGroupRegistry
         // filter out empty values
         $input = array_filter($input);
 
-        $result = array(array());
+        $result = [[]];
 
         foreach ($input as $key => $values) {
-            $append = array();
+            $append = [];
 
-            foreach($result as $product) {
-                foreach($values as $item) {
+            foreach ($result as $product) {
+                foreach ($values as $item) {
                     $product[$key] = $item;
                     $append[] = $product;
                 }

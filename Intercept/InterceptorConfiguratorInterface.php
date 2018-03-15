@@ -14,4 +14,4 @@ interface InterceptorConfiguratorInterface
      * @param array $definitions
      */
     public function configureInterceptor(Interceptor $interceptor, array $definitions);
-} 
+}

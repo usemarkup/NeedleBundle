@@ -108,4 +108,4 @@ class ConfiguredContextProvider
 
         return $this;
     }
-} 
+}

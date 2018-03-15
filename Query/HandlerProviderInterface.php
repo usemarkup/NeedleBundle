@@ -11,4 +11,4 @@ interface HandlerProviderInterface
      * @return string|null
      */
     public function getHandler();
-} 
+}
