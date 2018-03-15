@@ -10,8 +10,8 @@ interface FacetSetDecoratorInterface extends FacetSetInterface
     /**
      * Decorates a facet set.
      *
-     * @param  FacetSetInterface $facet_set
+     * @param  FacetSetInterface $facetSet
      * @return self
      **/
-    public function decorate(FacetSetInterface $facet_set);
+    public function decorate(FacetSetInterface $facetSet);
 }

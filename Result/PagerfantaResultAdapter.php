@@ -69,9 +69,9 @@ class PagerfantaResultAdapter implements ResultInterface
         return $this->getTotalCount();
     }
 
-    public function setQueryTimeStrategy(QueryTimeStrategyInterface $query_time_strategy)
+    public function setQueryTimeStrategy(QueryTimeStrategyInterface $queryTimeStrategy)
     {
-        $this->queryTimeStrategy = $query_time_strategy;
+        $this->queryTimeStrategy = $queryTimeStrategy;
     }
 
     public function getQueryTimeInMilliseconds()
@@ -133,12 +133,9 @@ class PagerfantaResultAdapter implements ResultInterface
         return $page;
     }
 
-    /**
-     * @param FacetSetStrategyInterface $facet_set_strategy
-     **/
-    public function setFacetSetStrategy(FacetSetStrategyInterface $facet_set_strategy)
+    public function setFacetSetStrategy(FacetSetStrategyInterface $facetSetStrategy)
     {
-        $this->facetSetStrategy = $facet_set_strategy;
+        $this->facetSetStrategy = $facetSetStrategy;
     }
 
     public function getFacetSets()

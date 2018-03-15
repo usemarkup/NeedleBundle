@@ -56,9 +56,6 @@ class SubjectDocumentGenerator implements SubjectDocumentGeneratorInterface
         return $this->getUpdateQuery()->createDocument($data);
     }
 
-    /**
-     * @param UpdateQuery $update_query
-     **/
     public function setUpdateQuery(UpdateQuery $updateQuery)
     {
         $this->updateQuery = $updateQuery;

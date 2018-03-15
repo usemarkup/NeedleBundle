@@ -41,9 +41,9 @@ abstract class FacetValueDecorator implements FacetValueDecoratorInterface
         return $this->facetValue->__toString();
     }
 
-    public function decorate(FacetValueInterface $facet_value)
+    public function decorate(FacetValueInterface $facetValue)
     {
-        $this->facetValue = $facet_value;
+        $this->facetValue = $facetValue;
 
         return $this;
     }

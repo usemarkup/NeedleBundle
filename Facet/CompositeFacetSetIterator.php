@@ -29,13 +29,13 @@ class CompositeFacetSetIterator extends \ArrayIterator
     private $parsed = false;
 
     /**
-     * @param FacetSetInterface $facet_set
-     * @param string            $value_delimiter
+     * @param FacetSetInterface $facetSet
+     * @param string            $valueDelimiter
      **/
-    public function __construct(FacetSetInterface $facet_set, $value_delimiter)
+    public function __construct(FacetSetInterface $facetSet, $valueDelimiter)
     {
-        $this->facetSet = $facet_set;
-        $this->valueDelimiter = $value_delimiter;
+        $this->facetSet = $facetSet;
+        $this->valueDelimiter = $valueDelimiter;
 
         parent::__construct();
     }

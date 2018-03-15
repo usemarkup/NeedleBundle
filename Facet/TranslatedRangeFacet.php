@@ -18,16 +18,22 @@ class TranslatedRangeFacet extends TranslatedFacet implements RangeFacetInterfac
 
     /**
      * @param string     $name
-     * @param float      $range_size
+     * @param float      $rangeSize
      * @param Translator $translator
-     * @param string     $translation_namespace
-     * @param string     $message_domain
-     * @param string     $search_key
+     * @param string     $translationNamespace
+     * @param string     $messageDomain
+     * @param string     $searchKey
      **/
-    public function __construct($name, RangeFacetConfigurationInterface $range_configuration, Translator $translator, $translation_namespace, $message_domain = null, $search_key = null)
-    {
-        parent::__construct($name, $translator, $translation_namespace, $message_domain, $search_key);
-        $this->rangeFacetConfiguration = $range_configuration;
+    public function __construct(
+        $name,
+        RangeFacetConfigurationInterface $rangeConfiguration,
+        Translator $translator,
+        $translationNamespace,
+        $messageDomain = null,
+        $searchKey = null
+    ) {
+        parent::__construct($name, $translator, $translationNamespace, $messageDomain, $searchKey);
+        $this->rangeFacetConfiguration = $rangeConfiguration;
     }
 
     public function getRangeSize()

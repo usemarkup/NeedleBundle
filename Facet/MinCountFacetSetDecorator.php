@@ -13,11 +13,11 @@ class MinCountFacetSetDecorator extends FacetSetDecorator
     private $minCount;
 
     /**
-     * @param int $min_count The minimum facet value count that will be applied to this facet set.
+     * @param int $minCount The minimum facet value count that will be applied to this facet set.
      **/
-    public function __construct($min_count)
+    public function __construct($minCount)
     {
-        $this->minCount = $min_count;
+        $this->minCount = $minCount;
     }
 
     public function getIterator()

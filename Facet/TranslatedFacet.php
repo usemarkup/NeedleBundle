@@ -48,17 +48,17 @@ class TranslatedFacet implements AttributeInterface
     /**
      * @param string     $name
      * @param Translator $translator
-     * @param string     $translation_namespace
-     * @param string     $message_domain
-     * @param string     $search_key
+     * @param string     $translationNamespace
+     * @param string     $messageDomain
+     * @param string     $searchKey
      **/
-    public function __construct($name, Translator $translator, $translation_namespace, $message_domain = null, $search_key = null)
+    public function __construct($name, Translator $translator, $translationNamespace, $messageDomain = null, $searchKey = null)
     {
         $this->name = $name;
         $this->translator = $translator;
-        $this->translationNamespace = $translation_namespace;
-        $this->messageDomain = $message_domain;
-        $this->searchKey = $search_key;
+        $this->translationNamespace = $translationNamespace;
+        $this->messageDomain = $messageDomain;
+        $this->searchKey = $searchKey;
     }
 
     public function getName()

@@ -12,12 +12,9 @@ class FacetSetValueDecorator extends FacetSetDecorator
      **/
     private $facetValueDecorator;
 
-    /**
-     * @param FacetValueDecoratorInterface $facet_value_decorator
-     **/
-    public function __construct(FacetValueDecoratorInterface $facet_value_decorator)
+    public function __construct(FacetValueDecoratorInterface $facetValueDecorator)
     {
-        $this->facetValueDecorator = $facet_value_decorator;
+        $this->facetValueDecorator = $facetValueDecorator;
     }
 
     public function getIterator()

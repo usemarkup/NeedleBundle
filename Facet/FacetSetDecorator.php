@@ -41,9 +41,9 @@ abstract class FacetSetDecorator implements FacetSetDecoratorInterface
         return $this->facetSet->count();
     }
 
-    public function decorate(FacetSetInterface $facet_set)
+    public function decorate(FacetSetInterface $facetSet)
     {
-        $this->facetSet = $facet_set;
+        $this->facetSet = $facetSet;
 
         return $this;
     }
