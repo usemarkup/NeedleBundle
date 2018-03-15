@@ -20,4 +20,4 @@ interface SpellcheckResultInterface
      * @return Suggestion[]
      */
     public function getSuggestions();
-} 
+}

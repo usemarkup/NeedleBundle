@@ -31,7 +31,7 @@ class AttributeSpecializationContextGroup
     {
         $key = [];
 
-        foreach($this->specializationContexts as $specializationName => $specializationContext) {
+        foreach ($this->specializationContexts as $specializationName => $specializationContext) {
             $key[$specializationName] = $specializationContext->getValue();
         }
 
@@ -43,7 +43,7 @@ class AttributeSpecializationContextGroup
      */
     public function getDisplayName()
     {
-        return implode(self::DISPLAY_SEPARATOR, array_map(function(AttributeSpecializationContextInterface $s) {
+        return implode(self::DISPLAY_SEPARATOR, array_map(function (AttributeSpecializationContextInterface $s) {
             return $s->getValue();
         }, $this->specializationContexts));
     }

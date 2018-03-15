@@ -4,9 +4,9 @@ namespace Markup\NeedleBundle\Adapter;
 
 use Pagerfanta\Adapter\AdapterInterface;
 use Pagerfanta\Exception\InvalidArgumentException;
+use Solarium\Client;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
-use Solarium\Client;
 
 /**
  * SolariumAdapter specifically for supporting grouped results. Should only be used with 'grouped' queries.
@@ -79,7 +79,8 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
 
     private function getClientInvalidMessage($client)
     {
-        return sprintf('The client object should be a Solarium\Core\Client\Client instance, %s given',
+        return sprintf(
+            'The client object should be a Solarium\Core\Client\Client instance, %s given',
             get_class($client)
         );
     }
@@ -98,7 +99,8 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
 
     private function getQueryInvalidMessage($query)
     {
-        return sprintf('The query object should be a Solarium\QueryType\Select\Query\Query instance, %s given',
+        return sprintf(
+            'The query object should be a Solarium\QueryType\Select\Query\Query instance, %s given',
             get_class($query)
         );
     }

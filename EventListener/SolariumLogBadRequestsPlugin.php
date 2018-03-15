@@ -2,11 +2,11 @@
 
 namespace Markup\NeedleBundle\EventListener;
 
-use Solarium\Core\Plugin\Plugin as SolariumPlugin;
-use Solarium\Core\Event\Events as SolariumEvents;
-use Solarium\Core\Event\PostExecuteRequest as SolariumPostExecuteRequestEvent;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Solarium\Core\Event\Events as SolariumEvents;
+use Solarium\Core\Event\PostExecuteRequest as SolariumPostExecuteRequestEvent;
+use Solarium\Core\Plugin\Plugin as SolariumPlugin;
 
 /**
 * A plugin that logs bad request information.
@@ -68,6 +68,6 @@ class SolariumLogBadRequestsPlugin extends SolariumPlugin
             //only interested in 400s
             return;
         }
-        $this->logger->error('URI for bad request to Solr: ' . $event->getRequest()->getUri());
+        $this->logger->error('URI for bad request to Solr: '.$event->getRequest()->getUri());
     }
 }

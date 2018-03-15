@@ -13,4 +13,4 @@ interface AttributeProvidesValueDisplayStrategyInterface
      * @return \Closure|null
      */
     public function getValueDisplayStrategy();
-} 
+}

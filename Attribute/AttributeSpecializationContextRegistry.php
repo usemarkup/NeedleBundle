@@ -72,7 +72,7 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
     public function getSpecializationContextHash()
     {
         $hash = [];
-        foreach($this->attributeSpecializationContextProviders as $provider) {
+        foreach ($this->attributeSpecializationContextProviders as $provider) {
             $specialization = $provider->getSpecialization();
             $hash[$specialization->getName()] = $this->getContext($specialization)->getValue();
         }

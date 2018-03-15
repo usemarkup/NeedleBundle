@@ -2,8 +2,8 @@
 
 namespace Markup\NeedleBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
 * Registers events on which scheduled indexes should happen on different corpora.

@@ -85,5 +85,4 @@ abstract class SpecializedAttributeDecorator implements SpecializedAttributeInte
     {
         return $this->getDisplayName();
     }
-
 }

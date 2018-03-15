@@ -14,4 +14,4 @@ interface ContextDecoratorInterface
      * @return SearchContextInterface
      */
     public function decorateContext(SearchContextInterface $context);
-} 
+}

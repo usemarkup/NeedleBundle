@@ -2,8 +2,6 @@
 
 namespace Markup\NeedleBundle\Result;
 
-use Markup\NeedleBundle\Adapter\GroupedResultAdapter;
-
 /**
 * An iterator that can take a grouped search result and emit a certain property of each every document,
  * including those result documents for the 'grouped' documents (non primary)
@@ -32,7 +30,7 @@ class GroupedResultPropertyIterator extends \AppendIterator
     {
         parent::__construct();
         $this->property = $property;
-        foreach($result->getIterator() as $outerDocument) {
+        foreach ($result->getIterator() as $outerDocument) {
             if (!isset($outerDocument['groups'])) {
                 throw new \InvalidArgumentException('Can only iterate documents that have a `groups` property');
             }

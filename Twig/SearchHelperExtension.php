@@ -4,7 +4,6 @@ namespace Markup\NeedleBundle\Twig;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
 * A Twig extension that provides some helper functions/filters for search.

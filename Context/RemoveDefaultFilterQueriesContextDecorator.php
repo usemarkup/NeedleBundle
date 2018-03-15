@@ -2,9 +2,6 @@
 
 namespace Markup\NeedleBundle\Context;
 
-use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
-
 /**
  * A search context decorator that has no default filter queries.
  */

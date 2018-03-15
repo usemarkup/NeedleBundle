@@ -3,8 +3,6 @@
 namespace Markup\NeedleBundle\Service;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use function GuzzleHttp\Promise\coroutine;
-use function GuzzleHttp\Promise\promise_for;
 use GuzzleHttp\Promise\PromiseInterface;
 use Markup\NeedleBundle\Adapter\GroupedResultAdapter;
 use Markup\NeedleBundle\Adapter\SolariumResultPromisePagerfantaAdapter;
@@ -21,6 +19,8 @@ use Pagerfanta\Pagerfanta;
 use Shieldo\SolariumAsyncPlugin;
 use Solarium\Client as SolariumClient;
 use Symfony\Component\Templating\EngineInterface as TemplatingEngine;
+use function GuzzleHttp\Promise\coroutine;
+use function GuzzleHttp\Promise\promise_for;
 
 /**
  * A search service using Solr/ Solarium.

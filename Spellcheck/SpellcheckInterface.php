@@ -20,4 +20,4 @@ interface SpellcheckInterface
      * @return string
      */
     public function getDictionary();
-} 
+}

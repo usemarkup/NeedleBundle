@@ -23,4 +23,4 @@ interface AttributeProviderInterface
      * @return AttributeInterface|null
      */
     public function getAttributeBySearchKey($name);
-} 
+}

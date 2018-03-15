@@ -85,5 +85,4 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
      * @return \Markup\NeedleBundle\Sort\SortCollectionInterface|null
      **/
     public function getGroupingSortCollection();
-
 }

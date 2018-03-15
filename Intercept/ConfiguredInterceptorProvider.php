@@ -41,4 +41,4 @@ class ConfiguredInterceptorProvider
 
         return $interceptor;
     }
-} 
+}

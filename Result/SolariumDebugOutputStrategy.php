@@ -2,8 +2,8 @@
 
 namespace Markup\NeedleBundle\Result;
 
-use Symfony\Component\Templating\EngineInterface as TemplatingEngine;
 use Solarium\QueryType\Select\Result\Result as SolariumResult;
+use Symfony\Component\Templating\EngineInterface as TemplatingEngine;
 
 /**
 * A debug output strategy for Solarium results.
@@ -56,7 +56,7 @@ class SolariumDebugOutputStrategy implements DebugOutputStrategyInterface
                 [
                     'debug'         => $this->getSolariumResult()->getDebug(),
                 ]
-                );
+            );
         }
     }
 

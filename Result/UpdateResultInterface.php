@@ -25,4 +25,4 @@ interface UpdateResultInterface
      * @return float|int
      */
     public function getQueryTimeInMilliseconds();
-} 
+}

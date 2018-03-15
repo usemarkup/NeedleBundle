@@ -9,8 +9,6 @@ use Markup\NeedleBundle\Sort\Sort;
 
 /**
  * Class ContextSortAttributeFactory
- *
- * @package Markup\NeedleBundle\Context
  */
 class ContextSortAttributeFactory
 {

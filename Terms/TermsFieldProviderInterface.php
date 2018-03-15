@@ -11,4 +11,4 @@ interface TermsFieldProviderInterface
      * @return string|null
      */
     public function getField();
-} 
+}

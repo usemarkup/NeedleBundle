@@ -13,4 +13,4 @@ interface FacetSetDecoratorProviderInterface
      * @return FacetSetDecoratorInterface|null
      */
     public function getDecoratorForFacet(AttributeInterface $facet);
-} 
+}

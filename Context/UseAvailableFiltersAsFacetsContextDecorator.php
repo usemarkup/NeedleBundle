@@ -2,9 +2,7 @@
 
 namespace Markup\NeedleBundle\Context;
 
-use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Facet\FacetProviderInterface;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
 
 /**
  * A search context decorator that makes the context use the available filter names for facets.

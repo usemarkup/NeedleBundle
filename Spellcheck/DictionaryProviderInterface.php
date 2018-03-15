@@ -8,4 +8,4 @@ interface DictionaryProviderInterface
      * @return string
      */
     public function getDictionary();
-} 
+}
