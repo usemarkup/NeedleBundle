@@ -39,7 +39,8 @@ class ResolvedSelectQueryInterfaceTest extends TestCase
             'getOriginalSelectQuery',
             'getRecord',
             'getGroupingField',
-            'getGroupingSortCollection'
+            'getGroupingSortCollection',
+            'shouldUseFuzzyMatching',
         ];
         $query = new \ReflectionClass(ResolvedSelectQueryInterface::class);
         $actualPublicMethods = [];
