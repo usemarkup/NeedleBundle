@@ -6,6 +6,7 @@ use Markup\NeedleBundle\Exception\UnformableSearchKeyException;
 use Markup\NeedleBundle\Facet\RangeFacetInterface;
 use Markup\NeedleBundle\Filter;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
+use Markup\NeedleBundle\Lucene\SearchTermProcessor;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Solarium\Client as SolariumClient;
@@ -60,7 +61,12 @@ class SolariumSelectQueryBuilder
 
         //if there is a search term, set it
         if ($query->hasSearchTerm()) {
-            $solariumQuery->setQuery($query->getSearchTerm());
+            $rawTerm = $query->getSearchTerm();
+            $termProcessor = new SearchTermProcessor();
+            $luceneTerm = ($query->shouldUseFuzzyMatching())
+                ? $termProcessor->process($rawTerm, SearchTermProcessor::FILTER_NORMALIZE | SearchTermProcessor::FILTER_FUZZY_MATCHING)
+                : $termProcessor->process($rawTerm);
+            $solariumQuery->setQuery($luceneTerm);
         }
 
         //determine whether we are using the facet values for an underlying "base" (recorded) query
