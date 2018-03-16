@@ -85,4 +85,11 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
      * @return \Markup\NeedleBundle\Sort\SortCollectionInterface|null
      **/
     public function getGroupingSortCollection();
+
+    /**
+     * Gets whether this query should be executed using fuzzy matching functionality, if available within a backend.
+     *
+     * @return bool
+     */
+    public function shouldUseFuzzyMatching();
 }

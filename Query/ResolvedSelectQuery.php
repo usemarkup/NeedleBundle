@@ -321,4 +321,14 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     {
         return $this->getSelectQuery()->getGroupingSortCollection();
     }
+
+    public function shouldUseFuzzyMatching()
+    {
+        $context = $this->getSearchContext();
+        if ($context === null) {
+            return false;
+        }
+
+        return $context->shouldUseFuzzyMatching();
+    }
 }

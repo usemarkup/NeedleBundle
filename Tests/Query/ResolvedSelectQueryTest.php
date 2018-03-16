@@ -90,6 +90,19 @@ class ResolvedSelectQueryTest extends MockeryTestCase
         $this->assertEquals(3, count($query->getFilterQueries()));
     }
 
+    public function testShouldNotUseFuzzyMatchingWithoutContext()
+    {
+        $this->assertFalse((new ResolvedSelectQuery($this->query))->shouldUseFuzzyMatching());
+    }
+
+    public function testShouldUseFuzzyMatchingIfContextSpecifies()
+    {
+        $this->context
+            ->shouldReceive('shouldUseFuzzyMatching')
+            ->andReturn(true);
+        $this->assertTrue((new ResolvedSelectQuery($this->query, $this->context))->shouldUseFuzzyMatching());
+    }
+
     public function testGetOriginalSelectQuery()
     {
         $this->assertSame($this->query, (new ResolvedSelectQuery($this->query))->getOriginalSelectQuery());
