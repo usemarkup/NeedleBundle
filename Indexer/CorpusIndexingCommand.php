@@ -159,7 +159,7 @@ class CorpusIndexingCommand
         $subjects = $wrappingIterator;
         $updateQuery = $this->getSolariumClient()->createUpdate();
         //initially delete all indexes - todo allow disambiguation between types of document
-        if ($this->shouldPreDelete) {
+        if ($this->shouldPreDelete || !is_null($this->deleteQuery)) {
             $updateQuery->addDeleteQuery($this->getDeleteQueryLucene());
         }
         $documentGenerator = new SubjectDocumentGenerator($this->getSubjectMapper(), $this->shouldAllowNullFieldValues);
