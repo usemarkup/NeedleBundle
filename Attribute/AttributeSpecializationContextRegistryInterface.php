@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\Attribute;
 
+use Doctrine\Common\Collections\Collection;
+
 /**
  * A registry for all AttributeSpecialization Context
  */
@@ -17,7 +19,7 @@ interface AttributeSpecializationContextRegistryInterface
     /**
      * Get all contexts for the passed specialization
      *
-     * @return AttributeSpecializationContextInterface
+     * @return AttributeSpecializationContextInterface[]|Collection
      */
     public function getContexts(AttributeSpecialization $specialization);
 
