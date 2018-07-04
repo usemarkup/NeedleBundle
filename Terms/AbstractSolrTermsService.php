@@ -43,7 +43,7 @@ abstract class AbstractSolrTermsService implements TermsServiceInterface
     /**
      * @param SimpleQueryInterface $query
      *
-     * @return TermsResultInterface[]
+     * @return TermsResultInterface
      */
     abstract public function fetchTerms(SimpleQueryInterface $query);
 

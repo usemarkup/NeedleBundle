@@ -13,7 +13,7 @@ class SolrPrefixTermsService extends AbstractSolrTermsService implements TermsSe
     /**
      * @param SimpleQueryInterface $query
      *
-     * @return TermsResultInterface[]
+     * @return TermsResultInterface
      */
     public function fetchTerms(SimpleQueryInterface $query)
     {
