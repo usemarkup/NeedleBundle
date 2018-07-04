@@ -12,7 +12,7 @@ interface TermsServiceInterface
     /**
      * @param SimpleQueryInterface $query
      *
-     * @return TermsResultInterface[]
+     * @return TermsResultInterface
      */
     public function fetchTerms(SimpleQueryInterface $query);
 }
