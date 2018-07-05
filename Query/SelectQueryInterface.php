@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\Query;
 
 use GuzzleHttp\Promise\PromiseInterface;
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Service\SearchServiceInterface as SearchService;
 use Markup\NeedleBundle\Spellcheck\SpellcheckInterface;
@@ -27,9 +28,10 @@ interface SelectQueryInterface extends SimpleQueryInterface
     public function hasFilterQueries();
 
     /**
-     * Gets a list of explicit field names on the backend to return. If empty, will not specify fields on any backend.
+     * Gets a list of explicit field names and/or attributes on the backend to return.
+     * If empty, will not specify fields on any backend.
      *
-     * @return string[]
+     * @return string[]|AttributeInterface[]
      */
     public function getFields();
 
