@@ -1,0 +1,2 @@
+services:
+    Markup\NeedleBundle\Builder\ElasticSelectQueryBuilder: ~
