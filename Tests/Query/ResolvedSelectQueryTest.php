@@ -62,9 +62,10 @@ class ResolvedSelectQueryTest extends MockeryTestCase
 
     public function testGetFilterQueriesWithoutContext()
     {
-        $filterQueries = new ArrayCollection();
-        $filterQueries->add(new FilterQuery(new SimpleFilter('color'), new ScalarFilterValue('blue')));
-        $filterQueries->add(new FilterQuery(new SimpleFilter('size'), new ScalarFilterValue('xs')));
+        $filterQueries = [
+            new FilterQuery(new SimpleFilter('color'), new ScalarFilterValue('blue')),
+            new FilterQuery(new SimpleFilter('size'), new ScalarFilterValue('xs')),
+        ];
 
         $this->query->shouldReceive('getFilterQueries')->andReturn($filterQueries);
 

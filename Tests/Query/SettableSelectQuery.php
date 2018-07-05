@@ -62,7 +62,7 @@ class SettableSelectQuery implements SelectQueryInterface
      *
      * @return FilterQueryInterface[]
      **/
-    public function getFilterQueries()
+    public function getFilterQueries(): array
     {
         return [];
     }

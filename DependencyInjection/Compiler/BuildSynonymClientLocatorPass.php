@@ -26,34 +26,36 @@ class BuildSynonymClientLocatorPass implements CompilerPassInterface
             ->setArguments([[]])
             ->addTag('container.service_locator');
         foreach ($backendLookup as $corpus => $backend) {
-            //hard-code solr a little for now - this can be added to and then generalised
-            if ($backend !== 'solr') {
-                $this->registerServiceToLocator($corpus, NoopSynonymClient::class, $locator);
-                continue;
+            switch ($backend) {
+                case 'solr':
+                    //first get endpoint accessor
+                    $endpointAccessor = $this->makeNewDefinition(
+                        SolrEndpointAccessor::class,
+                        ['$corpus' => $corpus]
+                    );
+                    $endpointAccessorId = sprintf('markup_needle.endpoint_accessor.corpus.%s', $corpus);
+                    $container->setDefinition($endpointAccessorId, $endpointAccessor);
+                    //now create solr managed synonyms client service
+                    $managedClient = $this->makeNewDefinition(
+                        SolrManagedSynonymsClient::class,
+                        ['$endpointAccessor' => new Reference($endpointAccessorId)]
+                    );
+                    $managedClientId = sprintf('markup_needle.managed_client.corpus.%s', $corpus);
+                    $container->setDefinition($managedClientId, $managedClient);
+                    //now put it all within solr synonym client service
+                    $solrSynonymClient = $this->makeNewDefinition(
+                        SolrSynonymClient::class,
+                        ['$solrManagedSynonymsClient' => new Reference($managedClientId)]
+                    );
+                    $solrSynonymClientId = sprintf('markup_needle.solr_synonym_client.corpus.%s', $corpus);
+                    $container->setDefinition($solrSynonymClientId, $solrSynonymClient);
+                    $this->registerServiceToLocator($corpus, $solrSynonymClientId, $locator);
+                    break;
+                case 'elasticsearch':
+                default:
+                    $this->registerServiceToLocator($corpus, NoopSynonymClient::class, $locator);
+                    break;
             }
-            //following is for solr
-            //first get endpoint accessor
-            $endpointAccessor = $this->makeNewDefinition(
-                SolrEndpointAccessor::class,
-                ['$corpus' => $corpus]
-            );
-            $endpointAccessorId = sprintf('markup_needle.endpoint_accessor.corpus.%s', $corpus);
-            $container->setDefinition($endpointAccessorId, $endpointAccessor);
-            //now create solr managed synonyms client service
-            $managedClient = $this->makeNewDefinition(
-                SolrManagedSynonymsClient::class,
-                ['$endpointAccessor' => new Reference($endpointAccessorId)]
-            );
-            $managedClientId = sprintf('markup_needle.managed_client.corpus.%s', $corpus);
-            $container->setDefinition($managedClientId, $managedClient);
-            //now put it all within solr synonym client service
-            $solrSynonymClient = $this->makeNewDefinition(
-                SolrSynonymClient::class,
-                ['$solrManagedSynonymsClient' => new Reference($managedClientId)]
-            );
-            $solrSynonymClientId = sprintf('markup_needle.solr_synonym_client.corpus.%s', $corpus);
-            $container->setDefinition($solrSynonymClientId, $solrSynonymClient);
-            $this->registerServiceToLocator($corpus, $solrSynonymClientId, $locator);
         }
         $container->setDefinition(SynonymClientServiceLocator::class, $locator);
     }
