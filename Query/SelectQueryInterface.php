@@ -18,7 +18,7 @@ interface SelectQueryInterface extends SimpleQueryInterface
      *
      * @return FilterQueryInterface[]
      **/
-    public function getFilterQueries();
+    public function getFilterQueries(): array;
 
     /**
      * Gets whether this query contains filter queries.

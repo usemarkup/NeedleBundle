@@ -44,6 +44,8 @@ class MarkupNeedleExtension extends Extension
 
         $loader->load('services.yml');
         $loader->load('solr.yml');
+        //just load everything for now
+        $loader->load('elasticsearch.yml');
 
         $this->loadCorpora($config, $container);
         $this->loadIntercepts($config, $container);
@@ -61,7 +63,7 @@ class MarkupNeedleExtension extends Extension
      **/
     public function loadBackend(array $config, ContainerBuilder $container)
     {
-        $knownBackends = ['solr'];
+        $knownBackends = ['solr', 'elasticsearch'];
         if (!isset($config['backend']['type'])) {
             return;
         }
@@ -78,9 +80,6 @@ class MarkupNeedleExtension extends Extension
             throw new InvalidArgumentException('Unknown search backend type.');
         }
         $container->setParameter('markup_needle.backend', $backendType);
-        if ($backendType === 'solr') {
-            $container->setAlias(self::UNITARY_BACKEND_CLIENT, $config['backend']['client']);
-        }
     }
 
     /**
@@ -110,7 +109,7 @@ class MarkupNeedleExtension extends Extension
         //define client service locator
         $clientLocator = (new Definition(BackendClientServiceLocator::class))
             ->setArguments([
-                array_fill_keys(array_keys($config['corpora']), new Reference(self::UNITARY_BACKEND_CLIENT)),
+                array_fill_keys(array_keys($config['corpora']), new Reference($config['backend']['client'])),
             ])
             ->setPublic(false)
             ->addTag('container.service_locator');

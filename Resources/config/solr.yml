@@ -1,17 +1,4 @@
 services:
-    markup_needle.exporter.closure:
-        class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
-        autowire: true
-        shared: false
-    markup_needle.exporter.closure.prototype:
-        parent: markup_needle.exporter.closure
-        shared: false
-    markup_needle.exporter.closure.generator:
-        class: Markup\NeedleBundle\Container\ServiceClosure
-        arguments:
-            - markup_needle.exporter.closure.prototype
-        tags: [markup_needle.service_generator]
-        deprecated: ~
     Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder:
         arguments:
             - '%markup_needle.debug%'
