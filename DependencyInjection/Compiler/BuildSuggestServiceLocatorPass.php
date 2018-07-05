@@ -25,28 +25,31 @@ class BuildSuggestServiceLocatorPass implements CompilerPassInterface
         $backendLookup = $this->getBackendLookup($container);
         $locator = $container->findDefinition(SuggestServiceLocator::class);
         foreach ($backendLookup as $corpus => $backend) {
-            if ($backend !== 'solr') {
-                $this->registerServiceToLocator($corpus, NoopSuggestService::class, $locator);
-                continue;
+            switch ($backend) {
+                case 'solr':
+                    $client = (new Definition(\Solarium\Client::class))
+                        ->setFactory([new Reference(BackendClientServiceLocator::class), 'fetchClientForCorpus'])
+                        ->setArguments([$corpus])
+                        ->setAutowired(true)
+                        ->setPublic(false);
+                    $clientId = sprintf('markup_needle.service_client_for_suggester.corpus.%s', $corpus);
+                    $container->setDefinition($clientId, $client);
+                    $suggester = (new Definition(SolrSuggestService::class))
+                        ->setArguments([
+                            new Reference($clientId),
+                            new Reference(LoggerInterface::class),
+                            new Reference('markup_needle.suggest_handler'),
+                        ])
+                        ->setPublic(false);
+                    $suggesterId = sprintf('markup_needle.suggester.corpus.%s', $corpus);
+                    $container->setDefinition($suggesterId, $suggester);
+                    $this->registerServiceToLocator($corpus, $suggesterId, $locator);
+                    break;
+                case 'elasticsearch':
+                default:
+                    $this->registerServiceToLocator($corpus, NoopSuggestService::class, $locator);
+                    break;
             }
-            //following is for solr
-            $client = (new Definition(\Solarium\Client::class))
-                ->setFactory([new Reference(BackendClientServiceLocator::class), 'fetchClientForCorpus'])
-                ->setArguments([$corpus])
-                ->setAutowired(true)
-                ->setPublic(false);
-            $clientId = sprintf('markup_needle.service_client_for_suggester.corpus.%s', $corpus);
-            $container->setDefinition($clientId, $client);
-            $suggester = (new Definition(SolrSuggestService::class))
-                ->setArguments([
-                    new Reference($clientId),
-                    new Reference(LoggerInterface::class),
-                    new Reference('markup_needle.suggest_handler'),
-                ])
-                ->setPublic(false);
-            $suggesterId = sprintf('markup_needle.suggester.corpus.%s', $corpus);
-            $container->setDefinition($suggesterId, $suggester);
-            $this->registerServiceToLocator($corpus, $suggesterId, $locator);
         }
     }
 }
