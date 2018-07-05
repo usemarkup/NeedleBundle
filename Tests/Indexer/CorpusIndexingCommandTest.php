@@ -8,14 +8,9 @@ use Markup\NeedleBundle\Indexer\CorpusIndexingCommand;
 use Markup\NeedleBundle\Indexer\IndexingMessagerInterface;
 use Markup\NeedleBundle\Indexer\IndexingMessagerLocator;
 use Markup\NeedleBundle\Indexer\IndexingResultInterface;
-use Markup\NeedleBundle\Indexer\SubjectDataMapperInterface;
-use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Psr\Container\ContainerInterface;
-use Solarium\Client;
-use Solarium\QueryType\Update\Query\Query;
-use Solarium\QueryType\Update\Result;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -32,21 +27,6 @@ class CorpusIndexingCommandTest extends MockeryTestCase
      * @var ContainerInterface|m\MockInterface
      */
     private $messagerLocator;
-
-    /**
-     * @var Client|m\MockInterface
-     */
-    private $solariumClient;
-
-    /**
-     * @var SubjectDataMapperProvider|m\MockInterface
-     */
-    private $subjectMapperProvider;
-
-    /**
-     * @var SubjectDataMapperInterface|m\MockInterface
-     */
-    private $subjectToDataMapper;
 
     /**
      * @var EventDispatcherInterface|m\MockInterface

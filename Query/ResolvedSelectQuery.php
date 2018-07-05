@@ -50,7 +50,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      * {@inheritdoc}
      * Merges select filterQueries with defaults
      */
-    public function getFilterQueries()
+    public function getFilterQueries(): array
     {
         $fq = $this->getSelectQuery()->getFilterQueries();
         if ($this->getSearchContext() === null) {
