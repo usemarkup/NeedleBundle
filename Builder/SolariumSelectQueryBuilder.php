@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Builder;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Exception\UnformableSearchKeyException;
 use Markup\NeedleBundle\Facet\RangeFacetInterface;
 use Markup\NeedleBundle\Filter;
@@ -106,7 +107,16 @@ class SolariumSelectQueryBuilder
         //if there are fields specified, set them
         $fields = $query->getFields();
         if (!empty($fields)) {
-            $solariumQuery->setFields($fields);
+            $solariumQuery->setFields(array_map(
+                function ($field) {
+                    if ($field instanceof AttributeInterface) {
+                        return $field->getSearchKey(['prefer_parsed' => false]);
+                    }
+
+                    return strval($field);
+                },
+                $fields
+            ));
         }
 
         //if there are facets to request, request them

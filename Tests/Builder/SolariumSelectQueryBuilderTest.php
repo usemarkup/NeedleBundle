@@ -3,7 +3,11 @@
 namespace Markup\NeedleBundle\Tests\Builder;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Attribute\AttributeSpecialization;
+use Markup\NeedleBundle\Attribute\AttributeSpecializationContextInterface;
+use Markup\NeedleBundle\Attribute\SpecializedAttribute;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
+use Markup\NeedleBundle\Exception\IllegalContextValueException;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
@@ -115,5 +119,34 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
             $singleFilterQuery->getQuery(),
             'checking filter query value (query) is correct'
         ); //quoting applied
+    }
+
+    public function testSetFieldsUsingAttributes()
+    {
+        $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $stringFields = ['this', 'that'];
+        $attributeSpecialization = new AttributeSpecialization('other');
+        $attribute = new SpecializedAttribute(
+            [$attributeSpecialization],
+            'the'
+        );
+        $context = new class () implements AttributeSpecializationContextInterface {
+            public function getValue()
+            {
+                return 'other';
+            }
+
+            public function getData()
+            {
+                return [];
+            }
+        };
+        $attribute->setContext($context, 'other');
+        $expectedFields = ['this', 'that', 'the_other'];
+        $genericQuery
+            ->shouldReceive('getFields')
+            ->andReturn(array_merge($stringFields, [$attribute]));
+        $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
+        $this->assertEquals($expectedFields, $query->getFields());
     }
 }

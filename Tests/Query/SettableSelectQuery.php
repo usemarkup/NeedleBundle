@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Query;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Query\FallbackAsyncQueryTrait;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
@@ -77,9 +78,10 @@ class SettableSelectQuery implements SelectQueryInterface
     }
 
     /**
-     * Gets a list of explicit field names on the backend to return. If empty, will not specify fields on any backend.
+     * Gets a list of explicit field names and/or attributes on the backend to return.
+     * If empty, will not specify fields on any backend.
      *
-     * @return string[]
+     * @return string[]|AttributeInterface[]
      */
     public function getFields()
     {
