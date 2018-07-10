@@ -6,6 +6,7 @@ use Markup\NeedleBundle\DependencyInjection\Compiler\AddCorporaPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddFacetValueCanonicalizersPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddIndexSchedulingEventsPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddSolariumPluginsPass;
+use Markup\NeedleBundle\DependencyInjection\Compiler\AddSpecializationContextFiltersPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddSuggestersPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddTermsPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\RegisterSearchInterceptMappersPass;
@@ -27,5 +28,6 @@ class MarkupNeedleBundle extends Bundle
         $container->addCompilerPass(new AddSolariumPluginsPass());
         $container->addCompilerPass(new AddSuggestersPass());
         $container->addCompilerPass(new AddTermsPass());
+        $container->addCompilerPass(new AddSpecializationContextFiltersPass());
     }
 }

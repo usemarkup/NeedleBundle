@@ -7,7 +7,6 @@ use Markup\NeedleBundle\Exception\UnrecognizedSpecializationException;
 
 class AttributeSpecializationContextRegistry implements AttributeSpecializationContextRegistryInterface
 {
-
     /**
      * @var AttributeSpecializationContextProviderInterface[]
      */
