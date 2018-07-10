@@ -6,6 +6,8 @@ use Markup\NeedleBundle\Attribute\AttributeGenericSpecializationContext;
 use Markup\NeedleBundle\Attribute\AttributeSpecialization;
 use Markup\NeedleBundle\Attribute\AttributeSpecializationContextGroupRegistry;
 use Markup\NeedleBundle\Attribute\AttributeSpecializationInterface;
+use Markup\NeedleBundle\Attribute\CompositeSpecializationContextGroupFilter;
+use Markup\NeedleBundle\Attribute\SpecializationContextGroupFilterInterface;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Markup\NeedleBundle\Attribute\AttributeSpecializationContextRegistryInterface;
@@ -13,9 +15,14 @@ use Markup\NeedleBundle\Attribute\AttributeSpecializationContextRegistryInterfac
 class AttributeSpecializationContextGroupRegistryTest extends MockeryTestCase
 {
     /**
-     * @var AttributeSpecializationContextRegistryInterface|m\Mock
+     * @var AttributeSpecializationContextRegistryInterface|m\MockInterface
      */
     private $attributeSpecializationContextRegistry;
+
+    /**
+     * @var CompositeSpecializationContextGroupFilter
+     */
+    private $contextFilter;
 
     /**
      * @var AttributeSpecializationContextGroupRegistry
@@ -83,10 +90,12 @@ class AttributeSpecializationContextGroupRegistryTest extends MockeryTestCase
                 new AttributeGenericSpecializationContext('euro_warehouse')
             );
 
-        $this->attributeSpecializationContextGroupRegistry = new AttributeSpecializationContextGroupRegistry(
-            $this->attributeSpecializationContextRegistry
-        );
+        $this->contextFilter = new CompositeSpecializationContextGroupFilter();
 
+        $this->attributeSpecializationContextGroupRegistry = new AttributeSpecializationContextGroupRegistry(
+            $this->attributeSpecializationContextRegistry,
+            $this->contextFilter
+        );
     }
 
     public function testGetAllAttributeSpecializationGroupsWithOneSpecialization()
@@ -106,6 +115,27 @@ class AttributeSpecializationContextGroupRegistryTest extends MockeryTestCase
         );
 
         $this->assertEquals(12, count($contextGroups));
+    }
+
+    public function testGetAllValidAttributeSpecializationGroups()
+    {
+        $dataToReject = [
+            'locale' => 'de_DE',
+            'price_identity' => 'uk_customer',
+        ];
+        $filter = m::mock(SpecializationContextGroupFilterInterface::class)
+            ->shouldReceive('accept')
+            ->andReturnUsing(function (array $data) use ($dataToReject) {
+                return $data !== $dataToReject;
+            })
+            ->getMock();
+        $this->contextFilter->addFilter($filter);
+
+        $contextGroups = $this->attributeSpecializationContextGroupRegistry->getAllValidAttributeSpecializationContextGroups(
+            [$this->getSpecialization('locale'), $this->getSpecialization('price_identity')]
+        );
+
+        $this->assertEquals(11, count($contextGroups));
     }
 
     public function testGetCurrentAttributeSpecializationGroupWithOneSpecialization()
