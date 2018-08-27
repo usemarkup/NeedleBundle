@@ -65,9 +65,11 @@ class SpecializedAttribute extends Attribute implements SpecializedAttributeInte
     {
         if (!array_key_exists($specialization, $this->contexts)) {
             throw new \LogicException(
-                'Cannot get context for specialization `%s` on attribute `%s` as it has not been set',
-                $specialization,
-                $this->getName()
+                sprintf(
+                    'Cannot get context for specialization `%s` on attribute `%s` as it has not been set',
+                    $specialization,
+                    $this->getName()
+                )
             );
         }
 
