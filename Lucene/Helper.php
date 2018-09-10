@@ -37,7 +37,7 @@ class Helper implements HelperInterface
                     'Could not build Lucene syntax with query "%s" and parts: %s. Underlying exception message: %s',
                     $query,
                     implode(', ', $parts),
-                    ($e instanceof \Exception || $e instanceof \Throwable) ? $e->getMessage() : '(not available)'
+                    ($e instanceof \Exception) ? $e->getMessage() : '(not available)'
                 ),
                 0,
                 $e

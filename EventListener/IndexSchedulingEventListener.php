@@ -33,13 +33,9 @@ class IndexSchedulingEventListener
 
     /**
      * Triggers a schedule based on the event sent and any corpora registered on it.
-     *
-     * @param Event $event
      **/
-    public function triggerSchedule(Event $event, $eventName = null)
+    public function triggerSchedule(Event $event, string $eventName)
     {
-        //if using Symfony 2.3, there would be no event name provided by the dispatcher and we'd get it from the event
-        $eventName = (null !== $eventName) ? $eventName : $event->getName();
         foreach ($this->getCorporaForEvent($eventName) as $corpus) {
             $this->scheduler->addToSchedule($corpus);
         }

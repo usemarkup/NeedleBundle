@@ -7,6 +7,7 @@ use Markup\NeedleBundle\Spellcheck\SolariumSpellcheckResult;
 use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
 use Markup\NeedleBundle\Spellcheck\SpellcheckResultStrategyInterface;
 use Solarium\QueryType\Select\Result\Result as SolariumResult;
+use Solarium\QueryType\Select\Result\Spellcheck\Result as SpellcheckResult;
 
 class SolariumSpellcheckResultStrategy implements SpellcheckResultStrategyInterface
 {
@@ -49,7 +50,9 @@ class SolariumSpellcheckResultStrategy implements SpellcheckResultStrategyInterf
     public function getSpellcheckResult()
     {
         $solariumResult = $this->getSolariumResult();
-        if (!$solariumResult->getSpellcheck()) {
+        /** @var SpellcheckResult|null $spellcheck */
+        $spellcheck = $solariumResult->getSpellcheck();
+        if (!$spellcheck) {
             return null;
         }
 

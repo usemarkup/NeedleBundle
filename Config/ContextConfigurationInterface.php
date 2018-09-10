@@ -25,7 +25,7 @@ interface ContextConfigurationInterface
      *
      * example: { 'active' => true, 'in_stock' => true }
      *
-     * @return FilterQueryInterface[]
+     * @return array
      */
     public function getDefaultFilterQueries();
 

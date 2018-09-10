@@ -14,7 +14,7 @@ interface SearchServiceInterface
     /**
      * Executes a select query on a service and returns a result.
      *
-     * @param SelectQueryInterface
+     * @param SelectQueryInterface $query
      * @return \Markup\NeedleBundle\Result\ResultInterface
      **/
     public function executeQuery(SelectQueryInterface $query);

@@ -21,13 +21,9 @@ class PropertyIterator implements \OuterIterator
      **/
     private $property;
 
-    /**
-     * @param \IteratorAggregate $result
-     * @param string             $property
-     **/
-    public function __construct(\IteratorAggregate $result, $property)
+    public function __construct(\IteratorAggregate $result, string $property)
     {
-        $this->resultIterator = $result->getIterator();
+        $this->resultIterator = new \IteratorIterator($result);
         $this->property = $property;
     }
 
@@ -46,7 +42,7 @@ class PropertyIterator implements \OuterIterator
 
     public function next()
     {
-        return $this->getInnerIterator()->next();
+        $this->getInnerIterator()->next();
     }
 
     public function key()
@@ -61,6 +57,6 @@ class PropertyIterator implements \OuterIterator
 
     public function rewind()
     {
-        return $this->getInnerIterator()->rewind();
+        $this->getInnerIterator()->rewind();
     }
 }

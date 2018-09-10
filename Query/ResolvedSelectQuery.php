@@ -297,10 +297,10 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     public function getRecord()
     {
         if (!$this->getSelectQuery() instanceof RecordableSelectQueryInterface) {
-            return;
+            return null;
         }
         if (!$this->getSelectQuery()->hasRecord()) {
-            return;
+            return null;
         }
 
         return $this->getSelectQuery()->getRecord();

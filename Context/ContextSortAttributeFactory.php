@@ -14,19 +14,14 @@ class ContextSortAttributeFactory
 {
     private $attributeProvider;
 
-    /**
-     * ContextSortAttributeFactory constructor.
-     *
-     * @param AttributeProviderInterface $attributeProvider
-     */
     public function __construct(AttributeProviderInterface $attributeProvider)
     {
         $this->attributeProvider = $attributeProvider;
     }
 
     /**
-     * @param $attr
-     * @param $direction
+     * @param string $attr
+     * @param string $direction
      *
      * @return RelevanceSort|Sort
      */

@@ -4,6 +4,7 @@ namespace Markup\NeedleBundle\Tests\Facet;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
+use Markup\NeedleBundle\Exception\MissingAttributeException;
 use Markup\NeedleBundle\Facet\ConsumeFiltersFacetProvider;
 use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Mockery as m;
@@ -14,6 +15,16 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
  */
 class ConsumeFiltersFacetProviderTest extends MockeryTestCase
 {
+    /**
+     * @var AttributeProviderInterface|m\MockInterface
+     */
+    private $filterProvider;
+
+    /**
+     * @var ConsumeFiltersFacetProvider
+     */
+    private $provider;
+
     protected function setUp()
     {
         $this->filterProvider = m::mock(AttributeProviderInterface::class);
@@ -46,7 +57,7 @@ class ConsumeFiltersFacetProviderTest extends MockeryTestCase
         $name = 'unknown';
         $this->filterProvider
             ->shouldReceive('getAttributeByName')
-            ->andReturn(null);
+            ->andThrow(new MissingAttributeException());
         $this->assertNull($this->provider->getFacetByName($name));
     }
 }

@@ -33,7 +33,7 @@ class SubjectDocumentIterator implements \OuterIterator
     /**
      * @param array|\Iterator                   $subjects
      * @param SubjectDocumentGeneratorInterface $documentGenerator
-     * @param callable                          $callbacks
+     * @param array<callable>                   $callbacks
      **/
     public function __construct($subjects, SubjectDocumentGeneratorInterface $documentGenerator, array $callbacks = [])
     {

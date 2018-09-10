@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Markup\NeedleBundle\Sort;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
@@ -19,14 +21,10 @@ class Sort implements SortInterface
      **/
     private $isDescending;
 
-    /**
-     * @param AttributeInterface $filter
-     * @param bool               $isDescending
-     **/
-    public function __construct(AttributeInterface $filter, $isDescending = false)
+    public function __construct(AttributeInterface $filter, bool $isDescending = false)
     {
         $this->filter = $filter;
-        $this->isDescending = (bool) $isDescending;
+        $this->isDescending = $isDescending;
     }
 
     /**

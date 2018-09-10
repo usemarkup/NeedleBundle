@@ -25,7 +25,7 @@ class AttributeSpecializationProvider extends ArrayCollection implements Attribu
             }
         }
 
-        return;
+        return null;
     }
 
     /**

@@ -20,8 +20,8 @@ class FacetValueDecoratingIterator implements \OuterIterator
     private $facetValueDecorator;
 
     /**
-     * @param \Markup\NeedleBundle\Facet\FacetValueInterface[] $facetValueUterator
-     * @param FacetValueDecoratorInterface                     $facetValueDecorator
+     * @param \Iterator|\Markup\NeedleBundle\Facet\FacetValueInterface[] $facetValueIterator
+     * @param FacetValueDecoratorInterface                               $facetValueDecorator
      **/
     public function __construct(\Iterator $facetValueIterator, FacetValueDecoratorInterface $facetValueDecorator)
     {

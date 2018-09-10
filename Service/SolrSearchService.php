@@ -58,7 +58,7 @@ class SolrSearchService implements AsyncSearchServiceInterface
     /**
      * A context for searches.
      *
-     * @var SearchContextInterface
+     * @var SearchContextInterface|null
      **/
     private $context = null;
 
@@ -67,15 +67,10 @@ class SolrSearchService implements AsyncSearchServiceInterface
      **/
     private $decorators = null;
 
-    /**
-     * @param SolariumClient             $solarium
-     * @param SolariumSelectQueryBuilder $solariumQueryBuilder
-     * @param TemplatingEngine|null      $templating
-     **/
     public function __construct(
         SolariumClient $solarium,
         SolariumSelectQueryBuilder $solariumQueryBuilder,
-        TemplatingEngine $templating = null
+        ?TemplatingEngine $templating = null
     ) {
         $this->solarium = $solarium;
         $this->solariumQueryBuilder = $solariumQueryBuilder;
@@ -95,7 +90,7 @@ class SolrSearchService implements AsyncSearchServiceInterface
     /**
      * Provides a promise for a executing a select query on a service, returning a result.
      *
-     * @param SelectQueryInterface
+     * @param SelectQueryInterface $query
      * @return PromiseInterface
      **/
     public function executeQueryAsync(SelectQueryInterface $query)

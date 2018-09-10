@@ -144,9 +144,6 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
         return $this->facetSetStrategy->getFacetSets();
     }
 
-    /**
-     * @param SpellcheckResultInterface $spellcheckResult
-     */
     public function setSpellcheckResultStrategy(SpellcheckResultStrategyInterface $spellcheckResultStrategy)
     {
         $this->spellcheckResultStrategy = $spellcheckResultStrategy;

@@ -9,18 +9,14 @@ namespace Markup\NeedleBundle\Attribute;
 interface SpecializedAttributeInterface
 {
     /**
-     * @return AttributeSpecialization[]
+     * @return AttributeSpecializationInterface[]
      */
     public function getSpecializations();
 
-    /**
-     * @param AttributeSpecializationContextInterface
-     * @param string
-     */
     public function setContext(AttributeSpecializationContextInterface $context, string $specialization);
 
     /**
-     * @param string
+     * @param string $specialization
      * @return AttributeSpecializationContextInterface
      */
     public function getContext(string $specialization);

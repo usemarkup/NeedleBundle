@@ -33,7 +33,7 @@ class SolrRegexTermsService extends AbstractSolrTermsService implements TermsSer
         } catch (SolariumException $e) {
             $this->logger->critical(
                 'A suggest query did not complete successfully. Have you enabled the terms Solr component?',
-                ['message' => $e->getMessage()]
+                ['message' => ($e instanceof \Exception) ? $e->getMessage() : '(not available)']
             );
 
             return new EmptyTermsResult();

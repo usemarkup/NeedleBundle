@@ -51,7 +51,10 @@ class TermsServiceProvider
             );
         }
 
-        return $this->container->get($this->services[$alias]);
+        /** @var TermsServiceInterface $termsService */
+        $termsService = $this->container->get($this->services[$alias]);
+
+        return $termsService;
     }
 
     /**

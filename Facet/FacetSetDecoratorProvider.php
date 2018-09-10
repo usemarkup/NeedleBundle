@@ -40,6 +40,6 @@ class FacetSetDecoratorProvider implements FacetSetDecoratorProviderInterface
     {
         $this->decorators[$field] = $decorator;
 
-        return $decorator;
+        return $this;
     }
 }

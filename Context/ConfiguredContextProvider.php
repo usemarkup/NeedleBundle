@@ -43,18 +43,10 @@ class ConfiguredContextProvider
     private $interceptorProvider;
 
     /**
-     * @var \SplQueue<ContextDecoratorInterface>
+     * @var ContextDecoratorPriorityQueue
      */
     private $decorators;
 
-    /**
-     * @param AttributeProviderInterface $filterProvider
-     * @param FacetProviderInterface $facetProvider
-     * @param FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
-     * @param CollatorProviderInterface $facetCollatorProvider
-     * @param SortOrderProviderInterface $facetSortOrderProvider
-     * @param ConfiguredInterceptorProvider $interceptorProvider
-     */
     public function __construct(
         AttributeProviderInterface $filterProvider,
         FacetProviderInterface $facetProvider,

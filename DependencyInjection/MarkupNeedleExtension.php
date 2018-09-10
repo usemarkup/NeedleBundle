@@ -255,13 +255,6 @@ class MarkupNeedleExtension extends Extension
 
     private function setFactoryOnDefinition(Definition $definition, $factoryService, $factoryMethod)
     {
-        $useLegacyCalls = version_compare(Kernel::VERSION, '2.6.0', '<');
-        if ($useLegacyCalls) {
-            $definition->setFactoryService($factoryService);
-            $definition->setFactoryMethod($factoryMethod);
-
-            return;
-        }
         $definition->setFactory([new Reference($factoryService), $factoryMethod]);
     }
 
@@ -278,24 +271,11 @@ class MarkupNeedleExtension extends Extension
             $sharedServiceIds
         );
 
-        //if before symfony 2.8, service is set to have "scope" of "prototype", rather than setting as shared
-        if (version_compare(Kernel::VERSION, '2.8.0', '>=')) {
-            array_map(
-                function (Definition $definition) {
-                    $definition->setShared(false);
-                },
-                $sharedServiceDefinitions
-            );
-        } else {
-            if (!defined(ContainerInterface::class.'::SCOPE_PROTOTYPE')) {
-                throw new \LogicException();
-            }
-            array_map(
-                function (Definition $definition) {
-                    $definition->setScope(ContainerInterface::SCOPE_PROTOTYPE, false);
-                },
-                $sharedServiceDefinitions
-            );
-        }
+        array_map(
+            function (Definition $definition) {
+                $definition->setShared(false);
+            },
+            $sharedServiceDefinitions
+        );
     }
 }

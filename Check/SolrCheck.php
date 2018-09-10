@@ -35,7 +35,12 @@ class SolrCheck implements CheckInterface
         try {
             $checkResult = $solarium->ping($ping);
         } catch (SolariumException $e) {
-            return new Failure(sprintf('Ping on Solr failed with message: "%s"', $e->getMessage()));
+            return new Failure(
+                sprintf(
+                    'Ping on Solr failed with message: "%s"',
+                    ($e instanceof \Exception) ? $e->getMessage() : '(not available)'
+                )
+            );
         }
 
         return new Success('OK');

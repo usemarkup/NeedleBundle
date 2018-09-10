@@ -36,7 +36,7 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
     /**
      * @param SolariumResult|\Closure $result  This can either be a result object, or a closure that returns a result object.  (This enables support for deferred evaluation of the result.)
      * @param SearchContext           $context
-     * @param SelectQueryInterface    (Optional.) An original query, if one is available, in case there is view logic that depends on it.
+     * @param SelectQueryInterface    $originalQuery (Optional.) An original query, if one is available, in case there is view logic that depends on it.
      **/
     public function __construct($result, SearchContext $context, SelectQueryInterface $originalQuery = null)
     {

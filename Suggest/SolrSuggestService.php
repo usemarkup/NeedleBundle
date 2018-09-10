@@ -66,10 +66,10 @@ class SolrSuggestService implements SuggestServiceInterface
         } catch (SolariumException $e) {
             $this->logger->critical(
                 'A suggest query did not complete successfully. Have you enabled the suggest Solr component?',
-                ['message' => $e->getMessage()]
+                ['message' => ($e instanceof \Exception) ? $e->getMessage() : '(not available)']
             );
 
-            return new EmptySuggestResult();
+            return [new EmptySuggestResult()];
         }
         //check if this is a grouped result, and use grouped result parser in this case
         if (array_key_exists('grouped', $resultSet->getData())) {
