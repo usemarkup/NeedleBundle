@@ -9,7 +9,7 @@ use Pagerfanta\Pagerfanta;
 /**
 * A result adapter that wraps a Pagerfanta instance.
 */
-class PagerfantaResultAdapter implements ResultInterface
+class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInterface
 {
     /**
      * A Pagerfanta instance.
@@ -46,9 +46,6 @@ class PagerfantaResultAdapter implements ResultInterface
      **/
     private $debugOutputStrategy;
 
-    /**
-     * @param Pagerfanta $pagerfanta
-     **/
     public function __construct(Pagerfanta $pagerfanta)
     {
         $this->pagerfanta = $pagerfanta;
@@ -188,10 +185,8 @@ class PagerfantaResultAdapter implements ResultInterface
 
     /**
      * Gets the Pagerfanta.
-     *
-     * @return Pagerfanta
      **/
-    public function getPagerfanta()
+    public function getPagerfanta(): Pagerfanta
     {
         return $this->pagerfanta;
     }

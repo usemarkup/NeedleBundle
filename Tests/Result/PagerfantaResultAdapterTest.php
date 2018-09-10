@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Result;
 
+use Markup\NeedleBundle\Result\CanExposePagerfantaInterface;
 use Markup\NeedleBundle\Result\DebugOutputStrategyInterface;
 use Markup\NeedleBundle\Result\PageDoesNotExistException;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
@@ -14,7 +15,17 @@ use PHPUnit\Framework\TestCase;
 */
 class PagerfantaResultAdapterResultTest extends TestCase
 {
-    public function setUp()
+    /**
+     * @var Pagerfanta
+     */
+    private $pagerfanta;
+
+    /**
+     * @var PagerfantaResultAdapter
+     */
+    private $adapter;
+
+    protected function setUp()
     {
         $this->pagerfanta = $this->createMock(Pagerfanta::class);
         $this->adapter = new PagerfantaResultAdapter($this->pagerfanta);
@@ -23,6 +34,11 @@ class PagerfantaResultAdapterResultTest extends TestCase
     public function testIsResult()
     {
         $this->assertInstanceOf(ResultInterface::class, $this->adapter);
+    }
+
+    public function testCanExposePagerfanta()
+    {
+        $this->assertInstanceOf(CanExposePagerfantaInterface::class, $this->adapter);
     }
 
     public function testGetTotalCount()
