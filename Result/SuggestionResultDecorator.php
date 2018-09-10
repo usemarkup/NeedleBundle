@@ -11,7 +11,7 @@ use Traversable;
 /**
  * Decorates an underlying result by, if there is at least one spellcheck suggestion, fetching a new result from the backend based on a query on the first suggestion.
  */
-class SuggestionResultDecorator implements ResultInterface
+class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaInterface
 {
     /**
      * @var ResultInterface
@@ -221,12 +221,10 @@ class SuggestionResultDecorator implements ResultInterface
 
     /**
      * It's likely there's a pagerfanta object on the result, so expose if present.
-     *
-     * @return Pagerfanta|null
      */
-    public function getPagerfanta()
+    public function getPagerfanta(): ?Pagerfanta
     {
-        if (!method_exists($this->originalResult, 'getPagerfanta')) {
+        if (!$this->originalResult instanceof CanExposePagerfantaInterface) {
             return null;
         }
 

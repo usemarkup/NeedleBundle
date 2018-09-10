@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Spellcheck;
 
+use Markup\NeedleBundle\Result\CanExposePagerfantaInterface;
 use Markup\NeedleBundle\Result\ResultInterface;
 use Markup\NeedleBundle\Result\SuggestionResultDecorator;
 use Markup\NeedleBundle\Service\SearchServiceInterface;
@@ -13,6 +14,26 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class SuggestionResultDecoratorTest extends MockeryTestCase
 {
+    /**
+     * @var ResultInterface|m\MockInterface
+     */
+    private $originalResult;
+
+    /**
+     * @var SettableSelectQuery
+     */
+    private $originalQuery;
+
+    /**
+     * @var SearchServiceInterface|m\MockInterface
+     */
+    private $searchService;
+
+    /**
+     * @var SuggestionResultDecorator
+     */
+    private $decorator;
+
     protected function setUp()
     {
         $this->originalResult = m::mock(ResultInterface::class)->shouldIgnoreMissing();
@@ -24,6 +45,11 @@ class SuggestionResultDecoratorTest extends MockeryTestCase
     public function testIsResult()
     {
         $this->assertInstanceOf(ResultInterface::class, $this->decorator);
+    }
+
+    public function testCanExposePagerfanta()
+    {
+        $this->assertInstanceOf(CanExposePagerfantaInterface::class, $this->decorator);
     }
 
     public function testDoNotMakeNewQueryIfNoSuggestions()
