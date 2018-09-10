@@ -5,6 +5,7 @@ namespace Markup\NeedleBundle\Adapter;
 use Pagerfanta\Adapter\AdapterInterface;
 use Pagerfanta\Exception\InvalidArgumentException;
 use Solarium\Client;
+use Solarium\Core\Query\Result\ResultInterface;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 
@@ -25,7 +26,7 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
     private $query;
 
     /**
-     * @var [Result]
+     * @var GroupedResultAdapter|null
      */
     private $resultSet;
 
@@ -125,7 +126,7 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
      * @param int $start
      * @param int $rows
      *
-     * @return Result
+     * @return GroupedResultAdapter|null
      **/
     public function getResultSet($start = null, $rows = null)
     {
@@ -170,9 +171,8 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
     private function createResultSet()
     {
         $resultSet = $this->client->select($this->query, $this->endPoint);
-        $resultSet = new GroupedResultAdapter($resultSet);
 
-        return $resultSet;
+        return new GroupedResultAdapter($resultSet);
     }
 
     private function clearResultSet()

@@ -42,7 +42,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
     /**
      * A sub-iterator of facet sets.
      *
-     * @var \Iterator
+     * @var \Iterator|null
      **/
     private $subIterator = null;
 
@@ -176,7 +176,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
      *
      * @param SolariumFacetSet $facetSet
      *
-     * @return \Iterator
+     * @return array
      **/
     private function normalizeFacetData(SolariumFacetSet $facetSet)
     {

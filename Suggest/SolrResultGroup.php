@@ -20,7 +20,7 @@ class SolrResultGroup implements ResultGroupInterface
 
     /**
      * @param string     $term
-     * @param Term|array $solariumTerm
+     * @param Term|array $data
      */
     public function __construct($term, $data)
     {

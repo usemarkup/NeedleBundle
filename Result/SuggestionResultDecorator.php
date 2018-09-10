@@ -5,6 +5,7 @@ namespace Markup\NeedleBundle\Result;
 use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Markup\NeedleBundle\Service\SearchServiceInterface;
 use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
+use Markup\NeedleBundle\Tests\Query\SettableSelectQuery;
 use Pagerfanta\Pagerfanta;
 use Traversable;
 
@@ -39,21 +40,15 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
     private $useOriginalFacets;
 
     /**
-     * @var ResultInterface
+     * @var ResultInterface|null
      */
     private $suggestionResult;
 
-    /**
-     * @param ResultInterface        $originalResult
-     * @param SimpleQueryInterface   $query
-     * @param SearchServiceInterface $searchService
-     * @param bool                   $useOriginalFacets
-     */
     public function __construct(
         ResultInterface $originalResult,
         SimpleQueryInterface $query,
         SearchServiceInterface $searchService,
-        $useOriginalFacets = true
+        bool $useOriginalFacets = true
     ) {
         $this->originalResult = $originalResult;
         $this->query = $query;
@@ -62,13 +57,6 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
         $this->resolved = false;
     }
 
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Retrieve an external iterator
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
-     */
     public function getIterator()
     {
         return $this->getSuggestionResult()->getIterator();
@@ -253,7 +241,7 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
                 $suggestionQuery = clone $this->query;
                 $suggestions = $this->originalResult->getSpellcheckResult()->getSuggestions();
                 $suggestion = $suggestions[0];
-                if (method_exists($suggestionQuery, 'setSearchTerm')) {
+                if ($suggestionQuery instanceof SettableSelectQuery) {
                     $suggestionQuery->setSearchTerm($suggestion->getWord());
                     $this->suggestionResult = $this->searchService->executeQuery($suggestionQuery);
                 }

@@ -42,7 +42,10 @@ class SuggestServiceProvider
             throw new \InvalidArgumentException(sprintf('The service "%s" referred to by the alias "%s" is not registered with the Symfony DI container.', $this->services[$alias], $alias));
         }
 
-        return $this->container->get($this->services[$alias]);
+        /** @var SuggestServiceInterface $suggestService */
+        $suggestService = $this->container->get($this->services[$alias]);
+
+        return $suggestService;
     }
 
     /**

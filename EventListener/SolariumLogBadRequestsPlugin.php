@@ -24,7 +24,7 @@ class SolariumLogBadRequestsPlugin extends SolariumPlugin
     private $enabled;
 
     /**
-     * @param LoggerInterface $logger
+     * @param array $options
      **/
     public function __construct($options = null)
     {

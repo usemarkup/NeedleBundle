@@ -18,7 +18,6 @@ class TranslatedRangeFacet extends TranslatedFacet implements RangeFacetInterfac
 
     /**
      * @param string     $name
-     * @param float      $rangeSize
      * @param Translator $translator
      * @param string     $translationNamespace
      * @param string     $messageDomain

@@ -19,7 +19,7 @@ class SubjectDataMapperProvider
      *
      * @param  string                     $corpus
      * @return SubjectDataMapperInterface
-     * @throws InvalidArgumentException   if corpus has no registered mapper associated
+     * @throws \InvalidArgumentException   if corpus has no registered mapper associated
      **/
     public function fetchMapperForCorpus($corpus)
     {

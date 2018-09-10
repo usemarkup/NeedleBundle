@@ -76,7 +76,7 @@ class SearchContext implements SearchContextInterface
      */
     public function getSetDecoratorForFacet(AttributeInterface $facet)
     {
-        return false;
+        return null;
     }
 
     /**

@@ -77,7 +77,7 @@ class CompositeFacetSetIterator extends \ArrayIterator
      **/
     private function isParsed()
     {
-        return (bool) $this->parsed;
+        return $this->parsed;
     }
 
     /**

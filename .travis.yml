@@ -16,7 +16,7 @@ before_script:
     - phpenv config-rm xdebug.ini
 
 script:
-    - vendor/bin/phpstan.phar analyse -c phpstan.neon --level 1 .
+    - vendor/bin/phpstan.phar analyse -c phpstan.neon --level 4 .
     - vendor/phpunit/phpunit/phpunit --debug
 
 notifications:

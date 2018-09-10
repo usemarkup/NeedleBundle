@@ -3,17 +3,18 @@
 namespace Markup\NeedleBundle\Attribute;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Markup\NeedleBundle\Exception\UnrecognizedSpecializationException;
 
 class AttributeSpecializationContextRegistry implements AttributeSpecializationContextRegistryInterface
 {
     /**
-     * @var AttributeSpecializationContextProviderInterface[]
+     * @var Collection|AttributeSpecializationContextProviderInterface[]
      */
     private $attributeSpecializationContextProviders;
 
     /**
-     * @var AttributeSpecializationCurrentlyApplicableContextProviderInterface[]
+     * @var Collection|AttributeSpecializationCurrentlyApplicableContextProviderInterface[]
      */
     private $attributeSpecializationCurrentlyApplicableContextProviders;
 

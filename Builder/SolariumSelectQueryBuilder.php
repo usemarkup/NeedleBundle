@@ -11,6 +11,8 @@ use Markup\NeedleBundle\Lucene\SearchTermProcessor;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Solarium\Client as SolariumClient;
+use Solarium\QueryType\Select\Query\Component\Facet\Field;
+use Solarium\QueryType\Select\Query\Component\Facet\Range;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 
 /**
@@ -174,8 +176,10 @@ class SolariumSelectQueryBuilder
                 }
 
                 foreach ($solariumFacets as $solariumFacet) {
-                    $solariumFacet
-                        ->setField($facet->getSearchKey());
+                    if ($solariumFacet instanceof Field || $solariumFacet instanceof Range) {
+                        $solariumFacet
+                            ->setField($facet->getSearchKey());
+                    }
 
                     //set Solr local params to exclude filter values
                     if ($query->getWhetherFacetIgnoresCurrentFilters($facet)) {
@@ -196,7 +200,7 @@ class SolariumSelectQueryBuilder
 
         if (!empty($boostQueryFields)) {
             //set to using edismax
-            $edismax = $solariumQuery->getEDismax();
+            $edismax = $solariumQuery->getEDisMax();
             //set query/ query alternative to all if applicable
             if ($solariumQuery->getQuery() === self::ALL_SIGNIFIER) {
                 $solariumQuery->setQuery('');

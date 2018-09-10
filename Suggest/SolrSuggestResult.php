@@ -16,7 +16,7 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
     private $data;
 
     /**
-     * @param array|SolariumResult $solariumResult
+     * @param array|SolariumResult $data
      */
     public function __construct($data)
     {

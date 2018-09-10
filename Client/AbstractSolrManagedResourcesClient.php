@@ -46,8 +46,8 @@ abstract class AbstractSolrManagedResourcesClient
     abstract public function getResourcePath();
 
     /**
-     * @param        $resourceId
-     * @param        $term
+     * @param string $resourceId
+     * @param string $term
      * @param string $endpointKey
      *
      * @return bool
@@ -55,7 +55,7 @@ abstract class AbstractSolrManagedResourcesClient
     abstract public function exists($resourceId, $term, $endpointKey = null);
 
     /**
-     * @param        $resourceId
+     * @param string $resourceId
      * @param string $endpointKey
      *
      * @return array
