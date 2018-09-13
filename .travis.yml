@@ -3,6 +3,7 @@ language: php
 php:
     - 7.1
     - 7.2
+    - 7.3
 
 env:
     global:
@@ -13,7 +14,7 @@ install:
     - if [ "$deps" = "low" ]; then composer --prefer-lowest --prefer-stable --ignore-platform-reqs update; fi
 
 before_script:
-    - phpenv config-rm xdebug.ini
+    - if [ -f $HOME/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini ]; then phpenv config-rm xdebug.ini; fi
 
 script:
     - vendor/bin/phpstan.phar analyse -c phpstan.neon --level 4 .
@@ -27,5 +28,5 @@ matrix:
     - php: 7.1
       env: deps=low
 
-sudo: false
+sudo: required
 dist: trusty
