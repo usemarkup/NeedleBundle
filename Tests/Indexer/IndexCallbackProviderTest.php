@@ -3,17 +3,10 @@
 namespace Markup\NeedleBundle\Tests\Indexer;
 
 use Markup\NeedleBundle\Indexer\IndexCallbackProvider;
-use Mockery as m;
-use Mockery\Adapter\Phpunit\MockeryTestCase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use PHPUnit\Framework\TestCase;
 
-class IndexCallbackProviderTest extends MockeryTestCase
+class IndexCallbackProviderTest extends TestCase
 {
-    /**
-     * @var ContainerInterface|m\MockInterface
-     */
-    private $container;
-
     /**
      * @var IndexCallbackProvider
      */
@@ -21,8 +14,7 @@ class IndexCallbackProviderTest extends MockeryTestCase
 
     protected function setUp()
     {
-        $this->container = m::mock(ContainerInterface::class);
-        $this->provider = new IndexCallbackProvider($this->container);
+        $this->provider = new IndexCallbackProvider([]);
     }
 
     public function testGetCallbacksForCorpusReturnsEmptyArrayByDefault()
@@ -33,13 +25,11 @@ class IndexCallbackProviderTest extends MockeryTestCase
     public function testGetCallbacksForProviderCorpus()
     {
         $callback = function () {};
-        $serviceId = 'callback';
-        $this->container
-            ->shouldReceive('get')
-            ->with($serviceId)
-            ->andReturn($callback);
+        $serviceCollection = new \ArrayIterator([$callback]);
         $corpus = 'corpus';
-        $this->provider->setCallbacksForCorpus($corpus, [$serviceId]);
-        $this->assertSame([$callback], $this->provider->getCallbacksForCorpus($corpus));
+        $provider = new IndexCallbackProvider([
+            $corpus => $serviceCollection,
+        ]);
+        $this->assertSame([$callback], iterator_to_array($provider->getCallbacksForCorpus($corpus)));
     }
 }

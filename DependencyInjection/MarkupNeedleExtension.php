@@ -2,19 +2,21 @@
 
 namespace Markup\NeedleBundle\DependencyInjection;
 
+use Markup\NeedleBundle\Indexer\IndexCallbackProvider;
+use Markup\NeedleBundle\Intercept\Definition as InterceptDefinition;
+use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
 use Markup\NeedleBundle\Suggest\SuggestServiceInterface;
+use Markup\NeedleBundle\Suggest\SuggestServiceLocator;
 use Markup\NeedleBundle\Terms\TermsServiceInterface;
+use Markup\NeedleBundle\Terms\TermsServiceLocator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -48,7 +50,6 @@ class MarkupNeedleExtension extends Extension
         $this->loadTerms($config, $container);
         $this->loadTermsField($config, $container);
         $this->defineServicesUsingFactories($container);
-        $this->markNonSharedServices($container);
     }
 
     /**
@@ -98,10 +99,18 @@ class MarkupNeedleExtension extends Extension
             $indexCallbacks[$name] = $corpusConfig['callbacks_during_index'];
         }
         $container->setParameter('markup_needle.schedule_events_by_corpus', $scheduleEvents);
-        $indexCallbackProvider = $container->getDefinition('markup_needle.index_callback_provider');
+        $indexCallbackProvider = $container->getDefinition(IndexCallbackProvider::class);
+        $collections = [];
         foreach ($indexCallbacks as $name => $callbackServices) {
-            $indexCallbackProvider->addMethodCall('setCallbacksForCorpus', [$name, $callbackServices]);
+            $collection = (new Definition(ServiceCollection::class))
+                ->setArguments([$callbackServices])
+                ->addTag('markup_needle.service_collection')
+                ->setPublic(false);
+            $collectionId = sprintf('markup_needle.index_callback_collection.%s', $name);
+            $container->setDefinition($collectionId, $collection);
+            $collections[$name] = new Reference($collectionId);
         }
+        $indexCallbackProvider->setArguments([$collections]);
     }
 
     /**
@@ -117,11 +126,7 @@ class MarkupNeedleExtension extends Extension
         $domains = array_unique(array_merge($domains, [$defaultDomain]));
         $interceptors = [];
         foreach ($domains as $domain) {
-            // for Symfony 3 BC - can drop mention of DefinitionDecorator when Symfony 3 is dropped
-            $childDefinitionClass = (class_exists(ChildDefinition::class))
-                ? ChildDefinition::class
-                : DefinitionDecorator::class;
-            $domainedInterceptor = new $childDefinitionClass('markup_needle.interceptor');
+            $domainedInterceptor = new ChildDefinition('markup_needle.interceptor');
             $container->setDefinition(sprintf('markup_needle.interceptor.%s', $domain), $domainedInterceptor);
             $interceptors[$domain] = $domainedInterceptor;
         }
@@ -129,14 +134,14 @@ class MarkupNeedleExtension extends Extension
             return;
         }
         foreach ($config['intercepts']['definitions'] as $definitionName => $definition) {
-            $matcher = new Definition('%markup_needle.intercept.matcher.normalized_list.class%');
+            $matcher = new Definition(NormalizedListMatcher::class);
             $matcher->addMethodCall('setList', [$definition['terms']]);
             $matcherName = sprintf('markup_needle.intercept.matcher.%s', $definitionName);
             $matcher->setPublic(false);
             $container->setDefinition($matcherName, $matcher);
             $properties = array_diff_key($definition, ['name' => true, 'type' => true]);
             $interceptDefinition = new Definition(
-                '%markup_needle.intercept.definition.class%',
+                InterceptDefinition::class,
                 [
                     $definitionName,
                     new Reference($matcherName),
@@ -241,7 +246,7 @@ class MarkupNeedleExtension extends Extension
             SuggestServiceInterface::class,
             ['%markup_needle.suggester.alias%']
         );
-        $this->setFactoryOnDefinition($suggester, 'markup_needle.suggester_provider', 'getServiceForAlias');
+        $this->setFactoryOnDefinition($suggester, SuggestServiceLocator::class, 'get');
         $container->setDefinition('markup_needle.suggester', $suggester);
 
         //terms service
@@ -249,33 +254,12 @@ class MarkupNeedleExtension extends Extension
             TermsServiceInterface::class,
             ['%markup_needle.terms.alias%']
         );
-        $this->setFactoryOnDefinition($terms, 'markup_needle.terms_provider', 'getServiceForAlias');
+        $this->setFactoryOnDefinition($terms, TermsServiceLocator::class, 'get');
         $container->setDefinition('markup_needle.terms', $terms);
     }
 
     private function setFactoryOnDefinition(Definition $definition, $factoryService, $factoryMethod)
     {
         $definition->setFactory([new Reference($factoryService), $factoryMethod]);
-    }
-
-    private function markNonSharedServices(ContainerBuilder $container)
-    {
-        $sharedServiceIds = [
-            'markup_needle.exporter.closure.prototype',
-            'markup_needle.interceptor.prototype',
-        ];
-        $sharedServiceDefinitions = array_map(
-            function ($id) use ($container) {
-                return $container->getDefinition($id);
-            },
-            $sharedServiceIds
-        );
-
-        array_map(
-            function (Definition $definition) {
-                $definition->setShared(false);
-            },
-            $sharedServiceDefinitions
-        );
     }
 }
