@@ -5,25 +5,18 @@ namespace Markup\NeedleBundle\Intercept;
 class ConfiguredInterceptorProvider
 {
     /**
-     * @var callable
+     * @var Interceptor
      */
-    private $interceptorClosure;
+    private $interceptor;
 
     /**
      * @var InterceptorConfiguratorInterface
      */
     private $interceptorConfigurator;
 
-    /**
-     * @param callable $interceptorClosure
-     * @param InterceptorConfiguratorInterface $interceptorConfigurator
-     */
-    public function __construct($interceptorClosure, InterceptorConfiguratorInterface $interceptorConfigurator)
+    public function __construct(Interceptor $interceptor, InterceptorConfiguratorInterface $interceptorConfigurator)
     {
-        if (!is_callable($interceptorClosure)) {
-            throw new \InvalidArgumentException('Interceptor closure must be callable.');
-        }
-        $this->interceptorClosure = $interceptorClosure;
+        $this->interceptor = $interceptor;
         $this->interceptorConfigurator = $interceptorConfigurator;
     }
 
@@ -33,12 +26,8 @@ class ConfiguredInterceptorProvider
      */
     public function createInterceptor(array $config)
     {
-        $interceptor = call_user_func($this->interceptorClosure);
-        if (!$interceptor instanceof Interceptor) {
-            throw new \RuntimeException('Interceptor closure did not create an interceptor.');
-        }
-        $this->interceptorConfigurator->configureInterceptor($interceptor, $config);
+        $this->interceptorConfigurator->configureInterceptor($this->interceptor, $config);
 
-        return $interceptor;
+        return $this->interceptor;
     }
 }

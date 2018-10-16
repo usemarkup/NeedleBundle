@@ -9,8 +9,11 @@ use Markup\NeedleBundle\DependencyInjection\Compiler\AddSolariumPluginsPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddSpecializationContextFiltersPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddSuggestersPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\AddTermsPass;
+use Markup\NeedleBundle\DependencyInjection\Compiler\ConfigureServiceGeneratorsPass;
+use Markup\NeedleBundle\DependencyInjection\Compiler\CreateServiceCollectionsPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\RegisterSearchInterceptMappersPass;
 use Markup\NeedleBundle\DependencyInjection\Compiler\RegisterSubjectDataMappersPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -20,6 +23,8 @@ class MarkupNeedleBundle extends Bundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new CreateServiceCollectionsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1000);
+        $container->addCompilerPass(new ConfigureServiceGeneratorsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1000);
         $container->addCompilerPass(new AddCorporaPass());
         $container->addCompilerPass(new AddFacetValueCanonicalizersPass());
         $container->addCompilerPass(new AddIndexSchedulingEventsPass());

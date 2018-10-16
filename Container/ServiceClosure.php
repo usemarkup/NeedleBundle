@@ -2,7 +2,7 @@
 
 namespace Markup\NeedleBundle\Container;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Exception\ExceptionInterface as DependencyInjectionException;
 
 /**
@@ -10,32 +10,22 @@ use Symfony\Component\DependencyInjection\Exception\ExceptionInterface as Depend
  */
 class ServiceClosure
 {
-    /**
-     * An ID for a service to fetch.
-     *
-     * @var string
-     **/
-    private $serviceId;
+    const ALIAS = 'alias';
 
     /**
      * @var ContainerInterface
      **/
     private $container;
 
-    /**
-     * @param string             $serviceId
-     * @param ContainerInterface $container
-     **/
-    public function __construct($serviceId, ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
-        $this->serviceId = $serviceId;
         $this->container = $container;
     }
 
     public function __invoke()
     {
         try {
-            $service = $this->container->get($this->serviceId);
+            $service = $this->container->get(self::ALIAS);
         } catch (DependencyInjectionException $e) {
             return null;
         }
