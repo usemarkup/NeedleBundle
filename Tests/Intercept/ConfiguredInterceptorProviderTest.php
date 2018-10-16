@@ -10,14 +10,26 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class ConfiguredInterceptorProviderTest extends MockeryTestCase
 {
+    /**
+     * @var Interceptor|m\MockInterface
+     */
+    private $interceptor;
+
+    /**
+     * @var InterceptorConfiguratorInterface|m\MockInterface
+     */
+    private $configurator;
+
+    /**
+     * @var ConfiguredInterceptorProvider
+     */
+    private $provider;
+
     protected function setUp()
     {
         $this->interceptor = m::mock(Interceptor::class);
-        $closure = function () {
-            return $this->interceptor;
-        };
         $this->configurator = m::mock(InterceptorConfiguratorInterface::class);
-        $this->provider = new ConfiguredInterceptorProvider($closure, $this->configurator);
+        $this->provider = new ConfiguredInterceptorProvider($this->interceptor, $this->configurator);
     }
 
     public function testCreateInterceptor()

@@ -1,33 +1,25 @@
-parameters:
-    markup_needle.exporter.closure.class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
-    markup_needle.solr.class: Markup\NeedleBundle\Service\SolrSearchService
-    markup_needle.intercept.definition.class: Markup\NeedleBundle\Intercept\Definition
-    markup_needle.intercept.matcher.normalized_list.class: Markup\NeedleBundle\Intercept\NormalizedListMatcher
-
 services:
     markup_needle.exporter.closure:
-        class: '%markup_needle.exporter.closure.class%'
+        class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
         arguments:
             - '@markup_needle.corpus.provider'
             - '@markup_needle.solarium.client'
             - '@markup_needle.exporter.subject_data_mapper_provider'
             - '@markup_needle.filter_query.lucenifier'
             - '@event_dispatcher'
-            - '@markup_needle.index_callback_provider'
+            - '@Markup\NeedleBundle\Indexer\IndexCallbackProvider'
             - false
             - '@logger'
             - ~
             - '%markup_needle.allow_null_values_in_update_fields%'
     markup_needle.exporter.closure.prototype:
         parent: markup_needle.exporter.closure
+        shared: false
     markup_needle.exporter.closure.generator:
-        parent: markup_needle.service_closure
+        class: Markup\NeedleBundle\Container\ServiceClosure
         arguments:
             - markup_needle.exporter.closure.prototype
-            - '@service_container'
-    markup_needle.service_closure:
-        class: Markup\NeedleBundle\Container\ServiceClosure
-        abstract: true
+        tags: [markup_needle.service_generator]
     markup_needle.exporter.subject_data_mapper_provider:
         class: Markup\NeedleBundle\Indexer\SubjectDataMapperProvider
     markup_needle.query.builder.solarium:
@@ -37,7 +29,7 @@ services:
             - '@markup_needle.filter_query.lucenifier'
             - '%markup_needle.debug%'
     needle:
-        class: '%markup_needle.solr.class%'
+        class: Markup\NeedleBundle\Service\SolrSearchService
         arguments:
             - '@markup_needle.solarium.client'
             - '@markup_needle.query.builder.solarium'
@@ -93,15 +85,11 @@ services:
         class: Markup\NeedleBundle\Intercept\Interceptor
         arguments:
             - '@event_dispatcher'
-    markup_needle.interceptor.closure:
-        parent: markup_needle.service_closure
-        arguments:
-            - markup_needle.interceptor.prototype
-            - '@service_container'
+        shared: false
     markup_needle.configured_interceptor_provider:
         class: Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider
         arguments:
-            - '@markup_needle.interceptor.closure'
+            - '@markup_needle.interceptor.prototype'
             - '@markup_needle.interceptor_configurator'
     markup_needle.intercept_mapper.route:
         class: Markup\NeedleBundle\Intercept\RouteInterceptMapper
@@ -167,16 +155,15 @@ services:
         class: Markup\NeedleBundle\Suggest\NoopSuggestService
         tags:
             - { name: markup_needle.suggester, alias: noop }
-    markup_needle.suggester_provider:
-        class: Markup\NeedleBundle\Suggest\SuggestServiceProvider
+    Markup\NeedleBundle\Suggest\SuggestServiceLocator:
         arguments:
-            - '@service_container'
+            - []
+        tags: ['container.service_locator']
     markup_needle.handler_provider.null:
         class: Markup\NeedleBundle\Query\NullHandlerProvider
-    markup_needle.index_callback_provider:
-        class: Markup\NeedleBundle\Indexer\IndexCallbackProvider
+    Markup\NeedleBundle\Indexer\IndexCallbackProvider:
         arguments:
-            - '@service_container'
+            - []
     markup_needle.spellcheck.static_dictionary_provider:
         class: Markup\NeedleBundle\Spellcheck\StaticDictionaryProvider
     markup_needle.spellcheck.dictionary_provider.default:
@@ -210,10 +197,10 @@ services:
         class: Markup\NeedleBundle\Terms\NoopTermsService
         tags:
             - { name: markup_needle.terms, alias: noop }
-    markup_needle.terms_provider:
-        class: Markup\NeedleBundle\Terms\TermsServiceProvider
+    Markup\NeedleBundle\Terms\TermsServiceLocator:
         arguments:
-            - '@service_container'
+            - []
+        tags: ['container.service_locator']
     markup_needle.terms_field.null:
         class: Markup\NeedleBundle\Terms\NullTermsFieldProvider
     markup_needle.client.solr_managed_synonyms_client:

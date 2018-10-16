@@ -22,7 +22,7 @@ class SubjectDocumentIterator implements \OuterIterator
     private $documentGenerator;
 
     /**
-     * @var callable[]
+     * @var callable[]|iterable
      */
     private $callbacks;
 
@@ -33,9 +33,9 @@ class SubjectDocumentIterator implements \OuterIterator
     /**
      * @param array|\Iterator                   $subjects
      * @param SubjectDocumentGeneratorInterface $documentGenerator
-     * @param array<callable>                   $callbacks
+     * @param iterable<callable>                   $callbacks
      **/
-    public function __construct($subjects, SubjectDocumentGeneratorInterface $documentGenerator, array $callbacks = [])
+    public function __construct($subjects, SubjectDocumentGeneratorInterface $documentGenerator, iterable $callbacks = [])
     {
         $this->setSubjects($subjects);
         $this->documentGenerator = $documentGenerator;
