@@ -2,28 +2,28 @@
 
 namespace Markup\NeedleBundle\DependencyInjection\Compiler;
 
+use Markup\NeedleBundle\Terms\TermsServiceLocator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class AddTermsPass implements CompilerPassInterface
 {
+    use AddServiceLocatorArgumentTrait;
+
     /**
      * @param ContainerBuilder $container
      */
     public function process(ContainerBuilder $container)
     {
-        $providerId = 'markup_needle.terms_provider';
-        if (!$container->hasDefinition($providerId)) {
-            return;
-        }
+        $locatorId = TermsServiceLocator::class;
 
-        $provider = $container->getDefinition($providerId);
+        $locator = $container->getDefinition($locatorId);
         foreach ($container->findTaggedServiceIds('markup_needle.terms') as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!isset($attributes['alias'])) {
                     continue;
                 }
-                $provider->addMethodCall('addService', [$id, $attributes['alias']]);
+                $this->registerServiceToLocator($attributes['alias'], $id, $locator);
             }
         }
     }
