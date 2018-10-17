@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\DependencyInjection;
 
 use Markup\NeedleBundle\Client\BackendClientServiceLocator;
+use Markup\NeedleBundle\Context\ConfiguredContextProvider;
 use Markup\NeedleBundle\Intercept\Definition as InterceptDefinition;
 use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
 use Markup\NeedleBundle\Suggest\SuggestServiceInterface;
@@ -45,6 +46,7 @@ class MarkupNeedleExtension extends Extension
         $this->loadAllowNullValuesInUpdateFields($config, $container);
 
         $loader->load('services.yml');
+        $loader->load('solr.yml');
 
         $this->loadCorpora($config, $container);
         $this->loadIntercepts($config, $container);
@@ -197,7 +199,7 @@ class MarkupNeedleExtension extends Extension
             $container->setAlias($prefix.'facet_collator_provider', $contextConfig['facet_collator_provider']);
             $container->setAlias($prefix.'facet_order_provider', $contextConfig['facet_order_provider']);
             $contextProvider = new Definition(
-                'Markup\NeedleBundle\Context\ConfiguredContextProvider',
+                ConfiguredContextProvider::class,
                 [
                     new Reference($prefix.'filter_provider'),
                     new Reference($prefix.'facet_provider'),

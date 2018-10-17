@@ -1,64 +1,16 @@
 services:
-    markup_needle.exporter.closure:
-        class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
-        arguments:
-            - '@markup_needle.corpus.provider'
-            - '@markup_needle.solarium.client'
-            - '@markup_needle.exporter.subject_data_mapper_provider'
-            - '@markup_needle.filter_query.lucenifier'
-            - '@event_dispatcher'
-            - false
-            - '@logger'
-            - ~
-            - '%markup_needle.allow_null_values_in_update_fields%'
-    markup_needle.exporter.closure.prototype:
-        parent: markup_needle.exporter.closure
-        shared: false
-    markup_needle.exporter.closure.generator:
-        class: Markup\NeedleBundle\Container\ServiceClosure
-        arguments:
-            - markup_needle.exporter.closure.prototype
-        tags: [markup_needle.service_generator]
     markup_needle.exporter.subject_data_mapper_provider:
         class: Markup\NeedleBundle\Indexer\SubjectDataMapperProvider
-    markup_needle.query.builder.solarium:
-        class: Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder
+    Markup\NeedleBundle\Service\SearchServiceLocator:
         arguments:
-            - '@markup_needle.solarium.client'
-            - '@markup_needle.filter_query.lucenifier'
-            - '%markup_needle.debug%'
-    needle:
-        class: Markup\NeedleBundle\Service\SolrSearchService
-        arguments:
-            - '@markup_needle.solarium.client'
-            - '@markup_needle.query.builder.solarium'
-            - '@?templating'
+            - []
+        tags: [container.service_locator]
+    Markup\NeedleBundle\Service\SearchServiceLocatorInterface: '@Markup\NeedleBundle\Service\SearchServiceLocator'
     markup_needle.index_scheduler:
         class: Markup\NeedleBundle\Scheduler\IndexScheduler
         arguments:
             - '@doctrine'
             - '@logger'
-    markup_needle.solarium.helper:
-        class: Solarium\Core\Query\Helper
-    markup_needle.solarium.plugin.log_bad_requests:
-        class: Markup\NeedleBundle\EventListener\SolariumLogBadRequestsPlugin
-        calls:
-            - [ setLogger, [ '@logger' ] ]
-            - [ setEnabled, [ '%markup_needle.solr.log_bad_requests_plugin.enabled%' ] ]
-    markup_needle.lucene.helper:
-        class: Markup\NeedleBundle\Lucene\Helper
-        arguments:
-            - '@markup_needle.solarium.helper'
-    markup_needle.filter_value.lucenifier:
-        class: Markup\NeedleBundle\Lucene\FilterValueLucenifier
-        arguments:
-            - '@markup_needle.lucene.helper'
-        public: false
-    markup_needle.filter_query.lucenifier:
-        class: Markup\NeedleBundle\Lucene\FilterQueryLucenifier
-        arguments:
-            - '@markup_needle.filter_value.lucenifier'
-        public: false
     markup_needle.facet.value_canonicalizer:
         class: Markup\NeedleBundle\Facet\FacetValueCanonicalizer
         lazy: true
@@ -142,14 +94,7 @@ services:
     markup_needle.collator.word_list:
         class: Markup\NeedleBundle\Collator\WordListCollator
         abstract: true
-    markup_needle.suggester.solr:
-        class: Markup\NeedleBundle\Suggest\SolrSuggestService
-        arguments:
-            - '@markup_needle.solarium.client'
-            - '@logger'
-            - '@markup_needle.suggest_handler'
-        tags:
-            - { name: markup_needle.suggester, alias: solr }
+
     markup_needle.suggester.noop:
         class: Markup\NeedleBundle\Suggest\NoopSuggestService
         tags:
@@ -173,22 +118,7 @@ services:
             - 10
     markup_needle.registry.attribute_specialization_context:
         class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextRegistry
-    markup_needle.terms_regex.solr:
-        class: Markup\NeedleBundle\Terms\SolrRegexTermsService
-        arguments:
-            - '@markup_needle.solarium.client'
-            - '@logger'
-            - '@markup_needle.terms_field'
-        tags:
-            - { name: markup_needle.terms, alias: solr_regex }
-    markup_needle.terms_prefix.solr:
-        class: Markup\NeedleBundle\Terms\SolrPrefixTermsService
-        arguments:
-            - '@markup_needle.solarium.client'
-            - '@logger'
-            - '@markup_needle.terms_field'
-        tags:
-            - { name: markup_needle.terms, alias: solr_prefix }
+
     markup_needle.terms.noop:
         class: Markup\NeedleBundle\Terms\NoopTermsService
         tags:
@@ -199,20 +129,6 @@ services:
         tags: ['container.service_locator']
     markup_needle.terms_field.null:
         class: Markup\NeedleBundle\Terms\NullTermsFieldProvider
-    markup_needle.client.solr_managed_synonyms_client:
-        class: Markup\NeedleBundle\Client\SolrManagedSynonymsClient
-        arguments:
-            - '@Markup\NeedleBundle\Client\SingleClientEndpointAccessor'
-            - '@logger'
-    markup_needle.client.solr_managed_stopwords_client:
-        class: Markup\NeedleBundle\Client\SolrManagedStopwordsClient
-        arguments:
-            - '@Markup\NeedleBundle\Client\SingleClientEndpointAccessor'
-            - '@logger'
-    Markup\NeedleBundle\Client\SingleClientEndpointAccessor:
-        arguments:
-            - '@markup_needle.solarium.client'
-        public: false
     markup_needle.registry.attribute.attribute_specialization_context_group:
         class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextGroupRegistry
         arguments:
