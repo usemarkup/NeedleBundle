@@ -1,0 +1,99 @@
+services:
+    markup_needle.exporter.closure:
+        class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
+        arguments:
+            - '@markup_needle.corpus.provider'
+            - '@markup_needle.solarium.client'
+            - '@markup_needle.exporter.subject_data_mapper_provider'
+            - '@Markup\NeedleBundle\Lucene\FilterQueryLucenifier'
+            - '@event_dispatcher'
+            - false
+            - '@logger'
+            - ~
+            - '%markup_needle.allow_null_values_in_update_fields%'
+        deprecated: ~
+    markup_needle.exporter.closure.prototype:
+        parent: markup_needle.exporter.closure
+        shared: false
+    markup_needle.exporter.closure.generator:
+        class: Markup\NeedleBundle\Container\ServiceClosure
+        arguments:
+            - markup_needle.exporter.closure.prototype
+        tags: [markup_needle.service_generator]
+        deprecated: ~
+    markup_needle.query.builder.solarium:
+        class: Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder
+        arguments:
+            - '@markup_needle.solarium.client'
+            - '@Markup\NeedleBundle\Lucene\FilterQueryLucenifier'
+            - '%markup_needle.debug%'
+    needle:
+        parent: Markup\NeedleBundle\Service\SolrSearchService
+        arguments:
+            - '@markup_needle.solarium.client'
+            - '@markup_needle.query.builder.solarium'
+            - '@?templating'
+        deprecated: "The '%service_id%' service has been deprecated. Use Markup\\NeedleBundle\\Service\\SearchServiceLocator and fetch the service using a corpus instead."
+        public: true
+    Markup\NeedleBundle\Service\SolrSearchService:
+        arguments:
+            - '@markup_needle.solarium.client'
+            - '@markup_needle.query.builder.solarium'
+            - '@?templating'
+        public: false
+        tags:
+            - { name: markup_needle.search_service, alias: solr }
+
+    markup_needle.solarium.plugin.log_bad_requests:
+        class: Markup\NeedleBundle\EventListener\SolariumLogBadRequestsPlugin
+        calls:
+            - [ setLogger, [ '@logger' ] ]
+            - [ setEnabled, [ '%markup_needle.solr.log_bad_requests_plugin.enabled%' ] ]
+
+    Markup\NeedleBundle\Lucene\Helper: ~
+    Markup\NeedleBundle\Lucene\FilterValueLucenifier:
+        arguments:
+            - '@Markup\NeedleBundle\Lucene\Helper'
+        public: false
+    Markup\NeedleBundle\Lucene\FilterQueryLucenifier:
+        arguments:
+            - '@Markup\NeedleBundle\Lucene\FilterValueLucenifier'
+        public: false
+
+    Markup\NeedleBundle\Suggest\SolrSuggestService:
+        arguments:
+            - '@markup_needle.solarium.client'
+            - '@logger'
+            - '@markup_needle.suggest_handler'
+        tags:
+            - { name: markup_needle.suggester, alias: solr }
+    markup_needle.terms_regex.solr:
+        class: Markup\NeedleBundle\Terms\SolrRegexTermsService
+        arguments:
+            - '@markup_needle.solarium.client'
+            - '@logger'
+            - '@markup_needle.terms_field'
+        tags:
+            - { name: markup_needle.terms, alias: solr_regex }
+    markup_needle.terms_prefix.solr:
+        class: Markup\NeedleBundle\Terms\SolrPrefixTermsService
+        arguments:
+            - '@markup_needle.solarium.client'
+            - '@logger'
+            - '@markup_needle.terms_field'
+        tags:
+            - { name: markup_needle.terms, alias: solr_prefix }
+    markup_needle.client.solr_managed_synonyms_client:
+        class: Markup\NeedleBundle\Client\SolrManagedSynonymsClient
+        arguments:
+            - '@Markup\NeedleBundle\Client\SingleClientEndpointAccessor'
+            - '@logger'
+    markup_needle.client.solr_managed_stopwords_client:
+        class: Markup\NeedleBundle\Client\SolrManagedStopwordsClient
+        arguments:
+            - '@Markup\NeedleBundle\Client\SingleClientEndpointAccessor'
+            - '@logger'
+    Markup\NeedleBundle\Client\SingleClientEndpointAccessor:
+        arguments:
+            - '@markup_needle.solarium.client'
+        public: false
