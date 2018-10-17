@@ -16,12 +16,9 @@ class Helper implements HelperInterface
      **/
     private $solariumHelper;
 
-    /**
-     * @param SolariumHelper $solariumHelper
-     **/
-    public function __construct(SolariumHelper $solariumHelper)
+    public function __construct(?SolariumHelper $solariumHelper = null)
     {
-        $this->solariumHelper = $solariumHelper;
+        $this->solariumHelper = $solariumHelper ?? new SolariumHelper();
     }
 
     /**
