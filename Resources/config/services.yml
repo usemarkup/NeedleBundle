@@ -1,6 +1,5 @@
 parameters:
     markup_needle.exporter.closure.class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
-    markup_needle.check.solr.class: Markup\NeedleBundle\Check\SolrCheck
     markup_needle.solr.class: Markup\NeedleBundle\Service\SolrSearchService
     markup_needle.intercept.definition.class: Markup\NeedleBundle\Intercept\Definition
     markup_needle.intercept.matcher.normalized_list.class: Markup\NeedleBundle\Intercept\NormalizedListMatcher
@@ -31,12 +30,6 @@ services:
         abstract: true
     markup_needle.exporter.subject_data_mapper_provider:
         class: Markup\NeedleBundle\Indexer\SubjectDataMapperProvider
-    markup_needle.check.solr:
-        class: '%markup_needle.check.solr.class%'
-        arguments:
-            - '@markup_needle.solarium.client'
-        tags:
-            - { name: liip_monitor.check, alias: solr }
     markup_needle.query.builder.solarium:
         class: Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder
         arguments:
