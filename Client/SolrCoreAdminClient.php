@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 class SolrCoreAdminClient
 {
     /**
-     * @var SolariumClient
+     * @var SolrEndpointAccessorInterface
      */
-    private $solariumClient;
+    private $endpointAccessor;
 
     /**
      * @var LoggerInterface
@@ -26,19 +26,12 @@ class SolrCoreAdminClient
      */
     private $guzzleClient;
 
-    /**
-     * SolrCoreAdminClient constructor.
-     *
-     * @param SolariumClient $solariumClient
-     * @param LoggerInterface|null $logger
-     * @param GuzzleClient|null $guzzleClient
-     */
     public function __construct(
-        SolariumClient $solariumClient,
+        SolrEndpointAccessorInterface $endpointAccessor,
         LoggerInterface $logger = null,
         GuzzleClient $guzzleClient = null
     ) {
-        $this->solariumClient = $solariumClient;
+        $this->endpointAccessor = $endpointAccessor;
         $this->logger = $logger ?: new NullLogger();
         $this->guzzleClient = $guzzleClient ?: new GuzzleClient();
     }
@@ -84,7 +77,7 @@ class SolrCoreAdminClient
      */
     private function getUriForAction($action, $parameters = [], $endpointKey = null)
     {
-        $endpoint = $this->solariumClient->getEndpoint($endpointKey);
+        $endpoint = $this->endpointAccessor->getEndpointForKey($endpointKey);
         $urlParameters = http_build_query(
             array_merge(
                 [
