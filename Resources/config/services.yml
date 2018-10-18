@@ -202,18 +202,17 @@ services:
     markup_needle.client.solr_managed_synonyms_client:
         class: Markup\NeedleBundle\Client\SolrManagedSynonymsClient
         arguments:
-            - '@markup_needle.solarium.client'
-            - '@markup_needle.client.solr_core_admin_client'
+            - '@Markup\NeedleBundle\Client\SingleClientEndpointAccessor'
+            - '@logger'
     markup_needle.client.solr_managed_stopwords_client:
         class: Markup\NeedleBundle\Client\SolrManagedStopwordsClient
         arguments:
-            - '@markup_needle.solarium.client'
-            - '@markup_needle.client.solr_core_admin_client'
-    markup_needle.client.solr_core_admin_client:
-        class: Markup\NeedleBundle\Client\SolrCoreAdminClient
+            - '@Markup\NeedleBundle\Client\SingleClientEndpointAccessor'
+            - '@logger'
+    Markup\NeedleBundle\Client\SingleClientEndpointAccessor:
         arguments:
             - '@markup_needle.solarium.client'
-            - '@logger'
+        public: false
     markup_needle.registry.attribute.attribute_specialization_context_group:
         class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextGroupRegistry
         arguments:

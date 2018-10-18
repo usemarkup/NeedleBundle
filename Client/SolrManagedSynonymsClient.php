@@ -2,9 +2,6 @@
 
 namespace Markup\NeedleBundle\Client;
 
-/**
- * Class SolrManagedResourcesClient
- */
 class SolrManagedSynonymsClient extends AbstractSolrManagedResourcesClient
 {
     const RESOURCE_PATH = 'schema/analysis/synonyms/';
