@@ -59,15 +59,24 @@ class MarkupNeedleExtension extends Extension
      **/
     public function loadBackend(array $config, ContainerBuilder $container)
     {
-        $knownBackends = ['solarium'];
+        $knownBackends = ['solr'];
         if (!isset($config['backend']['type'])) {
             return;
         }
-        if (!in_array($config['backend']['type'], $knownBackends)) {
+        //temporary coercion/ deprecation: "solarium" backend type should now be called "solr"
+        $backendType = $config['backend']['type'];
+        if ($backendType === 'solarium') {
+            @trigger_error(
+                'Using "solarium" as a backend is deprecated. The type has been renamed to "solr".',
+                E_USER_DEPRECATED
+            );
+            $backendType = 'solr';
+        }
+        if (!in_array($backendType, $knownBackends)) {
             throw new InvalidArgumentException('Unknown search backend type.');
         }
-        $container->setParameter('markup_needle.backend', $config['backend']['type']);
-        if ($config['backend']['type'] === 'solarium') {
+        $container->setParameter('markup_needle.backend', $backendType);
+        if ($backendType === 'solr') {
             $container->setAlias('markup_needle.solarium.client', $config['backend']['client']);
         }
     }
