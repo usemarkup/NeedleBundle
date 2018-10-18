@@ -4,20 +4,17 @@ namespace Markup\NeedleBundle\Client;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use Solarium\Client as Solarium;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Class SolrManagedResourcesClient
- */
 abstract class AbstractSolrManagedResourcesClient
 {
     const METADATA_PATH = 'schema/managed';
 
     /**
-     * @var Solarium
+     * @var SolrEndpointAccessorInterface
      */
-    private $solarium;
+    private $endpointAccessor;
 
     /**
      * @var SolrCoreAdminClient
@@ -29,15 +26,17 @@ abstract class AbstractSolrManagedResourcesClient
      */
     private $client;
 
-    /**
-     * @param Solarium            $solarium
-     * @param SolrCoreAdminClient $solrCoreAdminClient
-     */
-    public function __construct(Solarium $solarium, SolrCoreAdminClient $solrCoreAdminClient)
-    {
-        $this->solarium = $solarium;
-        $this->solrCoreAdminClient = $solrCoreAdminClient;
+    public function __construct(
+        SolrEndpointAccessorInterface $endpointAccessor,
+        LoggerInterface $logger = null
+    ) {
+        $this->endpointAccessor = $endpointAccessor;
         $this->client = new Client();
+        $this->solrCoreAdminClient = new SolrCoreAdminClient(
+            $endpointAccessor,
+            $logger,
+            $this->client
+        );
     }
 
     /**
@@ -218,7 +217,7 @@ abstract class AbstractSolrManagedResourcesClient
      */
     private function getBaseUri($endpointKey = null)
     {
-        $endpoint = $this->solarium->getEndpoint($endpointKey);
+        $endpoint = $this->endpointAccessor->getEndpointForKey($endpointKey);
 
         return $endpoint->getBaseUri();
     }
