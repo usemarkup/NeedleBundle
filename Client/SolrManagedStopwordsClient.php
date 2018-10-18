@@ -2,9 +2,6 @@
 
 namespace Markup\NeedleBundle\Client;
 
-/**
- * Class SolrManagedResourcesClient
- */
 class SolrManagedStopwordsClient extends AbstractSolrManagedResourcesClient
 {
     const RESOURCE_PATH = 'schema/analysis/stopwords/';
