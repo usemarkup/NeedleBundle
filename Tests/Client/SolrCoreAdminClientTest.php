@@ -6,6 +6,7 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\HandlerStack;
 use Markup\NeedleBundle\Client\SolrCoreAdminClient;
+use Markup\NeedleBundle\Client\SolrEndpointAccessorInterface;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Psr\Log\LoggerInterface;
@@ -18,7 +19,7 @@ class SolrCoreAdminClientTest extends MockeryTestCase
     {
         $this->assertInstanceOf(
             SolrCoreAdminClient::class,
-            new SolrCoreAdminClient(m::mock(SolariumClient::class))
+            new SolrCoreAdminClient(m::mock(SolrEndpointAccessorInterface::class))
         );
     }
 
@@ -30,10 +31,12 @@ class SolrCoreAdminClientTest extends MockeryTestCase
         $endpoint->shouldReceive('getBaseUri')->andReturn('http://i.love.solr/');
         $endpoint->shouldReceive('getCore')->andReturn('core1');
 
-        $solariumClient = m::mock(SolariumClient::class);
-        $solariumClient->shouldReceive('getEndpoint')->andReturn($endpoint);
+        $endpointAccessor = m::mock(SolrEndpointAccessorInterface::class)
+            ->shouldReceive('getEndpointForKey')
+            ->andReturn($endpoint)
+            ->getMock();
 
-        $client = new SolrCoreAdminClient($solariumClient, null, $guzzleClient);
+        $client = new SolrCoreAdminClient($endpointAccessor, null, $guzzleClient);
         $response = $client->reload();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -47,8 +50,10 @@ class SolrCoreAdminClientTest extends MockeryTestCase
         $endpoint->shouldReceive('getBaseUri')->andReturn('http://i.love.solr/');
         $endpoint->shouldReceive('getCore')->andReturn('core1');
 
-        $solariumClient = m::mock(SolariumClient::class);
-        $solariumClient->shouldReceive('getEndpoint')->andReturn($endpoint);
+        $endpointAccessor = m::mock(SolrEndpointAccessorInterface::class)
+            ->shouldReceive('getEndpointForKey')
+            ->andReturn($endpoint)
+            ->getMock();
 
         $logger = m::mock(LoggerInterface::class);
         $logger->shouldReceive('error')
@@ -56,8 +61,7 @@ class SolrCoreAdminClientTest extends MockeryTestCase
                 ['Core admin operation failed using URL: http://i.love.solr/../admin/cores?action=RELOAD&core=core1']
             );
 
-
-        $client = new SolrCoreAdminClient($solariumClient, $logger, $guzzleClient);
+        $client = new SolrCoreAdminClient($endpointAccessor, $logger, $guzzleClient);
         $response = $client->reload();
 
         $this->assertEquals(401, $response->getStatusCode());
@@ -71,10 +75,12 @@ class SolrCoreAdminClientTest extends MockeryTestCase
         $endpoint->shouldReceive('getBaseUri')->andReturn('http://i.love.solr/');
         $endpoint->shouldReceive('getCore')->andReturn('core1');
 
-        $solariumClient = m::mock(SolariumClient::class);
-        $solariumClient->shouldReceive('getEndpoint')->andReturn($endpoint);
+        $endpointAccessor = m::mock(SolrEndpointAccessorInterface::class)
+            ->shouldReceive('getEndpointForKey')
+            ->andReturn($endpoint)
+            ->getMock();
 
-        $client = new SolrCoreAdminClient($solariumClient, null, $guzzleClient);
+        $client = new SolrCoreAdminClient($endpointAccessor, null, $guzzleClient);
 
         /**
          * For now we don't handle this.. so an exception will be thrown
