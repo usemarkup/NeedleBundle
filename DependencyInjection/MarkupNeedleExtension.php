@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\DependencyInjection;
 
+use Markup\NeedleBundle\Client\BackendClientServiceLocator;
 use Markup\NeedleBundle\Intercept\Definition as InterceptDefinition;
 use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
 use Markup\NeedleBundle\Suggest\SuggestServiceInterface;
@@ -24,6 +25,11 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class MarkupNeedleExtension extends Extension
 {
+    /**
+     * @deprecated (This is constant is transitional until there can be per-corpus client services.)
+     */
+    const UNITARY_BACKEND_CLIENT = 'markup_needle.solarium.client';
+
     /**
      * {@inheritDoc}
      */
@@ -77,7 +83,7 @@ class MarkupNeedleExtension extends Extension
         }
         $container->setParameter('markup_needle.backend', $backendType);
         if ($backendType === 'solr') {
-            $container->setAlias('markup_needle.solarium.client', $config['backend']['client']);
+            $container->setAlias(self::UNITARY_BACKEND_CLIENT, $config['backend']['client']);
         }
     }
 
@@ -105,6 +111,14 @@ class MarkupNeedleExtension extends Extension
             $scheduleEvents[$name] = $corpusConfig['schedule_index_on_events'];
         }
         $container->setParameter('markup_needle.schedule_events_by_corpus', $scheduleEvents);
+        //define client service locator
+        $locator = (new Definition(BackendClientServiceLocator::class))
+            ->setArguments([
+                array_fill_keys(array_keys($config['corpora']), new Reference(self::UNITARY_BACKEND_CLIENT)),
+            ])
+            ->setPublic(false)
+            ->addTag('container.service_locator');
+        $container->setDefinition(BackendClientServiceLocator::class, $locator);
     }
 
     /**
