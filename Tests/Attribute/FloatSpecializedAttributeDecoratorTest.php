@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Attribute\FloatAttributeInterface;
 use Markup\NeedleBundle\Attribute\FloatSpecializedAttributeDecorator;
 use Markup\NeedleBundle\Attribute\SpecializedAttributeInterface;
@@ -23,10 +24,9 @@ class FloatSpecializedAttributeDecoratorTest extends MockeryTestCase
      */
     private $decorator;
 
-
     protected function setUp()
     {
-        $this->filter = m::mock(SpecializedAttributeInterface::class);
+        $this->filter = m::mock(implode(',', [SpecializedAttributeInterface::class, AttributeInterface::class]));
         $this->decorator = new FloatSpecializedAttributeDecorator($this->filter);
     }
 

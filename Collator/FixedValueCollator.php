@@ -31,7 +31,7 @@ class FixedValueCollator implements CollatorInterface
         $position2 = array_search($value2, $this->values);
         if (false !== $position1 && false !== $position2) {
             //both are in list
-            $difference = $position1 - $position2;
+            $difference = intval($position1) - intval($position2);
             if ($difference === 0) {
                 return 0;
             }

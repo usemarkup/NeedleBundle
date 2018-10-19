@@ -43,7 +43,7 @@ class CompositeFacetSetIterator extends \ArrayIterator
     public function current()
     {
         //some quite specific logic here for now...
-        $facet = new ArbitraryFacetField(new Filter\SimpleFilter(parent::key()));
+        $facet = new ArbitraryFacetField(new Filter\SimpleFilter(strval(parent::key())));
         $parentCurrent = parent::current();
 
         return new FacetSet($facet, new FacetSetArrayIterator(parent::current()));

@@ -44,7 +44,7 @@ class RouteInterceptMapper implements TypedInterceptMapperInterface
         $route = $properties['route'];
         $routeParams = (isset($properties['params'])) ? $properties['params'] : [];
         try {
-            $uri = $this->urlGenerator->generate($route, $routeParams, true);
+            $uri = $this->urlGenerator->generate($route, $routeParams, UrlGeneratorInterface::ABSOLUTE_URL);
         } catch (RouteNotFoundException $e) {
             throw new UnresolvedInterceptException(sprintf('Route "%s" could not be resolved.', $route));
         }

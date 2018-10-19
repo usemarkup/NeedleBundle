@@ -18,14 +18,10 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     private $selectQuery;
 
     /**
-     * @var SearchContextInterface
+     * @var SearchContextInterface|null
      */
     private $searchContext;
 
-    /**
-     * @param SelectQueryInterface        $selectQuery
-     * @param SearchContextInterface|null $searchContext
-     */
     public function __construct(
         SelectQueryInterface $selectQuery,
         SearchContextInterface $searchContext = null

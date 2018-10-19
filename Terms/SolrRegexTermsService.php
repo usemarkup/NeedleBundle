@@ -25,7 +25,7 @@ class SolrRegexTermsService extends AbstractSolrTermsService implements TermsSer
         }
 
         $suggestQuery->setFields($field);
-        $suggestQuery->setRegex(sprintf('.*%s.*', preg_quote($query->getSearchTerm())));
+        $suggestQuery->setRegex(sprintf('.*%s.*', preg_quote((is_string($query->getSearchTerm())) ? $query->getSearchTerm() : '')));
         $suggestQuery->setSort('count');
 
         try {

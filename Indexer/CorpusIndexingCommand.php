@@ -229,10 +229,7 @@ class CorpusIndexingCommand
         return $this->solarium;
     }
 
-    /**
-     * @return CorpusInterface
-     **/
-    private function getCorpus()
+    private function getCorpus(): ?CorpusInterface
     {
         return $this->corpusProvider->fetchNamedCorpus($this->corpusName);
     }
@@ -260,8 +257,12 @@ class CorpusIndexingCommand
         if (null !== $this->subjectIteration) {
             return $this->subjectIteration;
         }
+        $corpus = $this->getCorpus();
+        if (!$corpus) {
+            return new \ArrayIterator();
+        }
 
-        return $this->formIteratorFor($this->getCorpus()->getSubjectIteration());
+        return $this->formIteratorFor($corpus->getSubjectIteration());
     }
 
     /**
@@ -282,7 +283,12 @@ class CorpusIndexingCommand
      **/
     private function getSubjectMapper()
     {
-        return $this->subjectMapperProvider->fetchMapperForCorpus($this->getCorpus()->getName());
+        $corpus = $this->getCorpus();
+        if (!$corpus) {
+            throw new \RuntimeException('A corpus was expected to have been set.');
+        }
+
+        return $this->subjectMapperProvider->fetchMapperForCorpus($corpus->getName());
     }
 
     /**
