@@ -15,7 +15,7 @@ class FacetValue implements FacetValueInterface
     private $count;
 
     /**
-     * @var \Closure
+     * @var callable
      */
     private $displayStrategy;
 

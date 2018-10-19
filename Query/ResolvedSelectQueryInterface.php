@@ -75,7 +75,7 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
     /**
      * Gets a single field on which the incoming documents should be aggregated
      *
-     * @return string
+     * @return string|null
      */
     public function getGroupingField();
 

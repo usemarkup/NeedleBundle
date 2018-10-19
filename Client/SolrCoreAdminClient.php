@@ -69,7 +69,10 @@ class SolrCoreAdminClient
         } catch (ClientException $e) {
             $this->logger->error(sprintf('Core admin operation failed using URL: %s', $url));
 
-            return new Response($e->getMessage(), $e->getResponse()->getStatusCode());
+            return new Response(
+                $e->getMessage(),
+                (!is_null($e->getResponse())) ? $e->getResponse()->getStatusCode() : 500
+            );
         }
 
         return new Response($response->getBody()->getContents(), $response->getStatusCode());

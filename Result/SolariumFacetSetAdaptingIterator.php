@@ -28,7 +28,7 @@ class SolariumFacetSetAdaptingIterator implements \OuterIterator, FacetSetIterat
     /**
      * The view display strategy for the facet.
      *
-     * @var \Closure
+     * @var callable
      */
     private $viewDisplayStrategy;
 

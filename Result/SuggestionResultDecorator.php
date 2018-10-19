@@ -237,18 +237,28 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
     private function getSuggestionResult()
     {
         if (!$this->resolved) {
-            if ($this->originalResult->getSpellcheckResult() && $this->originalResult->getTotalCount() === 0 && count($this->originalResult->getSpellcheckResult()->getSuggestions()) > 0) {
-                $suggestionQuery = clone $this->query;
-                $suggestions = $this->originalResult->getSpellcheckResult()->getSuggestions();
-                $suggestion = $suggestions[0];
-                if ($suggestionQuery instanceof SettableSelectQuery) {
-                    $suggestionQuery->setSearchTerm($suggestion->getWord());
-                    $this->suggestionResult = $this->searchService->executeQuery($suggestionQuery);
-                }
-            }
+            $this->resolveIfPossible();
             $this->resolved = true;
         }
 
         return $this->suggestionResult ?: $this->originalResult;
+    }
+
+    private function resolveIfPossible()
+    {
+        $spellcheckResult = $this->originalResult->getSpellcheckResult();
+        if (!$spellcheckResult) {
+            return;
+        }
+        if ($this->originalResult->getTotalCount() !== 0 || count($spellcheckResult->getSuggestions()) === 0) {
+            return;
+        }
+        $suggestionQuery = clone $this->query;
+        $suggestions = $spellcheckResult->getSuggestions();
+        $suggestion = $suggestions[0];
+        if ($suggestionQuery instanceof SettableSelectQuery) {
+            $suggestionQuery->setSearchTerm($suggestion->getWord());
+            $this->suggestionResult = $this->searchService->executeQuery($suggestionQuery);
+        }
     }
 }

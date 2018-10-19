@@ -35,7 +35,12 @@ class AttributeSpecializationContextGroup
             $key[$specializationName] = $specializationContext->getValue();
         }
 
-        return json_encode($key);
+        $json = json_encode($key);
+        if (!$json) {
+            throw new \RuntimeException('Unexpected JSON encode error.');
+        }
+
+        return $json;
     }
 
     /**

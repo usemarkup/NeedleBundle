@@ -27,7 +27,7 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
     /**
      * {@inheritDoc}
      */
-    public function getContext(AttributeSpecialization $specialization)
+    public function getContext(AttributeSpecializationInterface $specialization)
     {
         foreach ($this->attributeSpecializationCurrentlyApplicableContextProviders as $provider) {
             if ($provider->getSpecialization()->getName() === $specialization->getName()) {
@@ -40,7 +40,7 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
     /**
      * {@inheritDoc}
      */
-    public function getContexts(AttributeSpecialization $specialization)
+    public function getContexts(AttributeSpecializationInterface $specialization)
     {
         foreach ($this->attributeSpecializationContextProviders as $provider) {
             if ($provider->getSpecialization()->getName() === $specialization->getName()) {

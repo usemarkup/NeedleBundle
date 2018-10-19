@@ -76,7 +76,7 @@ abstract class AbstractSolrManagedResourcesClient
         try {
             $response = $this->client->get($url);
         } catch (ClientException $e) {
-            return new Response($e->getMessage(), $e->getResponse()->getStatusCode());
+            return new Response($e->getMessage(), $this->getStatusCodeForClientException($e));
         }
 
         return new Response($response->getBody()->getContents(), $response->getStatusCode());
@@ -146,7 +146,7 @@ abstract class AbstractSolrManagedResourcesClient
         try {
             $response = $this->client->put($url, ['body' => json_encode($data)]);
         } catch (ClientException $e) {
-            return new Response($e->getMessage(), $e->getResponse()->getStatusCode());
+            return new Response($e->getMessage(), $this->getStatusCodeForClientException($e));
         }
 
         $this->solrCoreAdminClient->reload($endpointKey);
@@ -171,7 +171,7 @@ abstract class AbstractSolrManagedResourcesClient
         try {
             $response = $this->client->delete($url);
         } catch (ClientException $e) {
-            return new Response($e->getMessage(), $e->getResponse()->getStatusCode());
+            return new Response($e->getMessage(), $this->getStatusCodeForClientException($e));
         }
 
         $this->solrCoreAdminClient->reload($endpointKey);
@@ -194,7 +194,7 @@ abstract class AbstractSolrManagedResourcesClient
         try {
             $response = $this->client->get($url);
         } catch (ClientException $e) {
-            return new Response($e->getMessage(), $e->getResponse()->getStatusCode());
+            return new Response($e->getMessage(), $this->getStatusCodeForClientException($e));
         }
 
         return new Response($response->getBody()->getContents(), $response->getStatusCode());
@@ -221,5 +221,10 @@ abstract class AbstractSolrManagedResourcesClient
         $endpoint = $this->solarium->getEndpoint($endpointKey);
 
         return $endpoint->getBaseUri();
+    }
+
+    private function getStatusCodeForClientException(ClientException $exception): int
+    {
+        return (!is_null($exception->getResponse())) ? $exception->getResponse()->getStatusCode() : 500;
     }
 }

@@ -31,7 +31,8 @@
         "mockery/mockery": "^1.0",
         "symfony/templating": "^2.8|^3",
         "symfony/translation": "^2.8|^3",
-        "markup/coding-standard": "^0.9"
+        "markup/coding-standard": "^0.9",
+        "phpstan/phpstan-shim": "^0.10.3"
     },
     "repositories": [
         {

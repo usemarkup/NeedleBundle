@@ -58,6 +58,6 @@ class NormalizedListMatcher implements MatcherInterface
      **/
     private function normalizeString($str)
     {
-        return preg_replace('/\p{Mn}/u', '', \Normalizer::normalize(mb_strtolower($str, 'UTF-8'), \Normalizer::FORM_KD));
+        return preg_replace('/\p{Mn}/u', '', \Normalizer::normalize(mb_strtolower($str, 'UTF-8'), \Normalizer::FORM_KD)) ?? $str;
     }
 }

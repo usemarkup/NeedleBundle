@@ -26,7 +26,7 @@ class SolrPrefixTermsService extends AbstractSolrTermsService implements TermsSe
 
         $suggestQuery
             ->setFields($field)
-            ->setPrefix($query->getSearchTerm())
+            ->setPrefix((is_string($query->getSearchTerm())) ? $query->getSearchTerm() : '')
             ->setSort('count');
 
         try {

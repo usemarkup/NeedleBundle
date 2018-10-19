@@ -21,12 +21,12 @@ use Solarium\QueryType\Select\Result\DocumentInterface;
 class GroupedResultAdapter implements ResultInterface, \IteratorAggregate, \Countable
 {
     /**
-     * @vay array
+     * @vay ResultInterface
      */
     private $result;
 
     /**
-     * @param array $result
+     * @param ResultInterface $result
      */
     public function __construct($result)
     {

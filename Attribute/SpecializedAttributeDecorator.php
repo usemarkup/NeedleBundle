@@ -10,7 +10,7 @@ abstract class SpecializedAttributeDecorator implements SpecializedAttributeInte
     /**
      * The attribute being decorated.
      *
-     * @var SpecializedAttributeInterface|AttributeInterface
+     * @var SpecializedAttributeInterface&AttributeInterface
      **/
     private $attribute;
 
@@ -19,6 +19,9 @@ abstract class SpecializedAttributeDecorator implements SpecializedAttributeInte
      **/
     public function __construct(SpecializedAttributeInterface $attribute)
     {
+        if (!$attribute instanceof AttributeInterface) {
+            throw new \LogicException('Attribute passed of unexpected type.');
+        }
         $this->attribute = $attribute;
     }
 
