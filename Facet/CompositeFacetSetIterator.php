@@ -61,11 +61,11 @@ class CompositeFacetSetIterator extends \ArrayIterator
     {
         $delimiter = $this->getValueDelimiter();
         foreach ($this->facetSet as $compositeFacetValue) {
-            list($facetName, $facetValue) = explode($delimiter, $compositeFacetValue->getValue());
+            [$facetName, $facetValue] = explode($delimiter, $compositeFacetValue->getValue());
             if (!isset($this[$facetName])) {
                 $this[$facetName] = [];
             }
-            $this[$facetName][] = new FacetValue($facetValue, count($compositeFacetValue));
+            $this[$facetName][] = new FacetValue($facetValue ?? '', count($compositeFacetValue));
         }
         $this->parsed = true;
     }
