@@ -54,7 +54,7 @@ class RouteInterceptMapperTest extends TestCase
         $this->urlGenerator
             ->expects($this->any())
             ->method('generate')
-            ->with($this->equalTo($route), $this->equalTo($routeParams), $this->equalTo(true))
+            ->with($this->equalTo($route), $this->equalTo($routeParams), $this->equalTo(UrlGeneratorInterface::ABSOLUTE_URL))
             ->will($this->returnValue($uri));
         $intercept = $this->mapper->mapDefinitionToIntercept($definition);
         $this->assertInstanceOf('Markup\NeedleBundle\Intercept\InterceptInterface', $intercept);

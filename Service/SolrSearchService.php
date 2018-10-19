@@ -51,7 +51,7 @@ class SolrSearchService implements AsyncSearchServiceInterface
     private $solariumQueryBuilder;
 
     /**
-     * @var TemplatingEngine
+     * @var TemplatingEngine|null
      **/
     private $templating = null;
 
@@ -99,7 +99,10 @@ class SolrSearchService implements AsyncSearchServiceInterface
             function () use ($query) {
                 $solariumQueryBuilder = $this->getSolariumQueryBuilder();
 
-                $query = new ResolvedSelectQuery($query, $this->hasContext() ? $this->getContext() : null);
+                $query = new ResolvedSelectQuery(
+                    $query,
+                    ($this->getContext() instanceof SearchContextInterface) ? $this->getContext() : null
+                );
 
                 foreach ($this->decorators as $decorator) {
                     $query = $decorator->decorate($query);
@@ -108,7 +111,7 @@ class SolrSearchService implements AsyncSearchServiceInterface
 
                 //apply offset/limit
                 $maxPerPage = $query->getMaxPerPage();
-                if (null === $maxPerPage && $this->hasContext() && $query->getPageNumber() !== null) {
+                if (null === $maxPerPage && !is_null($this->getContext()) && $query->getPageNumber() !== null) {
                     $maxPerPage = $this->getContext()->getItemsPerPage() ?: null;
                 }
                 $solariumQuery->setRows($maxPerPage ?: self::INFINITY);
@@ -144,7 +147,7 @@ class SolrSearchService implements AsyncSearchServiceInterface
                 };
 
                 //set the strategy to fetch facet sets, as these are not handled by pagerfanta
-                if ($this->hasContext()) {
+                if (!is_null($this->getContext())) {
                     $result->setFacetSetStrategy(
                         new SolariumFacetSetsStrategy($resultClosure, $this->getContext(), $query->getRecord())
                     );
@@ -182,33 +185,11 @@ class SolrSearchService implements AsyncSearchServiceInterface
     }
 
     /**
-     * @return bool
+     * Gets the context for the search.  Returns null if none set.
      **/
-    private function hasContext()
+    private function getContext(): ?SearchContextInterface
     {
-        return !is_null($this->context);
-    }
-
-    /**
-     * Gets the context for the search.  Returns false if none set.
-     *
-     * @return SearchContextInterface|bool
-     **/
-    private function getContext()
-    {
-        if (null === $this->context) {
-            return false;
-        }
-
         return $this->context;
-    }
-
-    /**
-     * @return SolariumClient
-     **/
-    private function getSolariumClient()
-    {
-        return $this->solarium;
     }
 
     /**

@@ -52,7 +52,7 @@ class SolrSuggestService implements SuggestServiceInterface
     public function fetchSuggestions(SimpleQueryInterface $query)
     {
         $suggestQuery = $this->solarium->createSuggester();
-        $suggestQuery->setQuery($query->getSearchTerm());
+        $suggestQuery->setQuery((string) $query->getSearchTerm());
         $handler = $this->handlerProvider->getHandler();
         if ($handler) {
             $suggestQuery->setHandler($handler);

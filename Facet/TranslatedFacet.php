@@ -34,14 +34,14 @@ class TranslatedFacet implements AttributeInterface
     /**
      * A translator message domain.
      *
-     * @var string
+     * @var string|null
      **/
     private $messageDomain;
 
     /**
      * A search key for the facet.
      *
-     * @var string
+     * @var string|null
      **/
     private $searchKey = null;
 
@@ -106,16 +106,12 @@ class TranslatedFacet implements AttributeInterface
     }
 
     /**
-     * Gets the translator message domain.  Returns false if message domain not set.
+     * Gets the translator message domain.  Returns null if message domain not set.
      *
-     * @return string|bool
+     * @return string|null
      **/
     private function getMessageDomain()
     {
-        if (null === $this->messageDomain) {
-            return false;
-        }
-
         return $this->messageDomain;
     }
 

@@ -32,7 +32,12 @@ class AttributeSpecializationGroup
             return $s->getName();
         }, $this->specializations);
 
-        return json_encode($names);
+        $json = json_encode($names);
+        if (!$json) {
+            throw new \RuntimeException('Unexpected JSON encoding error.');
+        }
+
+        return $json;
     }
 
     /**

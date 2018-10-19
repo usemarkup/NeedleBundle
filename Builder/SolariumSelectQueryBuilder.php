@@ -41,13 +41,11 @@ class SolariumSelectQueryBuilder
      **/
     private $provideDebugOutput;
 
-    /**
-     * @param SolariumClient        $solarium
-     * @param FilterQueryLucenifier $lucenifier
-     * @param bool                  $provideDebugOutput
-     **/
-    public function __construct(SolariumClient $solarium, FilterQueryLucenifier $lucenifier, $provideDebugOutput = false)
-    {
+    public function __construct(
+        SolariumClient $solarium,
+        FilterQueryLucenifier $lucenifier,
+        bool $provideDebugOutput = false
+    ) {
         $this->solarium = $solarium;
         $this->lucenifier = $lucenifier;
         $this->provideDebugOutput = $provideDebugOutput;
@@ -64,7 +62,7 @@ class SolariumSelectQueryBuilder
 
         //if there is a search term, set it
         if ($query->hasSearchTerm()) {
-            $rawTerm = $query->getSearchTerm();
+            $rawTerm = is_string($query->getSearchTerm()) ? $query->getSearchTerm() : '';
             $termProcessor = new SearchTermProcessor();
             $luceneTerm = ($query->shouldUseFuzzyMatching())
                 ? $termProcessor->process($rawTerm, SearchTermProcessor::FILTER_NORMALIZE | SearchTermProcessor::FILTER_FUZZY_MATCHING)
@@ -81,6 +79,9 @@ class SolariumSelectQueryBuilder
 
         if ($shouldUseFacetValuesForRecordedQuery) {
             //pick out Lucene representations for the filters being applied on top of an underlying "base" query
+            if (null === $query->getRecord()) {
+                throw new \LogicException('Query was expected to contain a query recording.');
+            }
             $extraLuceneFilters = array_values(
                 array_diff(
                     $this->lucenifyFilterQueries($filterQueries),
@@ -143,9 +144,9 @@ class SolariumSelectQueryBuilder
                     $solariumFacets[] = $solariumQuery
                         ->getFacetSet()
                         ->createFacetRange($facet->getSearchKey())
-                        ->setStart($facet->getRangesStart())
-                        ->setEnd($facet->getRangesEnd())
-                        ->setGap($facet->getRangeSize());
+                        ->setStart((string) $facet->getRangesStart())
+                        ->setEnd((string) $facet->getRangesEnd())
+                        ->setGap((string) $facet->getRangeSize());
                 } else {
                     $facetSortOrder = $query->getSortOrderForFacet($facet);
 
@@ -232,7 +233,7 @@ class SolariumSelectQueryBuilder
         }
 
         //if there is a spellcheck request to apply, apply it
-        if ($query->getSpellcheck()) {
+        if (null !== $query->getSpellcheck()) {
             $solariumSpellcheck = $solariumQuery->getSpellcheck();
             if (null !== $query->getSpellcheck()->getResultLimit()) {
                 $solariumSpellcheck->setCount($query->getSpellcheck()->getResultLimit());

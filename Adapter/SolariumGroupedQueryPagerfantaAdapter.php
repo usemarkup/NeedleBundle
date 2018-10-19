@@ -36,18 +36,16 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
     private $endPoint;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $resultSetStart;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $resultSetRows;
 
     /**
-     * Constructor.
-     *
      * @param Client      $client A Solarium client.
      * @param Query $query  A Solarium select query.
      */
@@ -111,7 +109,9 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
      */
     public function getNbResults()
     {
-        return $this->getResultSet()->getNumFound();
+        $resultSet = $this->getResultSet();
+
+        return $resultSet->getNumFound();
     }
 
     /**
@@ -126,7 +126,7 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
      * @param int $start
      * @param int $rows
      *
-     * @return GroupedResultAdapter|null
+     * @return GroupedResultAdapter
      **/
     public function getResultSet($start = null, $rows = null)
     {
@@ -138,7 +138,7 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
             $this->clearResultSet();
         }
 
-        if ($this->resultSetEmpty()) {
+        if (null === $this->resultSet) {
             $this->resultSet = $this->createResultSet();
         }
 
@@ -163,9 +163,12 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
 
     private function modifyQuery()
     {
-        $this->query
-            ->setStart($this->resultSetStart)
-            ->setRows($this->resultSetRows);
+        if (null !== $this->resultSetStart) {
+            $this->query->setStart($this->resultSetStart);
+        }
+        if (null !== $this->resultSetRows) {
+            $this->query->setRows($this->resultSetRows);
+        }
     }
 
     private function createResultSet()
@@ -178,11 +181,6 @@ class SolariumGroupedQueryPagerfantaAdapter implements AdapterInterface
     private function clearResultSet()
     {
         $this->resultSet = null;
-    }
-
-    private function resultSetEmpty()
-    {
-        return $this->resultSet === null;
     }
 
     public function setEndPoint($endPoint)

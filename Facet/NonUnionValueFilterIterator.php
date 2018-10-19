@@ -16,14 +16,10 @@ class NonUnionValueFilterIterator extends \FilterIterator
     private $facetSet;
 
     /**
-     * @var SelectQueryInterface
+     * @var SelectQueryInterface|null
      */
     private $originalQuery;
 
-    /**
-     * @param \Iterator            $facetValues
-     * @param SelectQueryInterface $originalQuery
-     */
     public function __construct(\Iterator $facetValues, FacetSetInterface $facetSet, SelectQueryInterface $originalQuery = null)
     {
         parent::__construct($facetValues);

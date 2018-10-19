@@ -10,13 +10,10 @@ use Markup\NeedleBundle\Query\SelectQueryInterface;
 class FilterNonUnionValuesFacetSetDecorator extends FacetSetDecorator
 {
     /**
-     * @var SelectQueryInterface
+     * @var SelectQueryInterface|null
      */
     private $originalQuery;
 
-    /**
-     * @param SelectQueryInterface $originalQuery
-     */
     public function __construct(SelectQueryInterface $originalQuery = null)
     {
         $this->originalQuery = $originalQuery;

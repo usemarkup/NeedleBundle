@@ -28,7 +28,7 @@ class AttributeGenericSpecializationContext implements AttributeSpecializationCo
     public function getValue()
     {
         if (is_string($this->data) || is_numeric($this->data)) {
-            return $this->data;
+            return (string) $this->data;
         }
         if (is_object($this->data)) {
             if (method_exists($this->data, 'getKey')) {

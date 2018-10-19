@@ -31,7 +31,7 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
     /**
      * The value display strategy for the attribute.
      *
-     * @var \Closure
+     * @var callable
      */
     private $valueDisplayStrategy;
 
@@ -39,9 +39,9 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
      * @param string   $name
      * @param string   $key
      * @param string   $displayName
-     * @param \Closure $valueDisplayStrategy
+     * @param callable $valueDisplayStrategy
      **/
-    public function __construct($name, $key = null, $displayName = null, \Closure $valueDisplayStrategy = null)
+    public function __construct($name, $key = null, $displayName = null, callable $valueDisplayStrategy = null)
     {
         $this->name = $name;
         $this->key = $key ?: $name;
@@ -79,7 +79,7 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
     /**
      * Gets a display strategy closure which takes a value as a parameter and emits a displayable value.
      *
-     * @return \Closure|null
+     * @return callable
      */
     public function getValueDisplayStrategy()
     {

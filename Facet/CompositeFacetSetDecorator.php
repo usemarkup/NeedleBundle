@@ -36,7 +36,9 @@ class CompositeFacetSetDecorator extends FacetSetDecorator
             }
             $decorator->decorate($decorators[$index - 1]);
         }
-        parent::decorate($decorator);
+        if (null !== $decorator) {
+            parent::decorate($decorator);
+        }
 
         return $this;
     }
