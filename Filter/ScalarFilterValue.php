@@ -44,6 +44,6 @@ class ScalarFilterValue implements FilterValueInterface
 
     public function __toString()
     {
-        return $this->scalar;
+        return (string) $this->scalar;
     }
 }

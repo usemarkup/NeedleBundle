@@ -58,15 +58,6 @@ class ConfiguredContext implements SearchContextInterface
      */
     private $interceptorProvider;
 
-    /**
-     * @param ContextConfigurationInterface      $config
-     * @param AttributeProviderInterface         $attributeProvider
-     * @param FacetProviderInterface             $facetProvider
-     * @param FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
-     * @param CollatorProviderInterface          $facetCollatorProvider
-     * @param SortOrderProviderInterface         $facetSortOrderProvider
-     * @param ConfiguredInterceptorProvider      $interceptorProvider
-     */
     public function __construct(
         ContextConfigurationInterface $config,
         AttributeProviderInterface $attributeProvider,
@@ -104,7 +95,11 @@ class ConfiguredContext implements SearchContextInterface
     {
         $facets = [];
         foreach ($this->config->getDefaultFacetingAttributes() as $facetName) {
-            $facets[] = $this->facetProvider->getFacetByName($facetName);
+            $facet = $this->facetProvider->getFacetByName($facetName);
+            if (!$facet) {
+                continue;
+            }
+            $facets[] = $facet;
         }
 
         return $facets;
@@ -182,7 +177,7 @@ class ConfiguredContext implements SearchContextInterface
      * Gets the facet set decorator to apply for a specific facet. (This can determine how a facet set renders.) Returns false if no decoration to be applied.
      *
      * @param  AttributeInterface                                         $facet
-     * @return \Markup\NeedleBundle\Facet\FacetSetDecoratorInterface|bool
+     * @return \Markup\NeedleBundle\Facet\FacetSetDecoratorInterface|null
      **/
     public function getSetDecoratorForFacet(AttributeInterface $facet)
     {
