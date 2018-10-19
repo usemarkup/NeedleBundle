@@ -18,7 +18,11 @@ class SimpleFacetProvider implements FacetProviderInterface
     public function getFacetByName($name)
     {
         $filterProvider = new SimpleFilterProvider();
+        $filter = $filterProvider->getFilterByName($name);
+        if (null === $filter) {
+            return null;
+        }
 
-        return new FacetField($filterProvider->getFilterByName($name));
+        return new FacetField($filter);
     }
 }

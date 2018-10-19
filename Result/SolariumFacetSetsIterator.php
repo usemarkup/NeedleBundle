@@ -35,7 +35,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
     private $searchContext;
 
     /**
-     * @var SelectQueryInterface
+     * @var SelectQueryInterface|null
      */
     private $originalQuery;
 
@@ -228,7 +228,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
     }
 
     /**
-     * @return \Closure
+     * @return \Closure|null
      */
     private function getViewDisplayStrategy()
     {

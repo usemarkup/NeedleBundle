@@ -43,7 +43,7 @@ class CompositeFacetSetIterator extends \ArrayIterator
     public function current()
     {
         //some quite specific logic here for now...
-        $facet = new ArbitraryFacetField(new Filter\SimpleFilter(parent::key()));
+        $facet = new ArbitraryFacetField(new Filter\SimpleFilter(strval(parent::key())));
         $parentCurrent = parent::current();
 
         return new FacetSet($facet, new FacetSetArrayIterator(parent::current()));
@@ -61,11 +61,11 @@ class CompositeFacetSetIterator extends \ArrayIterator
     {
         $delimiter = $this->getValueDelimiter();
         foreach ($this->facetSet as $compositeFacetValue) {
-            list($facetName, $facetValue) = explode($delimiter, $compositeFacetValue->getValue());
+            [$facetName, $facetValue] = explode($delimiter, $compositeFacetValue->getValue());
             if (!isset($this[$facetName])) {
                 $this[$facetName] = [];
             }
-            $this[$facetName][] = new FacetValue($facetValue, count($compositeFacetValue));
+            $this[$facetName][] = new FacetValue($facetValue ?? '', count($compositeFacetValue));
         }
         $this->parsed = true;
     }

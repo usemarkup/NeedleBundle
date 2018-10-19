@@ -27,7 +27,7 @@ class SearchTermProcessor
         }
 
         if ($filterBitMask & self::FILTER_NORMALIZE) {
-            $text = trim(preg_replace('/[\:\s~]+/', ' ', $text));
+            $text = trim(preg_replace('/[\:\s~]+/', ' ', $text) ?? $text);
         }
 
         if ($filterBitMask & self::FILTER_FUZZY_MATCHING) {
@@ -41,7 +41,7 @@ class SearchTermProcessor
                     '~'
                 ],
                 $text
-            );
+            ) ?? $text;
         }
 
         return $text;

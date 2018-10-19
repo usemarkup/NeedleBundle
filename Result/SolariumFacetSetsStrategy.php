@@ -29,7 +29,7 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
     private $searchContext;
 
     /**
-     * @var SelectQueryInterface
+     * @var SelectQueryInterface|null
      */
     private $originalQuery;
 

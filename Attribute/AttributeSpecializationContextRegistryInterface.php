@@ -14,14 +14,14 @@ interface AttributeSpecializationContextRegistryInterface
      *
      * @return AttributeSpecializationContextInterface
      */
-    public function getContext(AttributeSpecialization $specialization);
+    public function getContext(AttributeSpecializationInterface $specialization);
 
     /**
      * Get all contexts for the passed specialization
      *
      * @return AttributeSpecializationContextInterface[]|Collection
      */
-    public function getContexts(AttributeSpecialization $specialization);
+    public function getContexts(AttributeSpecializationInterface $specialization);
 
     /**
      * Gets a hash of all current SpecializationContexts with currently applicable values

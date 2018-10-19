@@ -43,6 +43,10 @@ class SolrSuggestResult implements \IteratorAggregate, SuggestResultInterface
      */
     public function getIterator()
     {
+        if (is_array($this->data)) {
+            return new \ArrayIterator($this->data);
+        }
+
         return $this->data->getIterator();
     }
 

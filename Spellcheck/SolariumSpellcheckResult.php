@@ -61,7 +61,7 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
                 return null;
             }
 
-            return new Suggestion($item->getWord(), $item->getNumFound());
+            return new Suggestion($item->getWord() ?: '', $item->getNumFound());
         }, $this->result->getSuggestions()), function (Suggestion $suggestion = null) {
             if (!$suggestion || !$suggestion->getWord()) {
                 return false;
