@@ -8,7 +8,6 @@ use Markup\NeedleBundle\Indexer\CorpusIndexingCommand;
 use Markup\NeedleBundle\Indexer\IndexCallbackProvider;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperInterface;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
-use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Solarium\Client;
@@ -31,7 +30,6 @@ class CorpusIndexingCommandTest extends TestCase
             ->expects($this->any())
             ->method('fetchMapperForCorpus')
             ->will($this->returnValue($this->subjectToDataMapper));
-        $this->filterQueryLucenifier = $this->createMock(FilterQueryLucenifier::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->indexCallbackProvider = $this->createMock(IndexCallbackProvider::class);
         $this->shouldReplaceDocuments = true;
@@ -40,7 +38,6 @@ class CorpusIndexingCommandTest extends TestCase
             $this->corpusProvider,
             $this->solariumClient,
             $this->subjectMapperProvider,
-            $this->filterQueryLucenifier,
             $this->eventDispatcher,
             $this->indexCallbackProvider,
             $this->shouldReplaceDocuments,
