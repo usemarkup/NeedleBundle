@@ -30,25 +30,25 @@ class SolariumSelectQueryBuilder
     private $solarium;
 
     /**
-     * @var FilterQueryLucenifier
-     **/
-    private $lucenifier;
-
-    /**
      * Whether the builder should request that Solr returns debug information.
      *
      * @var bool
      **/
     private $provideDebugOutput;
 
+    /**
+     * @var FilterQueryLucenifier
+     **/
+    private $lucenifier;
+
     public function __construct(
         SolariumClient $solarium,
-        FilterQueryLucenifier $lucenifier,
-        bool $provideDebugOutput = false
+        bool $provideDebugOutput = false,
+        ?FilterQueryLucenifier $lucenifier = null
     ) {
         $this->solarium = $solarium;
-        $this->lucenifier = $lucenifier;
         $this->provideDebugOutput = $provideDebugOutput;
+        $this->lucenifier = $lucenifier ?? new FilterQueryLucenifier();
     }
 
     /**

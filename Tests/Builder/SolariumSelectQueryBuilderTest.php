@@ -42,7 +42,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
     {
         $this->solarium = new Client();
         $this->lucenifier = m::mock(FilterQueryLucenifier::class);
-        $this->builder = new SolariumSelectQueryBuilder($this->solarium, $this->lucenifier);
+        $this->builder = new SolariumSelectQueryBuilder($this->solarium, false, $this->lucenifier);
     }
 
     public function testBuildWithNoOperationsReturnsSolariumSelectQuery()

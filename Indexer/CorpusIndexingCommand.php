@@ -43,11 +43,6 @@ class CorpusIndexingCommand
     private $subjectMapperProvider;
 
     /**
-     * @var FilterQueryLucenifier
-     **/
-    private $filterQueryLucenifier;
-
-    /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
@@ -82,6 +77,11 @@ class CorpusIndexingCommand
     private $shouldAllowNullFieldValues;
 
     /**
+     * @var FilterQueryLucenifier
+     **/
+    private $filterQueryLucenifier;
+
+    /**
      * @var string
      **/
     private $corpusName;
@@ -103,40 +103,28 @@ class CorpusIndexingCommand
      **/
     private $deleteQuery;
 
-    /**
-     * @param CorpusProvider            $corpusProvider
-     * @param Solarium                  $solarium
-     * @param SubjectDataMapperProvider $subjectMapperProvider
-     * @param FilterQueryLucenifier     $filterQueryLucenifier
-     * @param EventDispatcherInterface  $eventDispatcher
-     * @param IndexCallbackProvider     $indexCallbackProvider
-     * @param bool                      $shouldPreDelete
-     * @param LoggerInterface           $logger
-     * @param AppendIterator            $wrappingIterator
-     * @param bool                      $shouldAllowNullFieldValues
-     **/
     public function __construct(
         CorpusProvider $corpusProvider,
         Solarium $solarium,
         SubjectDataMapperProvider $subjectMapperProvider,
-        FilterQueryLucenifier $filterQueryLucenifier,
         EventDispatcherInterface $eventDispatcher,
         IndexCallbackProvider $indexCallbackProvider,
-        $shouldPreDelete = false,
+        bool $shouldPreDelete = false,
         LoggerInterface $logger = null,
         AppendIterator $wrappingIterator = null,
-        $shouldAllowNullFieldValues = true
+        bool $shouldAllowNullFieldValues = true,
+        ?FilterQueryLucenifier $filterQueryLucenifier = null
     ) {
         $this->corpusProvider = $corpusProvider;
         $this->solarium = $solarium;
         $this->subjectMapperProvider = $subjectMapperProvider;
-        $this->filterQueryLucenifier = $filterQueryLucenifier;
         $this->eventDispatcher = $eventDispatcher;
         $this->indexCallbackProvider = $indexCallbackProvider;
         $this->shouldPreDelete = $shouldPreDelete;
         $this->logger = $logger ?: new NullLogger();
         $this->wrappingIterator = $wrappingIterator ?: new AppendIterator();
         $this->shouldAllowNullFieldValues = $shouldAllowNullFieldValues;
+        $this->filterQueryLucenifier = $filterQueryLucenifier ?? new FilterQueryLucenifier();
         $this->iteratorAppended = false;
     }
 
