@@ -5,7 +5,6 @@ services:
             - '@markup_needle.corpus.provider'
             - '@markup_needle.solarium.client'
             - '@markup_needle.exporter.subject_data_mapper_provider'
-            - '@Markup\NeedleBundle\Lucene\FilterQueryLucenifier'
             - '@event_dispatcher'
             - false
             - '@logger'
@@ -25,7 +24,6 @@ services:
         class: Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder
         arguments:
             - '@markup_needle.solarium.client'
-            - '@Markup\NeedleBundle\Lucene\FilterQueryLucenifier'
             - '%markup_needle.debug%'
     needle:
         parent: Markup\NeedleBundle\Service\SolrSearchService
@@ -49,16 +47,6 @@ services:
         calls:
             - [ setLogger, [ '@logger' ] ]
             - [ setEnabled, [ '%markup_needle.solr.log_bad_requests_plugin.enabled%' ] ]
-
-    Markup\NeedleBundle\Lucene\Helper: ~
-    Markup\NeedleBundle\Lucene\FilterValueLucenifier:
-        arguments:
-            - '@Markup\NeedleBundle\Lucene\Helper'
-        public: false
-    Markup\NeedleBundle\Lucene\FilterQueryLucenifier:
-        arguments:
-            - '@Markup\NeedleBundle\Lucene\FilterValueLucenifier'
-        public: false
 
     Markup\NeedleBundle\Suggest\SolrSuggestService:
         arguments:

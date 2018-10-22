@@ -14,12 +14,9 @@ class FilterQueryLucenifier
      **/
     private $filterValueLucenifier;
 
-    /**
-     * @param FilterValueLucenifier $valueLucenifier
-     **/
-    public function __construct(FilterValueLucenifier $valueLucenifier)
+    public function __construct(?FilterValueLucenifier $valueLucenifier = null)
     {
-        $this->filterValueLucenifier = $valueLucenifier;
+        $this->filterValueLucenifier = $valueLucenifier ?? new FilterValueLucenifier();
     }
 
     /**

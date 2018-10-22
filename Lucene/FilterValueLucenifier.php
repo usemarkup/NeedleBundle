@@ -14,12 +14,9 @@ class FilterValueLucenifier
      **/
     private $helper;
 
-    /**
-     * @param HelperInterface $helper
-     **/
-    public function __construct(HelperInterface $helper)
+    public function __construct(?HelperInterface $helper = null)
     {
-        $this->helper = $helper;
+        $this->helper = $helper ?? new Helper();
     }
 
     /**
