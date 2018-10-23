@@ -86,3 +86,9 @@ services:
         arguments:
             - '@markup_needle.solarium.client'
         public: false
+
+    Markup\NeedleBundle\Synonyms\SolrSynonymClient:
+        arguments:
+            $solrManagedSynonymsClient: '@markup_needle.client.solr_managed_synonyms_client'
+        autowire: true
+    Markup\NeedleBundle\Synonyms\SynonymClientInterface: '@Markup\NeedleBundle\Synonyms\SolrSynonymClient'
