@@ -102,6 +102,7 @@ services:
     Markup\NeedleBundle\Suggest\SuggestServiceLocator:
         arguments:
             - []
+        autowire: true
         tags: ['container.service_locator']
     markup_needle.handler_provider.null:
         class: Markup\NeedleBundle\Query\NullHandlerProvider
