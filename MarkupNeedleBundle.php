@@ -2,17 +2,7 @@
 
 namespace Markup\NeedleBundle;
 
-use Markup\NeedleBundle\DependencyInjection\Compiler\AddCorporaPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\AddFacetValueCanonicalizersPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\AddIndexSchedulingEventsPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\AddSolariumPluginsPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\AddSpecializationContextFiltersPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\AddSuggestersPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\AddTermsPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\ConfigureServiceGeneratorsPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\CreateServiceCollectionsPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\RegisterSearchInterceptMappersPass;
-use Markup\NeedleBundle\DependencyInjection\Compiler\RegisterSubjectDataMappersPass;
+use Markup\NeedleBundle\DependencyInjection\Compiler as c;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -23,16 +13,17 @@ class MarkupNeedleBundle extends Bundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new CreateServiceCollectionsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1000);
-        $container->addCompilerPass(new ConfigureServiceGeneratorsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1000);
-        $container->addCompilerPass(new AddCorporaPass());
-        $container->addCompilerPass(new AddFacetValueCanonicalizersPass());
-        $container->addCompilerPass(new AddIndexSchedulingEventsPass());
-        $container->addCompilerPass(new RegisterSubjectDataMappersPass());
-        $container->addCompilerPass(new RegisterSearchInterceptMappersPass());
-        $container->addCompilerPass(new AddSolariumPluginsPass());
-        $container->addCompilerPass(new AddSuggestersPass());
-        $container->addCompilerPass(new AddTermsPass());
-        $container->addCompilerPass(new AddSpecializationContextFiltersPass());
+        $container->addCompilerPass(new c\CreateServiceCollectionsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1000);
+        $container->addCompilerPass(new c\ConfigureServiceGeneratorsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1000);
+        $container->addCompilerPass(new c\BuildSynonymClientLocatorPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 999);
+        $container->addCompilerPass(new c\AddCorporaPass());
+        $container->addCompilerPass(new c\AddFacetValueCanonicalizersPass());
+        $container->addCompilerPass(new c\AddIndexSchedulingEventsPass());
+        $container->addCompilerPass(new c\RegisterSubjectDataMappersPass());
+        $container->addCompilerPass(new c\RegisterSearchInterceptMappersPass());
+        $container->addCompilerPass(new c\AddSolariumPluginsPass());
+        $container->addCompilerPass(new c\AddSuggestersPass());
+        $container->addCompilerPass(new c\AddTermsPass());
+        $container->addCompilerPass(new c\AddSpecializationContextFiltersPass());
     }
 }
