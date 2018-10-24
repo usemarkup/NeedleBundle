@@ -6,7 +6,6 @@ namespace Markup\NeedleBundle\DependencyInjection\Compiler;
 
 use Markup\NeedleBundle\Client\SolrEndpointAccessor;
 use Markup\NeedleBundle\Client\SolrManagedSynonymsClient;
-use Markup\NeedleBundle\Corpus\CorpusBackendProvider;
 use Markup\NeedleBundle\Synonyms\NoopSynonymClient;
 use Markup\NeedleBundle\Synonyms\SolrSynonymClient;
 use Markup\NeedleBundle\Synonyms\SynonymClientServiceLocator;

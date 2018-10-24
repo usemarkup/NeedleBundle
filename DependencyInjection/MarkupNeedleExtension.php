@@ -57,7 +57,6 @@ class MarkupNeedleExtension extends Extension
         $this->loadSuggestHandler($config, $container);
         $this->loadTerms($config, $container);
         $this->loadTermsField($config, $container);
-        $this->defineServicesUsingFactories($container);
     }
 
     /**
@@ -225,7 +224,12 @@ class MarkupNeedleExtension extends Extension
      */
     private function loadSuggester(array $config, ContainerBuilder $container)
     {
-        $container->setParameter('markup_needle.suggester.alias', $config['suggester']);
+        $suggester = new Definition(
+            SuggestServiceInterface::class,
+            [$config['suggester']]
+        );
+        $this->setFactoryOnDefinition($suggester, SuggestServiceLocator::class, 'get');
+        $container->setDefinition('markup_needle.suggester', $suggester);
     }
 
     /**
@@ -244,6 +248,12 @@ class MarkupNeedleExtension extends Extension
     private function loadTerms(array $config, ContainerBuilder $container)
     {
         $container->setParameter('markup_needle.terms.alias', $config['terms_service']);
+        $terms = new Definition(
+            TermsServiceInterface::class,
+            ['%markup_needle.terms.alias%']
+        );
+        $this->setFactoryOnDefinition($terms, TermsServiceLocator::class, 'get');
+        $container->setDefinition('markup_needle.terms', $terms);
     }
 
     /**
@@ -253,25 +263,6 @@ class MarkupNeedleExtension extends Extension
     private function loadTermsField(array $config, ContainerBuilder $container)
     {
         $container->setAlias('markup_needle.terms_field', $config['terms_field_provider']);
-    }
-
-    private function defineServicesUsingFactories(ContainerBuilder $container)
-    {
-        //suggester service
-        $suggester = new Definition(
-            SuggestServiceInterface::class,
-            ['%markup_needle.suggester.alias%']
-        );
-        $this->setFactoryOnDefinition($suggester, SuggestServiceLocator::class, 'get');
-        $container->setDefinition('markup_needle.suggester', $suggester);
-
-        //terms service
-        $terms = new Definition(
-            TermsServiceInterface::class,
-            ['%markup_needle.terms.alias%']
-        );
-        $this->setFactoryOnDefinition($terms, TermsServiceLocator::class, 'get');
-        $container->setDefinition('markup_needle.terms', $terms);
     }
 
     private function setFactoryOnDefinition(Definition $definition, $factoryService, $factoryMethod)
