@@ -24,9 +24,9 @@ use Solarium\QueryType\Select\Query\Query;
 class SolariumSelectQueryBuilderTest extends MockeryTestCase
 {
     /**
-     * @var Client
+     * @var callable
      */
-    private $solarium;
+    private $queryGenerator;
 
     /**
      * @var FilterQueryLucenifier|m\MockInterface
@@ -40,15 +40,17 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
 
     public function setUp()
     {
-        $this->solarium = new Client();
+        $this->queryGenerator = function () {
+            return (new Client())->createSelect();
+        };
         $this->lucenifier = m::mock(FilterQueryLucenifier::class);
-        $this->builder = new SolariumSelectQueryBuilder($this->solarium, false, $this->lucenifier);
+        $this->builder = new SolariumSelectQueryBuilder(false, $this->lucenifier);
     }
 
     public function testBuildWithNoOperationsReturnsSolariumSelectQuery()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
-        $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
+        $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery, $this->queryGenerator);
         $this->assertInstanceOf(Query::class, $query);
     }
 
@@ -62,7 +64,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
         $genericQuery
             ->shouldReceive('hasSearchTerm')
             ->andReturn(true);
-        $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
+        $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery, $this->queryGenerator);
         $this->assertEquals($term, $query->getQuery());
     }
 
@@ -93,7 +95,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
         $genericQuery
             ->shouldReceive('getFilterQueries')
             ->andReturn([$filterQuery]);
-        $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
+        $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery, $this->queryGenerator);
         $filterQueries = $query->getFilterQueries();
         $this->assertCount(
             1,
@@ -146,7 +148,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
         $genericQuery
             ->shouldReceive('getFields')
             ->andReturn(array_merge($stringFields, [$attribute]));
-        $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery);
+        $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery, $this->queryGenerator);
         $this->assertEquals($expectedFields, $query->getFields());
     }
 }
