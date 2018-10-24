@@ -95,8 +95,12 @@ class SolrSearchService implements AsyncSearchServiceInterface
      **/
     public function executeQueryAsync(SelectQueryInterface $query)
     {
+        $createSolariumQuery = function () {
+            return $this->solarium->createSelect();
+        };
+
         return coroutine(
-            function () use ($query) {
+            function () use ($query, $createSolariumQuery) {
                 $solariumQueryBuilder = $this->getSolariumQueryBuilder();
 
                 $query = new ResolvedSelectQuery(
@@ -107,7 +111,7 @@ class SolrSearchService implements AsyncSearchServiceInterface
                 foreach ($this->decorators as $decorator) {
                     $query = $decorator->decorate($query);
                 }
-                $solariumQuery = $solariumQueryBuilder->buildSolariumQueryFromGeneric($query);
+                $solariumQuery = $solariumQueryBuilder->buildSolariumQueryFromGeneric($query, $createSolariumQuery);
 
                 //apply offset/limit
                 $maxPerPage = $query->getMaxPerPage();

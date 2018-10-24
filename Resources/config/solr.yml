@@ -23,7 +23,6 @@ services:
     markup_needle.query.builder.solarium:
         class: Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder
         arguments:
-            - '@markup_needle.solarium.client'
             - '%markup_needle.debug%'
     needle:
         parent: Markup\NeedleBundle\Service\SolrSearchService

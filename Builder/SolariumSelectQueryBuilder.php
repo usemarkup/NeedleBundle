@@ -10,10 +10,10 @@ use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Lucene\SearchTermProcessor;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
-use Solarium\Client as SolariumClient;
 use Solarium\QueryType\Select\Query\Component\Facet\Field;
 use Solarium\QueryType\Select\Query\Component\Facet\Range;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
+use Solarium\QueryType\Select\Query\Query;
 
 /**
  * An object that can build a Solarium select query that maps a generic select search query.
@@ -21,13 +21,6 @@ use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 class SolariumSelectQueryBuilder
 {
     const ALL_SIGNIFIER = '*:*';
-
-    /**
-     * A Solarium client.
-     *
-     * @var SolariumClient
-     **/
-    private $solarium;
 
     /**
      * Whether the builder should request that Solr returns debug information.
@@ -42,11 +35,9 @@ class SolariumSelectQueryBuilder
     private $lucenifier;
 
     public function __construct(
-        SolariumClient $solarium,
         bool $provideDebugOutput = false,
         ?FilterQueryLucenifier $lucenifier = null
     ) {
-        $this->solarium = $solarium;
         $this->provideDebugOutput = $provideDebugOutput;
         $this->lucenifier = $lucenifier ?? new FilterQueryLucenifier();
     }
@@ -56,9 +47,12 @@ class SolariumSelectQueryBuilder
      *
      * @return SolariumQuery
      **/
-    public function buildSolariumQueryFromGeneric(ResolvedSelectQueryInterface $query)
-    {
-        $solariumQuery = $this->getSolariumClient()->createSelect();
+    public function buildSolariumQueryFromGeneric(
+        ResolvedSelectQueryInterface $query,
+        callable $solariumQueryGenerator
+    ) {
+        /** @var Query $solariumQuery */
+        $solariumQuery = $solariumQueryGenerator();
 
         //if there is a search term, set it
         if ($query->hasSearchTerm()) {
@@ -366,13 +360,5 @@ class SolariumSelectQueryBuilder
         }
 
         return $luceneFilters;
-    }
-
-    /**
-     * @return SolariumClient
-     **/
-    private function getSolariumClient()
-    {
-        return $this->solarium;
     }
 }
