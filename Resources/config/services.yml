@@ -136,3 +136,4 @@ services:
             - '@markup_needle.specialization_context_group_filter'
     markup_needle.specialization_context_group_filter:
         class: Markup\NeedleBundle\Attribute\CompositeSpecializationContextGroupFilter
+    Markup\NeedleBundle\Synonyms\NoopSynonymClient: ~
