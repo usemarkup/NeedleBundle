@@ -4,6 +4,7 @@ namespace Markup\NeedleBundle\DependencyInjection;
 
 use Markup\NeedleBundle\Client\BackendClientServiceLocator;
 use Markup\NeedleBundle\Context\ConfiguredContextProvider;
+use Markup\NeedleBundle\Corpus\CorpusBackendProvider;
 use Markup\NeedleBundle\Indexer\IndexCallbackProvider;
 use Markup\NeedleBundle\Intercept\Definition as InterceptDefinition;
 use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
@@ -129,13 +130,18 @@ class MarkupNeedleExtension extends Extension
         }
         $indexCallbackProvider->setArguments([$collections]);
         //define client service locator
-        $locator = (new Definition(BackendClientServiceLocator::class))
+        $clientLocator = (new Definition(BackendClientServiceLocator::class))
             ->setArguments([
                 array_fill_keys(array_keys($config['corpora']), new Reference(self::UNITARY_BACKEND_CLIENT)),
             ])
             ->setPublic(false)
             ->addTag('container.service_locator');
-        $container->setDefinition(BackendClientServiceLocator::class, $locator);
+        $container->setDefinition(BackendClientServiceLocator::class, $clientLocator);
+        $backendLookup = array_fill_keys(array_keys($config['corpora']), '%markup_needle.backend%');
+        $backendProvider = (new Definition(CorpusBackendProvider::class))
+            ->setArguments([$backendLookup])
+            ->setPublic(false);
+        $container->setDefinition(CorpusBackendProvider::class, $backendProvider);
     }
 
     /**
