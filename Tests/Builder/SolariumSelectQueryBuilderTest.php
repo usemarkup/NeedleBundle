@@ -7,7 +7,6 @@ use Markup\NeedleBundle\Attribute\AttributeSpecialization;
 use Markup\NeedleBundle\Attribute\AttributeSpecializationContextInterface;
 use Markup\NeedleBundle\Attribute\SpecializedAttribute;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
-use Markup\NeedleBundle\Exception\IllegalContextValueException;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
