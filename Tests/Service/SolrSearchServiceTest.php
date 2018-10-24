@@ -103,9 +103,12 @@ class SolrSearchServiceTest extends MockeryTestCase
 
         $this->solariumQueryBuilder
             ->shouldReceive('buildSolariumQueryFromGeneric')
-            ->with(m::on(function ($query) {
-                return $query->getSearchTerm() ===  'I have been decorated';
-            }))
+            ->with(
+                m::on(function ($query) {
+                    return $query->getSearchTerm() ===  'I have been decorated';
+                }),
+                m::any()
+            )
             ->andReturn($solariumQuery);
         $solariumResult = m::mock(Result::class);
         $this->solarium
