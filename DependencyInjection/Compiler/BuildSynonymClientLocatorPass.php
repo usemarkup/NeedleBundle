@@ -17,16 +17,12 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class BuildSynonymClientLocatorPass implements CompilerPassInterface
 {
+    use AccessBackendLookupTrait;
     use AddServiceLocatorArgumentTrait;
 
     public function process(ContainerBuilder $container)
     {
-        $backendLookup = array_map(
-            function (string $parameter) use ($container) {
-                return $this->resolveParameter($parameter, $container);
-            },
-            $container->getDefinition(CorpusBackendProvider::class)->getArgument(0)
-        );
+        $backendLookup = $this->getBackendLookup($container);
         $locator = (new Definition(SynonymClientServiceLocator::class))
             ->setArguments([[]])
             ->addTag('container.service_locator');
@@ -73,14 +69,5 @@ class BuildSynonymClientLocatorPass implements CompilerPassInterface
         }
 
         return $definition;
-    }
-
-    private function resolveParameter(string $parameter, ContainerBuilder $container): string
-    {
-        if (!preg_match('/^%[\w\.]+%$/', $parameter)) {
-            return $parameter;
-        }
-
-        return $container->getParameter(substr($parameter, 1, strlen($parameter)-2));
     }
 }
