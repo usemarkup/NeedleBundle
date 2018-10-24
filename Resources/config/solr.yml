@@ -20,22 +20,21 @@ services:
             - markup_needle.exporter.closure.prototype
         tags: [markup_needle.service_generator]
         deprecated: ~
-    markup_needle.query.builder.solarium:
-        class: Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder
+    Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder:
         arguments:
             - '%markup_needle.debug%'
     needle:
         parent: Markup\NeedleBundle\Service\SolrSearchService
         arguments:
             - '@markup_needle.solarium.client'
-            - '@markup_needle.query.builder.solarium'
+            - '@Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder'
             - '@?templating'
         deprecated: "The '%service_id%' service has been deprecated. Use Markup\\NeedleBundle\\Service\\SearchServiceLocator and fetch the service using a corpus instead."
         public: true
     Markup\NeedleBundle\Service\SolrSearchService:
         arguments:
             - '@markup_needle.solarium.client'
-            - '@markup_needle.query.builder.solarium'
+            - '@Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder'
             - '@?templating'
         public: false
         tags:
