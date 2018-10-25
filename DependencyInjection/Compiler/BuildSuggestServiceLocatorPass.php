@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-class AddSuggestersPass implements CompilerPassInterface
+class BuildSuggestServiceLocatorPass implements CompilerPassInterface
 {
     use AccessBackendLookupTrait;
     use AddServiceLocatorArgumentTrait;
