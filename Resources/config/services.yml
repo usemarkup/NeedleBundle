@@ -120,16 +120,11 @@ services:
     markup_needle.registry.attribute_specialization_context:
         class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextRegistry
 
-    markup_needle.terms.noop:
-        class: Markup\NeedleBundle\Terms\NoopTermsService
-        tags:
-            - { name: markup_needle.terms, alias: noop }
     Markup\NeedleBundle\Terms\TermsServiceLocator:
         arguments:
             - []
         tags: ['container.service_locator']
-    markup_needle.terms_field.null:
-        class: Markup\NeedleBundle\Terms\NullTermsFieldProvider
+    Markup\NeedleBundle\Terms\NullTermsFieldProvider: ~
     markup_needle.registry.attribute.attribute_specialization_context_group:
         class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextGroupRegistry
         arguments:
