@@ -28,7 +28,8 @@ use function GuzzleHttp\Promise\promise_for;
  * Composes a SelectQuery & SearchContext (into a ResolvedQuery), converts it into a solr query and
  * executes the query (using Solarium) and then returns a result (as a PagerfantaResultAdapter)
  */
-class SolrSearchService implements AsyncSearchServiceInterface
+
+class SolrSearchService implements AsyncSearchServiceInterface, DecorableSearchServiceInterface
 {
     /**
      * Solr needs specification of a very large number for a 'view all' function.
@@ -181,11 +182,9 @@ class SolrSearchService implements AsyncSearchServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator)
+    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator): void
     {
         $this->decorators->add($decorator);
-
-        return $this;
     }
 
     /**
