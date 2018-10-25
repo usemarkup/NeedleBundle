@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\DependencyInjection;
 
+use Markup\NeedleBundle\Terms\NullTermsFieldProvider;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -116,7 +117,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('noop')
                 ->end()
                 ->scalarNode('terms_field_provider')
-                    ->defaultValue('markup_needle.terms_field.null')
+                    ->defaultValue(NullTermsFieldProvider::class)
                 ->end()
             ->end();
 

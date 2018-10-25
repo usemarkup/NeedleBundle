@@ -25,19 +25,14 @@ abstract class AbstractSolrTermsService implements TermsServiceInterface
      */
     protected $fieldProvider;
 
-    /**
-     * @param Solarium                    $solarium
-     * @param LoggerInterface             $logger
-     * @param TermsFieldProviderInterface $fieldProvider
-     */
     public function __construct(
         Solarium $solarium,
-        LoggerInterface $logger = null,
-        TermsFieldProviderInterface $fieldProvider
+        TermsFieldProviderInterface $fieldProvider,
+        LoggerInterface $logger = null
     ) {
         $this->solarium = $solarium;
-        $this->setLogger($logger);
         $this->fieldProvider = $fieldProvider;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -46,16 +41,4 @@ abstract class AbstractSolrTermsService implements TermsServiceInterface
      * @return TermsResultInterface
      */
     abstract public function fetchTerms(SimpleQueryInterface $query);
-
-    /**
-     * @param LoggerInterface $logger
-     *
-     * @return self
-     */
-    public function setLogger(LoggerInterface $logger = null)
-    {
-        $this->logger = $logger ?: new NullLogger();
-
-        return $this;
-    }
 }
