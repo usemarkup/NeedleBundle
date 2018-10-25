@@ -7,11 +7,7 @@ use Markup\NeedleBundle\Context\ConfiguredContextProvider;
 use Markup\NeedleBundle\Corpus\CorpusBackendProvider;
 use Markup\NeedleBundle\Intercept\Definition as InterceptDefinition;
 use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
-use Markup\NeedleBundle\Suggest\SuggestServiceInterface;
-use Markup\NeedleBundle\Suggest\SuggestServiceLocator;
 use Markup\NeedleBundle\Terms\TermsFieldProviderInterface;
-use Markup\NeedleBundle\Terms\TermsServiceInterface;
-use Markup\NeedleBundle\Terms\TermsServiceLocator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -55,7 +51,6 @@ class MarkupNeedleExtension extends Extension
         $this->loadLogSettings($config, $container);
         $this->loadContextServices($config, $container);
         $this->loadSuggestHandler($config, $container);
-        $this->loadTerms($config, $container);
         $this->loadTermsField($config, $container);
     }
 
@@ -233,28 +228,8 @@ class MarkupNeedleExtension extends Extension
      * @param array            $config
      * @param ContainerBuilder $container
      */
-    private function loadTerms(array $config, ContainerBuilder $container)
-    {
-        $container->setParameter('markup_needle.terms.alias', $config['terms_service']);
-        $terms = new Definition(
-            TermsServiceInterface::class,
-            ['%markup_needle.terms.alias%']
-        );
-        $this->setFactoryOnDefinition($terms, TermsServiceLocator::class, 'get');
-        $container->setDefinition('markup_needle.terms', $terms);
-    }
-
-    /**
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
     private function loadTermsField(array $config, ContainerBuilder $container)
     {
         $container->setAlias(TermsFieldProviderInterface::class, $config['terms_field_provider']);
-    }
-
-    private function setFactoryOnDefinition(Definition $definition, $factoryService, $factoryMethod)
-    {
-        $definition->setFactory([new Reference($factoryService), $factoryMethod]);
     }
 }
