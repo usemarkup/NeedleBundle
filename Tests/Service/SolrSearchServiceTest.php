@@ -4,6 +4,7 @@ namespace Markup\NeedleBundle\Tests\Service;
 
 use function GuzzleHttp\Promise\promise_for;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
+use Markup\NeedleBundle\Service\DecorableSearchServiceInterface;
 use Markup\NeedleBundle\Service\SolrSearchService;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -84,6 +85,7 @@ class SolrSearchServiceTest extends MockeryTestCase
 
     public function testCanAddDecorator()
     {
+        $this->assertInstanceOf(DecorableSearchServiceInterface::class, $this->service);
         /** @var ResolvedSelectQueryDecoratorInterface|m\MockInterface $decorator */
         $decorator = m::mock(ResolvedSelectQueryDecoratorInterface::class);
         /** @var ResolvedSelectQueryInterface|m\MockInterface $decorated */
