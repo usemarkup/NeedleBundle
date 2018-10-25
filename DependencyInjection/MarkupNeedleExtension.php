@@ -9,6 +9,7 @@ use Markup\NeedleBundle\Intercept\Definition as InterceptDefinition;
 use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
 use Markup\NeedleBundle\Suggest\SuggestServiceInterface;
 use Markup\NeedleBundle\Suggest\SuggestServiceLocator;
+use Markup\NeedleBundle\Terms\TermsFieldProviderInterface;
 use Markup\NeedleBundle\Terms\TermsServiceInterface;
 use Markup\NeedleBundle\Terms\TermsServiceLocator;
 use Symfony\Component\Config\FileLocator;
@@ -125,6 +126,8 @@ class MarkupNeedleExtension extends Extension
             ->setArguments([$backendLookup])
             ->setPublic(false);
         $container->setDefinition(CorpusBackendProvider::class, $backendProvider);
+        $termsServiceLookup = array_fill_keys(array_keys($config['corpora']), $config['terms_service']);
+        $container->setParameter('markup_needle.terms_service_lookup', $termsServiceLookup);
     }
 
     /**
@@ -247,7 +250,7 @@ class MarkupNeedleExtension extends Extension
      */
     private function loadTermsField(array $config, ContainerBuilder $container)
     {
-        $container->setAlias('markup_needle.terms_field', $config['terms_field_provider']);
+        $container->setAlias(TermsFieldProviderInterface::class, $config['terms_field_provider']);
     }
 
     private function setFactoryOnDefinition(Definition $definition, $factoryService, $factoryMethod)

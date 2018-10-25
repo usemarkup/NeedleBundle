@@ -14,7 +14,7 @@ class SolrPrefixTermsServiceTest extends MockeryTestCase
     {
         $this->solarium = m::mock('Solarium\Client');
         $this->fieldProvider = m::mock(TermsFieldProviderInterface::class);
-        $this->terms = new SolrPrefixTermsService($this->solarium, null, $this->fieldProvider);
+        $this->terms = new SolrPrefixTermsService($this->solarium, $this->fieldProvider);
     }
 
     public function testIsTermsService()
