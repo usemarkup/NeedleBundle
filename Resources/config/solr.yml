@@ -30,13 +30,6 @@ services:
             - [ setLogger, [ '@logger' ] ]
             - [ setEnabled, [ '%markup_needle.solr.log_bad_requests_plugin.enabled%' ] ]
 
-    Markup\NeedleBundle\Suggest\SolrSuggestService:
-        arguments:
-            - '@markup_needle.solarium.client'
-            - '@logger'
-            - '@markup_needle.suggest_handler'
-        tags:
-            - { name: markup_needle.suggester, alias: solr }
     markup_needle.terms_regex.solr:
         class: Markup\NeedleBundle\Terms\SolrRegexTermsService
         arguments:
