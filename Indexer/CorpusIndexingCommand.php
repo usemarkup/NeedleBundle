@@ -53,11 +53,6 @@ class CorpusIndexingCommand
     private $eventDispatcher;
 
     /**
-     * @var IndexCallbackProvider
-     */
-    private $indexCallbackProvider;
-
-    /**
      * @var bool
      **/
     private $shouldPreDelete;
@@ -109,7 +104,6 @@ class CorpusIndexingCommand
      * @param SubjectDataMapperProvider $subjectMapperProvider
      * @param FilterQueryLucenifier     $filterQueryLucenifier
      * @param EventDispatcherInterface  $eventDispatcher
-     * @param IndexCallbackProvider     $indexCallbackProvider
      * @param bool                      $shouldPreDelete
      * @param LoggerInterface           $logger
      * @param AppendIterator            $wrappingIterator
@@ -121,7 +115,6 @@ class CorpusIndexingCommand
         SubjectDataMapperProvider $subjectMapperProvider,
         FilterQueryLucenifier $filterQueryLucenifier,
         EventDispatcherInterface $eventDispatcher,
-        IndexCallbackProvider $indexCallbackProvider,
         $shouldPreDelete = false,
         LoggerInterface $logger = null,
         AppendIterator $wrappingIterator = null,
@@ -132,7 +125,6 @@ class CorpusIndexingCommand
         $this->subjectMapperProvider = $subjectMapperProvider;
         $this->filterQueryLucenifier = $filterQueryLucenifier;
         $this->eventDispatcher = $eventDispatcher;
-        $this->indexCallbackProvider = $indexCallbackProvider;
         $this->shouldPreDelete = $shouldPreDelete;
         $this->logger = $logger ?: new NullLogger();
         $this->wrappingIterator = $wrappingIterator ?: new AppendIterator();
@@ -166,7 +158,7 @@ class CorpusIndexingCommand
         $documentGenerator->setUpdateQuery($updateQuery);
         $updateQuery->addDocuments(
             new DocumentFilterIterator(
-                new SubjectDocumentIterator($subjects, $documentGenerator, $this->indexCallbackProvider->getCallbacksForCorpus($this->getCorpus()))
+                new SubjectDocumentIterator($subjects, $documentGenerator)
             )
         );
         $updateQuery->addCommit();

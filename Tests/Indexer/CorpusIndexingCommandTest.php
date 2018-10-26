@@ -5,7 +5,6 @@ namespace Markup\NeedleBundle\Tests\Indexer;
 use Markup\NeedleBundle\Corpus\CorpusInterface;
 use Markup\NeedleBundle\Corpus\CorpusProvider;
 use Markup\NeedleBundle\Indexer\CorpusIndexingCommand;
-use Markup\NeedleBundle\Indexer\IndexCallbackProvider;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperInterface;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
@@ -33,7 +32,6 @@ class CorpusIndexingCommandTest extends TestCase
             ->will($this->returnValue($this->subjectToDataMapper));
         $this->filterQueryLucenifier = $this->createMock(FilterQueryLucenifier::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $this->indexCallbackProvider = $this->createMock(IndexCallbackProvider::class);
         $this->shouldReplaceDocuments = true;
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->command = new CorpusIndexingCommand(
@@ -42,7 +40,6 @@ class CorpusIndexingCommandTest extends TestCase
             $this->subjectMapperProvider,
             $this->filterQueryLucenifier,
             $this->eventDispatcher,
-            $this->indexCallbackProvider,
             $this->shouldReplaceDocuments,
             $this->logger
         );
@@ -73,10 +70,6 @@ class CorpusIndexingCommandTest extends TestCase
             ->method('update')
             ->with($this->equalTo($updateQuery))
             ->will($this->returnValue($result));
-        $this->indexCallbackProvider
-            ->expects($this->any())
-            ->method('getCallbacksForCorpus')
-            ->will($this->returnValue([]));
         $this->command->setCorpusName($corpusName);
         call_user_func($this->command);
     }
