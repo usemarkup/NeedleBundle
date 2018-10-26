@@ -5,10 +5,13 @@ namespace Markup\NeedleBundle\Tests\Indexer;
 use Markup\NeedleBundle\Corpus\CorpusInterface;
 use Markup\NeedleBundle\Corpus\CorpusProvider;
 use Markup\NeedleBundle\Indexer\CorpusIndexingCommand;
+use Markup\NeedleBundle\Indexer\IndexingMessagerInterface;
+use Markup\NeedleBundle\Indexer\IndexingResultInterface;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperInterface;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
-use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use Psr\Container\ContainerInterface;
 use Solarium\Client;
 use Solarium\QueryType\Update\Query\Query;
 use Solarium\QueryType\Update\Result;
@@ -17,63 +20,89 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
 * A test for an indexing command that indexes a corpus.
 */
-class CorpusIndexingCommandTest extends TestCase
+class CorpusIndexingCommandTest extends MockeryTestCase
 {
+    /**
+     * @var CorpusProvider|m\MockInterface
+     */
+    private $corpusProvider;
+
+    /**
+     * @var ContainerInterface|m\MockInterface
+     */
+    private $messagerLocator;
+
+    /**
+     * @var Client|m\MockInterface
+     */
+    private $solariumClient;
+
+    /**
+     * @var SubjectDataMapperProvider|m\MockInterface
+     */
+    private $subjectMapperProvider;
+
+    /**
+     * @var SubjectDataMapperInterface|m\MockInterface
+     */
+    private $subjectToDataMapper;
+
+    /**
+     * @var EventDispatcherInterface|m\MockInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var bool
+     */
+    private $shouldReplaceDocuments;
+
+    /**
+     * @var CorpusIndexingCommand
+     */
+    private $command;
+
     protected function setUp()
     {
-        $this->corpusProvider = $this->createMock(CorpusProvider::class);
-        $this->solariumClient = $this->createMock(Client::class);
-        $this->subjectMapperProvider = $this->createMock(SubjectDataMapperProvider::class);
-        $this->subjectToDataMapper = $this->createMock(SubjectDataMapperInterface::class);
-        $this->subjectMapperProvider
-            ->expects($this->any())
-            ->method('fetchMapperForCorpus')
-            ->will($this->returnValue($this->subjectToDataMapper));
-        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->corpusProvider = m::mock(CorpusProvider::class);
+        $this->messagerLocator = m::mock(ContainerInterface::class);
+        $this->eventDispatcher = m::spy(EventDispatcherInterface::class);
         $this->shouldReplaceDocuments = true;
-        $this->logger = $this->createMock(LoggerInterface::class);
         $this->command = new CorpusIndexingCommand(
             $this->corpusProvider,
-            $this->solariumClient,
-            $this->subjectMapperProvider,
-            $this->eventDispatcher,
-            $this->shouldReplaceDocuments,
-            $this->logger
+            $this->messagerLocator,
+            $this->eventDispatcher
         );
     }
 
     public function testGetAllSubjectsFromService()
     {
         $subject = new \stdClass();
-        $corpus = $this->createMock(CorpusInterface::class);
+        $corpus = m::mock(CorpusInterface::class);
         $corpus
-            ->expects($this->once())
-            ->method('getSubjectIteration')
-            ->will($this->returnValue(new \ArrayIterator([$subject, $subject, $subject])));
+            ->shouldReceive('getSubjectIteration')
+            ->once()
+            ->andReturn(new \ArrayIterator([$subject, $subject, $subject]));
         $corpusName = 'corpus';
+        $corpus
+            ->shouldReceive('getName')
+            ->andReturn($corpusName);
         $this->corpusProvider
-            ->expects($this->any())
-            ->method('fetchNamedCorpus')
-            ->with($this->equalTo($corpusName))
-            ->will($this->returnValue($corpus));
-        $updateQuery = $this->createMock(Query::class);
-        $this->solariumClient
-            ->expects($this->any())
-            ->method('createUpdate')
-            ->will($this->returnValue($updateQuery));
-        $result = $this->createMock(Result::class);
-        $this->solariumClient
-            ->expects($this->any())
-            ->method('update')
-            ->with($this->equalTo($updateQuery))
-            ->will($this->returnValue($result));
+            ->shouldReceive('fetchNamedCorpus')
+            ->with($corpusName)
+            ->andReturn($corpus);
+        $messager = m::spy(IndexingMessagerInterface::class)
+            ->shouldReceive('executeIndex')
+            ->andReturn(m::spy(IndexingResultInterface::class))
+            ->getMock();
+        $this->messagerLocator
+            ->shouldReceive('get')
+            ->with($corpusName)
+            ->andReturn($messager);
         $this->command->setCorpusName($corpusName);
-        call_user_func($this->command);
-    }
 
-    public function testExecuteWithoutCorpusNameThrowsBadMethodCall()
-    {
-        $this->expectException(\BadMethodCallException::class);
-        call_user_func($this->command);
+        ($this->command)($corpusName);
+
+        $messager->shouldHaveReceived('executeIndex');
     }
 }

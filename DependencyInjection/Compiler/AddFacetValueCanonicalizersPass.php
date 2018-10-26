@@ -17,11 +17,11 @@ class AddFacetValueCanonicalizersPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $canonicalizerId = 'markup_needle.facet.value_canonicalizer';
-        if (!$container->hasDefinition($canonicalizerId)) {
+        if (!$container->has($canonicalizerId)) {
             return;
         }
 
-        $canonicalizer = $container->getDefinition($canonicalizerId);
+        $canonicalizer = $container->findDefinition($canonicalizerId);
         foreach ($container->findTaggedServiceIds('markup_needle.facet_value_canonicalizer') as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!isset($attributes['facet'])) {

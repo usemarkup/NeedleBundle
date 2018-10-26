@@ -23,7 +23,7 @@ class BuildSuggestServiceLocatorPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $backendLookup = $this->getBackendLookup($container);
-        $locator = $container->getDefinition(SuggestServiceLocator::class);
+        $locator = $container->findDefinition(SuggestServiceLocator::class);
         foreach ($backendLookup as $corpus => $backend) {
             if ($backend !== 'solr') {
                 $this->registerServiceToLocator($corpus, NoopSuggestService::class, $locator);

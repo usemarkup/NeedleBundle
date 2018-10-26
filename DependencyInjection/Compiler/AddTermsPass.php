@@ -22,7 +22,7 @@ class AddTermsPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $termsServiceLookup = $container->getParameter('markup_needle.terms_service_lookup');
-        $locator = $container->getDefinition(TermsServiceLocator::class);
+        $locator = $container->findDefinition(TermsServiceLocator::class);
         foreach ($container->findTaggedServiceIds('markup_needle.terms') as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!isset($attributes['alias'])) {
