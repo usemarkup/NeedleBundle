@@ -98,6 +98,11 @@ class CorpusIndexingCommand
      **/
     private $deleteQuery;
 
+    /**
+     * @var callable
+     */
+    private $perSubjectCallback;
+
     public function __construct(
         CorpusProvider $corpusProvider,
         Solarium $solarium,
@@ -119,6 +124,7 @@ class CorpusIndexingCommand
         $this->shouldAllowNullFieldValues = $shouldAllowNullFieldValues;
         $this->filterQueryLucenifier = $filterQueryLucenifier ?? new FilterQueryLucenifier();
         $this->iteratorAppended = false;
+        $this->perSubjectCallback = function () {};
     }
 
     public function __invoke()
@@ -132,12 +138,11 @@ class CorpusIndexingCommand
         $logger->info(sprintf('Indexing of corpus "%s" started.', $this->getCorpus()->getName()));
         $logger->debug(sprintf('Memory usage before search indexing process: %01.0fMB.', (memory_get_usage(true) / 1024) / 1024));
         $startTime = microtime(true);
-        $wrappingIterator = $this->getWrappingIterator();
         if (!$this->iteratorAppended) {
-            $wrappingIterator->append($this->getSubjectIteration());
+            $this->wrappingIterator->append($this->getSubjectIteration());
             $this->iteratorAppended = true;
         }
-        $subjects = $wrappingIterator;
+        $subjects = $this->wrappingIterator;
         $updateQuery = $this->getSolariumClient()->createUpdate();
         //initially delete all indexes - todo allow disambiguation between types of document
         if ($this->shouldPreDelete || !is_null($this->deleteQuery)) {
@@ -147,7 +152,7 @@ class CorpusIndexingCommand
         $documentGenerator->setUpdateQuery($updateQuery);
         $updateQuery->addDocuments(
             new DocumentFilterIterator(
-                new SubjectDocumentIterator($subjects, $documentGenerator)
+                new SubjectDocumentIterator($subjects, $documentGenerator, $this->perSubjectCallback)
             )
         );
         $updateQuery->addCommit();
@@ -194,12 +199,9 @@ class CorpusIndexingCommand
         return $this;
     }
 
-    /**
-     * @return AppendIterator
-     **/
-    private function getWrappingIterator()
+    public function setPerSubjectCallback(callable $callback)
     {
-        return $this->wrappingIterator;
+        $this->perSubjectCallback = $callback;
     }
 
     /**
