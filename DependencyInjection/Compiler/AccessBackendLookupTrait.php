@@ -18,7 +18,7 @@ trait AccessBackendLookupTrait
             function (string $parameter) use ($container) {
                 return $this->resolveParameter($parameter, $container);
             },
-            $container->getDefinition(CorpusBackendProvider::class)->getArgument(0)
+            $container->findDefinition(CorpusBackendProvider::class)->getArgument(0)
         );
     }
 

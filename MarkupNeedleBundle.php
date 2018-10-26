@@ -17,6 +17,7 @@ class MarkupNeedleBundle extends Bundle
         $container->addCompilerPass(new c\ConfigureServiceGeneratorsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1000);
         $container->addCompilerPass(new c\BuildSynonymClientLocatorPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 999);
         $container->addCompilerPass(new c\BuildSearchServiceLocatorPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 999);
+        $container->addCompilerPass(new c\BuildIndexingMessagerLocatorPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 999);
         $container->addCompilerPass(new c\AddCorporaPass());
         $container->addCompilerPass(new c\AddFacetValueCanonicalizersPass());
         $container->addCompilerPass(new c\AddIndexSchedulingEventsPass());

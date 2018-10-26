@@ -5,27 +5,27 @@ declare(strict_types=1);
 namespace Markup\NeedleBundle\DependencyInjection\Compiler;
 
 use Markup\NeedleBundle\Client\BackendClientServiceLocator;
-use Markup\NeedleBundle\Service\NoopSearchService;
-use Markup\NeedleBundle\Service\SearchServiceLocator;
-use Markup\NeedleBundle\Service\SolrSearchService;
+use Markup\NeedleBundle\Indexer\IndexingMessagerLocator;
+use Markup\NeedleBundle\Indexer\NoopIndexingMessager;
+use Markup\NeedleBundle\Indexer\SolariumIndexingMessager;
+use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-class BuildSearchServiceLocatorPass implements CompilerPassInterface
+class BuildIndexingMessagerLocatorPass implements CompilerPassInterface
 {
     use AccessBackendLookupTrait;
     use AddServiceLocatorArgumentTrait;
 
     public function process(ContainerBuilder $container)
     {
+        $locator = $container->findDefinition(IndexingMessagerLocator::class);
         $backendLookup = $this->getBackendLookup($container);
-        $locator = $container->findDefinition(SearchServiceLocator::class);
         foreach ($backendLookup as $corpus => $backend) {
-            //hard-code solr a little for now - this can be added to and then generalised
             if ($backend !== 'solr') {
-                $this->registerServiceToLocator($corpus, NoopSearchService::class, $locator);
+                $this->registerServiceToLocator($corpus, NoopIndexingMessager::class, $locator);
                 continue;
             }
             //following is for solr
@@ -34,15 +34,17 @@ class BuildSearchServiceLocatorPass implements CompilerPassInterface
                 ->setArguments([$corpus])
                 ->setAutowired(true)
                 ->setPublic(false);
-            $clientId = sprintf('markup_needle.service_client.corpus.%s', $corpus);
+            $clientId = sprintf('markup_needle.service_client_for_indexer.corpus.%s', $corpus);
             $container->setDefinition($clientId, $client);
-            $service = (new Definition(SolrSearchService::class))
-                ->setArgument('$solarium', new Reference($clientId))
-                ->setAutowired(true)
+            $messager = (new Definition(SolariumIndexingMessager::class))
+                ->setArguments([
+                    new Reference($clientId),
+                    new Reference(SubjectDataMapperProvider::class),
+                ])
                 ->setPublic(false);
-            $serviceId = sprintf('markup_needle.service.corpus.%s', $corpus);
-            $container->setDefinition($serviceId, $service);
-            $this->registerServiceToLocator($corpus, $serviceId, $locator);
+            $messagerId = sprintf('markup_needle.indexing_messager.corpus.%s', $corpus);
+            $container->setDefinition($messagerId, $messager);
+            $this->registerServiceToLocator($corpus, $messagerId, $locator);
         }
     }
 }

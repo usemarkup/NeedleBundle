@@ -86,7 +86,7 @@ class Configuration implements ConfigurationInterface
                     ->defaultFalse()
                 ->end()
                 ->booleanNode('allow_null_values_in_update_fields')
-                    ->defaultTrue()
+                    ->defaultFalse()
                 ->end()
                 ->arrayNode('context_services')
                     ->useAttributeAsKey('name')

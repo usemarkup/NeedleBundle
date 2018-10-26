@@ -25,11 +25,7 @@ class SubjectDocumentGenerator implements SubjectDocumentGeneratorInterface
      **/
     private $updateQuery = null;
 
-    /**
-     * @param SubjectDataMapperInterface $subjectToDataMapper
-     * @param bool                       $allowNullValues
-     **/
-    public function __construct(SubjectDataMapperInterface $subjectToDataMapper, $allowNullValues = true)
+    public function __construct(SubjectDataMapperInterface $subjectToDataMapper, bool $allowNullValues = true)
     {
         $this->subjectToDataMapper = $subjectToDataMapper;
         $this->allowNullValues = $allowNullValues;
