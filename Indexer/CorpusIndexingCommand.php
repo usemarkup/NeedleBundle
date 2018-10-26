@@ -2,18 +2,15 @@
 
 namespace Markup\NeedleBundle\Indexer;
 
-use AppendIterator;
 use Markup\NeedleBundle\Corpus\CorpusInterface;
 use Markup\NeedleBundle\Corpus\CorpusProvider;
 use Markup\NeedleBundle\Event\CorpusPostUpdateEvent;
 use Markup\NeedleBundle\Event\CorpusPreUpdateEvent;
 use Markup\NeedleBundle\Event\SearchEvents;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
-use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
-use Markup\NeedleBundle\Result\SolariumUpdateResult;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Solarium\Client as Solarium;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -21,26 +18,15 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 */
 class CorpusIndexingCommand
 {
-    const ALL_SIGNIFIER = '*:*';
-
     /**
      * @var CorpusProvider
      **/
     private $corpusProvider;
 
     /**
-     * A Solarium client object.
-     *
-     * @var Solarium
-     **/
-    private $solarium;
-
-    /**
-     * A mapper to get document data for a subject.
-     *
-     * @var SubjectDataMapperProvider
-     **/
-    private $subjectMapperProvider;
+     * @var ContainerInterface
+     */
+    private $messagerLocator;
 
     /**
      * @var EventDispatcherInterface
@@ -58,28 +44,6 @@ class CorpusIndexingCommand
      * @var LoggerInterface
      **/
     private $logger;
-
-    /**
-     * @var AppendIterator
-     **/
-    private $wrappingIterator;
-
-    /**
-     * Whether nulls should be allowed as update field values.
-     *
-     * @var bool
-     */
-    private $shouldAllowNullFieldValues;
-
-    /**
-     * @var FilterQueryLucenifier
-     **/
-    private $filterQueryLucenifier;
-
-    /**
-     * @var string
-     **/
-    private $corpusName;
 
     /**
      * An iteration over the subjects.
@@ -100,71 +64,42 @@ class CorpusIndexingCommand
 
     public function __construct(
         CorpusProvider $corpusProvider,
-        Solarium $solarium,
-        SubjectDataMapperProvider $subjectMapperProvider,
+        IndexingMessagerLocator $messagerLocator,
         EventDispatcherInterface $eventDispatcher,
-        bool $shouldPreDelete = false,
-        LoggerInterface $logger = null,
-        AppendIterator $wrappingIterator = null,
-        bool $shouldAllowNullFieldValues = true,
-        ?FilterQueryLucenifier $filterQueryLucenifier = null
+        LoggerInterface $logger = null
     ) {
         $this->corpusProvider = $corpusProvider;
-        $this->solarium = $solarium;
-        $this->subjectMapperProvider = $subjectMapperProvider;
+        $this->messagerLocator = $messagerLocator;
         $this->eventDispatcher = $eventDispatcher;
-        $this->shouldPreDelete = $shouldPreDelete;
+        $this->shouldPreDelete = false;
         $this->logger = $logger ?: new NullLogger();
-        $this->wrappingIterator = $wrappingIterator ?: new AppendIterator();
-        $this->shouldAllowNullFieldValues = $shouldAllowNullFieldValues;
-        $this->filterQueryLucenifier = $filterQueryLucenifier ?? new FilterQueryLucenifier();
         $this->perSubjectCallback = function () {};
     }
 
-    public function __invoke()
+    public function __invoke(string $corpus)
     {
-        if (empty($this->corpusName)) {
-            throw new \BadMethodCallException('You need to set a corpus name on the corpus indexing command in order to execute it.');
-        }
         $isFullUpdate = $this->shouldPreDelete;
-        $this->eventDispatcher->dispatch(SearchEvents::CORPUS_PRE_UPDATE, new CorpusPreUpdateEvent($this->getCorpus(), $isFullUpdate));
-        $logger = $this->getLogger();
-        $logger->info(sprintf('Indexing of corpus "%s" started.', $this->getCorpus()->getName()));
-        $logger->debug(sprintf('Memory usage before search indexing process: %01.0fMB.', (memory_get_usage(true) / 1024) / 1024));
-        $startTime = microtime(true);
-        $updateQuery = $this->getSolariumClient()->createUpdate();
-        //initially delete all indexes - todo allow disambiguation between types of document
-        if ($this->shouldPreDelete || !is_null($this->deleteQuery)) {
-            $updateQuery->addDeleteQuery($this->getDeleteQueryLucene());
-        }
-        $documentGenerator = new SubjectDocumentGenerator($this->getSubjectMapper(), $this->shouldAllowNullFieldValues);
-        $documentGenerator->setUpdateQuery($updateQuery);
-        $updateQuery->addDocuments(
-            new DocumentFilterIterator(
-                new SubjectDocumentIterator($this->getSubjectIteration(), $documentGenerator, $this->perSubjectCallback)
-            )
+        $this->eventDispatcher->dispatch(SearchEvents::CORPUS_PRE_UPDATE, new CorpusPreUpdateEvent($this->getCorpus($corpus), $isFullUpdate));
+        $this->logger->info(sprintf('Indexing of corpus "%s" started.', $corpus));
+        $this->logger->debug(sprintf('Memory usage before search indexing process: %01.0fMB.', (memory_get_usage(true) / 1024) / 1024));
+        /** @var IndexingMessagerInterface $messager */
+        $messager = $this->messagerLocator->get($corpus);
+        $message = new IndexingMessage(
+            $this->getSubjectIteration($corpus),
+            $corpus,
+            $isFullUpdate,
+            $this->deleteQuery
         );
-        $updateQuery->addCommit();
-        $updateQuery->addOptimize();
-        $result = $this->getSolariumClient()->update($updateQuery);
-        $logger->debug(sprintf('Status code of Solr query: %s. Query time: %ums.', $result->getStatus(), $result->getQueryTime()));
-        $logger->debug(sprintf('Memory usage after search indexing process: %01.0fMB.', (memory_get_usage(true) / 1024) / 1024));
+        $startTime = microtime(true);
+        $result = $messager->executeIndex($message, $this->perSubjectCallback);
+        $this->logger->debug(sprintf('Status code of query on search backend: %s. Query time: %ums.', $result->getStatusCode(), $result->getQueryTimeInMilliseconds()));
+        $this->logger->debug(sprintf('Memory usage after search indexing process: %01.0fMB.', (memory_get_usage(true) / 1024) / 1024));
         $endTime = microtime(true);
-        $logger->info(sprintf('Indexing of corpus "%s" completed successfully in %01.3fs.', $this->getCorpus()->getName(), $endTime-$startTime));
-        $this->eventDispatcher->dispatch(SearchEvents::CORPUS_POST_UPDATE, new CorpusPostUpdateEvent($this->getCorpus(), $isFullUpdate, new SolariumUpdateResult($result)));
-    }
-
-    /**
-     * Sets the name of the corpus to be indexed.
-     *
-     * @param  string $corpusName
-     * @return self
-     **/
-    public function setCorpusName($corpusName)
-    {
-        $this->corpusName = $corpusName;
-
-        return $this;
+        $this->logger->info(sprintf('Indexing of corpus "%s" completed successfully in %01.3fs.', $corpus, $endTime-$startTime));
+        $this->eventDispatcher->dispatch(
+            SearchEvents::CORPUS_POST_UPDATE,
+            new CorpusPostUpdateEvent($this->getCorpus($corpus), $isFullUpdate, $result)
+        );
     }
 
     /**
@@ -178,32 +113,14 @@ class CorpusIndexingCommand
         return $this;
     }
 
-    /**
-     * @param AppendIterator $wrappingIterator
-     **/
-    public function setWrappingIterator(AppendIterator $wrappingIterator)
-    {
-        $this->wrappingIterator = $wrappingIterator;
-
-        return $this;
-    }
-
     public function setPerSubjectCallback(callable $callback)
     {
         $this->perSubjectCallback = $callback;
     }
 
-    /**
-     * @return Solarium
-     **/
-    private function getSolariumClient()
+    private function getCorpus(string $corpusName): ?CorpusInterface
     {
-        return $this->solarium;
-    }
-
-    private function getCorpus(): ?CorpusInterface
-    {
-        return $this->corpusProvider->fetchNamedCorpus($this->corpusName);
+        return $this->corpusProvider->fetchNamedCorpus($corpusName);
     }
 
     /**
@@ -224,12 +141,12 @@ class CorpusIndexingCommand
      *
      * @return \Iterator
      **/
-    private function getSubjectIteration()
+    private function getSubjectIteration(string $corpus)
     {
         if (null !== $this->subjectIteration) {
             return $this->subjectIteration;
         }
-        $corpus = $this->getCorpus();
+        $corpus = $this->getCorpus($corpus);
         if (!$corpus) {
             return new \ArrayIterator();
         }
@@ -251,47 +168,14 @@ class CorpusIndexingCommand
     }
 
     /**
-     * @return SubjectDataMapperInterface
-     **/
-    private function getSubjectMapper()
-    {
-        $corpus = $this->getCorpus();
-        if (!$corpus) {
-            throw new \RuntimeException('A corpus was expected to have been set.');
-        }
-
-        return $this->subjectMapperProvider->fetchMapperForCorpus($corpus->getName());
-    }
-
-    /**
      * @param  FilterQueryInterface $deleteQuery
      * @return self
      **/
     public function setDeleteQuery(FilterQueryInterface $deleteQuery)
     {
         $this->deleteQuery = $deleteQuery;
-    }
 
-    /**
-     * @return string
-     **/
-    private function getDeleteQueryLucene()
-    {
-        if (null === $this->deleteQuery) {
-            return self::ALL_SIGNIFIER;
-        }
-
-        return $this->filterQueryLucenifier->lucenify($this->deleteQuery);
-    }
-
-    /**
-     * Gets the logger object set on this command.
-     *
-     * @return LoggerInterface
-     **/
-    private function getLogger()
-    {
-        return $this->logger;
+        return $this;
     }
 
     /**

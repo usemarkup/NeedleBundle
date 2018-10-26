@@ -18,7 +18,7 @@ class RegisterSearchInterceptMappersPass implements CompilerPassInterface
             return;
         }
 
-        $searchMapper = $container->getDefinition($searchMapperId);
+        $searchMapper = $container->findDefinition($searchMapperId);
         foreach ($container->findTaggedServiceIds('markup_needle.search_intercept_mapper') as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (empty($attributes['corpus'])) {

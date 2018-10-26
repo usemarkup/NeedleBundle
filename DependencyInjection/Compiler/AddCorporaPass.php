@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\DependencyInjection\Compiler;
 
+use Markup\NeedleBundle\Corpus\CorpusProvider;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -13,12 +14,12 @@ class AddCorporaPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $corpusProviderId = 'markup_needle.corpus.provider';
+        $corpusProviderId = CorpusProvider::class;
         if (!$container->has($corpusProviderId)) {
             return;
         }
 
-        $corpusProvider = $container->getDefinition($corpusProviderId);
+        $corpusProvider = $container->findDefinition($corpusProviderId);
         foreach ($container->findTaggedServiceIds('markup_needle.corpus') as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (empty($attributes['alias'])) {

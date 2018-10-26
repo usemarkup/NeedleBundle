@@ -18,7 +18,7 @@ class AddIndexSchedulingEventsPass implements CompilerPassInterface
             return;
         }
 
-        $schedulingListener = $container->getDefinition($schedulingListenerId);
+        $schedulingListener = $container->findDefinition($schedulingListenerId);
         $scheduledEvents = $container->getParameter($scheduledEventsParameterId);
         foreach ($scheduledEvents as $corpus => $events) {
             foreach ($events as $event) {
