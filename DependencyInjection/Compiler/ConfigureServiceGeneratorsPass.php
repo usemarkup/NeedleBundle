@@ -19,7 +19,7 @@ class ConfigureServiceGeneratorsPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         foreach ($container->findTaggedServiceIds('markup_needle.service_generator') as $id => $tags) {
-            $generator = $container->getDefinition($id);
+            $generator = $container->findDefinition($id);
             $targetServiceId = $generator->getArgument(0);
             $locator = (new Definition(ServiceLocator::class))
                 ->setArguments([[ServiceClosure::ALIAS => new Reference($targetServiceId)]])

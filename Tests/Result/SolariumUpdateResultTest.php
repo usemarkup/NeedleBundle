@@ -2,8 +2,8 @@
 
 namespace Markup\NeedleBundle\Tests\Result;
 
+use Markup\NeedleBundle\Indexer\IndexingResultInterface;
 use Markup\NeedleBundle\Result\SolariumUpdateResult;
-use Markup\NeedleBundle\Result\UpdateResultInterface;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use Solarium\QueryType\Update\Result;
@@ -26,7 +26,7 @@ class SolariumUpdateResultTest extends TestCase
 
     public function testIsUpdateResult()
     {
-        $this->assertInstanceOf(UpdateResultInterface::class, $this->updateResult);
+        $this->assertInstanceOf(IndexingResultInterface::class, $this->updateResult);
     }
 
     public function testGetStatusCodeReturnsStatus()
