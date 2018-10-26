@@ -1,16 +1,8 @@
 services:
     markup_needle.exporter.closure:
         class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
-        arguments:
-            - '@markup_needle.corpus.provider'
-            - '@markup_needle.solarium.client'
-            - '@markup_needle.exporter.subject_data_mapper_provider'
-            - '@event_dispatcher'
-            - false
-            - '@logger'
-            - ~
-            - '%markup_needle.allow_null_values_in_update_fields%'
-        deprecated: ~
+        autowire: true
+        shared: false
     markup_needle.exporter.closure.prototype:
         parent: markup_needle.exporter.closure
         shared: false

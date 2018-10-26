@@ -2,18 +2,16 @@
 
 namespace Markup\NeedleBundle\Result;
 
+use Markup\NeedleBundle\Indexer\IndexingResultInterface;
 use Solarium\QueryType\Update\Result;
 
-class SolariumUpdateResult implements UpdateResultInterface
+class SolariumUpdateResult implements IndexingResultInterface
 {
     /**
      * @var Result
      */
     private $result;
 
-    /**
-     * @param Result $result
-     */
     public function __construct(Result $result)
     {
         $this->result = $result;
@@ -21,29 +19,27 @@ class SolariumUpdateResult implements UpdateResultInterface
 
     /**
      * Gets whether the update was successful.
-     *
-     * @return bool
      */
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
         return intval($this->result->getStatus()) === 0;
     }
 
     /**
      * Gets whichever status code it is that the backend emits.
-     *
-     * @return mixed
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->result->getStatus();
     }
 
-    /**
-     * @return float|int
-     */
-    public function getQueryTimeInMilliseconds()
+    public function getQueryTimeInMilliseconds(): int
     {
         return $this->result->getQueryTime();
+    }
+
+    public function getBackendSoftware(): string
+    {
+        return 'solr';
     }
 }

@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\Event;
 
 use Markup\NeedleBundle\Corpus\CorpusInterface;
+use Markup\NeedleBundle\Indexer\IndexingResultInterface;
 use Markup\NeedleBundle\Result\UpdateResultInterface;
 
 /**
@@ -11,25 +12,17 @@ use Markup\NeedleBundle\Result\UpdateResultInterface;
 class CorpusPostUpdateEvent extends CorpusUpdateEvent
 {
     /**
-     * @var UpdateResultInterface
+     * @var IndexingResultInterface
      */
     private $result;
 
-    /**
-     * @param CorpusInterface       $corpus
-     * @param bool                  $isFullUpdate
-     * @param UpdateResultInterface $result
-     */
-    public function __construct(CorpusInterface $corpus, $isFullUpdate, UpdateResultInterface $result)
+    public function __construct(CorpusInterface $corpus, bool $isFullUpdate, IndexingResultInterface $result)
     {
         parent::__construct($corpus, $isFullUpdate);
         $this->result = $result;
     }
 
-    /**
-     * @return \Markup\NeedleBundle\Result\UpdateResultInterface
-     */
-    public function getResult()
+    public function getResult(): IndexingResultInterface
     {
         return $this->result;
     }

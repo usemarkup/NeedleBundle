@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\DependencyInjection\Compiler;
 
+use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -13,12 +14,12 @@ class RegisterSubjectDataMappersPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $mapperProviderId = 'markup_needle.exporter.subject_data_mapper_provider';
+        $mapperProviderId = SubjectDataMapperProvider::class;
         if (!$container->has($mapperProviderId)) {
             return;
         }
 
-        $mapperProvider = $container->getDefinition($mapperProviderId);
+        $mapperProvider = $container->findDefinition($mapperProviderId);
         foreach ($container->findTaggedServiceIds('markup_needle.subject_mapper') as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (empty($attributes['corpus'])) {

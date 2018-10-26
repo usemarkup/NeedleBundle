@@ -1,6 +1,5 @@
 services:
-    markup_needle.exporter.subject_data_mapper_provider:
-        class: Markup\NeedleBundle\Indexer\SubjectDataMapperProvider
+    Markup\NeedleBundle\Indexer\SubjectDataMapperProvider: ~
     Markup\NeedleBundle\Service\SearchServiceLocator:
         arguments:
             - []
@@ -54,8 +53,7 @@ services:
             - '@logger'
         tags:
             - { name: kernel.event_listener, event: markup_needle.unresolved_intercept, method: logUnresolvedIntercept }
-    markup_needle.corpus.provider:
-        class: Markup\NeedleBundle\Corpus\CorpusProvider
+    Markup\NeedleBundle\Corpus\CorpusProvider: ~
     markup_needle.listener.index_scheduling:
         class: Markup\NeedleBundle\EventListener\IndexSchedulingEventListener
         arguments:
@@ -134,3 +132,8 @@ services:
         class: Markup\NeedleBundle\Attribute\CompositeSpecializationContextGroupFilter
     Markup\NeedleBundle\Synonyms\NoopSynonymClient: ~
     Markup\NeedleBundle\Service\NoopSearchService: ~
+
+    Markup\NeedleBundle\Indexer\IndexingMessagerLocator:
+        arguments:
+            - []
+        tags: [container.service_locator]
