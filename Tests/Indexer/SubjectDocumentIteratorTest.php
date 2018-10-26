@@ -19,13 +19,6 @@ class SubjectDocumentIteratorTest extends TestCase
         $this->assertTrue($it->implementsInterface(\Iterator::class));
     }
 
-    public function testStringInConstructorForSubjectsThrowsInvalidArgumentException()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $docGenerator = $this->createMock(SubjectDocumentGeneratorInterface::class);
-        $it = new SubjectDocumentIterator('subjects', $docGenerator);
-    }
-
     public function testEmitExpectedNumberOfDocuments()
     {
         $subject = new \stdClass();
