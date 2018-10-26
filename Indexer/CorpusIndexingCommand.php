@@ -82,11 +82,6 @@ class CorpusIndexingCommand
     private $corpusName;
 
     /**
-     * @var bool
-     **/
-    private $iteratorAppended;
-
-    /**
      * An iteration over the subjects.
      *
      * @var \Iterator
@@ -123,7 +118,6 @@ class CorpusIndexingCommand
         $this->wrappingIterator = $wrappingIterator ?: new AppendIterator();
         $this->shouldAllowNullFieldValues = $shouldAllowNullFieldValues;
         $this->filterQueryLucenifier = $filterQueryLucenifier ?? new FilterQueryLucenifier();
-        $this->iteratorAppended = false;
         $this->perSubjectCallback = function () {};
     }
 
@@ -138,11 +132,6 @@ class CorpusIndexingCommand
         $logger->info(sprintf('Indexing of corpus "%s" started.', $this->getCorpus()->getName()));
         $logger->debug(sprintf('Memory usage before search indexing process: %01.0fMB.', (memory_get_usage(true) / 1024) / 1024));
         $startTime = microtime(true);
-        if (!$this->iteratorAppended) {
-            $this->wrappingIterator->append($this->getSubjectIteration());
-            $this->iteratorAppended = true;
-        }
-        $subjects = $this->wrappingIterator;
         $updateQuery = $this->getSolariumClient()->createUpdate();
         //initially delete all indexes - todo allow disambiguation between types of document
         if ($this->shouldPreDelete || !is_null($this->deleteQuery)) {
@@ -152,7 +141,7 @@ class CorpusIndexingCommand
         $documentGenerator->setUpdateQuery($updateQuery);
         $updateQuery->addDocuments(
             new DocumentFilterIterator(
-                new SubjectDocumentIterator($subjects, $documentGenerator, $this->perSubjectCallback)
+                new SubjectDocumentIterator($this->getSubjectIteration(), $documentGenerator, $this->perSubjectCallback)
             )
         );
         $updateQuery->addCommit();
