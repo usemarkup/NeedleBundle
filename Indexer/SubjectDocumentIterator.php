@@ -22,13 +22,18 @@ class SubjectDocumentIterator implements \OuterIterator
     private $documentGenerator;
 
     /**
-     * @param array|\Iterator                   $subjects
-     * @param SubjectDocumentGeneratorInterface $documentGenerator
-     **/
-    public function __construct($subjects, SubjectDocumentGeneratorInterface $documentGenerator)
-    {
+     * @var callable
+     */
+    private $perSubjectCallback;
+
+    public function __construct(
+        iterable $subjects,
+        SubjectDocumentGeneratorInterface $documentGenerator,
+        ?callable $perSubjectCallback = null
+    ) {
         $this->setSubjects($subjects);
         $this->documentGenerator = $documentGenerator;
+        $this->perSubjectCallback = $perSubjectCallback ?? function () {};
     }
 
     public function getInnerIterator()
@@ -38,10 +43,8 @@ class SubjectDocumentIterator implements \OuterIterator
 
     /**
      * Sets subjects on this iterator.
-     *
-     * @param array|\Traversable $subjects
      **/
-    public function setSubjects($subjects)
+    public function setSubjects(iterable $subjects)
     {
         if (is_array($subjects)) {
             $this->subjects = new \ArrayIterator($subjects);
@@ -73,9 +76,13 @@ class SubjectDocumentIterator implements \OuterIterator
     {
         $subject = $this->getInnerIterator()->current();
 
-        return $this
+        $document = $this
             ->getDocumentGenerator()
             ->createDocumentForSubject($subject);
+
+        ($this->perSubjectCallback)();
+
+        return $document;
     }
 
     public function next()
