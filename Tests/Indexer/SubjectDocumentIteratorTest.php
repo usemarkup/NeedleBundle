@@ -52,19 +52,4 @@ class SubjectDocumentIteratorTest extends TestCase
         $it->setSubjects($someSubjects);
         $this->assertEquals($someSubjects, iterator_to_array($it->getSubjects()));
     }
-
-    public function testCallbacksExecuted()
-    {
-        $subject = $this->createMock(Collection::class);
-        $subject
-            ->expects($this->once())
-            ->method('get');
-        $callback = function ($subject) {
-            $subject->get('skdjhfskjdfh');
-        };
-        $subjects = [$subject];
-        $docGenerator = $this->createMock(SubjectDocumentGeneratorInterface::class);
-        $it = new SubjectDocumentIterator($subjects, $docGenerator, [$callback]);
-        iterator_to_array($it);
-    }
 }

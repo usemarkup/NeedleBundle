@@ -92,16 +92,10 @@ class MarkupNeedleExtension extends Extension
     private function loadCorpora(array $config, ContainerBuilder $container)
     {
         $scheduleEvents = [];
-        $indexCallbacks = [];
         foreach ($config['corpora'] as $name => $corpusConfig) {
             $scheduleEvents[$name] = $corpusConfig['schedule_index_on_events'];
-            $indexCallbacks[$name] = $corpusConfig['callbacks_during_index'];
         }
         $container->setParameter('markup_needle.schedule_events_by_corpus', $scheduleEvents);
-        $indexCallbackProvider = $container->getDefinition('markup_needle.index_callback_provider');
-        foreach ($indexCallbacks as $name => $callbackServices) {
-            $indexCallbackProvider->addMethodCall('setCallbacksForCorpus', [$name, $callbackServices]);
-        }
     }
 
     /**
