@@ -79,7 +79,11 @@ class CorpusIndexingCommand
     public function __invoke(string $corpus)
     {
         $isFullUpdate = $this->shouldPreDelete;
-        $this->eventDispatcher->dispatch(SearchEvents::CORPUS_PRE_UPDATE, new CorpusPreUpdateEvent($this->getCorpus($corpus), $isFullUpdate));
+        $corpusObj = $this->getCorpus($corpus);
+        if (!$corpusObj) {
+            throw new \OutOfRangeException(sprintf('A corpus with name "%s" is not registered.', $corpus));
+        }
+        $this->eventDispatcher->dispatch(SearchEvents::CORPUS_PRE_UPDATE, new CorpusPreUpdateEvent($corpusObj, $isFullUpdate));
         $this->logger->info(sprintf('Indexing of corpus "%s" started.', $corpus));
         $this->logger->debug(sprintf('Memory usage before search indexing process: %01.0fMB.', (memory_get_usage(true) / 1024) / 1024));
         /** @var IndexingMessagerInterface $messager */
@@ -98,7 +102,7 @@ class CorpusIndexingCommand
         $this->logger->info(sprintf('Indexing of corpus "%s" completed successfully in %01.3fs.', $corpus, $endTime-$startTime));
         $this->eventDispatcher->dispatch(
             SearchEvents::CORPUS_POST_UPDATE,
-            new CorpusPostUpdateEvent($this->getCorpus($corpus), $isFullUpdate, $result)
+            new CorpusPostUpdateEvent($corpusObj, $isFullUpdate, $result)
         );
     }
 
