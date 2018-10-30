@@ -6,6 +6,7 @@ use Markup\NeedleBundle\Corpus\CorpusInterface;
 use Markup\NeedleBundle\Corpus\CorpusProvider;
 use Markup\NeedleBundle\Indexer\CorpusIndexingCommand;
 use Markup\NeedleBundle\Indexer\IndexingMessagerInterface;
+use Markup\NeedleBundle\Indexer\IndexingMessagerLocator;
 use Markup\NeedleBundle\Indexer\IndexingResultInterface;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperInterface;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
@@ -65,7 +66,7 @@ class CorpusIndexingCommandTest extends MockeryTestCase
     protected function setUp()
     {
         $this->corpusProvider = m::mock(CorpusProvider::class);
-        $this->messagerLocator = m::mock(ContainerInterface::class);
+        $this->messagerLocator = m::mock(IndexingMessagerLocator::class);
         $this->eventDispatcher = m::spy(EventDispatcherInterface::class);
         $this->shouldReplaceDocuments = true;
         $this->command = new CorpusIndexingCommand(
@@ -99,7 +100,6 @@ class CorpusIndexingCommandTest extends MockeryTestCase
             ->shouldReceive('get')
             ->with($corpusName)
             ->andReturn($messager);
-        $this->command->setCorpusName($corpusName);
 
         ($this->command)($corpusName);
 
