@@ -7,12 +7,13 @@ use Markup\NeedleBundle\Context\ConfiguredContextProvider;
 use Markup\NeedleBundle\Corpus\CorpusBackendProvider;
 use Markup\NeedleBundle\Intercept\Definition as InterceptDefinition;
 use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
+use Markup\NeedleBundle\Suggest\SuggestHandlerLocator;
 use Markup\NeedleBundle\Terms\TermsFieldProviderInterface;
+use Markup\NeedleBundle\Terms\TermsFieldProviderLocator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -25,11 +26,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class MarkupNeedleExtension extends Extension
 {
     /**
-     * @deprecated (This is constant is transitional until there can be per-corpus client services.)
-     */
-    const UNITARY_BACKEND_CLIENT = 'markup_needle.solarium.client';
-
-    /**
      * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
@@ -40,7 +36,6 @@ class MarkupNeedleExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         $this->loadDebug($config, $container);
-        $this->loadBackend($config, $container);
 
         $loader->load('services.yml');
         $loader->load('solr.yml');
@@ -51,35 +46,6 @@ class MarkupNeedleExtension extends Extension
         $this->loadIntercepts($config, $container);
         $this->loadLogSettings($config, $container);
         $this->loadContextServices($config, $container);
-        $this->loadSuggestHandler($config, $container);
-        $this->loadTermsField($config, $container);
-    }
-
-    /**
-     * Loads the backend info.
-     *
-     * @param array            $config
-     * @param ContainerBuilder $container
-     **/
-    public function loadBackend(array $config, ContainerBuilder $container)
-    {
-        $knownBackends = ['solr', 'elasticsearch'];
-        if (!isset($config['backend']['type'])) {
-            return;
-        }
-        //temporary coercion/ deprecation: "solarium" backend type should now be called "solr"
-        $backendType = $config['backend']['type'];
-        if ($backendType === 'solarium') {
-            @trigger_error(
-                'Using "solarium" as a backend is deprecated. The type has been renamed to "solr".',
-                E_USER_DEPRECATED
-            );
-            $backendType = 'solr';
-        }
-        if (!in_array($backendType, $knownBackends)) {
-            throw new InvalidArgumentException('Unknown search backend type.');
-        }
-        $container->setParameter('markup_needle.backend', $backendType);
     }
 
     /**
@@ -109,18 +75,57 @@ class MarkupNeedleExtension extends Extension
         //define client service locator
         $clientLocator = (new Definition(BackendClientServiceLocator::class))
             ->setArguments([
-                array_fill_keys(array_keys($config['corpora']), new Reference($config['backend']['client'])),
+                array_map(
+                    function (array $corpusConfig) {
+                        return new Reference($corpusConfig['backend']['client']);
+                    },
+                    $config['corpora']
+                )
             ])
             ->setPublic(false)
             ->addTag('container.service_locator');
         $container->setDefinition(BackendClientServiceLocator::class, $clientLocator);
-        $backendLookup = array_fill_keys(array_keys($config['corpora']), '%markup_needle.backend%');
+        $backendLookup = array_map(
+            function (array $corpusConfig) {
+                return $corpusConfig['backend']['type'];
+            },
+            $config['corpora']
+        );
         $backendProvider = (new Definition(CorpusBackendProvider::class))
             ->setArguments([$backendLookup])
             ->setPublic(false);
         $container->setDefinition(CorpusBackendProvider::class, $backendProvider);
-        $termsServiceLookup = array_fill_keys(array_keys($config['corpora']), $config['terms_service']);
+        $termsServiceLookup = array_map(
+            function (array $corpusConfig) {
+                return $corpusConfig['terms_service'];
+            },
+            $config['corpora']
+        );
         $container->setParameter('markup_needle.terms_service_lookup', $termsServiceLookup);
+        $suggestHandlerLocator = (new Definition(SuggestHandlerLocator::class))
+            ->setArguments([
+                array_map(
+                    function (array $corpusConfig) {
+                        return new Reference($corpusConfig['suggest_handler']);
+                    },
+                    $config['corpora']
+                )
+            ])
+            ->setPublic(false)
+            ->addTag('container.service_locator');
+        $container->setDefinition(SuggestHandlerLocator::class, $suggestHandlerLocator);
+        $termsFieldProviderLocator = (new Definition(TermsFieldProviderLocator::class))
+            ->setArguments([
+                array_map(
+                    function (array $corpusConfig) {
+                        return new Reference($corpusConfig['terms_field_provider']);
+                    },
+                    $config['corpora']
+                )
+            ])
+            ->setPublic(false)
+            ->addTag('container.service_locator');
+        $container->setDefinition(TermsFieldProviderLocator::class, $termsFieldProviderLocator);
     }
 
     /**
@@ -202,23 +207,5 @@ class MarkupNeedleExtension extends Extension
             );
             $container->setDefinition($prefix.'context_provider', $contextProvider);
         }
-    }
-
-    /**
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function loadSuggestHandler(array $config, ContainerBuilder $container)
-    {
-        $container->setAlias('markup_needle.suggest_handler', $config['suggest_handler']);
-    }
-
-    /**
-     * @param array            $config
-     * @param ContainerBuilder $container
-     */
-    private function loadTermsField(array $config, ContainerBuilder $container)
-    {
-        $container->setAlias(TermsFieldProviderInterface::class, $config['terms_field_provider']);
     }
 }

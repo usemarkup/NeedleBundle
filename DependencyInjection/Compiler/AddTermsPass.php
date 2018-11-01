@@ -3,9 +3,11 @@
 namespace Markup\NeedleBundle\DependencyInjection\Compiler;
 
 use Markup\NeedleBundle\Client\BackendClientServiceLocator;
+use Markup\NeedleBundle\Query\HandlerProviderInterface;
 use Markup\NeedleBundle\Terms\NoopTermsService;
 use Markup\NeedleBundle\Terms\SolrPrefixTermsService;
 use Markup\NeedleBundle\Terms\SolrRegexTermsService;
+use Markup\NeedleBundle\Terms\TermsFieldProviderLocator;
 use Markup\NeedleBundle\Terms\TermsServiceLocator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -82,10 +84,19 @@ class AddTermsPass implements CompilerPassInterface
             ->setPublic(false);
         $clientId = sprintf('markup_needle.terms.client.corpus.%s', $corpus);
         $container->setDefinition($clientId, $client);
+        $fieldProvider = (new Definition(HandlerProviderInterface::class))
+            ->setFactory([new Reference(TermsFieldProviderLocator::class), 'get'])
+            ->setArguments([$corpus])
+            ->setPublic(false);
+        $fieldProviderId = sprintf('markup_needle.terms_field_provider.corpus.%s', $corpus);
+        $container->setDefinition($fieldProviderId, $fieldProvider);
         $termsService = (new Definition($termsServiceClass))
             ->setAutowired(true)
             ->setPublic(false)
-            ->setArgument('$solarium', new Reference($clientId));
+            ->setArguments([
+                '$solarium' => new Reference($clientId),
+                '$fieldProvider' => new Reference($fieldProviderId),
+            ]);
         $termsServiceId = sprintf('markup_needle.terms_service.corpus.%s', $corpus);
         $container->setDefinition($termsServiceId, $termsService);
 
