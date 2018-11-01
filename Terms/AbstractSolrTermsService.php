@@ -34,11 +34,4 @@ abstract class AbstractSolrTermsService implements TermsServiceInterface
         $this->fieldProvider = $fieldProvider;
         $this->logger = $logger ?? new NullLogger();
     }
-
-    /**
-     * @param SimpleQueryInterface $query
-     *
-     * @return TermsResultInterface
-     */
-    abstract public function fetchTerms(SimpleQueryInterface $query);
 }
