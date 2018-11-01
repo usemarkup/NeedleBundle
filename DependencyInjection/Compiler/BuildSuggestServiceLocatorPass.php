@@ -3,8 +3,10 @@
 namespace Markup\NeedleBundle\DependencyInjection\Compiler;
 
 use Markup\NeedleBundle\Client\BackendClientServiceLocator;
+use Markup\NeedleBundle\Query\HandlerProviderInterface;
 use Markup\NeedleBundle\Suggest\NoopSuggestService;
 use Markup\NeedleBundle\Suggest\SolrSuggestService;
+use Markup\NeedleBundle\Suggest\SuggestHandlerLocator;
 use Markup\NeedleBundle\Suggest\SuggestServiceLocator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -34,11 +36,17 @@ class BuildSuggestServiceLocatorPass implements CompilerPassInterface
                         ->setPublic(false);
                     $clientId = sprintf('markup_needle.service_client_for_suggester.corpus.%s', $corpus);
                     $container->setDefinition($clientId, $client);
+                    $suggestHandler = (new Definition(HandlerProviderInterface::class))
+                        ->setFactory([new Reference(SuggestHandlerLocator::class), 'get'])
+                        ->setArguments([$corpus])
+                        ->setPublic(false);
+                    $suggestHandlerId = sprintf('markup_needle.suggest_handler.corpus.%s', $corpus);
+                    $container->setDefinition($suggestHandlerId, $suggestHandler);
                     $suggester = (new Definition(SolrSuggestService::class))
                         ->setArguments([
                             new Reference($clientId),
                             new Reference(LoggerInterface::class),
-                            new Reference('markup_needle.suggest_handler'),
+                            new Reference($suggestHandlerId),
                         ])
                         ->setPublic(false);
                     $suggesterId = sprintf('markup_needle.suggester.corpus.%s', $corpus);
