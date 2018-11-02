@@ -134,6 +134,7 @@ services:
     Markup\NeedleBundle\Service\NoopSearchService: ~
     Markup\NeedleBundle\Suggest\NoopSuggestService: ~
     Markup\NeedleBundle\Indexer\NoopIndexingMessager: ~
+    Markup\NeedleBundle\Terms\NoopTermsService: ~
 
     Markup\NeedleBundle\Indexer\IndexingMessagerLocator:
         arguments:
