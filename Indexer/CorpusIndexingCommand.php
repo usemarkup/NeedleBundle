@@ -143,6 +143,7 @@ class CorpusIndexingCommand
     /**
      * Gets the subject iteration to go over. Falls back to the corpus subject iteration if an explicit one has not been provided.
      *
+     * @param string $corpus
      * @return \Iterator
      **/
     private function getSubjectIteration(string $corpus)
