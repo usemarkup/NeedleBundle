@@ -14,6 +14,7 @@ use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorInterface;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
+use Markup\NeedleBundle\Result\ElasticsearchFacetSetsStrategy;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -92,7 +93,19 @@ class ElasticSearchService implements AsyncSearchServiceInterface
                 $pagerfanta->setMaxPerPage($maxPerPage ?: self::HUNNERS);
                 $pagerfanta->setCurrentPage($page ?: 1);
 
-                yield new PagerfantaResultAdapter($pagerfanta);
+                $result = new PagerfantaResultAdapter($pagerfanta);
+
+                if (!is_null($this->searchContext)) {
+                    $result->setFacetSetStrategy(
+                        new ElasticsearchFacetSetsStrategy(
+                            $elasticResult['aggregations'] ?? [],
+                            $this->searchContext,
+                            $query->getRecord()
+                        )
+                    );
+                }
+
+                yield $result;
             }
         );
     }

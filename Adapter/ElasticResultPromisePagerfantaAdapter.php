@@ -37,14 +37,6 @@ class ElasticResultPromisePagerfantaAdapter implements AdapterInterface
      *
      * @return array|\Traversable The slice.
      */
-    /**
-     * Returns an slice of the results.
-     *
-     * @param integer $offset The offset.
-     * @param integer $length The length.
-     *
-     * @return array|\Traversable The slice.
-     */
     public function getSlice($offset, $length)
     {
         // ignore offset/length as that should have been predetermined
