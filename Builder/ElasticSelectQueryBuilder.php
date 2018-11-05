@@ -76,8 +76,11 @@ class ElasticSelectQueryBuilder
                 if (false !== array_search($facet->getSearchKey(), $facetNamesToExclude)) {
                     continue;
                 }
-                $usingFacetComponent = true;
-                //continue adding facets
+                $query['aggs'][$facet->getName()] = [
+                    'terms' => [
+                        'field' => $facet->getSearchKey(['prefer_parsed' => false]),
+                    ],
+                ];
             }
         }
 

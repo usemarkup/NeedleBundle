@@ -44,12 +44,8 @@ class SolariumFacetSetsIterator implements \OuterIterator
      *
      * @var \Iterator|null
      **/
-    private $subIterator = null;
+    private $subIterator;
 
-    /**
-     * @param SolariumFacetSet             $facetSet
-     * @param SearchContext                $searchContext
-     **/
     public function __construct(SolariumFacetSet $facetSet, SearchContext $searchContext, SelectQueryInterface $originalQuery = null)
     {
         $this->solariumFacetSetsIterator = new NonEmptyFacetSetFilterIterator(new \ArrayIterator($this->normalizeFacetData($facetSet)));
@@ -58,9 +54,6 @@ class SolariumFacetSetsIterator implements \OuterIterator
         $this->setFacetsKeyedBySearchKey($searchContext);
     }
 
-    /**
-     * @param SearchContext $context
-     **/
     private function setFacetsKeyedBySearchKey(SearchContext $context)
     {
         $this->facetsKeyedBySearchKey = [];
