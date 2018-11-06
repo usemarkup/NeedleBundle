@@ -41,7 +41,7 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Markup\\NeedleBundle": "" }
+        "psr-4": { "Markup\\NeedleBundle\\": "" }
     },
     "target-dir": "Markup/NeedleBundle",
     "extra": {
