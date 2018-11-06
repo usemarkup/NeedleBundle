@@ -44,7 +44,6 @@
     "autoload": {
         "psr-4": { "Markup\\NeedleBundle\\": "" }
     },
-    "target-dir": "Markup/NeedleBundle",
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
