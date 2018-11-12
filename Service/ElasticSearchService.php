@@ -79,7 +79,7 @@ class ElasticSearchService implements AsyncSearchServiceInterface
                 }
 
                 $queryParams = [
-                    'index' => 'catalog',
+                    'index' => 'pages',
                     'type' => '_doc',
                     'body' => $elasticQuery,
                     'client' => [
