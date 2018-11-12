@@ -1,4 +1,8 @@
 services:
+    Markup\NeedleBundle\Console\:
+        resource: '../../Console/*'
+        autowire: true
+        autoconfigure: true
     Markup\NeedleBundle\Indexer\SubjectDataMapperProvider: ~
     Markup\NeedleBundle\Service\SearchServiceLocator:
         arguments:
@@ -141,10 +145,10 @@ services:
             - []
         tags: [container.service_locator]
 
-    markup_needle.exporter.closure:
-        class: Markup\NeedleBundle\Indexer\CorpusIndexingCommand
+    Markup\NeedleBundle\Indexer\CorpusIndexingCommand:
         autowire: true
         shared: false
+    markup_needle.exporter.closure: '@Markup\NeedleBundle\Indexer\CorpusIndexingCommand'
     markup_needle.exporter.closure.prototype:
         parent: markup_needle.exporter.closure
         shared: false
