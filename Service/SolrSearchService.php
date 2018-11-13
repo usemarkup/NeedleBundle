@@ -52,6 +52,11 @@ class SolrSearchService implements AsyncSearchServiceInterface, DecorableSearchS
     private $solariumQueryBuilder;
 
     /**
+     * @var string
+     */
+    private $corpus;
+
+    /**
      * @var TemplatingEngine|null
      **/
     private $templating = null;
@@ -71,10 +76,12 @@ class SolrSearchService implements AsyncSearchServiceInterface, DecorableSearchS
     public function __construct(
         SolariumClient $solarium,
         SolariumSelectQueryBuilder $solariumQueryBuilder,
+        string $corpus,
         ?TemplatingEngine $templating = null
     ) {
         $this->solarium = $solarium;
         $this->solariumQueryBuilder = $solariumQueryBuilder;
+        $this->corpus = $corpus;
         $this->templating = $templating;
         $this->decorators = new ArrayCollection();
     }
