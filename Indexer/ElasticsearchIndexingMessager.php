@@ -59,25 +59,16 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
             }
         };
 
-        $sendBody = function ($body) use ($paramsForBody) {
-            $this->elastic->bulk($paramsForBody($body));
+        $sendBodies = function ($bucket) use ($mapBucketToBody, $paramsForBody) {
+            $this->elastic->bulk($paramsForBody($mapBucketToBody($bucket)));
         };
 
-        $chunkAndSendBodies = function ($bucket, int $chunkSize) use ($mapBucketToBody, $sendBody) {
-            $body = [];
-            foreach ($mapBucketToBody($bucket) as $item) {
-                $body[] = $item;
-                if (count($body) % $chunkSize === 0) {
-                    $sendBody($body);
-                    $body = [];
-                }
-            }
-            if (count($body) > 0) {
-                $sendBody($body);
-            }
-        };
+        //pre-delete non-atomically for just now (though this is dangerous)
+        if ($message->isFullReindex()) {
+            $this->elastic->indices()->delete(['index' => $corpus]);
+        }
 
-        $chunkAndSendBodies($bucket, 500);
+        $sendBodies($bucket);
 
         //fake it until we make it
         return new IndexingResult(
