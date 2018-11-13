@@ -34,7 +34,8 @@ class ElasticSearchServiceTest extends MockeryTestCase
         $this->queryBuilder = m::mock(ElasticSelectQueryBuilder::class);
         $this->search = new ElasticSearchService(
             $this->client,
-            $this->queryBuilder
+            $this->queryBuilder,
+            'corpus'
         );
     }
 

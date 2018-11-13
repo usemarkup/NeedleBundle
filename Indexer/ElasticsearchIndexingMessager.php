@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Markup\NeedleBundle\Indexer;
 
 use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 class ElasticsearchIndexingMessager implements IndexingMessagerInterface
 {
@@ -65,7 +66,11 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
 
         //pre-delete non-atomically for just now (though this is dangerous)
         if ($message->isFullReindex()) {
-            $this->elastic->indices()->delete(['index' => $corpus]);
+            try {
+                $this->elastic->indices()->delete(['index' => $corpus]);
+            } catch (Missing404Exception $e) {
+                //the index didn't previously exist, but that's OK
+            }
         }
 
         $sendBodies($bucket);
