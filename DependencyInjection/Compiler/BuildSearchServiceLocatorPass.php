@@ -84,6 +84,7 @@ class BuildSearchServiceLocatorPass implements CompilerPassInterface
     ): string {
         $service = (new Definition($class))
             ->setArgument($clientArg, new Reference($clientId))
+            ->setArgument('$corpus', $corpus)
             ->setAutowired(true)
             ->setPublic(false);
         $serviceId = sprintf('markup_needle.service.corpus.%s', $corpus);

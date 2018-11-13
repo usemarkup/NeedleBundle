@@ -56,7 +56,7 @@ class SolrSearchServiceTest extends MockeryTestCase
             ->shouldReceive('getPlugin')
             ->with('async')
             ->andReturn($this->promisePlugin);
-        $this->service = new SolrSearchService($this->solarium, $this->solariumQueryBuilder);
+        $this->service = new SolrSearchService($this->solarium, $this->solariumQueryBuilder, 'corpus');
     }
 
     public function testIsSearchService()

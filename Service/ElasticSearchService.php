@@ -33,6 +33,11 @@ class ElasticSearchService implements AsyncSearchServiceInterface
     private $queryBuilder;
 
     /**
+     * @var string
+     */
+    private $corpus;
+
+    /**
      * @var SearchContextInterface|null
      */
     private $searchContext;
@@ -42,10 +47,11 @@ class ElasticSearchService implements AsyncSearchServiceInterface
      */
     private $decorators;
 
-    public function __construct(Client $elastic, ElasticSelectQueryBuilder $queryBuilder)
+    public function __construct(Client $elastic, ElasticSelectQueryBuilder $queryBuilder, string $corpus)
     {
         $this->elastic = $elastic;
         $this->queryBuilder = $queryBuilder;
+        $this->corpus = $corpus;
         $this->decorators = [];
     }
 
@@ -79,7 +85,7 @@ class ElasticSearchService implements AsyncSearchServiceInterface
                 }
 
                 $queryParams = [
-                    'index' => 'pages',
+                    'index' => $this->corpus,
                     'type' => '_doc',
                     'body' => $elasticQuery,
                     'client' => [
