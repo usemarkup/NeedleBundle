@@ -27,7 +27,7 @@ class FilterQuery implements FilterQueryInterface
 
     public function getSearchKey()
     {
-        return $this->filter->getSearchKey();
+        return $this->filter->getSearchKey(['prefer_parsed' => false]);
     }
 
     public function getSearchValue()
