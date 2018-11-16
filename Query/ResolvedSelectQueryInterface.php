@@ -24,7 +24,7 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
     /**
      * Gets whether a query should request facet values for missing (i.e. no match on that facet)
      *
-     * @return boolean
+     * @return bool
      **/
     public function shouldRequestFacetValueForMissing();
 
