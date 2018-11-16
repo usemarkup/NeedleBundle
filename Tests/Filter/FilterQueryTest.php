@@ -6,20 +6,21 @@ use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Filter\FilterQuery;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
-use PHPUnit\Framework\TestCase;
+use Mockery as m;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 /**
 * A test for a filter query object.
 */
-class FilterQueryTest extends TestCase
+class FilterQueryTest extends MockeryTestCase
 {
     /**
-     * @var AttributeInterface
+     * @var AttributeInterface|m\MockInterface
      */
     private $filter;
 
     /**
-     * @var FilterValueInterface
+     * @var FilterValueInterface|m\MockInterface
      */
     private $filterValue;
 
@@ -30,8 +31,8 @@ class FilterQueryTest extends TestCase
 
     protected function setUp()
     {
-        $this->filter = $this->createMock(AttributeInterface::class);
-        $this->filterValue = $this->createMock(FilterValueInterface::class);
+        $this->filter = m::mock(AttributeInterface::class);
+        $this->filterValue = m::mock(FilterValueInterface::class);
         $this->filterQuery = new FilterQuery($this->filter, $this->filterValue);
     }
 
@@ -44,9 +45,9 @@ class FilterQueryTest extends TestCase
     {
         $key = 'color';
         $this->filter
-            ->expects($this->any())
-            ->method('getSearchKey')
-            ->will($this->returnValue($key));
+            ->shouldReceive('getSearchKey')
+            ->with(['prefer_parsed' => false])
+            ->andReturn($key);
         $this->assertEquals($key, $this->filterQuery->getSearchKey());
     }
 
@@ -54,9 +55,8 @@ class FilterQueryTest extends TestCase
     {
         $value = 'red';
         $this->filterValue
-            ->expects($this->any())
-            ->method('getSearchValue')
-            ->will($this->returnValue($value));
+            ->shouldReceive('getSearchValue')
+            ->andReturn($value);
         $this->assertEquals($value, $this->filterQuery->getSearchValue());
     }
 
