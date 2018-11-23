@@ -70,7 +70,7 @@ class ElasticSelectQueryBuilder
         $facets = $genericQuery->getFacets();
         if (!empty($facets)) {
             $facetNamesToExclude = $genericQuery->getFacetNamesToExclude();
-            $usingFacetComponent = false;
+            $shouldIncludeFacetValuesForMissing = $genericQuery->shouldRequestFacetValueForMissing();
             foreach ($facets as $facet) {
                 //if query indicates we should skip this facet, then skip it
                 if (false !== array_search($facet->getSearchKey(), $facetNamesToExclude)) {
@@ -79,6 +79,7 @@ class ElasticSelectQueryBuilder
                 $query['aggs'][$facet->getName()] = [
                     'terms' => [
                         'field' => $facet->getSearchKey(['prefer_parsed' => false]),
+                        'min_doc_count' => ($shouldIncludeFacetValuesForMissing) ? 0 : 1,
                     ],
                 ];
             }
