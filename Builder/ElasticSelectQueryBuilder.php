@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Markup\NeedleBundle\Builder;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 
 /**
@@ -80,6 +81,9 @@ class ElasticSelectQueryBuilder
                     'terms' => [
                         'field' => $facet->getSearchKey(['prefer_parsed' => false]),
                         'min_doc_count' => ($shouldIncludeFacetValuesForMissing) ? 0 : 1,
+                        'order' => ($genericQuery->getSortOrderForFacet($facet) === SortOrderProviderInterface::SORT_BY_COUNT)
+                            ? ['_count' => 'asc']
+                            : ['_key' => 'asc']
                     ],
                 ];
             }
