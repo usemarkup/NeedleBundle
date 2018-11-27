@@ -225,7 +225,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     public function getSortOrderForFacet(AttributeInterface $facet)
     {
         if ($this->getSearchContext() === null) {
-            return;
+            return null;
         }
 
         return $this->getSearchContext()->getFacetSortOrderProvider()->getSortOrderForFacet($facet);
