@@ -13,7 +13,7 @@ class NullResult implements ResultInterface
 {
     public function getIterator()
     {
-        new \ArrayIterator();
+        return new \ArrayIterator();
     }
 
     public function count()

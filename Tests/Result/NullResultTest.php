@@ -14,4 +14,9 @@ class NullResultTest extends TestCase
     {
         $this->assertInstanceOf(ResultInterface::class, new NullResult());
     }
+
+    public function testGetIteratorProvidesTraversable()
+    {
+        $this->assertInstanceOf(\Traversable::class, (new NullResult())->getIterator());
+    }
 }
