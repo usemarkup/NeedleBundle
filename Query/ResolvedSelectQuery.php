@@ -269,8 +269,10 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
         if (!$this->getSelectQuery()->hasRecord()) {
             return false;
         }
+        /** @var SelectQueryInterface $record */
+        $record = $this->getSelectQuery()->getRecord();
 
-        if (count($this->getSelectQuery()->getFilterQueries()) > count($this->getSelectQuery()->getRecord()->getFilterQueries())) {
+        if (count($this->getSelectQuery()->getFilterQueries()) > count($record->getFilterQueries())) {
             return true;
         }
 
