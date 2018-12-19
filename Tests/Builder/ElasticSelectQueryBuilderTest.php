@@ -52,11 +52,13 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
         $filterQuery
             ->shouldReceive('getSearchKey')
             ->andReturn('color');
-        $filterQuery
-            ->shouldReceive('getSearchValue')
-            ->andReturn('red');
         $filter = m::mock(AttributeInterface::class);
-        $filterValue = m::mock(FilterValueInterface::class);
+        $filterValue = m::mock(FilterValueInterface::class)
+            ->shouldReceive('getValueType')
+            ->andReturn(FilterValueInterface::TYPE_SIMPLE)
+            ->shouldReceive('getSearchValue')
+            ->andReturn('red')
+            ->getMock();
         $filter
             ->shouldReceive('getName')
             ->andReturn('color_key');
