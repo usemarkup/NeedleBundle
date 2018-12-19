@@ -6,6 +6,11 @@ namespace Markup\NeedleBundle\Builder;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
+use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Filter\FilterValueInterface;
+use Markup\NeedleBundle\Filter\IntersectionFilterValueInterface;
+use Markup\NeedleBundle\Filter\RangeFilterValueInterface;
+use Markup\NeedleBundle\Filter\UnionFilterValueInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 
 /**
@@ -41,11 +46,14 @@ class ElasticSelectQueryBuilder
 
             $mustClause = [$matchClause];
             foreach ($filterQueries as $filterQuery) {
-                $mustClause[] = [
-                    'term' => [
-                        $filterQuery->getSearchKey() => $filterQuery->getSearchValue(),
-                    ],
-                ];
+                /** FilterQueryInterface $filterQuery */
+                $clause = $this->getQueryShapeForFilterQuery(
+                    $filterQuery->getSearchKey(),
+                    $filterQuery->getFilterValue()
+                );
+                if ($clause !== null) {
+                    $mustClause[] = $clause;
+                }
             }
             $query['query']['constant_score']['filter']['bool']['must'] = $mustClause;
         } else {
@@ -90,5 +98,60 @@ class ElasticSelectQueryBuilder
         }
 
         return $query;
+    }
+
+    private function getQueryShapeForFilterQuery(string $searchKey, FilterValueInterface $filterValue): ?array
+    {
+        switch ($filterValue->getValueType()) {
+            case FilterValueInterface::TYPE_SIMPLE:
+                return [
+                    'term' => [
+                        $searchKey => $filterValue->getSearchValue(),
+                    ],
+                ];
+            case FilterValueInterface::TYPE_UNION:
+                /** @var UnionFilterValueInterface $unionValue */
+                $unionValue = $filterValue;
+
+                return [
+                    'bool' => [
+                        'should' => array_map(
+                            function (FilterValueInterface $filterValue) use ($searchKey) {
+                                return $this->getQueryShapeForFilterQuery($searchKey, $filterValue);
+                            },
+                            $unionValue->getValues()
+                        ),
+                    ],
+                ];
+            case FilterValueInterface::TYPE_INTERSECTION:
+                /** @var IntersectionFilterValueInterface $intersectionValue */
+                $intersectionValue = $filterValue;
+
+                return [
+                    'bool' => [
+                        'must' => array_map(
+                            function (FilterValueInterface $filterValue) use ($searchKey) {
+                                return $this->getQueryShapeForFilterQuery($searchKey, $filterValue);
+                            },
+                            $intersectionValue->getValues()
+                        )
+                    ],
+                ];
+            case FilterValueInterface::TYPE_RANGE:
+                /** @var RangeFilterValueInterface $rangeValue */
+                $rangeValue = $filterValue;
+
+                return [
+                    'range' => [
+                        $searchKey => [
+                            'gte' => $rangeValue->getMin(),
+                            'lte' => $rangeValue->getMax(),
+                        ],
+                    ],
+                ];
+            default:
+                return null;
+                break;
+        }
     }
 }
