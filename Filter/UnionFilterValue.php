@@ -35,4 +35,9 @@ class UnionFilterValue extends CombinedFilterValue implements UnionFilterValueIn
     {
         return count($this->filterValues);
     }
+
+    public function getValueType(): string
+    {
+        return self::TYPE_UNION;
+    }
 }
