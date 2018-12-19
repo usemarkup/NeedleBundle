@@ -39,13 +39,22 @@ class ElasticSelectQueryBuilder
         //determine whether we are using the facet values for an underlying "base" (recorded) query
         $shouldUseFacetValuesForRecordedQuery = $genericQuery->shouldUseFacetValuesForRecordedQuery();
 
-        //if there are filter queries, add them
         $filterQueries = $genericQuery->getFilterQueries();
-        if (count($filterQueries) > 0) {
-            $filterQueries = $this->dedupeFilterQueries($filterQueries);
+        $baseQueries = $filterQueries;
+        $extraQueries = [];
+        if ($shouldUseFacetValuesForRecordedQuery) {
+            $record = $genericQuery->getRecord();
+            $recordedQueries = ($record) ? $record->getFilterQueries() : [];
+            $baseQueries = $recordedQueries;
+            $extraQueries = $this->diffQuerySets($filterQueries, $recordedQueries);
+        }
+
+        //if there are base filter queries, add them
+        if (count($baseQueries) > 0) {
+            $baseQueries = $this->dedupeFilterQueries($baseQueries);
 
             $mustClause = [$matchClause];
-            foreach ($filterQueries as $filterQuery) {
+            foreach ($baseQueries as $filterQuery) {
                 /** FilterQueryInterface $filterQuery */
                 $clause = $this->getQueryShapeForFilterQuery(
                     $filterQuery->getSearchKey(),
@@ -85,7 +94,7 @@ class ElasticSelectQueryBuilder
                 if (false !== array_search($facet->getSearchKey(), $facetNamesToExclude)) {
                     continue;
                 }
-                $query['aggs'][$facet->getName()] = [
+                $termsQuery = [
                     'terms' => [
                         'field' => $facet->getSearchKey(['prefer_parsed' => false]),
                         'min_doc_count' => ($shouldIncludeFacetValuesForMissing) ? 0 : 1,
@@ -94,7 +103,26 @@ class ElasticSelectQueryBuilder
                             : ['_key' => 'asc']
                     ],
                 ];
+                $facetFilters = $this->filterQueriesBySearchKey(
+                    $extraQueries,
+                    $facet->getSearchKey(['prefer_parsed' => false])
+                );
+                if (count($facetFilters) === 0) {
+                    $query['aggs'][$facet->getName()] = $termsQuery;
+                } else {
+                    $query['aggs'][$facet->getName()] = [
+                        'filter' => $this->formClauseForFilterQueries($facetFilters),
+                        'aggs' => [
+                            $facet->getName() => $termsQuery,
+                        ],
+                    ];
+                }
             }
+        }
+
+        //if there is a post-filter to apply, apply it
+        if (count($extraQueries) > 0) {
+            $query['post_filter'] = $this->formClauseForFilterQueries($extraQueries);
         }
 
         return $query;
@@ -153,5 +181,74 @@ class ElasticSelectQueryBuilder
                 return null;
                 break;
         }
+    }
+
+    private function diffQuerySets(array $leftQueries, array $rightQueries): array
+    {
+        return array_filter(
+            $leftQueries,
+            function (FilterQueryInterface $query) use ($rightQueries) {
+                return !$this->hasQueryWithinSet($query, $rightQueries);
+            }
+        );
+    }
+
+    private function hasQueryWithinSet(FilterQueryInterface $query, array $group): bool
+    {
+        foreach ($group as $groupQuery) {
+            if ($this->hasSameQueries($query, $groupQuery)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function hasSameQueries(FilterQueryInterface $leftQuery, FilterQueryInterface $rightQuery): bool
+    {
+        return $leftQuery->getValueType() === $rightQuery->getValueType()
+            && $leftQuery->getSearchKey() === $rightQuery->getSearchKey()
+            && $leftQuery->getSearchValue() === $rightQuery->getSearchValue();
+    }
+
+    private function filterQueriesBySearchKey(array $filterQueries, string $searchKey): array
+    {
+        return array_filter(
+            $filterQueries,
+            function (FilterQueryInterface $filterQuery) use ($searchKey) {
+                return $filterQuery->getSearchKey() !== $searchKey;
+            }
+        );
+    }
+
+    private function formClauseForFilterQueries(array $filterQueries): ?array
+    {
+        if (count($filterQueries) === 1) {
+            /** @var FilterQueryInterface $filterQuery */
+            $filterQuery = array_values($filterQueries)[0];
+
+            return $this->getQueryShapeForFilterQuery(
+                $filterQuery->getSearchKey(),
+                $filterQuery->getFilterValue()
+            );
+        }
+
+        return [
+            'bool' => [
+                'must' => array_filter(array_map(
+                    function (?FilterQueryInterface $filterQuery) {
+                        if ($filterQuery === null) {
+                            return null;
+                        }
+
+                        return $this->getQueryShapeForFilterQuery(
+                            $filterQuery->getSearchKey(),
+                            $filterQuery->getFilterValue()
+                        );
+                    },
+                    $filterQueries
+                )),
+            ],
+        ];
     }
 }
