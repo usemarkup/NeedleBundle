@@ -44,4 +44,9 @@ class FilterQuery implements FilterQueryInterface
     {
         return $this->filterValue;
     }
+
+    public function getValueType(): string
+    {
+        return $this->getFilterValue()->getValueType();
+    }
 }

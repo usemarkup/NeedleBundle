@@ -7,5 +7,8 @@ namespace Markup\NeedleBundle\Filter;
 */
 class IntersectionFilterValue extends CombinedFilterValue implements IntersectionFilterValueInterface
 {
-
+    public function getValueType(): string
+    {
+        return self::TYPE_INTERSECTION;
+    }
 }
