@@ -40,9 +40,23 @@ class ElasticsearchFacetSetsStrategy implements FacetSetStrategyInterface
     public function getFacetSets()
     {
         return new ElasticsearchFacetSetsIterator(
-            $this->aggregationsData,
+            $this->flattenAggregationsData($this->aggregationsData),
             $this->searchContext,
             $this->originalQuery
         );
+    }
+
+    private function flattenAggregationsData(array $data): array
+    {
+        $flattened = [];
+        foreach ($data as $key => $item) {
+            if (array_key_exists('buckets', $item)) {
+                $flattened[$key] = $item;
+                continue;
+            }
+            $flattened[$key] = $item[$key];
+        }
+
+        return $flattened;
     }
 }
