@@ -10,19 +10,19 @@ interface RecordableSelectQueryInterface extends SelectQueryInterface
     /**
      * Makes this query save a record of itself internally.
      **/
-    public function record();
+    public function record(): void;
 
     /**
      * Gets whether this query contains an internal record of itself.
      *
      * @return bool
      **/
-    public function hasRecord();
+    public function hasRecord(): bool;
 
     /**
      * Gets this query's internal record of itself.  Returns null if there is no internal record.
      *
      * @return self
      **/
-    public function getRecord();
+    public function getRecord(): ?SelectQueryInterface;
 }
