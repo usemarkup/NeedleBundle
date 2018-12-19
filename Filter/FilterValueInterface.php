@@ -7,6 +7,11 @@ namespace Markup\NeedleBundle\Filter;
  **/
 interface FilterValueInterface
 {
+    const TYPE_SIMPLE = 'simple';
+    const TYPE_INTERSECTION = 'intersection';
+    const TYPE_UNION = 'union';
+    const TYPE_RANGE = 'range';
+
     /**
      * Gets the representation of a filter value that should be used on a search service.
      *
@@ -20,4 +25,9 @@ interface FilterValueInterface
      * @return string
      **/
     public function getSlug();
+
+    /**
+     * Gets the type for this value. Must be one of the FilterValueInterface::TYPE_* constants.
+     */
+    public function getValueType(): string;
 }

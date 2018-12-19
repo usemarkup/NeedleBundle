@@ -56,4 +56,9 @@ class RangeFilterValue implements RangeFilterValueInterface
     {
         return $this->max;
     }
+
+    public function getValueType(): string
+    {
+        return self::TYPE_RANGE;
+    }
 }

@@ -16,6 +16,7 @@ class IntersectionFilterValueInterfaceTest extends AbstractInterfaceTestCase
         return [
             'getSearchValue',
             'getSlug',
+            'getValueType',
             'getValues',
             'getIterator',
             'addFilterValue',

@@ -42,6 +42,11 @@ class ScalarFilterValue implements FilterValueInterface
         return $this->scalar;
     }
 
+    public function getValueType(): string
+    {
+        return self::TYPE_SIMPLE;
+    }
+
     public function __toString()
     {
         return (string) $this->scalar;

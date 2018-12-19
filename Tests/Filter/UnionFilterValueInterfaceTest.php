@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\Tests\Filter;
 
 use Markup\NeedleBundle\Filter\FilterValueInterface;
+use Markup\NeedleBundle\Filter\UnionFilterValueInterface;
 use Markup\NeedleBundle\Tests\AbstractInterfaceTestCase;
 
 /**
@@ -15,6 +16,7 @@ class UnionFilterValueInterfaceTest extends AbstractInterfaceTestCase
         return [
             'getSearchValue',
             'getSlug',
+            'getValueType',
             'getValues',
             'getIterator',
             'addFilterValue',
@@ -24,7 +26,7 @@ class UnionFilterValueInterfaceTest extends AbstractInterfaceTestCase
 
     protected function getInterfaceUnderTest()
     {
-        return 'Markup\NeedleBundle\Filter\UnionFilterValueInterface';
+        return UnionFilterValueInterface::class;
     }
 
     public function testIsFilterValue()
