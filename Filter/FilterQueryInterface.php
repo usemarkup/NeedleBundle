@@ -36,4 +36,9 @@ interface FilterQueryInterface
      * @return FilterValueInterface
      **/
     public function getFilterValue();
+
+    /**
+     * Gets the type of the value contained within (one of the FilterValueInterface::TYPE_* constants).
+     */
+    public function getValueType(): string;
 }

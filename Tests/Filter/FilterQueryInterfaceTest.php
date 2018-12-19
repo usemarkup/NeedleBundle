@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Filter;
 
+use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Tests\AbstractInterfaceTestCase;
 
 /**
@@ -16,11 +17,12 @@ class FilterQueryInterfaceTest extends AbstractInterfaceTestCase
             'getSearchValue',
             'getFilter',
             'getFilterValue',
+            'getValueType',
         ];
     }
 
     protected function getInterfaceUnderTest()
     {
-        return 'Markup\NeedleBundle\Filter\FilterQueryInterface';
+        return FilterQueryInterface::class;
     }
 }
