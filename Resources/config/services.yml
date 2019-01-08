@@ -157,4 +157,8 @@ services:
         arguments:
             - markup_needle.exporter.closure.prototype
         tags: [markup_needle.service_generator]
-        deprecated: ~
+        public: false
+    Markup\NeedleBundle\Indexer\CorpusIndexingCommandFactory:
+        arguments:
+            - '@markup_needle.exporter.closure.generator'
+        public: false
