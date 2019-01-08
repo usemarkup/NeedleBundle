@@ -15,7 +15,7 @@ class CorpusIndexingCommandFactory
         $this->serviceClosure = $serviceClosure;
     }
 
-    public function create()
+    public function create(): CorpusIndexingCommand
     {
         return ($this->serviceClosure)();
     }
