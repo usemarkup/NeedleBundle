@@ -6,6 +6,7 @@ namespace Markup\NeedleBundle\Indexer;
 
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Markup\NeedleBundle\Elastic\QueryShapeBuilder;
 
 class ElasticsearchIndexingMessager implements IndexingMessagerInterface
 {
@@ -44,17 +45,21 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
             ];
         };
 
+        $metaForItem = function($item) use ($corpus) {
+            return [
+                'index' => [
+                    '_index' => $corpus,
+                    '_type' => '_doc',
+                    '_id' => $item['id'],
+                ]
+            ];
+        };
+
         $callback = $perSubjectCallback ?? function () {};
 
-        $mapBucketToBody = function ($bucket) use ($corpus, $callback) {
+        $mapBucketToBody = function ($bucket) use ($metaForItem, $callback) {
             foreach ($bucket as $item) {
-                yield [
-                    'index' => [
-                        '_index' => $corpus,
-                        '_type' => '_doc',
-                        '_id' => $item['id'],
-                    ],
-                ];
+                yield $metaForItem($item);
                 yield $item;
                 $callback();
             }
@@ -64,6 +69,8 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
             $this->elastic->bulk($paramsForBody($mapBucketToBody($bucket)));
         };
 
+        $preDeleteQuery = $message->getPreDeleteQuery();
+
         //pre-delete non-atomically for just now (though this is dangerous)
         if ($message->isFullReindex()) {
             try {
@@ -71,9 +78,15 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
             } catch (Missing404Exception $e) {
                 //the index didn't previously exist, but that's OK
             }
+        } elseif ($preDeleteQuery !== null) {
+            $this->elastic->deleteByQuery($paramsForBody([
+                'query' => (new QueryShapeBuilder())->getQueryShapeForFilterQuery($preDeleteQuery),
+            ]));
         }
 
-        $sendBodies($bucket);
+        if ($message->isFullReindex() || $preDeleteQuery === null) {
+            $sendBodies($bucket);
+        }
 
         //fake it until we make it
         return new IndexingResult(
