@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Markup\NeedleBundle\Builder;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Elastic\QueryShapeBuilder;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
@@ -19,6 +20,16 @@ use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 class ElasticSelectQueryBuilder
 {
     use DedupeFilterQueryTrait;
+
+    /**
+     * @var QueryShapeBuilder
+     */
+    private $queryShapeBuilder;
+
+    public function __construct()
+    {
+        $this->queryShapeBuilder = new QueryShapeBuilder();
+    }
 
     public function buildElasticQueryFromGeneric(ResolvedSelectQueryInterface $genericQuery): array
     {
@@ -56,10 +67,7 @@ class ElasticSelectQueryBuilder
             $mustClause = [$matchClause];
             foreach ($baseQueries as $filterQuery) {
                 /** FilterQueryInterface $filterQuery */
-                $clause = $this->getQueryShapeForFilterQuery(
-                    $filterQuery->getSearchKey(),
-                    $filterQuery->getFilterValue()
-                );
+                $clause = $this->queryShapeBuilder->getQueryShapeForFilterQuery($filterQuery);
                 if ($clause !== null) {
                     $mustClause[] = $clause;
                 }
@@ -128,61 +136,6 @@ class ElasticSelectQueryBuilder
         return $query;
     }
 
-    private function getQueryShapeForFilterQuery(string $searchKey, FilterValueInterface $filterValue): ?array
-    {
-        switch ($filterValue->getValueType()) {
-            case FilterValueInterface::TYPE_SIMPLE:
-                return [
-                    'term' => [
-                        $searchKey => $filterValue->getSearchValue(),
-                    ],
-                ];
-            case FilterValueInterface::TYPE_UNION:
-                /** @var UnionFilterValueInterface $unionValue */
-                $unionValue = $filterValue;
-
-                return [
-                    'bool' => [
-                        'should' => array_map(
-                            function (FilterValueInterface $filterValue) use ($searchKey) {
-                                return $this->getQueryShapeForFilterQuery($searchKey, $filterValue);
-                            },
-                            $unionValue->getValues()
-                        ),
-                    ],
-                ];
-            case FilterValueInterface::TYPE_INTERSECTION:
-                /** @var IntersectionFilterValueInterface $intersectionValue */
-                $intersectionValue = $filterValue;
-
-                return [
-                    'bool' => [
-                        'must' => array_map(
-                            function (FilterValueInterface $filterValue) use ($searchKey) {
-                                return $this->getQueryShapeForFilterQuery($searchKey, $filterValue);
-                            },
-                            $intersectionValue->getValues()
-                        )
-                    ],
-                ];
-            case FilterValueInterface::TYPE_RANGE:
-                /** @var RangeFilterValueInterface $rangeValue */
-                $rangeValue = $filterValue;
-
-                return [
-                    'range' => [
-                        $searchKey => [
-                            'gte' => $rangeValue->getMin(),
-                            'lte' => $rangeValue->getMax(),
-                        ],
-                    ],
-                ];
-            default:
-                return null;
-                break;
-        }
-    }
-
     private function diffQuerySets(array $leftQueries, array $rightQueries): array
     {
         return array_filter(
@@ -227,10 +180,7 @@ class ElasticSelectQueryBuilder
             /** @var FilterQueryInterface $filterQuery */
             $filterQuery = array_values($filterQueries)[0];
 
-            return $this->getQueryShapeForFilterQuery(
-                $filterQuery->getSearchKey(),
-                $filterQuery->getFilterValue()
-            );
+            return $this->queryShapeBuilder->getQueryShapeForFilterQuery($filterQuery);
         }
 
         return [
@@ -241,10 +191,7 @@ class ElasticSelectQueryBuilder
                             return null;
                         }
 
-                        return $this->getQueryShapeForFilterQuery(
-                            $filterQuery->getSearchKey(),
-                            $filterQuery->getFilterValue()
-                        );
+                        return $this->queryShapeBuilder->getQueryShapeForFilterQuery($filterQuery);
                     },
                     $filterQueries
                 )),
