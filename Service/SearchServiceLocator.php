@@ -10,6 +10,11 @@ class SearchServiceLocator extends ServiceLocator implements SearchServiceLocato
 {
     public function fetchServiceForCorpus(string $corpus): SearchServiceInterface
     {
-        return $this->get($corpus);
+        /**
+         * The SearchServiceInterface has the potential to be holding state
+         * due to setters so for now we clone the object to safety ensure
+         * nothing to held between fetches
+         */
+        return clone $this->get($corpus);
     }
 }
