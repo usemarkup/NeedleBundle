@@ -6,6 +6,7 @@ namespace Markup\NeedleBundle\Builder;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Elastic\QueryShapeBuilder;
+use Markup\NeedleBundle\Exception\UnformableSearchKeyException;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
@@ -13,6 +14,8 @@ use Markup\NeedleBundle\Filter\IntersectionFilterValueInterface;
 use Markup\NeedleBundle\Filter\RangeFilterValueInterface;
 use Markup\NeedleBundle\Filter\UnionFilterValueInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
+use Markup\NeedleBundle\Sort\SortInterface;
 
 /**
  * A query builder for Elasticsearch, to adapt the abstract Needle query format.
@@ -126,6 +129,27 @@ class ElasticSelectQueryBuilder
                     ];
                 }
             }
+        }
+
+        //if there are sorts to apply, apply them
+        $sortCollection = $genericQuery->getSortCollection();
+        if ($sortCollection instanceof SortCollectionInterface) {
+            $query['sort'] = $sortCollection
+                ->map(function (SortInterface $sort) {
+                    try {
+                        $sortKey = $sort->getFilter()->getSearchKey(['prefer_parsed' => false]);
+                    } catch (UnformableSearchKeyException $e) {
+                        return null;
+                    }
+
+                    return (object) [
+                        $sortKey => ($sort->isDescending()) ? 'desc' : 'asc'
+                    ];
+                })
+                ->filter(function ($v) {
+                    return $v !== null;
+                })
+                ->toArray();
         }
 
         //if there is a post-filter to apply, apply it
