@@ -6,6 +6,7 @@ namespace Markup\NeedleBundle\Tests\Builder;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Builder\ElasticSelectQueryBuilder;
+use Markup\NeedleBundle\Builder\QueryBuildOptions;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
@@ -27,7 +28,7 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
     public function testBuildWithNoOperationsReturnsSolariumSelectQuery()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
-        $query = $this->builder->buildElasticQueryFromGeneric($genericQuery);
+        $query = $this->builder->buildElasticQueryFromGeneric($genericQuery, $this->emptyOptions());
         $this->assertEquals(new \stdClass(), $query['query']['match_all']);
     }
 
@@ -41,7 +42,7 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
         $genericQuery
             ->shouldReceive('hasSearchTerm')
             ->andReturn(true);
-        $query = $this->builder->buildElasticQueryFromGeneric($genericQuery);
+        $query = $this->builder->buildElasticQueryFromGeneric($genericQuery, $this->emptyOptions());
         $this->assertEquals($term, $query['query']['multi_match']['query']);
     }
 
@@ -71,7 +72,7 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
         $genericQuery
             ->shouldReceive('getFilterQueries')
             ->andReturn([$filterQuery]);
-        $query = $this->builder->buildElasticQueryFromGeneric($genericQuery);
+        $query = $this->builder->buildElasticQueryFromGeneric($genericQuery, $this->emptyOptions());
         $filterQueries = array_map(
             function ($item) {
                 return $item['term'];
@@ -84,5 +85,10 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
             'checking correct number of filter queries returned'
         );
         $this->assertEquals([['color' => 'red']], $filterQueries);
+    }
+
+    private function emptyOptions(): QueryBuildOptions
+    {
+        return new QueryBuildOptions();
     }
 }
