@@ -10,6 +10,8 @@ use function GuzzleHttp\Promise\promise_for;
 use GuzzleHttp\Promise\PromiseInterface;
 use Markup\NeedleBundle\Adapter\ElasticResultPromisePagerfantaAdapter;
 use Markup\NeedleBundle\Builder\ElasticSelectQueryBuilder;
+use Markup\NeedleBundle\Builder\QueryBuildOptions;
+use Markup\NeedleBundle\Builder\QueryBuildOptionsLocator;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorInterface;
@@ -33,6 +35,11 @@ class ElasticSearchService implements AsyncSearchServiceInterface
     private $queryBuilder;
 
     /**
+     * @var QueryBuildOptionsLocator
+     */
+    private $queryBuildOptionsLocator;
+
+    /**
      * @var string
      */
     private $corpus;
@@ -47,10 +54,15 @@ class ElasticSearchService implements AsyncSearchServiceInterface
      */
     private $decorators;
 
-    public function __construct(Client $elastic, ElasticSelectQueryBuilder $queryBuilder, string $corpus)
-    {
+    public function __construct(
+        Client $elastic,
+        ElasticSelectQueryBuilder $queryBuilder,
+        QueryBuildOptionsLocator $queryBuildOptionsLocator,
+        string $corpus
+    ) {
         $this->elastic = $elastic;
         $this->queryBuilder = $queryBuilder;
+        $this->queryBuildOptionsLocator = $queryBuildOptionsLocator;
         $this->corpus = $corpus;
         $this->decorators = [];
     }
@@ -70,7 +82,10 @@ class ElasticSearchService implements AsyncSearchServiceInterface
                 foreach ($this->decorators as $decorator) {
                     $query = $decorator->decorate($query);
                 }
-                $elasticQuery = $this->queryBuilder->buildElasticQueryFromGeneric($query);
+                $elasticQuery = $this->queryBuilder->buildElasticQueryFromGeneric(
+                    $query,
+                    $this->queryBuildOptionsLocator->get($this->corpus)
+                );
 
                 //apply offset/limit
                 $maxPerPage = $query->getMaxPerPage();
