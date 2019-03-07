@@ -6,6 +6,7 @@ namespace Markup\NeedleBundle\Tests\Service;
 
 use Elasticsearch\Client;
 use Markup\NeedleBundle\Builder\ElasticSelectQueryBuilder;
+use Markup\NeedleBundle\Builder\QueryBuildOptionsLocator;
 use Markup\NeedleBundle\Service\AsyncSearchServiceInterface;
 use Markup\NeedleBundle\Service\ElasticSearchService;
 use Mockery as m;
@@ -35,6 +36,7 @@ class ElasticSearchServiceTest extends MockeryTestCase
         $this->search = new ElasticSearchService(
             $this->client,
             $this->queryBuilder,
+            new QueryBuildOptionsLocator([]),
             'corpus'
         );
     }
