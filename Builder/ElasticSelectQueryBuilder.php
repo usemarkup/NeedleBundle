@@ -34,16 +34,26 @@ class ElasticSelectQueryBuilder
         $this->queryShapeBuilder = new QueryShapeBuilder();
     }
 
-    public function buildElasticQueryFromGeneric(ResolvedSelectQueryInterface $genericQuery): array
-    {
+    public function buildElasticQueryFromGeneric(
+        ResolvedSelectQueryInterface $genericQuery,
+        QueryBuildOptions $options
+    ): array {
         $query = [];
 
         if ($genericQuery->hasSearchTerm()) {
-            $matchClause = [
-                'multi_match' => [
-                    'query' => $genericQuery->getSearchTerm(),
-                ],
-            ];
+            if (!$options->useWildcardSearch()) {
+                $matchClause = [
+                    'multi_match' => [
+                        'query' => $genericQuery->getSearchTerm(),
+                    ],
+                ];
+            } else {
+                $matchClause = [
+                    'query_string' => [
+                        'query' => sprintf('*%s*', trim((string) $genericQuery->getSearchTerm(), '*')),
+                    ],
+                ];
+            }
         } else {
             $matchClause = [
                 'match_all' => new \stdClass(),

@@ -2,6 +2,8 @@
 
 namespace Markup\NeedleBundle\DependencyInjection;
 
+use Markup\NeedleBundle\Builder\QueryBuildOptions;
+use Markup\NeedleBundle\Builder\QueryBuildOptionsLocator;
 use Markup\NeedleBundle\Client\BackendClientServiceLocator;
 use Markup\NeedleBundle\Context\ConfiguredContextProvider;
 use Markup\NeedleBundle\Corpus\CorpusBackendProvider;
@@ -126,6 +128,27 @@ class MarkupNeedleExtension extends Extension
             ->setPublic(false)
             ->addTag('container.service_locator');
         $container->setDefinition(TermsFieldProviderLocator::class, $termsFieldProviderLocator);
+        $queryBuildOptionsLocator = (new Definition(QueryBuildOptionsLocator::class))
+            ->setArguments([
+                array_map(
+                    function (array $corpusConfig) use ($container) {
+                        $options = (new Definition(QueryBuildOptions::class))
+                            ->setArguments([
+                                [
+                                    'useWildcardSearch' => $corpusConfig['use_wildcard_search'],
+                                ],
+                            ]);
+                        $optionsId = 'markup_needle.query_build_options'.strval(rand());
+                        $container->setDefinition($optionsId, $options);
+
+                        return new Reference($optionsId);
+                    },
+                    $config['corpora']
+                )
+            ])
+            ->setPublic(false)
+            ->addTag('container.service_locator');
+        $container->setDefinition(QueryBuildOptionsLocator::class, $queryBuildOptionsLocator);
     }
 
     /**
