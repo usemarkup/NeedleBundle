@@ -8,6 +8,7 @@ use Markup\NeedleBundle\Indexer\CorpusIndexingCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -35,7 +36,8 @@ class ExportCorpusCommand extends Command
     {
         $this
             ->setDescription('Performs an export to a defined Needle corpus.')
-            ->addArgument('corpus', InputArgument::REQUIRED, 'The corpus to export');
+            ->addArgument('corpus', InputArgument::REQUIRED, 'The corpus to export')
+            ->addOption('append', 'a', InputOption::VALUE_NONE, 'Append to an existing indexed corpus');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -47,6 +49,8 @@ class ExportCorpusCommand extends Command
         $corpus = $input->getArgument('corpus');
         $corpus = (is_string($corpus)) ? $corpus : '';
 
+        $shouldAppend = (bool) $input->getOption('append');
+
         $io = new SymfonyStyle($input, $output);
         $io->writeln(sprintf('Exporting Needle corpus "%s"...', $corpus));
         $io->progressStart();
@@ -55,7 +59,7 @@ class ExportCorpusCommand extends Command
             $io->progressAdvance();
         };
         $this->indexer->setPerSubjectCallback($progressCallback);
-        $this->indexer->setShouldPreDelete(true);
+        $this->indexer->setShouldPreDelete(!$shouldAppend);
 
         ($this->indexer)($corpus);
 
