@@ -13,6 +13,7 @@ use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Filter\IntersectionFilterValueInterface;
 use Markup\NeedleBundle\Filter\RangeFilterValueInterface;
 use Markup\NeedleBundle\Filter\UnionFilterValueInterface;
+use Markup\NeedleBundle\Lucene\BoostLucenifier;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Markup\NeedleBundle\Sort\SortInterface;
@@ -40,18 +41,40 @@ class ElasticSelectQueryBuilder
     ): array {
         $query = [];
 
+        //if there are boost query fields to apply, apply them within the query clause
+        $boostQueryFields = $genericQuery->getBoostQueryFields();
+
+        //generate query clause
         if ($genericQuery->hasSearchTerm()) {
+            if (!empty($boostQueryFields)) {
+                $boostLucenifier = new BoostLucenifier();
+                $fieldRefs = [];
+                foreach ($boostQueryFields as $boostQueryField) {
+                    $fieldRefs[] = $boostLucenifier->lucenifyBoost($boostQueryField);
+                }
+                $fieldsData = [
+                    'fields' => $fieldRefs,
+                ];
+            } else {
+                $fieldsData = [];
+            }
             if (!$options->useWildcardSearch()) {
                 $matchClause = [
-                    'multi_match' => [
-                        'query' => $genericQuery->getSearchTerm(),
-                    ],
+                    'multi_match' => array_merge(
+                        [
+                            'query' => $genericQuery->getSearchTerm(),
+                        ],
+                        $fieldsData
+                    ),
                 ];
             } else {
                 $matchClause = [
-                    'query_string' => [
-                        'query' => sprintf('*%s*', trim((string) $genericQuery->getSearchTerm(), '*')),
-                    ],
+                    'query_string' => array_merge(
+                        [
+                            'query' => sprintf('*%s*', trim((string) $genericQuery->getSearchTerm(), '*')),
+                        ],
+                        $fieldsData
+                    ),
                 ];
             }
         } else {
