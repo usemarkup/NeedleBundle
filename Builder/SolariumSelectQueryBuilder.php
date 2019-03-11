@@ -6,6 +6,7 @@ use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Exception\UnformableSearchKeyException;
 use Markup\NeedleBundle\Facet\RangeFacetInterface;
 use Markup\NeedleBundle\Filter;
+use Markup\NeedleBundle\Lucene\BoostLucenifier;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Lucene\SearchTermProcessor;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
@@ -205,8 +206,9 @@ class SolariumSelectQueryBuilder
             }
             //apply boosts
             $queryFields = [];
+            $boostLucenifier = new BoostLucenifier();
             foreach ($boostQueryFields as $boostField) {
-                $queryFields[] = $boostField->getAttribute()->getSearchKey(['prefer_parsed' => true]).(($boostField->getBoostFactor() !== 1) ? ('^'.strval($boostField->getBoostFactor())) : '');
+                $queryFields[] = $boostLucenifier->lucenifyBoost($boostField);
             }
             $edismax->setQueryFields(implode(' ', $queryFields));
         }
