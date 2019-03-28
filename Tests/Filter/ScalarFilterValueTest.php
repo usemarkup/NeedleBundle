@@ -22,7 +22,7 @@ class ScalarFilterValueTest extends TestCase
         $value = 8;
         $scalarValue = new ScalarFilterValue($value);
         $this->assertEquals($value, $scalarValue->getSearchValue());
-        $this->assertInternalType(gettype($value), $scalarValue->getSearchValue());
+        $this->assertIsInt($scalarValue->getSearchValue());
     }
 
     public function testGetSlug()
@@ -30,6 +30,6 @@ class ScalarFilterValueTest extends TestCase
         $value = 8;
         $scalarValue = new ScalarFilterValue($value);
         $this->assertEquals($value, $scalarValue->getSlug());
-        $this->assertInternalType('string', $scalarValue->getSlug());
+        $this->assertIsString($scalarValue->getSlug());
     }
 }
