@@ -32,6 +32,6 @@ class SolariumQueryTimeStrategyTest extends TestCase
             ->will($this->returnValue($solariumQueryTime));
         $actualTime = $this->strategy->getQueryTimeInMilliseconds();
         $this->assertEquals($solariumQueryTime, $actualTime);
-        $this->assertInternalType('float', $actualTime);
+        $this->assertIsFloat($actualTime);
     }
 }
