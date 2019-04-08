@@ -27,7 +27,7 @@ class BoostQueryField implements BoostQueryFieldInterface
      * @param AttributeInterface $attribute
      * @param float              $boostFactor
      **/
-    public function __construct(AttributeInterface $attribute, $boostFactor = 1)
+    public function __construct(AttributeInterface $attribute, $boostFactor = 1.0)
     {
         $this->attribute = $attribute;
         $this->boostFactor = $boostFactor;

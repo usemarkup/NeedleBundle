@@ -73,9 +73,8 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
 
     public function getQueryTimeInMilliseconds()
     {
-        //if there's no query time strategy, return false
         if (null === $this->queryTimeStrategy) {
-            return false;
+            return 0.0;
         }
 
         return $this->queryTimeStrategy->getQueryTimeInMilliseconds();

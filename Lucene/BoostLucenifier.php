@@ -15,7 +15,7 @@ class BoostLucenifier
         return sprintf(
             '%s%s',
             $boostQueryField->getAttribute()->getSearchKey(['prefer_parsed' => true]),
-            ($boostQueryField->getBoostFactor() !== 1) ? ('^'.strval($boostQueryField->getBoostFactor())) : ''
+            ($boostQueryField->getBoostFactor() != 1) ? ('^'.strval($boostQueryField->getBoostFactor())) : ''
         );
     }
 }

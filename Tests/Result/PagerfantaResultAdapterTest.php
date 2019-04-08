@@ -71,11 +71,6 @@ class PagerfantaResultAdapterResultTest extends TestCase
         $this->assertEquals(42, count($this->adapter));
     }
 
-    public function testGetQueryTimeWithNoQueryTimeStrategySet()
-    {
-        $this->assertFalse($this->adapter->getQueryTimeInMilliseconds(), '->getQueryTimeInMilliseconds returns false when no query time strategy set');
-    }
-
     public function testGetQueryTimeWithStrategy()
     {
         $time = 42.0;
