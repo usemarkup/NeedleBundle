@@ -13,7 +13,7 @@ class AttributeNullSpecializationContext implements AttributeSpecializationNullC
      */
     public function getValue()
     {
-        return;
+        return '';
     }
 
     /**

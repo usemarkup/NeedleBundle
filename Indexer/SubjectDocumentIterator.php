@@ -70,7 +70,7 @@ class SubjectDocumentIterator implements \OuterIterator
     /**
      * Returns a Solarium document, if one is achievable (otherwise returns null).
      *
-     * @return \Solarium\QueryType\Update\Query\Document\Document|null
+     * @return \Solarium\QueryType\Update\Query\Document\DocumentInterface|null
      */
     public function current()
     {

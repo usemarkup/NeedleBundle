@@ -8,10 +8,10 @@ class NoopSuggestService implements SuggestServiceInterface
 {
     /**
      * @param SimpleQueryInterface $query
-     * @return SuggestResultInterface
+     * @return SuggestResultInterface[]
      */
     public function fetchSuggestions(SimpleQueryInterface $query)
     {
-        return new EmptySuggestResult();
+        return [];
     }
 }

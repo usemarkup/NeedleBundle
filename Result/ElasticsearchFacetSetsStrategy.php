@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Markup\NeedleBundle\Result;
 
 use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Facet\FacetSetInterface;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 
 class ElasticsearchFacetSetsStrategy implements FacetSetStrategyInterface
@@ -34,16 +35,16 @@ class ElasticsearchFacetSetsStrategy implements FacetSetStrategyInterface
         $this->originalQuery = $originalQuery;
     }
 
-    /**
-     * @return \Markup\NeedleBundle\Facet\FacetSetInterface[]|ElasticsearchFacetSetsIterator
-     **/
     public function getFacetSets()
     {
-        return new ElasticsearchFacetSetsIterator(
+        /** @var FacetSetInterface[] $facetSets */
+        $facetSets = new ElasticsearchFacetSetsIterator(
             $this->flattenAggregationsData($this->aggregationsData),
             $this->searchContext,
             $this->originalQuery
         );
+
+        return $facetSets;
     }
 
     private function flattenAggregationsData(array $data): array

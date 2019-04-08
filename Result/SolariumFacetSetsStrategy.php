@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\Result;
 
 use Markup\NeedleBundle\Context\SearchContextInterface as SearchContext;
+use Markup\NeedleBundle\Facet\FacetSetInterface;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Solarium\QueryType\Select\Result\Result as SolariumResult;
 
@@ -53,7 +54,10 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
 
     public function getFacetSets()
     {
-        return new SolariumFacetSetsIterator($this->getSolariumResult()->getFacetSet(), $this->getSearchContext(), $this->originalQuery);
+        /** @var FacetSetInterface[] $facetSets */
+        $facetSets = new SolariumFacetSetsIterator($this->getSolariumResult()->getFacetSet(), $this->getSearchContext(), $this->originalQuery);
+
+        return $facetSets;
     }
 
     /**

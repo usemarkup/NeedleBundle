@@ -17,7 +17,7 @@ class Interceptor implements InterceptorInterface
     private $eventDispatcher;
 
     /**
-     * @var \SplObjectStorage&DefinitionInterface[]
+     * @var \SplObjectStorage
      **/
     private $definitions;
 
@@ -37,7 +37,9 @@ class Interceptor implements InterceptorInterface
      **/
     public function matchQueryToIntercept($queryString)
     {
-        foreach ($this->definitions as $definition) {
+        /** @var DefinitionInterface[] $definitions */
+        $definitions = $this->definitions;
+        foreach ($definitions as $definition) {
             if ($definition->getMatcher()->matches($queryString)) {
                 $interceptMapper = $this->getInterceptMapperForType($definition->getType());
                 if (null === $interceptMapper) {
