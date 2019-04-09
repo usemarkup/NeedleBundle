@@ -30,10 +30,20 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
     {
         $corpus = $message->getCorpus();
 
+        $batchSize = 500;
+
         $subjectMapper = $this->dataMapperProvider->fetchMapperForCorpus($message->getCorpus());
-        $bucket = (function ($subjects) use ($subjectMapper) {
+        $bucket = (function ($subjects) use ($subjectMapper, $batchSize) {
+            $batch = [];
             foreach ($subjects as $article) {
-                yield $subjectMapper->mapSubjectToData($article);
+                $batch[] = $subjectMapper->mapSubjectToData($article);
+                if (count($batch) === $batchSize) {
+                    yield $batch;
+                    $batch = [];
+                }
+            }
+            if (count($batch) > 0) {
+                yield $batch;
             }
         })($message->getSubjectIteration());
 
@@ -66,7 +76,9 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
         };
 
         $sendBodies = function ($bucket) use ($mapBucketToBody, $paramsForBody) {
-            $this->elastic->bulk($paramsForBody($mapBucketToBody($bucket)));
+            foreach ($bucket as $batch) {
+                $this->elastic->bulk($paramsForBody($mapBucketToBody($batch)));
+            }
         };
 
         $preDeleteQuery = $message->getPreDeleteQuery();
