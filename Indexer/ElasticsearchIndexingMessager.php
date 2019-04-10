@@ -10,6 +10,8 @@ use Markup\NeedleBundle\Elastic\QueryShapeBuilder;
 
 class ElasticsearchIndexingMessager implements IndexingMessagerInterface
 {
+    private const BATCH_SIZE = 500;
+
     /**
      * @var Client
      */
@@ -26,60 +28,11 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
         $this->dataMapperProvider = $dataMapperProvider;
     }
 
-    public function executeIndex(IndexingMessageInterface $message, ?callable $perSubjectCallback = null): IndexingResultInterface
-    {
+    public function executeIndex(
+        IndexingMessageInterface $message,
+        ?callable $perSubjectCallback = null
+    ): IndexingResultInterface {
         $corpus = $message->getCorpus();
-
-        $batchSize = 500;
-
-        $subjectMapper = $this->dataMapperProvider->fetchMapperForCorpus($message->getCorpus());
-        $bucket = (function ($subjects) use ($subjectMapper, $batchSize) {
-            $batch = [];
-            foreach ($subjects as $article) {
-                $batch[] = $subjectMapper->mapSubjectToData($article);
-                if (count($batch) === $batchSize) {
-                    yield $batch;
-                    $batch = [];
-                }
-            }
-            if (count($batch) > 0) {
-                yield $batch;
-            }
-        })($message->getSubjectIteration());
-
-        $paramsForBody = function ($body) use ($corpus) {
-            return [
-                'index' => $corpus,
-                'type' => '_doc',
-                'body' => $body,
-            ];
-        };
-
-        $metaForItem = function($item) use ($corpus) {
-            return [
-                'index' => [
-                    '_index' => $corpus,
-                    '_type' => '_doc',
-                    '_id' => $item['id'],
-                ]
-            ];
-        };
-
-        $callback = $perSubjectCallback ?? function () {};
-
-        $mapBucketToBody = function ($bucket) use ($metaForItem, $callback) {
-            foreach ($bucket as $item) {
-                yield $metaForItem($item);
-                yield $item;
-                $callback();
-            }
-        };
-
-        $sendBodies = function ($bucket) use ($mapBucketToBody, $paramsForBody) {
-            foreach ($bucket as $batch) {
-                $this->elastic->bulk($paramsForBody($mapBucketToBody($batch)));
-            }
-        };
 
         $preDeleteQuery = $message->getPreDeleteQuery();
 
@@ -91,13 +44,44 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
                 //the index didn't previously exist, but that's OK
             }
         } elseif ($preDeleteQuery !== null) {
-            $this->elastic->deleteByQuery($paramsForBody([
-                'query' => (new QueryShapeBuilder())->getQueryShapeForFilterQuery($preDeleteQuery),
-            ]));
+            $this->elastic->deleteByQuery(
+                [
+                    'index' => $corpus,
+                    'type' => '_doc',
+                    'query' => (new QueryShapeBuilder())->getQueryShapeForFilterQuery($preDeleteQuery),
+                ]
+            );
         }
 
-        if ($message->isFullReindex() || $preDeleteQuery === null) {
-            $sendBodies($bucket);
+        $callback = $perSubjectCallback ?? function () {
+            };
+        $subjectMapper = $this->dataMapperProvider->fetchMapperForCorpus($message->getCorpus());
+
+        $batch = [];
+
+        foreach ($message->getSubjectIteration() as $subject) {
+            $data = $subjectMapper->mapSubjectToData($subject);
+            $batch[] = [
+                'index' => [
+                    '_id' => $data['id'],
+                    '_index' => $corpus,
+                    '_type' => '_doc',
+                ],
+            ];
+
+            $batch[] = $data;
+
+            if (count($batch) === self::BATCH_SIZE) {
+                $this->elastic->bulk(['body' => $batch]);
+
+                $batch = [];
+            }
+
+            $callback();
+        }
+
+        if (count($batch) > 0) {
+            $this->elastic->bulk(['body' => $batch]);
         }
 
         //fake it until we make it
