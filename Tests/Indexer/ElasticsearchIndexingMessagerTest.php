@@ -3,6 +3,7 @@
 namespace Tests\Indexer;
 
 use Elasticsearch\Client;
+use Markup\NeedleBundle\Elastic\CorpusIndexProvider;
 use Markup\NeedleBundle\Indexer\ElasticsearchIndexingMessager;
 use Markup\NeedleBundle\Indexer\IndexingMessagerInterface;
 use Markup\NeedleBundle\Indexer\SubjectDataMapperProvider;
@@ -32,7 +33,8 @@ class ElasticsearchIndexingMessagerTest extends MockeryTestCase
         $this->subjectDataMapperProvider = m::mock(SubjectDataMapperProvider::class);
         $this->messager = new ElasticsearchIndexingMessager(
             $this->elastic,
-            $this->subjectDataMapperProvider
+            $this->subjectDataMapperProvider,
+            new CorpusIndexProvider(null)
         );
     }
 

@@ -127,6 +127,15 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('elasticsearch')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('index_prefix')
+                            ->defaultNull()
+                            ->info('This option allows you to use namespaced Elasticsearch indexes (format "{prefix}_{corpus}"')
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

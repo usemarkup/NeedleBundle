@@ -162,3 +162,7 @@ services:
         arguments:
             - '@markup_needle.exporter.closure.generator'
         public: false
+    Markup\NeedleBundle\Elastic\CorpusIndexProvider:
+        arguments:
+            - ~
+        public: false
