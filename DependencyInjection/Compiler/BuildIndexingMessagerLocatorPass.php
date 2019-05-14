@@ -55,9 +55,10 @@ class BuildIndexingMessagerLocatorPass implements CompilerPassInterface
                     );
                     $messager = (new Definition(ElasticsearchIndexingMessager::class))
                         ->setArguments([
-                            new Reference($clientId),
-                            new Reference(SubjectDataMapperProvider::class),
+                            '$elastic' => new Reference($clientId),
+                            '$dataMapperProvider' => new Reference(SubjectDataMapperProvider::class),
                         ])
+                        ->setAutowired(true)
                         ->setPublic(false);
                     $messagerId = sprintf('markup_needle.indexing_messager.corpus.%s', $corpus);
                     $container->setDefinition($messagerId, $messager);

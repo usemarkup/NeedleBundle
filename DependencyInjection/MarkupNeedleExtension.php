@@ -7,6 +7,7 @@ use Markup\NeedleBundle\Builder\QueryBuildOptionsLocator;
 use Markup\NeedleBundle\Client\BackendClientServiceLocator;
 use Markup\NeedleBundle\Context\ConfiguredContextProvider;
 use Markup\NeedleBundle\Corpus\CorpusBackendProvider;
+use Markup\NeedleBundle\Elastic\CorpusIndexProvider;
 use Markup\NeedleBundle\Intercept\Definition as InterceptDefinition;
 use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
 use Markup\NeedleBundle\Suggest\SuggestHandlerLocator;
@@ -48,6 +49,7 @@ class MarkupNeedleExtension extends Extension
         $this->loadIntercepts($config, $container);
         $this->loadLogSettings($config, $container);
         $this->loadContextServices($config, $container);
+        $this->loadBackendSpecificServices($config, $container);
     }
 
     /**
@@ -230,5 +232,11 @@ class MarkupNeedleExtension extends Extension
             );
             $container->setDefinition($prefix.'context_provider', $contextProvider);
         }
+    }
+
+    private function loadBackendSpecificServices(array $config, ContainerBuilder $container)
+    {
+        $corpusIndexProvider = $container->getDefinition(CorpusIndexProvider::class);
+        $corpusIndexProvider->setArgument('$prefix', $config['elasticsearch']['index_prefix']);
     }
 }

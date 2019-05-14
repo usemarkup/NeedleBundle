@@ -6,6 +6,7 @@ namespace Markup\NeedleBundle\Indexer;
 
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Markup\NeedleBundle\Elastic\CorpusIndexProvider;
 use Markup\NeedleBundle\Elastic\QueryShapeBuilder;
 
 class ElasticsearchIndexingMessager implements IndexingMessagerInterface
@@ -22,31 +23,40 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
      */
     private $dataMapperProvider;
 
-    public function __construct(Client $elastic, SubjectDataMapperProvider $dataMapperProvider)
-    {
+    /**
+     * @var CorpusIndexProvider
+     */
+    private $corpusIndexProvider;
+
+    public function __construct(
+        Client $elastic,
+        SubjectDataMapperProvider $dataMapperProvider,
+        CorpusIndexProvider $corpusIndexProvider
+    ) {
         $this->elastic = $elastic;
         $this->dataMapperProvider = $dataMapperProvider;
+        $this->corpusIndexProvider = $corpusIndexProvider;
     }
 
     public function executeIndex(
         IndexingMessageInterface $message,
         ?callable $perSubjectCallback = null
     ): IndexingResultInterface {
-        $corpus = $message->getCorpus();
+        $index = $this->corpusIndexProvider->getIndexForCorpus($message->getCorpus());
 
         $preDeleteQuery = $message->getPreDeleteQuery();
 
         //pre-delete non-atomically for just now (though this is dangerous)
         if ($message->isFullReindex()) {
             try {
-                $this->elastic->indices()->delete(['index' => $corpus]);
+                $this->elastic->indices()->delete(['index' => $index]);
             } catch (Missing404Exception $e) {
                 //the index didn't previously exist, but that's OK
             }
         } elseif ($preDeleteQuery !== null) {
             $this->elastic->deleteByQuery(
                 [
-                    'index' => $corpus,
+                    'index' => $index,
                     'type' => '_doc',
                     'query' => (new QueryShapeBuilder())->getQueryShapeForFilterQuery($preDeleteQuery),
                 ]
@@ -64,7 +74,7 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
             $batch[] = [
                 'index' => [
                     '_id' => $data['id'],
-                    '_index' => $corpus,
+                    '_index' => $index,
                     '_type' => '_doc',
                 ],
             ];

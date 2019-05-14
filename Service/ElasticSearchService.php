@@ -13,6 +13,7 @@ use Markup\NeedleBundle\Builder\ElasticSelectQueryBuilder;
 use Markup\NeedleBundle\Builder\QueryBuildOptions;
 use Markup\NeedleBundle\Builder\QueryBuildOptionsLocator;
 use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Elastic\CorpusIndexProvider;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorInterface;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
@@ -40,6 +41,11 @@ class ElasticSearchService implements AsyncSearchServiceInterface
     private $queryBuildOptionsLocator;
 
     /**
+     * @var CorpusIndexProvider
+     */
+    private $corpusIndexProvider;
+
+    /**
      * @var string
      */
     private $corpus;
@@ -58,11 +64,13 @@ class ElasticSearchService implements AsyncSearchServiceInterface
         Client $elastic,
         ElasticSelectQueryBuilder $queryBuilder,
         QueryBuildOptionsLocator $queryBuildOptionsLocator,
+        CorpusIndexProvider $corpusIndexProvider,
         string $corpus
     ) {
         $this->elastic = $elastic;
         $this->queryBuilder = $queryBuilder;
         $this->queryBuildOptionsLocator = $queryBuildOptionsLocator;
+        $this->corpusIndexProvider = $corpusIndexProvider;
         $this->corpus = $corpus;
         $this->decorators = [];
     }
@@ -100,7 +108,7 @@ class ElasticSearchService implements AsyncSearchServiceInterface
                 }
 
                 $queryParams = [
-                    'index' => $this->corpus,
+                    'index' => $this->corpusIndexProvider->getIndexForCorpus($this->corpus),
                     'type' => '_doc',
                     'body' => $elasticQuery,
                     'client' => [
