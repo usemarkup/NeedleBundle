@@ -58,11 +58,14 @@ class ElasticSelectQueryBuilder
             } else {
                 $fieldsData = [];
             }
+
+            $searchTerm = addcslashes(strval($genericQuery->getSearchTerm()), '+-&|!(){}[]^”~*?:\\/');
+
             if (!$options->useWildcardSearch()) {
                 $matchClause = [
                     'multi_match' => array_merge(
                         [
-                            'query' => $genericQuery->getSearchTerm(),
+                            'query' => $searchTerm,
                         ],
                         $fieldsData
                     ),
@@ -71,7 +74,7 @@ class ElasticSelectQueryBuilder
                 $matchClause = [
                     'query_string' => array_merge(
                         [
-                            'query' => sprintf('*%s*', trim((string) $genericQuery->getSearchTerm(), '*')),
+                            'query' => sprintf('*%s*', trim($searchTerm, '*')),
                         ],
                         $fieldsData
                     ),

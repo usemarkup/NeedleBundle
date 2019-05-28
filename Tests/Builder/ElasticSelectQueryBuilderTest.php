@@ -46,6 +46,20 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
         $this->assertEquals($term, $query['query']['multi_match']['query']);
     }
 
+    public function testBuildWithSearchTermThatRequiresEscaping()
+    {
+        $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $term = 'lemons::apples::oranges';
+        $genericQuery
+            ->shouldReceive('getSearchTerm')
+            ->andReturn($term);
+        $genericQuery
+            ->shouldReceive('hasSearchTerm')
+            ->andReturn(true);
+        $query = $this->builder->buildElasticQueryFromGeneric($genericQuery, $this->emptyOptions());
+        $this->assertEquals('lemons\:\:apples\:\:oranges', $query['query']['multi_match']['query']);
+    }
+
     public function testAddFilterQuery()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
