@@ -23,7 +23,6 @@ class MarkupNeedleBundle extends Bundle
         $container->addCompilerPass(new c\AddIndexSchedulingEventsPass());
         $container->addCompilerPass(new c\RegisterSubjectDataMappersPass());
         $container->addCompilerPass(new c\RegisterSearchInterceptMappersPass());
-        $container->addCompilerPass(new c\AddSolariumPluginsPass());
         $container->addCompilerPass(new c\BuildSuggestServiceLocatorPass());
         $container->addCompilerPass(new c\AddTermsPass());
         $container->addCompilerPass(new c\AddSpecializationContextFiltersPass());

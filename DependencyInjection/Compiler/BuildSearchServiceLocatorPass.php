@@ -31,6 +31,7 @@ class BuildSearchServiceLocatorPass implements CompilerPassInterface
                         $corpus,
                         $container
                     );
+                    $this->registerSolariumPlugins($clientId, $container);
                     $serviceId = $this->registerSearchServiceProvidingId(
                         SolrSearchService::class,
                         $corpus,
@@ -91,5 +92,26 @@ class BuildSearchServiceLocatorPass implements CompilerPassInterface
         $container->setDefinition($serviceId, $service);
 
         return $serviceId;
+    }
+
+    private function registerSolariumPlugins(string $clientId, ContainerBuilder $container): void
+    {
+        $client = $container->findDefinition($clientId);
+
+        // custom plugins
+        $knownPluginIds = [
+            'log_bad_requests' => 'markup_needle.solarium.plugin.log_bad_requests',
+        ];
+        foreach ($knownPluginIds as $key => $pluginId) {
+            $client->addMethodCall('registerPlugin', [$key, new Reference($pluginId)]);
+        }
+
+        // solarium plugins
+        $builtInPlugins = [
+            'postbigrequest',
+        ];
+        foreach ($builtInPlugins as $name) {
+            $client->addMethodCall('getPlugin', [$name]);
+        }
     }
 }
