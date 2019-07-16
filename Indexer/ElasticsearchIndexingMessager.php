@@ -6,6 +6,7 @@ namespace Markup\NeedleBundle\Indexer;
 
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Markup\NeedleBundle\Elastic\CorpusIndexConfiguration;
 use Markup\NeedleBundle\Elastic\CorpusIndexProvider;
 use Markup\NeedleBundle\Elastic\QueryShapeBuilder;
 
@@ -28,14 +29,21 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
      */
     private $corpusIndexProvider;
 
+    /**
+     * @var CorpusIndexConfiguration
+     */
+    private $corpusIndexConfiguration;
+
     public function __construct(
         Client $elastic,
         SubjectDataMapperProvider $dataMapperProvider,
-        CorpusIndexProvider $corpusIndexProvider
+        CorpusIndexProvider $corpusIndexProvider,
+        CorpusIndexConfiguration $corpusIndexConfiguration
     ) {
         $this->elastic = $elastic;
         $this->dataMapperProvider = $dataMapperProvider;
         $this->corpusIndexProvider = $corpusIndexProvider;
+        $this->corpusIndexConfiguration = $corpusIndexConfiguration;
     }
 
     public function executeIndex(
@@ -53,6 +61,24 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
             } catch (Missing404Exception $e) {
                 //the index didn't previously exist, but that's OK
             }
+
+            $body = [];
+            $settings = $this->corpusIndexConfiguration->getSettings($message->getCorpus());
+            $mappings = $this->corpusIndexConfiguration->getMappings($message->getCorpus());
+
+            if (!empty($settings)) {
+                $body['settings'] = $settings;
+            }
+            if (!empty($mappings)) {
+                $body['mappings'] = $mappings;
+            }
+
+            $this->elastic->indices()->create(
+                [
+                    'index' => $index,
+                    'body' => $body
+                ]
+            );
         } elseif ($preDeleteQuery !== null) {
             $this->elastic->deleteByQuery(
                 [
