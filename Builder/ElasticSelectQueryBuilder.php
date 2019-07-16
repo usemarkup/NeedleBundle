@@ -74,7 +74,7 @@ class ElasticSelectQueryBuilder
                 $matchClause = [
                     'query_string' => array_merge(
                         [
-                            'query' => sprintf('*%s*', trim($searchTerm, '*')),
+                            'query' => sprintf('(%s) OR (*%s*)', trim($searchTerm, '*'), trim($searchTerm, '*')),
                         ],
                         $fieldsData
                     ),
