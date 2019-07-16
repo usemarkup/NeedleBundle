@@ -166,3 +166,6 @@ services:
         arguments:
             - ~
         public: false
+
+    Markup\NeedleBundle\Elastic\CorpusIndexConfiguration:
+        public: false

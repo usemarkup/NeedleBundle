@@ -2,16 +2,17 @@
 
 namespace Markup\NeedleBundle\DependencyInjection;
 
+use Markup\Json\Encoder;
 use Markup\NeedleBundle\Builder\QueryBuildOptions;
 use Markup\NeedleBundle\Builder\QueryBuildOptionsLocator;
 use Markup\NeedleBundle\Client\BackendClientServiceLocator;
 use Markup\NeedleBundle\Context\ConfiguredContextProvider;
 use Markup\NeedleBundle\Corpus\CorpusBackendProvider;
+use Markup\NeedleBundle\Elastic\CorpusIndexConfiguration;
 use Markup\NeedleBundle\Elastic\CorpusIndexProvider;
 use Markup\NeedleBundle\Intercept\Definition as InterceptDefinition;
 use Markup\NeedleBundle\Intercept\NormalizedListMatcher;
 use Markup\NeedleBundle\Suggest\SuggestHandlerLocator;
-use Markup\NeedleBundle\Terms\TermsFieldProviderInterface;
 use Markup\NeedleBundle\Terms\TermsFieldProviderLocator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -55,7 +56,7 @@ class MarkupNeedleExtension extends Extension
     /**
      * Loads the debug flag.
      *
-     * @param array            $config
+     * @param array $config
      * @param ContainerBuilder $container
      **/
     private function loadDebug(array $config, ContainerBuilder $container)
@@ -66,7 +67,7 @@ class MarkupNeedleExtension extends Extension
     /**
      * Loads information about the corpora.
      *
-     * @param array            $config
+     * @param array $config
      * @param ContainerBuilder $container
      **/
     private function loadCorpora(array $config, ContainerBuilder $container)
@@ -78,14 +79,16 @@ class MarkupNeedleExtension extends Extension
         $container->setParameter('markup_needle.schedule_events_by_corpus', $scheduleEvents);
         //define client service locator
         $clientLocator = (new Definition(BackendClientServiceLocator::class))
-            ->setArguments([
-                array_map(
-                    function (array $corpusConfig) {
-                        return new Reference($corpusConfig['backend']['client']);
-                    },
-                    $config['corpora']
-                )
-            ])
+            ->setArguments(
+                [
+                    array_map(
+                        function (array $corpusConfig) {
+                            return new Reference($corpusConfig['backend']['client']);
+                        },
+                        $config['corpora']
+                    ),
+                ]
+            )
             ->setPublic(false)
             ->addTag('container.service_locator');
         $container->setDefinition(BackendClientServiceLocator::class, $clientLocator);
@@ -107,47 +110,55 @@ class MarkupNeedleExtension extends Extension
         );
         $container->setParameter('markup_needle.terms_service_lookup', $termsServiceLookup);
         $suggestHandlerLocator = (new Definition(SuggestHandlerLocator::class))
-            ->setArguments([
-                array_map(
-                    function (array $corpusConfig) {
-                        return new Reference($corpusConfig['suggest_handler']);
-                    },
-                    $config['corpora']
-                )
-            ])
+            ->setArguments(
+                [
+                    array_map(
+                        function (array $corpusConfig) {
+                            return new Reference($corpusConfig['suggest_handler']);
+                        },
+                        $config['corpora']
+                    ),
+                ]
+            )
             ->setPublic(false)
             ->addTag('container.service_locator');
         $container->setDefinition(SuggestHandlerLocator::class, $suggestHandlerLocator);
         $termsFieldProviderLocator = (new Definition(TermsFieldProviderLocator::class))
-            ->setArguments([
-                array_map(
-                    function (array $corpusConfig) {
-                        return new Reference($corpusConfig['terms_field_provider']);
-                    },
-                    $config['corpora']
-                )
-            ])
+            ->setArguments(
+                [
+                    array_map(
+                        function (array $corpusConfig) {
+                            return new Reference($corpusConfig['terms_field_provider']);
+                        },
+                        $config['corpora']
+                    ),
+                ]
+            )
             ->setPublic(false)
             ->addTag('container.service_locator');
         $container->setDefinition(TermsFieldProviderLocator::class, $termsFieldProviderLocator);
         $queryBuildOptionsLocator = (new Definition(QueryBuildOptionsLocator::class))
-            ->setArguments([
-                array_map(
-                    function (array $corpusConfig) use ($container) {
-                        $options = (new Definition(QueryBuildOptions::class))
-                            ->setArguments([
-                                [
-                                    'useWildcardSearch' => $corpusConfig['use_wildcard_search'],
-                                ],
-                            ]);
-                        $optionsId = 'markup_needle.query_build_options'.strval(rand());
-                        $container->setDefinition($optionsId, $options);
+            ->setArguments(
+                [
+                    array_map(
+                        function (array $corpusConfig) use ($container) {
+                            $options = (new Definition(QueryBuildOptions::class))
+                                ->setArguments(
+                                    [
+                                        [
+                                            'useWildcardSearch' => $corpusConfig['use_wildcard_search'],
+                                        ],
+                                    ]
+                                );
+                            $optionsId = 'markup_needle.query_build_options'.strval(rand());
+                            $container->setDefinition($optionsId, $options);
 
-                        return new Reference($optionsId);
-                    },
-                    $config['corpora']
-                )
-            ])
+                            return new Reference($optionsId);
+                        },
+                        $config['corpora']
+                    ),
+                ]
+            )
             ->setPublic(false)
             ->addTag('container.service_locator');
         $container->setDefinition(QueryBuildOptionsLocator::class, $queryBuildOptionsLocator);
@@ -156,7 +167,7 @@ class MarkupNeedleExtension extends Extension
     /**
      * Loads the definitions for search intercepts.
      *
-     * @param array            $config
+     * @param array $config
      * @param ContainerBuilder $container
      **/
     private function loadIntercepts(array $config, ContainerBuilder $container)
@@ -196,7 +207,7 @@ class MarkupNeedleExtension extends Extension
     }
 
     /**
-     * @param array            $config
+     * @param array $config
      * @param ContainerBuilder $container
      **/
     private function loadLogSettings(array $config, ContainerBuilder $container)
@@ -216,7 +227,10 @@ class MarkupNeedleExtension extends Extension
             $prefix = sprintf('markup_needle.contexts.%s.', $contextName);
             $container->setAlias($prefix.'filter_provider', $contextConfig['filter_provider']);
             $container->setAlias($prefix.'facet_provider', $contextConfig['facet_provider']);
-            $container->setAlias($prefix.'facet_set_decorator_provider', $contextConfig['facet_set_decorator_provider']);
+            $container->setAlias(
+                $prefix.'facet_set_decorator_provider',
+                $contextConfig['facet_set_decorator_provider']
+            );
             $container->setAlias($prefix.'facet_collator_provider', $contextConfig['facet_collator_provider']);
             $container->setAlias($prefix.'facet_order_provider', $contextConfig['facet_order_provider']);
             $contextProvider = new Definition(
@@ -236,6 +250,24 @@ class MarkupNeedleExtension extends Extension
 
     private function loadBackendSpecificServices(array $config, ContainerBuilder $container)
     {
+        $settings = [];
+        $mappings = [];
+
+        foreach ($config['elasticsearch']['configuration'] as $corpus => $configuration) {
+            try {
+                $settings[$corpus] = Encoder::decode(strval(file_get_contents($configuration['settings'])), true);
+                $mappings[$corpus] = Encoder::decode(strval(file_get_contents($configuration['mappings'])), true);
+            } catch (\JsonException $e) {
+                throw new \LogicException(
+                    sprintf('Invalid JSON in elastic configuration files (%s)', implode(', ', $configuration))
+                );
+            }
+        }
+
+        $corpusIndexConfiguration = $container->findDefinition(CorpusIndexConfiguration::class);
+        $corpusIndexConfiguration->setArgument('$settings', $settings);
+        $corpusIndexConfiguration->setArgument('$mappings', $mappings);
+
         $corpusIndexProvider = $container->getDefinition(CorpusIndexProvider::class);
         $corpusIndexProvider->setArgument('$prefix', $config['elasticsearch']['index_prefix']);
     }
