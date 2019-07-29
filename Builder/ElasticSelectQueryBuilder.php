@@ -253,7 +253,7 @@ class ElasticSelectQueryBuilder
 
                         return $this->queryShapeBuilder->getQueryShapeForFilterQuery($filterQuery);
                     },
-                    $filterQueries
+                    array_values($filterQueries)
                 )),
             ],
         ];
