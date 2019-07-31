@@ -114,6 +114,7 @@ class ElasticSearchService implements AsyncSearchServiceInterface
                     'client' => [
                         'future' => 'lazy',
                     ],
+                    'rest_total_hits_as_int' => true,
                 ];
 
                 $elasticResult = yield promise_for($this->elastic->search($queryParams));

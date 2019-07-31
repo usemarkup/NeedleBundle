@@ -76,7 +76,8 @@ class ElasticsearchIndexingMessager implements IndexingMessagerInterface
             $this->elastic->indices()->create(
                 [
                     'index' => $index,
-                    'body' => $body
+                    'body' => $body,
+                    'include_type_name' => true,
                 ]
             );
         } elseif ($preDeleteQuery !== null) {
