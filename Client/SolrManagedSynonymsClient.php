@@ -16,8 +16,11 @@ class SolrManagedSynonymsClient extends AbstractSolrManagedResourcesClient
      */
     public function fetchData($resourceId, $endpointKey = null)
     {
-        $response = $this->fetch($resourceId, $endpointKey);
-        $mappings = json_decode($response->getContent(), true);
+        $responseContent = $this->fetch($resourceId, $endpointKey)->getContent();
+        if (!$responseContent) {
+            return [];
+        }
+        $mappings = json_decode($responseContent, true);
 
         return isset($mappings['synonymMappings']['managedMap']) ?
             $mappings['synonymMappings']['managedMap'] :
