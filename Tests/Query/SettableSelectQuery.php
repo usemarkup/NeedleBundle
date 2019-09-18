@@ -8,6 +8,7 @@ use Markup\NeedleBundle\Query\FallbackAsyncQueryTrait;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Markup\NeedleBundle\Service\SearchServiceInterface as SearchService;
 use Markup\NeedleBundle\Sort\SortCollection;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Markup\NeedleBundle\Spellcheck\SpellcheckInterface;
 
 class SettableSelectQuery implements SelectQueryInterface
@@ -72,7 +73,7 @@ class SettableSelectQuery implements SelectQueryInterface
      *
      * @return bool
      **/
-    public function hasFilterQueries()
+    public function hasFilterQueries(): bool
     {
         return [];
     }
@@ -83,7 +84,7 @@ class SettableSelectQuery implements SelectQueryInterface
      *
      * @return string[]|AttributeInterface[]
      */
-    public function getFields()
+    public function getFields(): array
     {
         return [];
     }
@@ -93,7 +94,7 @@ class SettableSelectQuery implements SelectQueryInterface
      *
      * @return int|null
      **/
-    public function getPageNumber()
+    public function getPageNumber(): int
     {
         return null;
     }
@@ -102,7 +103,7 @@ class SettableSelectQuery implements SelectQueryInterface
      * Gets the max number of results to return per page. Returns null if not specified.
      * @return integer|null
      */
-    public function getMaxPerPage()
+    public function getMaxPerPage(): int
     {
         return null;
     }
@@ -112,7 +113,7 @@ class SettableSelectQuery implements SelectQueryInterface
      *
      * @return \Markup\NeedleBundle\Sort\SortCollectionInterface
      **/
-    public function getSortCollection()
+    public function getSortCollection(): SortCollectionInterface
     {
         return new SortCollection();
     }
@@ -122,7 +123,7 @@ class SettableSelectQuery implements SelectQueryInterface
      *
      * @return bool
      **/
-    public function hasSortCollection()
+    public function hasSortCollection(): bool
     {
         return false;
     }
@@ -132,7 +133,7 @@ class SettableSelectQuery implements SelectQueryInterface
      *
      * @return string[]
      **/
-    public function getFacetNamesToExclude()
+    public function getFacetsToExclude(): array
     {
         return [];
     }
@@ -161,7 +162,7 @@ class SettableSelectQuery implements SelectQueryInterface
      * @param string $key The search key of the filter query to retrieve
      * @return FilterQueryInterface|null
      */
-    public function getFilterQueryWithKey($key)
+    public function getFilterQueryWithKey(string $key): ?FilterQueryInterface
     {
         return null;
     }
@@ -173,7 +174,7 @@ class SettableSelectQuery implements SelectQueryInterface
      * @param string $value The search value of the filter query to retrieve
      * @return bool
      */
-    public function doesValueExistInFilterQueries($key, $value)
+    public function doesValueExistInFilterQueries(string $key, $value)
     {
         return false;
     }
@@ -203,7 +204,7 @@ class SettableSelectQuery implements SelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getGroupingField()
+    public function getGroupingField(): ?AttributeInterface
     {
         return null;
     }
@@ -211,9 +212,8 @@ class SettableSelectQuery implements SelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getGroupingSortCollection()
+    public function getGroupingSortCollection(): ?SortCollectionInterface
     {
         return null;
     }
-
 }

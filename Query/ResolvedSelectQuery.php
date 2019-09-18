@@ -3,9 +3,14 @@
 namespace Markup\NeedleBundle\Query;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
+use Markup\NeedleBundle\Collator\NullCollatorProvider;
+use Markup\NeedleBundle\Context\NoopSearchContext;
+use Markup\NeedleBundle\Context\SearchContext;
 use Markup\NeedleBundle\Context\SearchContextInterface;
-use Markup\NeedleBundle\Service\SearchServiceInterface;
+use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Sort\EmptySortCollection;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
  * {@inheritdoc}
@@ -18,44 +23,37 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     private $selectQuery;
 
     /**
-     * @var SearchContextInterface|null
+     * @var SearchContextInterface
      */
     private $searchContext;
 
     public function __construct(
         SelectQueryInterface $selectQuery,
-        SearchContextInterface $searchContext = null
+        ?SearchContextInterface $searchContext = null
     ) {
         $this->selectQuery = $selectQuery;
-        $this->searchContext = $searchContext;
+        $this->searchContext = $searchContext ?: new NoopSearchContext();
     }
 
-    /**
-     * @return SelectQueryInterface
-     */
-    protected function getSelectQuery()
+    protected function getSelectQuery(): SelectQueryInterface
     {
         return $this->selectQuery;
     }
 
     /**
-     * @return SearchContextInterface|null
+     * {@inheritdoc}
      */
-    protected function getSearchContext()
+    public function getSearchContext(): SearchContextInterface
     {
         return $this->searchContext;
     }
 
     /**
      * {@inheritdoc}
-     * Merges select filterQueries with defaults
      */
     public function getFilterQueries(): array
     {
         $fq = $this->getSelectQuery()->getFilterQueries();
-        if ($this->getSearchContext() === null) {
-            return $fq;
-        }
 
         return array_merge($fq, $this->getSearchContext()->getDefaultFilterQueries());
     }
@@ -63,7 +61,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function hasFilterQueries()
+    public function hasFilterQueries(): bool
     {
         return count($this->getFilterQueries()) > 0;
     }
@@ -71,7 +69,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->getSelectQuery()->getFields();
     }
@@ -79,38 +77,45 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getPageNumber()
+    public function getPageNumber(): int
     {
-        return $this->getSelectQuery()->getPageNumber();
+        return $this->getSelectQuery()->getPageNumber() ?: 1;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getMaxPerPage()
+    public function getMaxPerPage(): int
     {
-        return $this->getSelectQuery()->getMaxPerPage();
+        $maxPerPage = $this->getSelectQuery()->getMaxPerPage();
+
+        if (is_int($maxPerPage)) {
+            return $maxPerPage;
+        }
+
+        return $this->getSearchContext()->getItemsPerPage() ?: 9999;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSortCollection()
+    public function getSortCollection(): SortCollectionInterface
     {
         if ($this->getSelectQuery()->hasSortCollection()) {
-            return $this->getSelectQuery()->getSortCollection();
-        }
-        if ($this->getSearchContext() === null) {
-            return new EmptySortCollection();
+            $sort = $this->getSelectQuery()->getSortCollection();
+
+            if ($sort !== null) {
+                return $sort;
+            }
         }
 
-        return $this->getSearchContext()->getDefaultSortCollectionForQuery($this->getSelectQuery());
+        return $this->getSearchContext()->getDefaultSortCollectionForQuery();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasSortCollection()
+    public function hasSortCollection(): bool
     {
         return $this->getSelectQuery()->hasSortCollection();
     }
@@ -118,39 +123,15 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getFacetNamesToExclude()
+    public function getFacetsToExclude(): array
     {
-        return $this->getSelectQuery()->getFacetNamesToExclude();
+        return $this->getSelectQuery()->getFacetsToExclude();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getResult()
-    {
-        return $this->getSelectQuery()->getResult();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getResultAsync()
-    {
-        return $this->getSelectQuery()->getResultAsync();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setSearchService(SearchServiceInterface $service)
-    {
-        return $this->getSelectQuery()->setSearchService($service);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFilterQueryWithKey($key)
+    public function getFilterQueryWithKey(string $key): ?FilterQueryInterface
     {
         return $this->getSelectQuery()->getFilterQueryWithKey($key);
     }
@@ -166,7 +147,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function shouldTreatAsTextSearch()
+    public function shouldTreatAsTextSearch(): bool
     {
         return $this->getSelectQuery()->shouldTreatAsTextSearch();
     }
@@ -182,7 +163,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function hasSearchTerm()
+    public function hasSearchTerm(): bool
     {
         return $this->getSelectQuery()->hasSearchTerm();
     }
@@ -190,9 +171,15 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getSearchTerm()
+    public function getSearchTerm(): string
     {
-        return $this->getSelectQuery()->getSearchTerm();
+        $searchTerm = $this->getSelectQuery()->getSearchTerm();
+
+        if (!$this->hasSearchTerm() || !is_string($searchTerm)) {
+            throw new \RuntimeException('No search term provided');
+        }
+
+        return $searchTerm;
     }
 
     /**
@@ -200,10 +187,6 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function getFacets()
     {
-        if ($this->getSearchContext() === null) {
-            return [];
-        }
-
         return $this->getSearchContext()->getFacets();
     }
 
@@ -212,10 +195,6 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function shouldRequestFacetValueForMissing()
     {
-        if ($this->getSearchContext() === null) {
-            return false;
-        }
-
         return $this->getSearchContext()->shouldRequestFacetValueForMissing();
     }
 
@@ -224,10 +203,6 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function getSortOrderForFacet(AttributeInterface $facet)
     {
-        if ($this->getSearchContext() === null) {
-            return null;
-        }
-
         return $this->getSearchContext()->getFacetSortOrderProvider()->getSortOrderForFacet($facet);
     }
 
@@ -236,10 +211,6 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet)
     {
-        if ($this->getSearchContext() === null) {
-            return false;
-        }
-
         return $this->getSearchContext()->getWhetherFacetIgnoresCurrentFilters($facet);
     }
 
@@ -248,10 +219,6 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function getBoostQueryFields()
     {
-        if ($this->getSearchContext() === null) {
-            return [];
-        }
-
         return $this->getSearchContext()->getBoostQueryFields();
     }
 
@@ -260,9 +227,6 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function shouldUseFacetValuesForRecordedQuery()
     {
-        if ($this->getSearchContext() === null) {
-            return false;
-        }
         if (!$this->getSelectQuery() instanceof RecordableSelectQueryInterface) {
             return false;
         }
@@ -307,7 +271,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
     * {@inheritdoc}
     */
-    public function getGroupingField()
+    public function getGroupingField(): ?AttributeInterface
     {
         return $this->getSelectQuery()->getGroupingField();
     }
@@ -323,10 +287,14 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     public function shouldUseFuzzyMatching()
     {
         $context = $this->getSearchContext();
-        if ($context === null) {
-            return false;
-        }
 
         return $context->shouldUseFuzzyMatching();
+    }
+
+    public function getFacetCollatorProvider(): CollatorProviderInterface
+    {
+        $context = $this->getSearchContext();
+
+        return $context->getFacetCollatorProvider();
     }
 }

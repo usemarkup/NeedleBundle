@@ -4,10 +4,10 @@ namespace Markup\NeedleBundle\Context;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Collator\NullCollatorProvider;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorInterface;
 use Markup\NeedleBundle\Facet\NullSortOrderProvider;
 use Markup\NeedleBundle\Intercept\NullInterceptor;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
-use Markup\NeedleBundle\Sort\EmptySortCollection;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
  * A context for searches, providing information that can determine how searches display, which is agnostic of search engine implementations.
@@ -15,80 +15,106 @@ use Markup\NeedleBundle\Sort\EmptySortCollection;
 class SearchContext implements SearchContextInterface
 {
     /**
-     * @var int
-     **/
+     * @var int|null
+     */
     private $itemsPerPage;
 
     /**
-     * @param int $itemsPerPage
-     **/
-    public function __construct($itemsPerPage)
-    {
+     * @var array
+     */
+    private $facets;
+
+    /**
+     * @var array
+     */
+    private $defaultFilterQueries;
+
+    /**
+     * @var SortCollectionInterface
+     */
+    private $defaultSortCollection;
+
+    /**
+     * @var DefaultContextOptionsInterface|null
+     */
+    private $defaultContextOptions;
+
+    public function __construct(
+        ?int $itemsPerPage,
+        array $facets,
+        array $defaultFilterQueries,
+        SortCollectionInterface $defaultSortCollection,
+        ?DefaultContextOptionsInterface $defaultContextOptions = null
+    ) {
         $this->itemsPerPage = $itemsPerPage;
+        $this->facets = $facets;
+        $this->defaultFilterQueries = $defaultFilterQueries;
+        $this->defaultSortCollection = $defaultSortCollection;
+        $this->defaultContextOptions = $defaultContextOptions;
     }
 
     /**
-     * Gets the number of items to be used on a page.
-     *
-     * @return int
-     **/
+     * @inheritDoc
+     */
     public function getItemsPerPage()
     {
         return $this->itemsPerPage;
     }
 
     /**
-     * Gets the set of facets that should be requested with this context.
-     *
-     * @return \Markup\NeedleBundle\Attribute\AttributeInterface[]
-     **/
+     * @inheritDoc
+     */
     public function getFacets()
     {
-        return [];
+        return $this->facets;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getDefaultFilterQueries()
     {
-        return [];
+        return $this->defaultFilterQueries;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getDefaultSortCollectionForQuery(SelectQueryInterface $query)
+    public function getDefaultSortCollectionForQuery()
     {
-        return new EmptySortCollection();
+        return $this->defaultSortCollection;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
+     */
+    public function getSetDecoratorForFacet(AttributeInterface $facet): ?FacetSetDecoratorInterface
+    {
+        if (!$this->defaultContextOptions) {
+            return null;
+        }
+
+        return $this->defaultContextOptions->getSetDecoratorForFacet($facet);
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet)
     {
-        return false;
+        return true;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getSetDecoratorForFacet(AttributeInterface $facet)
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getAvailableFilterNames()
     {
-        return [];
+        return $this->getFacets();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getBoostQueryFields()
     {
@@ -96,7 +122,7 @@ class SearchContext implements SearchContextInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getFacetCollatorProvider()
     {
@@ -104,7 +130,7 @@ class SearchContext implements SearchContextInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getFacetSortOrderProvider()
     {
@@ -112,7 +138,7 @@ class SearchContext implements SearchContextInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getInterceptor()
     {
@@ -120,13 +146,16 @@ class SearchContext implements SearchContextInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function shouldRequestFacetValueForMissing()
     {
         return false;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function shouldUseFuzzyMatching()
     {
         return false;

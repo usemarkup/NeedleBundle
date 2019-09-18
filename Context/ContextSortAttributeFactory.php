@@ -1,17 +1,20 @@
 <?php
+declare(strict_types=1);
 
 namespace Markup\NeedleBundle\Context;
 
 use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
+use Markup\NeedleBundle\Attribute\SpecializationContextHashInterface;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
 use Markup\NeedleBundle\Sort\RelevanceSort;
 use Markup\NeedleBundle\Sort\Sort;
+use Markup\NeedleBundle\Sort\SortInterface;
 
-/**
- * Class ContextSortAttributeFactory
- */
 class ContextSortAttributeFactory
 {
+    /**
+     * @var AttributeProviderInterface
+     */
     private $attributeProvider;
 
     public function __construct(AttributeProviderInterface $attributeProvider)
@@ -19,20 +22,23 @@ class ContextSortAttributeFactory
         $this->attributeProvider = $attributeProvider;
     }
 
-    /**
-     * @param string $attr
-     * @param string $direction
-     *
-     * @return RelevanceSort|Sort
-     */
-    public function createSortForAttributeNameAndDirection($attr, $direction)
-    {
-        if ($attr === ContextConfigurationInterface::SORT_RELEVANCE) {
+    public function create(
+        SpecializationContextHashInterface $contextHash,
+        string $attribute,
+        string $direction
+    ): ?SortInterface {
+        if ($attribute === ContextConfigurationInterface::SORT_RELEVANCE) {
             return new RelevanceSort();
         }
 
         $isDescending = $direction === ContextConfigurationInterface::ORDER_DESC;
 
-        return new Sort($this->attributeProvider->getAttributeByName($attr), $isDescending);
+        $attribute = $this->attributeProvider->getAttributeByName($attribute, $contextHash);
+
+        if (!$attribute) {
+            return null;
+        }
+
+        return new Sort($attribute, $isDescending);
     }
 }

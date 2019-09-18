@@ -48,18 +48,17 @@ class SolariumSelectQueryBuilder
     /**
      * Builds, and returns, a Solarium select query that maps a generic select search query 1:1.
      *
+     * @param ResolvedSelectQueryInterface $query
+     * @param Query $solariumQuery
      * @return SolariumQuery
-     **/
+     */
     public function buildSolariumQueryFromGeneric(
         ResolvedSelectQueryInterface $query,
-        callable $solariumQueryGenerator
+        Query $solariumQuery
     ) {
-        /** @var Query $solariumQuery */
-        $solariumQuery = $solariumQueryGenerator();
-
         //if there is a search term, set it
         if ($query->hasSearchTerm()) {
-            $rawTerm = is_string($query->getSearchTerm()) ? $query->getSearchTerm() : '';
+            $rawTerm = $query->getSearchTerm();
             $termProcessor = new SearchTermProcessor();
             $luceneTerm = ($query->shouldUseFuzzyMatching())
                 ? $termProcessor->process($rawTerm, SearchTermProcessor::FILTER_NORMALIZE | SearchTermProcessor::FILTER_FUZZY_MATCHING)
@@ -122,7 +121,7 @@ class SolariumSelectQueryBuilder
         //if there are facets to request, request them
         $facets = $query->getFacets();
         if (!empty($facets)) {
-            $facetNamesToExclude = $query->getFacetNamesToExclude();
+            $facetNamesToExclude = $query->getFacetsToExclude();
 
             $usingFacetComponent = false;
 
@@ -231,18 +230,21 @@ class SolariumSelectQueryBuilder
         }
 
         //if there is a spellcheck request to apply, apply it
-        if (null !== $query->getSpellcheck()) {
-            $solariumSpellcheck = $solariumQuery->getSpellcheck();
-            if (null !== $query->getSpellcheck()->getResultLimit()) {
-                $solariumSpellcheck->setCount($query->getSpellcheck()->getResultLimit());
-            }
-            $solariumSpellcheck->setDictionary($query->getSpellcheck()->getDictionary());
-        }
+// @TODO perhaps delete this? also why is the SpellCheck against the Query? surely better against the Context?
+//        if (null !== $query->getSpellcheck()) {
+//            $solariumSpellcheck = $solariumQuery->getSpellcheck();
+//            if (null !== $query->getSpellcheck()->getResultLimit()) {
+//                $solariumSpellcheck->setCount($query->getSpellcheck()->getResultLimit());
+//            }
+//            $solariumSpellcheck->setDictionary($query->getSpellcheck()->getDictionary());
+//        }
+
+        $groupingField = $query->getGroupingField();
 
         // if grouping on a field then group - and apply grouping sort if applicable
-        if ($query->getGroupingField() !== null) {
+        if ($groupingField !== null) {
             $groupComponent = $solariumQuery->getGrouping();
-            $groupComponent->addField($query->getGroupingField());
+            $groupComponent->addField($groupingField->getSearchKey());
             $groupComponent->setLimit(1000);
             $groupComponent->setMainResult(false);
             $groupComponent->setNumberOfGroups(true);

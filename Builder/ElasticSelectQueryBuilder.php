@@ -134,7 +134,7 @@ class ElasticSelectQueryBuilder
         //if there are facets to request, request them
         $facets = $genericQuery->getFacets();
         if (!empty($facets)) {
-            $facetNamesToExclude = $genericQuery->getFacetNamesToExclude();
+            $facetNamesToExclude = $genericQuery->getFacetsToExclude();
             $shouldIncludeFacetValuesForMissing = $genericQuery->shouldRequestFacetValueForMissing();
             foreach ($facets as $facet) {
                 //if query indicates we should skip this facet, then skip it

@@ -2,16 +2,15 @@
 
 namespace Markup\NeedleBundle\Service;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use GuzzleHttp\Promise\PromiseInterface;
 use Markup\NeedleBundle\Adapter\GroupedResultAdapter;
 use Markup\NeedleBundle\Adapter\SolariumResultPromisePagerfantaAdapter;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
+use Markup\NeedleBundle\Context\NoopSearchContext;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
-use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorInterface;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
+use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
+use Markup\NeedleBundle\Result\ResultInterface;
 use Markup\NeedleBundle\Result\SolariumDebugOutputStrategy;
 use Markup\NeedleBundle\Result\SolariumFacetSetsStrategy;
 use Markup\NeedleBundle\Result\SolariumSpellcheckResultStrategy;
@@ -29,7 +28,7 @@ use function GuzzleHttp\Promise\promise_for;
  * executes the query (using Solarium) and then returns a result (as a PagerfantaResultAdapter)
  */
 
-class SolrSearchService implements AsyncSearchServiceInterface, DecorableSearchServiceInterface
+class SolrSearchService implements AsyncSearchServiceInterface
 {
     /**
      * Solr needs specification of a very large number for a 'view all' function.
@@ -61,18 +60,6 @@ class SolrSearchService implements AsyncSearchServiceInterface, DecorableSearchS
      **/
     private $templating = null;
 
-    /**
-     * A context for searches.
-     *
-     * @var SearchContextInterface|null
-     **/
-    private $context = null;
-
-    /**
-     * @var ArrayCollection
-     **/
-    private $decorators = null;
-
     public function __construct(
         SolariumClient $solarium,
         SolariumSelectQueryBuilder $solariumQueryBuilder,
@@ -83,53 +70,47 @@ class SolrSearchService implements AsyncSearchServiceInterface, DecorableSearchS
         $this->solariumQueryBuilder = $solariumQueryBuilder;
         $this->corpus = $corpus;
         $this->templating = $templating;
-        $this->decorators = new ArrayCollection();
     }
 
+
     /**
-     * @param  SelectQueryInterface    $query
-     * @return PagerfantaResultAdapter
+     * {@inheritDoc}
      */
-    public function executeQuery(SelectQueryInterface $query)
+    public function executeQuery($query, ?SearchContextInterface $searchContext = null): ResultInterface
     {
-        return $this->executeQueryAsync($query)->wait();
+        return $this->executeQueryAsync($query, $searchContext)->wait();
     }
 
     /**
-     * Provides a promise for a executing a select query on a service, returning a result.
-     *
-     * @param SelectQueryInterface $query
-     * @return PromiseInterface
-     **/
-    public function executeQueryAsync(SelectQueryInterface $query)
+     * {@inheritDoc}
+     */
+    public function executeQueryAsync($query, ?SearchContextInterface $searchContext = null)
     {
-        $createSolariumQuery = function () {
-            return $this->solarium->createSelect();
-        };
-
         return coroutine(
-            function () use ($query, $createSolariumQuery) {
-                $solariumQueryBuilder = $this->getSolariumQueryBuilder();
+            function () use ($query, $searchContext) {
+                if (!$query instanceof ResolvedSelectQueryInterface) {
+                    if ($searchContext === null) {
+                        $searchContext = new NoopSearchContext();
+                    }
 
-                $query = new ResolvedSelectQuery(
-                    $query,
-                    ($this->getContext() instanceof SearchContextInterface) ? $this->getContext() : null
-                );
-
-                foreach ($this->decorators as $decorator) {
-                    $query = $decorator->decorate($query);
+                    $query = new ResolvedSelectQuery(
+                        $query,
+                        $searchContext
+                    );
                 }
-                $solariumQuery = $solariumQueryBuilder->buildSolariumQueryFromGeneric($query, $createSolariumQuery);
+
+                if (!$query instanceof ResolvedSelectQueryInterface) {
+                    throw new \InvalidArgumentException('$query must be of type ResolvedSelectQueryInterface or SelectQueryInterface');
+                }
+
+                $solariumQuery = $this->solariumQueryBuilder->buildSolariumQueryFromGeneric($query, $this->solarium->createSelect());
 
                 //apply offset/limit
                 $maxPerPage = $query->getMaxPerPage();
-                if (null === $maxPerPage && !is_null($this->getContext()) && $query->getPageNumber() !== null) {
-                    $maxPerPage = $this->getContext()->getItemsPerPage() ?: null;
-                }
+                $page = $query->getPageNumber();
+
                 $solariumQuery->setRows($maxPerPage ?: self::INFINITY);
 
-
-                $page = $query->getPageNumber();
                 if ($page && $maxPerPage) {
                     $solariumQuery->setStart($maxPerPage * ($page-1));
                 }
@@ -159,11 +140,9 @@ class SolrSearchService implements AsyncSearchServiceInterface, DecorableSearchS
                 };
 
                 //set the strategy to fetch facet sets, as these are not handled by pagerfanta
-                if (!is_null($this->getContext())) {
-                    $result->setFacetSetStrategy(
-                        new SolariumFacetSetsStrategy($resultClosure, $this->getContext(), $query->getRecord())
-                    );
-                }
+                $result->setFacetSetStrategy(
+                    new SolariumFacetSetsStrategy($resultClosure, $query->getSearchContext(), $query->getOriginalSelectQuery())
+                );
 
                 //set any spellcheck result
                 $result->setSpellcheckResultStrategy(new SolariumSpellcheckResultStrategy($resultClosure, $query));
@@ -176,37 +155,5 @@ class SolrSearchService implements AsyncSearchServiceInterface, DecorableSearchS
                 yield $result;
             }
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContext(SearchContextInterface $context)
-    {
-        $this->context = $context;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator): void
-    {
-        $this->decorators->add($decorator);
-    }
-
-    /**
-     * Gets the context for the search.  Returns null if none set.
-     **/
-    private function getContext(): ?SearchContextInterface
-    {
-        return $this->context;
-    }
-
-    /**
-     * @return SolariumSelectQueryBuilder
-     **/
-    private function getSolariumQueryBuilder()
-    {
-        return $this->solariumQueryBuilder;
     }
 }

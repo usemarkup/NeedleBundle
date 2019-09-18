@@ -40,9 +40,15 @@ abstract class CombinedFilterValue implements CombinedFilterValueInterface
 
         return sprintf(
             '(%s)',
-            implode(' ', array_map(function ($filterValue) {
-                return $filterValue->getSearchValue();
-            }, $filterValues))
+            implode(
+                ' ',
+                array_map(
+                    function (FilterValueInterface $filterValue) {
+                        return $filterValue->getSearchValue();
+                    },
+                    $filterValues
+                )
+            )
         );
     }
 
@@ -50,9 +56,15 @@ abstract class CombinedFilterValue implements CombinedFilterValueInterface
     {
         $filterValues = $this->getValues();
 
-        return implode('::', array_map(function ($filterValue) {
-            return $filterValue->getSearchValue();
-        }, $filterValues));
+        return implode(
+            '::',
+            array_map(
+                function (FilterValueInterface $filterValue) {
+                    return $filterValue->getSearchValue();
+                },
+                $filterValues
+            )
+        );
     }
 
     public function getValues()

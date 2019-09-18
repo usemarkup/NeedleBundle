@@ -21,10 +21,7 @@ class RecordableSelectQueryInterfaceTest extends TestCase
             'getSearchTerm',
             'getSortCollection',
             'hasSortCollection',
-            'getFacetNamesToExclude',
-            'getResult',
-            'getResultAsync',
-            'setSearchService',
+            'getFacetsToExclude',
             'record',
             'getRecord',
             'hasRecord',
@@ -41,6 +38,7 @@ class RecordableSelectQueryInterfaceTest extends TestCase
         foreach ($query->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             $actualPublicMethods[] = $method->name;
         }
+
         sort($actualPublicMethods);
         sort($expectedPublicMethods);
         $this->assertEquals($expectedPublicMethods, $actualPublicMethods);

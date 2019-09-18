@@ -13,41 +13,52 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
      */
     private $attributeSpecializationContextProviders;
 
-    /**
-     * @var Collection|AttributeSpecializationCurrentlyApplicableContextProviderInterface[]
-     */
-    private $attributeSpecializationCurrentlyApplicableContextProviders;
-
     public function __construct()
     {
         $this->attributeSpecializationContextProviders = new ArrayCollection();
-        $this->attributeSpecializationCurrentlyApplicableContextProviders = new ArrayCollection();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getContext(AttributeSpecializationInterface $specialization)
-    {
-        foreach ($this->attributeSpecializationCurrentlyApplicableContextProviders as $provider) {
-            if ($provider->getSpecialization()->getName() === $specialization->getName()) {
-                return $provider->getContext();
+    public function getContextForData(
+        string $specializationName,
+        $data
+    ): AttributeSpecializationContextInterface {
+        foreach ($this->attributeSpecializationContextProviders as $provider) {
+            if ($provider->getSpecialization()->getName() == $specializationName) {
+                foreach ($provider->getContexts() as $context) {
+                    if (is_string($context)) {
+                        $context = new AttributeGenericSpecializationContext($context);
+                    }
+
+                    if ($context instanceof AttributeSpecializationContextInterface) {
+                        if (is_string($data) && strcasecmp($context->getData(), $data) === 0) {
+                            return $context;
+                        }
+
+                         if ($context->getData() == $data) {
+                            return $context;
+                        }
+                    }
+                }
             }
         }
-        throw new UnrecognizedSpecializationException(sprintf('Specialization %s is not recognized', $specialization->getName()));
+
+        throw new UnrecognizedSpecializationException(sprintf('Specialization %s is not recognized for data', $specializationName));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getContexts(AttributeSpecializationInterface $specialization)
+    public function getContexts(string $specializationName)
     {
         foreach ($this->attributeSpecializationContextProviders as $provider) {
-            if ($provider->getSpecialization()->getName() === $specialization->getName()) {
+            if ($provider->getSpecialization()->getName() === $specializationName) {
                 return $provider->getContexts();
             }
         }
-        throw new UnrecognizedSpecializationException(sprintf('Specialization %s is not recognized', $specialization->getName()));
+        throw new UnrecognizedSpecializationException(sprintf('Specialization %s is not recognized', $specializationName));
     }
 
     /**
@@ -59,23 +70,19 @@ class AttributeSpecializationContextRegistry implements AttributeSpecializationC
     }
 
     /**
-     * @param AttributeSpecializationCurrentlyApplicableContextProviderInterface $provider
-     */
-    public function addAttributeSpecializationCurrentlyApplicableContextProvider(AttributeSpecializationCurrentlyApplicableContextProviderInterface $provider)
-    {
-        $this->attributeSpecializationCurrentlyApplicableContextProviders->add($provider);
-    }
-
-    /**
      * {@inheritDoc}
      */
-    public function getSpecializationContextHash()
+    public function getSpecializationContextHash(SpecializationContextHashInterface $contextHash)
     {
         $hash = [];
         foreach ($this->attributeSpecializationContextProviders as $provider) {
             $specialization = $provider->getSpecialization();
-            $hash[$specialization->getName()] = $this->getContext($specialization)->getValue();
+            $hash[$specialization->getName()] = $this->getContextForData(
+                $specialization->getName(),
+                $contextHash->toArray()[$specialization->getName()]
+            )->getValue();
         }
+
         return $hash;
     }
 }

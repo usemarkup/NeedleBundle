@@ -4,6 +4,10 @@ namespace Markup\NeedleBundle\Query;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Boost\BoostQueryField;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
+use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
  * A combination of SelectQuery and SearchContext. This should be used immediately prior to query execution in
@@ -12,8 +16,48 @@ use Markup\NeedleBundle\Boost\BoostQueryField;
  * This structure represents a more accurate version of the actual query that is executed against the search backend
  * than the Query alone
  */
-interface ResolvedSelectQueryInterface extends SelectQueryInterface
+interface ResolvedSelectQueryInterface
 {
+    public function getSearchContext(): SearchContextInterface;
+
+    public function getFilterQueryWithKey(string $key): ?FilterQueryInterface;
+
+    /**
+     * @return array|AttributeInterface[]
+     */
+    public function getFacetsToExclude(): array;
+
+    /**
+     * @return array|FilterQueryInterface[]
+     */
+    public function getFilterQueries(): array;
+
+    /**
+     * @return array|AttributeInterface[]
+     */
+    public function getFields(): array;
+
+    /**
+     * Gets the page number of results being requested, if specified. Returns null if not specified.
+     *
+     * @return int
+     **/
+    public function getPageNumber(): int;
+
+    public function doesValueExistInFilterQueries($key, $value);
+
+    /**
+     * Gets the max number of results to return per page. Returns null if not specified.
+     * @return int
+     */
+    public function getMaxPerPage(): int;
+
+    public function hasSearchTerm(): bool;
+
+    public function getSearchTerm(): string;
+
+    public function getSortCollection(): SortCollectionInterface;
+
     /**
      * Gets the set of facets that should be requested with this context.
      *
@@ -73,13 +117,6 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
     public function getRecord();
 
     /**
-     * Gets a single field on which the incoming documents should be aggregated
-     *
-     * @return string|null
-     */
-    public function getGroupingField();
-
-    /**
      * Gets the sort collection used to sort the group internally
      *
      * @return \Markup\NeedleBundle\Sort\SortCollectionInterface|null
@@ -92,4 +129,10 @@ interface ResolvedSelectQueryInterface extends SelectQueryInterface
      * @return bool
      */
     public function shouldUseFuzzyMatching();
+
+    public function getFacetCollatorProvider(): CollatorProviderInterface;
+
+    public function getGroupingField(): ?AttributeInterface;
+
+    public function shouldTreatAsTextSearch(): bool;
 }

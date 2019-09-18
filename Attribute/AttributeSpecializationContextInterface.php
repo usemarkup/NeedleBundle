@@ -14,7 +14,7 @@ interface AttributeSpecializationContextInterface
      * @return string
      * @throws IllegalContextValueException
      */
-    public function getValue();
+    public function getValue(): string;
 
     /**
      * The underlying data that is used to get the value

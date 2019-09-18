@@ -33,25 +33,42 @@ class AttributeSpecializationContextGroupRegistry
     {
         $contextCollections = [];
         foreach ($specializations as $specialization) {
-            $contextCollections[$specialization->getName()] = $this->attributeSpecializationContextRegistry->getContexts($specialization);
+            if (!$specialization instanceof AttributeSpecializationInterface) {
+                throw new \InvalidArgumentException();
+            }
+
+            $specializationName = $specialization->getName();
+
+            $contextCollections[$specializationName] = $this->attributeSpecializationContextRegistry->getContexts(
+                $specializationName
+            );
         }
 
         $product = $this->calculateCartesianProduct($contextCollections);
 
-        return array_map(function ($s) {
-            return new AttributeSpecializationContextGroup($s);
-        }, $product);
+        return array_map(
+            function ($s) {
+                return new AttributeSpecializationContextGroup($s);
+            },
+            $product
+        );
     }
 
     /**
-     * @param AttributeSpecializationInterface[] $specializations
+     * @param string[] $specializations
      * @return array
      */
     public function getAllValidAttributeSpecializationContextGroups($specializations): array
     {
         $contextCollections = [];
-        foreach ($specializations as $specialization) {
-            $contextCollections[$specialization->getName()] = $this->attributeSpecializationContextRegistry->getContexts($specialization);
+        foreach ($specializations as $specializationName) {
+            if (!is_string($specializationName)) {
+                throw new \InvalidArgumentException();
+            }
+
+            $contextCollections[$specializationName] = $this->attributeSpecializationContextRegistry->getContexts(
+                $specializationName
+            );
         }
 
         $filter = function (array $contexts) {
@@ -73,15 +90,35 @@ class AttributeSpecializationContextGroupRegistry
         }, $product);
     }
 
-    /**
-     * @param AttributeSpecialization[] $specializations
-     * @return AttributeSpecializationContextGroup
-     */
-    public function getCurrentAttributeSpecializationContextGroup($specializations): AttributeSpecializationContextGroup
-    {
+    public function createAttributeSpecializationContextGroup(
+        array $specializations,
+        SpecializationContextHashInterface $contextHash
+    ): AttributeSpecializationContextGroup {
         $contexts = [];
+
         foreach ($specializations as $specialization) {
-            $contexts[$specialization->getName()] = $this->attributeSpecializationContextRegistry->getContext($specialization);
+            if (!$specialization instanceof AttributeSpecializationInterface) {
+                continue;
+            }
+
+            $contextSpecializationName = $specialization->getName();
+
+            if (!$contextHash->hasContext($contextSpecializationName)) {
+                throw new \Exception(
+                    sprintf(
+                        'Unable to find context to specialize attribute "%s" for "%s"',
+                        $contextSpecializationName,
+                        $contextSpecializationName
+                    )
+                );
+            }
+
+            $context = $this->attributeSpecializationContextRegistry->getContextForData(
+                $contextSpecializationName,
+                $contextHash->getContextData($contextSpecializationName)
+            );
+
+            $contexts[$specialization->getName()] = $context;
         }
 
         return new AttributeSpecializationContextGroup($contexts);

@@ -3,7 +3,7 @@
 namespace Markup\NeedleBundle\Context;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorInterface;
 
 /**
  * An interface for contexts for search engines.  This includes any contextual factors that are concerned with the nature of search results, and that are agnostic of the actual search engine implementation.
@@ -32,21 +32,11 @@ interface SearchContextInterface
     public function getDefaultFilterQueries();
 
     /**
-     * Gets the default sort collection to be applied to a query using this context.
-     *
-     * @param SelectQueryInterface $query
-     *
      * @return \Markup\NeedleBundle\Sort\SortCollectionInterface
      **/
-    public function getDefaultSortCollectionForQuery(SelectQueryInterface $query);
+    public function getDefaultSortCollectionForQuery();
 
-    /**
-     * Gets the facet set decorator to apply for a specific facet. (This can determine how a facet set renders.) Returns null if no decoration to be applied.
-     *
-     * @param  AttributeInterface                                         $facet
-     * @return \Markup\NeedleBundle\Facet\FacetSetDecoratorInterface|null
-     **/
-    public function getSetDecoratorForFacet(AttributeInterface $facet);
+    public function getSetDecoratorForFacet(AttributeInterface $facet): ?FacetSetDecoratorInterface;
 
     /**
      * Gets whether the given facet that is being displayed should ignore any corresponding filter values that are currently selected (true), or whether they should just reflect the returned results (false).

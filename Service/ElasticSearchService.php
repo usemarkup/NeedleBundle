@@ -7,18 +7,17 @@ namespace Markup\NeedleBundle\Service;
 use Elasticsearch\Client;
 use function GuzzleHttp\Promise\coroutine;
 use function GuzzleHttp\Promise\promise_for;
-use GuzzleHttp\Promise\PromiseInterface;
 use Markup\NeedleBundle\Adapter\ElasticResultPromisePagerfantaAdapter;
 use Markup\NeedleBundle\Builder\ElasticSelectQueryBuilder;
-use Markup\NeedleBundle\Builder\QueryBuildOptions;
 use Markup\NeedleBundle\Builder\QueryBuildOptionsLocator;
+use Markup\NeedleBundle\Context\NoopSearchContext;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Elastic\CorpusIndexProvider;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
-use Markup\NeedleBundle\Query\ResolvedSelectQueryDecoratorInterface;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
+use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Result\ElasticsearchFacetSetsStrategy;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
+use Markup\NeedleBundle\Result\ResultInterface;
 use Pagerfanta\Pagerfanta;
 
 class ElasticSearchService implements AsyncSearchServiceInterface
@@ -51,11 +50,6 @@ class ElasticSearchService implements AsyncSearchServiceInterface
     private $corpus;
 
     /**
-     * @var SearchContextInterface|null
-     */
-    private $searchContext;
-
-    /**
      * @var array
      */
     private $decorators;
@@ -76,16 +70,26 @@ class ElasticSearchService implements AsyncSearchServiceInterface
     }
 
     /**
-     * Gets a promise which, when being resolved, executes a select query on a service and makes a result available.
-     *
-     * @param SelectQueryInterface $query
-     * @return PromiseInterface
-     **/
-    public function executeQueryAsync(SelectQueryInterface $query)
+     * {@inheritDoc}
+     */
+    public function executeQueryAsync($query, ?SearchContextInterface $searchContext = null)
     {
         return coroutine(
-            function () use ($query) {
-                $query = new ResolvedSelectQuery($query, $this->searchContext);
+            function () use ($query, $searchContext) {
+                if (!$query instanceof ResolvedSelectQueryInterface) {
+                    if ($searchContext === null) {
+                        $searchContext = new NoopSearchContext();
+                    }
+
+                    $query = new ResolvedSelectQuery(
+                        $query,
+                        $searchContext
+                    );
+                }
+
+                if (!$query instanceof ResolvedSelectQueryInterface) {
+                    throw new \InvalidArgumentException('$query must be of type ResolvedSelectQueryInterface or SelectQueryInterface');
+                }
 
                 foreach ($this->decorators as $decorator) {
                     $query = $decorator->decorate($query);
@@ -97,9 +101,6 @@ class ElasticSearchService implements AsyncSearchServiceInterface
 
                 //apply offset/limit
                 $maxPerPage = $query->getMaxPerPage();
-                if (null === $maxPerPage && $this->searchContext && $query->getPageNumber() !== null) {
-                    $maxPerPage = $this->searchContext->getItemsPerPage() ?: null;
-                }
                 $elasticQuery['size'] = $maxPerPage ?: self::HUNNERS;
 
                 $page = $query->getPageNumber();
@@ -125,15 +126,13 @@ class ElasticSearchService implements AsyncSearchServiceInterface
 
                 $result = new PagerfantaResultAdapter($pagerfanta);
 
-                if (!is_null($this->searchContext)) {
-                    $result->setFacetSetStrategy(
-                        new ElasticsearchFacetSetsStrategy(
-                            $elasticResult['aggregations'] ?? [],
-                            $this->searchContext,
-                            $query->getRecord()
-                        )
-                    );
-                }
+                $result->setFacetSetStrategy(
+                    new ElasticsearchFacetSetsStrategy(
+                        $elasticResult['aggregations'] ?? [],
+                        $query->getSearchContext(),
+                        $query->getOriginalSelectQuery()
+                    )
+                );
 
                 yield $result;
             }
@@ -141,34 +140,10 @@ class ElasticSearchService implements AsyncSearchServiceInterface
     }
 
     /**
-     * Executes a select query on a service and returns a result.
-     *
-     * @param SelectQueryInterface $query
-     * @return \Markup\NeedleBundle\Result\ResultInterface
-     **/
-    public function executeQuery(SelectQueryInterface $query)
+     * {@inheritDoc}
+     */
+    public function executeQuery($query, ?SearchContextInterface $searchContext = null): ResultInterface
     {
-        return $this->executeQueryAsync($query)->wait();
-    }
-
-    /**
-     * Sets a context on the search service, which is a contextual object that can determine aspects of the search to execute, agnostic of the actual search implementation.
-     *
-     * @param SearchContextInterface $context
-     **/
-    public function setContext(SearchContextInterface $context)
-    {
-        $this->searchContext = $context;
-    }
-
-    /**
-     * Adds a decorator that will decorate the ResolvedSelectQuery during execution
-     * directly after the SelectQuery has been combined with the SearchContext
-     *
-     * @param ResolvedSelectQueryDecoratorInterface $decorator
-     **/
-    public function addDecorator(ResolvedSelectQueryDecoratorInterface $decorator)
-    {
-        $this->decorators[] = $decorator;
+        return $this->executeQueryAsync($query, $searchContext)->wait();
     }
 }

@@ -5,7 +5,6 @@ namespace Markup\NeedleBundle\Context;
 use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
 use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
-use Markup\NeedleBundle\Facet\FacetProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
@@ -16,11 +15,6 @@ class ConfiguredContextProvider
      * @var AttributeProviderInterface
      */
     private $filterProvider;
-
-    /**
-     * @var FacetProviderInterface
-     */
-    private $facetProvider;
 
     /**
      * @var FacetSetDecoratorProviderInterface
@@ -42,62 +36,34 @@ class ConfiguredContextProvider
      */
     private $interceptorProvider;
 
-    /**
-     * @var ContextDecoratorPriorityQueue
-     */
-    private $decorators;
-
     public function __construct(
         AttributeProviderInterface $filterProvider,
-        FacetProviderInterface $facetProvider,
         FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
         CollatorProviderInterface $facetCollatorProvider,
         SortOrderProviderInterface $facetSortOrderProvider,
         ConfiguredInterceptorProvider $interceptorProvider
     ) {
         $this->filterProvider = $filterProvider;
-        $this->facetProvider = $facetProvider;
         $this->facetSetDecoratorProvider = $facetSetDecoratorProvider;
         $this->facetCollatorProvider = $facetCollatorProvider;
         $this->facetSortOrderProvider = $facetSortOrderProvider;
         $this->interceptorProvider = $interceptorProvider;
-        $this->decorators = new ContextDecoratorPriorityQueue();
     }
 
     /**
      * @param ContextConfigurationInterface $config
-     * @return SearchContextInterface
+     * @return ConfiguredContext
      */
     public function createConfiguredContext(ContextConfigurationInterface $config)
     {
         $context = new ConfiguredContext(
             $config,
-            $this->filterProvider,
-            $this->facetProvider,
             $this->facetSetDecoratorProvider,
             $this->facetCollatorProvider,
             $this->facetSortOrderProvider,
             $this->interceptorProvider
         );
-        foreach ($this->decorators as $decorator) {
-            $context = $decorator->decorateContext($context);
-        }
 
         return $context;
-    }
-
-    /**
-     * Add a context decorator to be apply to any generated context.
-     *
-     * @param ContextDecoratorInterface $decorator
-     * @param int                       $priority
-     *
-     * @return $this
-     */
-    public function addDecorator(ContextDecoratorInterface $decorator, $priority = 0)
-    {
-        $this->decorators->insert($decorator, $priority);
-
-        return $this;
     }
 }

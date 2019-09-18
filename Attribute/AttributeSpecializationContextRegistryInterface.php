@@ -10,22 +10,17 @@ use Doctrine\Common\Collections\Collection;
 interface AttributeSpecializationContextRegistryInterface
 {
     /**
-     * Get the currently applicable context for the passed specialization
-     *
-     * @return AttributeSpecializationContextInterface
-     */
-    public function getContext(AttributeSpecializationInterface $specialization);
-
-    /**
      * Get all contexts for the passed specialization
      *
+     * @param string $specializationName
      * @return AttributeSpecializationContextInterface[]|Collection
      */
-    public function getContexts(AttributeSpecializationInterface $specialization);
+    public function getContexts(string $specializationName);
 
     /**
-     * Gets a hash of all current SpecializationContexts with currently applicable values
-     * @return array
+     * @param string $specializationName
+     * @param mixed $data
+     * @return AttributeSpecializationContextInterface
      */
-    public function getSpecializationContextHash();
+    public function getContextForData(string $specializationName, $data): AttributeSpecializationContextInterface;
 }

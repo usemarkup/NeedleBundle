@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Spellcheck;
 
+use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Solarium\QueryType\Select\Result\Spellcheck\Result;
 use Solarium\QueryType\Select\Result\Spellcheck\Suggestion as SolariumSuggestion;
@@ -17,15 +18,15 @@ class SolariumSpellcheckResult implements SpellcheckResultInterface
     private $result;
 
     /**
-     * @var SimpleQueryInterface
+     * @var ResolvedSelectQueryInterface
      */
     private $query;
 
     /**
      * @param Result $result
-     * @param SimpleQueryInterface $query
+     * @param ResolvedSelectQueryInterface $query
      */
-    public function __construct(Result $result, SimpleQueryInterface $query)
+    public function __construct(Result $result, ResolvedSelectQueryInterface $query)
     {
         $this->result = $result;
         $this->query = $query;
