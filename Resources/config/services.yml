@@ -110,6 +110,7 @@ services:
         class: Markup\NeedleBundle\Query\NullHandlerProvider
     markup_needle.spellcheck.static_dictionary_provider:
         class: Markup\NeedleBundle\Spellcheck\StaticDictionaryProvider
+        abstract: true
     markup_needle.spellcheck.dictionary_provider.default:
         parent: markup_needle.spellcheck.static_dictionary_provider
         arguments:
