@@ -9,6 +9,8 @@ use Markup\NeedleBundle\Query\SelectQueryInterface;
  */
 class FilterNonUnionValuesFacetSetDecorator extends FacetSetDecorator
 {
+    use EnsureIteratorTrait;
+
     /**
      * @var SelectQueryInterface|null
      */
@@ -25,7 +27,11 @@ class FilterNonUnionValuesFacetSetDecorator extends FacetSetDecorator
             throw new \LogicException('A facet set should be set on this decorator.');
         }
 
-        return new NonUnionValueFilterIterator(parent::getIterator(), $this->facetSet, $this->originalQuery);
+        return new NonUnionValueFilterIterator(
+            $this->ensureIterator(parent::getIterator()),
+            $this->facetSet,
+            $this->originalQuery
+        );
     }
 
     public function count()

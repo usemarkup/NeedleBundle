@@ -177,6 +177,8 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
         if (null !== $this->debugOutputStrategy and $this->debugOutputStrategy->hasDebugOutput()) {
             return $this->debugOutputStrategy->getDebugOutput();
         }
+
+        return null;
     }
 
     /**

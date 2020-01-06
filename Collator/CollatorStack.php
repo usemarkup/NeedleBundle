@@ -96,5 +96,7 @@ class CollatorStack implements CollatorInterface
                 return $index;
             }
         }
+
+        return null;
     }
 }

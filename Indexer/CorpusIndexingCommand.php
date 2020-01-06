@@ -195,10 +195,7 @@ class CorpusIndexingCommand
         if ($iterable instanceof \Traversable) {
             return new \IteratorIterator($iterable);
         }
-        if (is_array($iterable)) {
-            return new \ArrayIterator($iterable);
-        }
 
-        return new \ArrayIterator([$iterable]);
+        return new \ArrayIterator($iterable);
     }
 }

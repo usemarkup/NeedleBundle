@@ -66,5 +66,7 @@ class ExportCorpusCommand extends Command
         $io->progressFinish();
 
         $io->writeln('...done!');
+
+        return 0;
     }
 }

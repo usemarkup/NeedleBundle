@@ -56,6 +56,8 @@ class Interceptor implements InterceptorInterface
                 return $intercept;
             }
         }
+
+        return null;
     }
 
     /**

@@ -4,7 +4,6 @@ namespace Markup\NeedleBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Solarium\Core\Event\Events as SolariumEvents;
 use Solarium\Core\Event\PostExecuteRequest as SolariumPostExecuteRequestEvent;
 use Solarium\Core\Plugin\Plugin as SolariumPlugin;
 
@@ -49,16 +48,6 @@ class SolariumLogBadRequestsPlugin extends SolariumPlugin
 
     protected function initPluginType()
     {
-        return;
-        if (!$this->enabled) {
-            return;
-        }
-        $logger = $this->logger;
-        $dispatcher = $this->client->getEventDispatcher();
-        $dispatcher->addListener(
-            SolariumEvents::POST_EXECUTE_REQUEST,
-            [$this, 'onPostExecute']
-        );
     }
 
     public function onPostExecute(SolariumPostExecuteRequestEvent $event)

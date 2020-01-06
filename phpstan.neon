@@ -9,4 +9,8 @@ parameters:
         - '#Class Symfony\\Component\\DependencyInjection\\ChildDefinition not found#'
         - '#Class Symfony\\Component\\DependencyInjection\\DefinitionDecorator not found#'
         - '#Access to undefined constant Symfony\\Component\\DependencyInjection\\ContainerInterface::SCOPE_PROTOTYPE#'
+        - '#has no return typehint#'
+        - '#no typehint#'
     reportUnmatchedIgnoredErrors: false
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false

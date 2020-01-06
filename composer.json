@@ -30,7 +30,7 @@
         "symfony/templating": "^3.4|^4",
         "symfony/translation": "^3.4|^4",
         "markup/coding-standard": "^0.13",
-        "phpstan/phpstan-shim": "^0.11.5",
+        "phpstan/phpstan": "^0.12.3",
         "solarium/solarium": "^3.1.0",
         "shieldo/solarium-async-plugin": "^0.2",
         "elasticsearch/elasticsearch": "^6|^7"

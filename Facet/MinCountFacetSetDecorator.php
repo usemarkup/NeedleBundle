@@ -7,6 +7,8 @@ namespace Markup\NeedleBundle\Facet;
 */
 class MinCountFacetSetDecorator extends FacetSetDecorator
 {
+    use EnsureIteratorTrait;
+
     /**
      * @var int
      **/
@@ -22,7 +24,10 @@ class MinCountFacetSetDecorator extends FacetSetDecorator
 
     public function getIterator()
     {
-        return new MinCountFacetValueFilterIterator($this->getMinCount(), parent::getIterator());
+        return new MinCountFacetValueFilterIterator(
+            $this->getMinCount(),
+            $this->ensureIterator(parent::getIterator())
+        );
     }
 
     /**

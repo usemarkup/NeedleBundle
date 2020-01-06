@@ -7,6 +7,8 @@ namespace Markup\NeedleBundle\Facet;
 */
 class FacetSetValueDecorator extends FacetSetDecorator
 {
+    use EnsureIteratorTrait;
+
     /**
      * @var FacetValueDecoratorInterface
      **/
@@ -19,7 +21,10 @@ class FacetSetValueDecorator extends FacetSetDecorator
 
     public function getIterator()
     {
-        return new FacetValueDecoratingIterator(parent::getIterator(), $this->getFacetValueDecorator());
+        return new FacetValueDecoratingIterator(
+            $this->ensureIterator(parent::getIterator()),
+            $this->getFacetValueDecorator()
+        );
     }
 
     /**

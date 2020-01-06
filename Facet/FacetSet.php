@@ -23,10 +23,6 @@ class FacetSet implements FacetSetInterface
      **/
     private $facetSetIterator;
 
-    /**
-     * @param AttributeInterface        $facet
-     * @param FacetSetIteratorInterface $facetSetIterator
-     **/
     public function __construct(AttributeInterface $facet, FacetSetIteratorInterface $facetSetIterator)
     {
         $this->facet = $facet;
@@ -45,6 +41,9 @@ class FacetSet implements FacetSetInterface
 
     public function count()
     {
-        return $this->getIterator()->count();
+        /** @var FacetSetIteratorInterface $iterator */
+        $iterator = $this->getIterator();
+
+        return $iterator->count();
     }
 }

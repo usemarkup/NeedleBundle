@@ -58,6 +58,8 @@ class SolariumDebugOutputStrategy implements DebugOutputStrategyInterface
                 ]
             );
         }
+
+        return null;
     }
 
     /**

@@ -17,7 +17,7 @@ before_script:
     - if [ -f $HOME/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini ]; then phpenv config-rm xdebug.ini; fi
 
 script:
-    - vendor/bin/phpstan.phar analyse -c phpstan.neon --level 7 .
+    - vendor/bin/phpstan analyse -c phpstan.neon --level 7 .
     - vendor/phpunit/phpunit/phpunit --debug
 
 notifications:

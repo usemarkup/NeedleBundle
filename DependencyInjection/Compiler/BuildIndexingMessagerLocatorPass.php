@@ -46,7 +46,6 @@ class BuildIndexingMessagerLocatorPass implements CompilerPassInterface
                     throw new \RuntimeException(
                         'Under your app\'s configuration for markup_needle, use the backend type "solr" instead of "solarium" when using a Solarium client.'
                     );
-                    break;
                 case 'elasticsearch':
                     $clientId = $this->registerClientClassProvidingId(
                         \Elasticsearch\Client::class,
