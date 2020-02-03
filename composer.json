@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">=7.1",
-        "nelmio/solarium-bundle": "^2.0.4",
+        "nelmio/solarium-bundle": "^3.0",
         "pagerfanta/pagerfanta": "~1.0.1",
         "symfony/framework-bundle": "^3.4|^4",
         "twig/twig": "~1.12|~2.0",
