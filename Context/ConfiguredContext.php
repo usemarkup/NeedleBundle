@@ -130,7 +130,7 @@ class ConfiguredContext implements DefaultContextInterface, DefaultContextOption
     /**
      * {@inheritdoc}
      */
-    public function getFacetCollatorProvider()
+    public function getFacetCollatorProvider(): CollatorProviderInterface
     {
         return $this->facetCollatorProvider;
     }

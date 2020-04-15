@@ -126,7 +126,11 @@ class SearchContext implements SearchContextInterface
      */
     public function getFacetCollatorProvider()
     {
-        return new NullCollatorProvider();
+        if (!$this->defaultContextOptions) {
+            return new NullCollatorProvider();
+        }
+
+        return $this->defaultContextOptions->getFacetCollatorProvider();
     }
 
     /**
