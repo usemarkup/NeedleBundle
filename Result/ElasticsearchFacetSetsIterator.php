@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Markup\NeedleBundle\Result;
 
-use Markup\NeedleBundle\Attribute\AttributeProvidesValueDisplayStrategyInterface;
+use Markup\NeedleBundle\Attribute\AttributeValueOptionsInterface;
 use Markup\NeedleBundle\Collator\CollatorInterface;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Facet\ArbitraryCompositeFacetInterface;
@@ -171,8 +171,12 @@ class ElasticsearchFacetSetsIterator implements \OuterIterator
 
     private function getViewDisplayStrategy(): ?\Closure
     {
-        return ($this->getCurrentFacet() instanceof AttributeProvidesValueDisplayStrategyInterface)
-            ? $this->getCurrentFacet()->getValueDisplayStrategy()
-            : null;
+        $facet = $this->getCurrentFacet();
+
+        if ($facet instanceof AttributeValueOptionsInterface && $facet->shouldCanonicalizeDisplayValue()) {
+            throw new \BadMethodCallException('not implemented');
+        }
+
+        return null;
     }
 }

@@ -14,16 +14,12 @@ services:
         arguments:
             - '@doctrine'
             - '@logger'
-    markup_needle.facet.value_canonicalizer:
-        class: Markup\NeedleBundle\Facet\FacetValueCanonicalizer
-        lazy: true
+
+    Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface: '@Markup\NeedleBundle\Facet\AggregateFacetValueCanonicalizer'
+    Markup\NeedleBundle\Facet\AggregateFacetValueCanonicalizer:
+        autowire: true
         public: false
-    markup_needle.twig.extension.helper:
-        class: Markup\NeedleBundle\Twig\SearchHelperExtension
-        arguments:
-            - '@markup_needle.facet.value_canonicalizer'
-        tags:
-            - { name: twig.extension }
+
     markup_needle.interceptor:
         parent: markup_needle.interceptor.prototype
         calls:

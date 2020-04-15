@@ -7,6 +7,9 @@ use Markup\NeedleBundle\Adapter\SolariumResultPromisePagerfantaAdapter;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
 use Markup\NeedleBundle\Context\NoopSearchContext;
 use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Facet\AggregateFacetValueCanonicalizer;
+use Markup\NeedleBundle\Facet\FacetValueCanonicalizer;
+use Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Result\PagerfantaResultAdapter;
@@ -17,6 +20,7 @@ use Markup\NeedleBundle\Result\SolariumSpellcheckResultStrategy;
 use Pagerfanta\Pagerfanta;
 use Shieldo\SolariumAsyncPlugin;
 use Solarium\Client as SolariumClient;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Templating\EngineInterface as TemplatingEngine;
 use function GuzzleHttp\Promise\coroutine;
 use function GuzzleHttp\Promise\promise_for;
@@ -60,9 +64,21 @@ class SolrSearchService implements AsyncSearchServiceInterface
      **/
     private $templating = null;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var FacetValueCanonicalizerInterface
+     */
+    private $facetValueCanonicalizer;
+
     public function __construct(
         SolariumClient $solarium,
         SolariumSelectQueryBuilder $solariumQueryBuilder,
+        EventDispatcherInterface $eventDispatcher,
+        FacetValueCanonicalizerInterface $facetValueCanonicalizer,
         string $corpus,
         ?TemplatingEngine $templating = null
     ) {
@@ -70,6 +86,8 @@ class SolrSearchService implements AsyncSearchServiceInterface
         $this->solariumQueryBuilder = $solariumQueryBuilder;
         $this->corpus = $corpus;
         $this->templating = $templating;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->facetValueCanonicalizer = $facetValueCanonicalizer;
     }
 
 
@@ -121,6 +139,12 @@ class SolrSearchService implements AsyncSearchServiceInterface
                     ->registerPlugin($pluginIndex, new SolariumAsyncPlugin())
                     ->getPlugin($pluginIndex);
 
+
+                // Short term keep as non-breaking change
+                if (method_exists($asyncPlugin, 'setEventDispatcher')) {
+                    $asyncPlugin->setEventDispatcher($this->eventDispatcher);
+                }
+
                 $solariumResult = $this->solarium->createResult(
                     $solariumQuery,
                     (yield promise_for($asyncPlugin->queryAsync($solariumQuery)))
@@ -141,7 +165,12 @@ class SolrSearchService implements AsyncSearchServiceInterface
 
                 //set the strategy to fetch facet sets, as these are not handled by pagerfanta
                 $result->setFacetSetStrategy(
-                    new SolariumFacetSetsStrategy($resultClosure, $query->getSearchContext(), $query->getOriginalSelectQuery())
+                    new SolariumFacetSetsStrategy(
+                        $resultClosure,
+                        $query->getSearchContext(),
+                        $query->getOriginalSelectQuery(),
+                        $this->facetValueCanonicalizer
+                    )
                 );
 
                 //set any spellcheck result

@@ -130,6 +130,18 @@ class SolariumSelectQueryBuilder
                 if (false !== array_search($facet->getSearchKey(), $facetNamesToExclude)) {
                     continue;
                 }
+
+                /**
+                 * https://lucene.472066.n3.nabble.com/Case-insensitive-searches-and-facet-case-td531799.html
+                 *
+                 * Its expected Facets are using a facet_ key (for the following reason)
+                 *
+                 * Yes, use different fields.  Generally facet fields are "string" which
+                 * will maintain exact case.  You can leverage the copyField capabilities
+                 * in schema.xml to clone a field and analyze it differently.
+                 */
+                $facetSearchKey = sprintf('facet_%s', $facet->getSearchKey());
+
                 $usingFacetComponent = true;
                 $solariumFacets = [];
                 //check whether to request missing facet values
@@ -139,7 +151,7 @@ class SolariumSelectQueryBuilder
                 if ($facet instanceof RangeFacetInterface) {
                     $solariumFacets[] = $solariumQuery
                         ->getFacetSet()
-                        ->createFacetRange($facet->getSearchKey())
+                        ->createFacetRange($facetSearchKey)
                         ->setStart((string) $facet->getRangesStart())
                         ->setEnd((string) $facet->getRangesEnd())
                         ->setGap((string) $facet->getRangeSize());
@@ -149,13 +161,13 @@ class SolariumSelectQueryBuilder
                     if ($shouldUseFacetValuesForRecordedQuery) {
                         $solariumFacets[] = $solariumQuery
                             ->getFacetSet()
-                            ->createFacetField(sprintf('include_%s', $facet->getSearchKey()))
+                            ->createFacetField(sprintf('include_%s', $facetSearchKey))
                             ->setMinCount(1)
                             ->setMissing($checkMissingFacetValues)
                             ->setSort($facetSortOrder ?: 'index');
                         $solariumFacets[] = $solariumQuery
                             ->getFacetSet()
-                            ->createFacetField(sprintf('exclude_%s', $facet->getSearchKey()))
+                            ->createFacetField(sprintf('exclude_%s', $facetSearchKey))
                             ->setMinCount(1)
                             ->setMissing($checkMissingFacetValues)
                             ->setSort($facetSortOrder ?: 'index')
@@ -165,7 +177,7 @@ class SolariumSelectQueryBuilder
                     } else {
                         $solariumFacets[] = $solariumQuery
                             ->getFacetSet()
-                            ->createFacetField($facet->getSearchKey())
+                            ->createFacetField($facetSearchKey)
                             ->setMinCount(1) //sets default mincount of 1, so a facet value needs at least one corresponding result to show
                             ->setMissing($checkMissingFacetValues)
                             ->setSort($facetSortOrder ?: 'index');
@@ -175,7 +187,7 @@ class SolariumSelectQueryBuilder
                 foreach ($solariumFacets as $solariumFacet) {
                     if ($solariumFacet instanceof Field || $solariumFacet instanceof Range) {
                         $solariumFacet
-                            ->setField($facet->getSearchKey());
+                            ->setField($facetSearchKey);
                     }
 
                     //set Solr local params to exclude filter values

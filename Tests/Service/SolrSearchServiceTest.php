@@ -4,6 +4,7 @@ namespace Markup\NeedleBundle\Tests\Service;
 
 use function GuzzleHttp\Promise\promise_for;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
+use Markup\NeedleBundle\Facet\NoopFacetValueCanonicalizer;
 use Markup\NeedleBundle\Service\SolrSearchService;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -15,6 +16,7 @@ use Markup\NeedleBundle\Service\AsyncSearchServiceInterface;
 use Markup\NeedleBundle\Service\SearchServiceInterface;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * A test for a search service using Solr/ Solarium.
@@ -41,10 +43,16 @@ class SolrSearchServiceTest extends MockeryTestCase
      */
     private $service;
 
+    /**
+     * @var m\LegacyMockInterface|m\MockInterface|EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
     protected function setUp()
     {
         $this->solarium = $this->getMockSolariumClient();
         $this->solariumQueryBuilder = m::mock(SolariumSelectQueryBuilder::class);
+        $this->eventDispatcher = m::mock(EventDispatcherInterface::class);
         $this->promisePlugin = m::mock(SolariumAsyncPlugin::class);
         $this->promisePlugin
             ->shouldReceive('queryAsync')
@@ -53,7 +61,14 @@ class SolrSearchServiceTest extends MockeryTestCase
             ->shouldReceive('getPlugin')
             ->with('async')
             ->andReturn($this->promisePlugin);
-        $this->service = new SolrSearchService($this->solarium, $this->solariumQueryBuilder, 'corpus');
+        
+        $this->service = new SolrSearchService(
+            $this->solarium,
+            $this->solariumQueryBuilder,
+            $this->eventDispatcher,
+            new NoopFacetValueCanonicalizer(),
+            'corpus'
+        );
     }
 
     public function testIsSearchService()

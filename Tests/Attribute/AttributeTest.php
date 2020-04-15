@@ -4,7 +4,6 @@ namespace Markup\NeedleBundle\Tests\Attribute;
 
 use Markup\NeedleBundle\Attribute\Attribute;
 use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Attribute\AttributeProvidesValueDisplayStrategyInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,11 +20,6 @@ class AttributeTest extends TestCase
     public function testIsAttribute()
     {
         $this->assertInstanceOf(AttributeInterface::class, new Attribute('name'));
-    }
-
-    public function testProvidesValueDisplayStrategy()
-    {
-        $this->assertInstanceOf(AttributeProvidesValueDisplayStrategyInterface::class, new Attribute('name'));
     }
 
     public function testOutputsForOneWordName()
@@ -65,15 +59,5 @@ class AttributeTest extends TestCase
         $this->assertEquals($name, $attr->getName());
         $this->assertEquals($display, $attr->getDisplayName());
         $this->assertEquals($key, $attr->getSearchKey());
-    }
-
-    public function testGetViewDisplayStrategyReturnsDefault()
-    {
-        $name = 'sleeve_length';
-        $attr = new Attribute($name);
-        $value = 'value';
-        $strategy = $attr->getValueDisplayStrategy();
-        $this->assertInstanceOf('Closure', $strategy);
-        $this->assertEquals($value, call_user_func($strategy, $value));
     }
 }

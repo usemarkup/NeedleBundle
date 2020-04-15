@@ -4,6 +4,9 @@ namespace Markup\NeedleBundle\Result;
 
 use Markup\NeedleBundle\Context\SearchContextInterface as SearchContext;
 use Markup\NeedleBundle\Facet\FacetSetInterface;
+use Markup\NeedleBundle\Facet\FacetValueCanonicalizer;
+use Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface;
+use Markup\NeedleBundle\Facet\NoopFacetValueCanonicalizer;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Solarium\QueryType\Select\Result\Result as SolariumResult;
 
@@ -35,11 +38,17 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
     private $originalQuery;
 
     /**
-     * @param SolariumResult|\Closure $result  This can either be a result object, or a closure that returns a result object.  (This enables support for deferred evaluation of the result.)
-     * @param SearchContext           $context
-     * @param SelectQueryInterface    $originalQuery (Optional.) An original query, if one is available, in case there is view logic that depends on it.
-     **/
-    public function __construct($result, SearchContext $context, SelectQueryInterface $originalQuery = null)
+     * @var FacetValueCanonicalizerInterface
+     */
+    private $facetValueCanonicalizer;
+
+    /**
+     * @param SolariumResult|\Closure $result This can either be a result object, or a closure that returns a result object.  (This enables support for deferred evaluation of the result.)
+     * @param SearchContext $context
+     * @param SelectQueryInterface $originalQuery (Optional.) An original query, if one is available, in case there is view logic that depends on it.
+     * @param FacetValueCanonicalizerInterface|null $facetValueCanonicalizer
+     */
+    public function __construct($result, SearchContext $context, SelectQueryInterface $originalQuery = null, FacetValueCanonicalizerInterface $facetValueCanonicalizer = null)
     {
         if ($result instanceof SolariumResult) {
             $this->solariumResult = $result;
@@ -50,12 +59,13 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
         }
         $this->searchContext = $context;
         $this->originalQuery = $originalQuery;
+        $this->facetValueCanonicalizer = $facetValueCanonicalizer ?: new NoopFacetValueCanonicalizer();
     }
 
     public function getFacetSets()
     {
         /** @var FacetSetInterface[] $facetSets */
-        $facetSets = new SolariumFacetSetsIterator($this->getSolariumResult()->getFacetSet(), $this->getSearchContext(), $this->originalQuery);
+        $facetSets = new SolariumFacetSetsIterator($this->facetValueCanonicalizer, $this->getSolariumResult()->getFacetSet(), $this->getSearchContext(), $this->originalQuery);
 
         return $facetSets;
     }
