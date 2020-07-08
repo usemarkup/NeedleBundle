@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Markup\NeedleBundle\Facet;
 
@@ -9,12 +10,5 @@ use Markup\NeedleBundle\Attribute\AttributeInterface;
  **/
 interface FacetValueCanonicalizerInterface
 {
-    /**
-     * Canonicalizes a facet value string given a facet.
-     *
-     * @param  string             $value
-     * @param  AttributeInterface $facet
-     * @return string
-     **/
-    public function canonicalizeForFacet($value, AttributeInterface $facet);
+    public function canonicalizeForFacet(string $value, AttributeInterface $facet): string;
 }

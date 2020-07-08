@@ -1,8 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Markup\NeedleBundle\DependencyInjection\Compiler;
 
+use Markup\NeedleBundle\Facet\AggregateFacetValueCanonicalizer;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -14,21 +17,22 @@ class AddFacetValueCanonicalizersPass implements CompilerPassInterface
     /**
      * {@inheritdoc}
      **/
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
-        $canonicalizerId = 'markup_needle.facet.value_canonicalizer';
-        if (!$container->has($canonicalizerId)) {
-            return;
-        }
+        $aggregateFacetValueCanonicalizer = $container->findDefinition(AggregateFacetValueCanonicalizer::class);
 
-        $canonicalizer = $container->findDefinition($canonicalizerId);
+        $servicesKeyedByFacet = [];
+
         foreach ($container->findTaggedServiceIds('markup_needle.facet_value_canonicalizer') as $id => $tags) {
             foreach ($tags as $attributes) {
                 if (!isset($attributes['facet'])) {
                     continue;
                 }
-                $canonicalizer->addMethodCall('addCanonicalizerForFacetName', [new Reference($id), $attributes['facet']]);
+
+                $servicesKeyedByFacet[$attributes['facet']] = new Reference($id);
             }
         }
+
+        $aggregateFacetValueCanonicalizer->addArgument(ServiceLocatorTagPass::register($container, $servicesKeyedByFacet));
     }
 }

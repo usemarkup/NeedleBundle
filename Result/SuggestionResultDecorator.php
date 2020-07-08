@@ -5,9 +5,7 @@ namespace Markup\NeedleBundle\Result;
 use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Markup\NeedleBundle\Service\SearchServiceInterface;
 use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
-use Markup\NeedleBundle\Tests\Query\SettableSelectQuery;
 use Pagerfanta\Pagerfanta;
-use Traversable;
 
 /**
  * Decorates an underlying result by, if there is at least one spellcheck suggestion, fetching a new result from the backend based on a query on the first suggestion.
@@ -44,6 +42,11 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
      */
     private $suggestionResult;
 
+    /**
+     * @var array
+     */
+    private $mappingHashForFields;
+
     public function __construct(
         ResultInterface $originalResult,
         SimpleQueryInterface $query,
@@ -55,6 +58,7 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
         $this->searchService = $searchService;
         $this->useOriginalFacets = $useOriginalFacets;
         $this->resolved = false;
+        $this->mappingHashForFields = [];
     }
 
     public function getIterator()
@@ -67,10 +71,10 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
      *
      * @return int
      **/
-    public function getTotalCount()
+    public function getNbResults()
     {
         //this should use original result
-        return $this->originalResult->getTotalCount();
+        return $this->originalResult->getNbResults();
     }
 
     /**
@@ -89,7 +93,7 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
      *
      * @return int
      **/
-    public function getTotalPageCount()
+    public function getNbPages()
     {
         //there should only be one results page
         return 1;
@@ -98,7 +102,7 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
     /**
      * @return int
      **/
-    public function getCurrentPageNumber()
+    public function getCurrentPage()
     {
         //there should only be one results page
         return 1;
@@ -109,7 +113,7 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
      *
      * @return bool
      **/
-    public function isPaginated()
+    public function haveToPaginate()
     {
         //there should only be one results page
         return false;
@@ -132,7 +136,7 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
      * @return int
      * @throws PageDoesNotExistException if there is no previous page
      **/
-    public function getPreviousPageNumber()
+    public function getPreviousPage()
     {
         //there should only be one results page
         throw new PageDoesNotExistException();
@@ -155,7 +159,7 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
      * @return int
      * @throws PageDoesNotExistException if there is no next page
      **/
-    public function getNextPageNumber()
+    public function getNextPage()
     {
         //there should only be one results page
         throw new PageDoesNotExistException();
@@ -250,15 +254,26 @@ class SuggestionResultDecorator implements ResultInterface, CanExposePagerfantaI
         if (!$spellcheckResult) {
             return;
         }
-        if ($this->originalResult->getTotalCount() !== 0 || count($spellcheckResult->getSuggestions()) === 0) {
+        if ($this->originalResult->getNbResults() !== 0 || count($spellcheckResult->getSuggestions()) === 0) {
             return;
         }
         $suggestionQuery = clone $this->query;
         $suggestions = $spellcheckResult->getSuggestions();
         $suggestion = $suggestions[0];
-        if ($suggestionQuery instanceof SettableSelectQuery) {
-            $suggestionQuery->setSearchTerm($suggestion->getWord());
-            $this->suggestionResult = $this->searchService->executeQuery($suggestionQuery);
-        }
+    }
+
+    public function setMappingHashForFields(array $hash)
+    {
+        $this->mappingHashForFields = $hash;
+    }
+
+    public function getMappingHashForFields(): array
+    {
+        return $this->mappingHashForFields;
+    }
+
+    public function getMaxPerPage(): int
+    {
+        return $this->originalResult->getMaxPerPage();
     }
 }

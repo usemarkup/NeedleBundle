@@ -90,11 +90,8 @@ abstract class AbstractSolrManagedResourcesClient
      */
     public function fetchAllFullyQualifiedResourceIds($endpointKey = null)
     {
-        $metadataJson = $this->fetchManagedSchemaMetadata($endpointKey)->getContent();
-        if (!$metadataJson) {
-            return [];
-        }
-        $metadata = json_decode($metadataJson, true);
+        $metadataJson = $this->fetchManagedSchemaMetadata($endpointKey);
+        $metadata = json_decode(strval($metadataJson->getContent()), true);
 
         $resourceIds = [];
         if (isset($metadata['managedResources'])) {
@@ -115,11 +112,8 @@ abstract class AbstractSolrManagedResourcesClient
      */
     public function fetchResourceIds($endpointKey = null)
     {
-        $metadataJson = $this->fetchManagedSchemaMetadata($endpointKey)->getContent();
-        if (!$metadataJson) {
-            return [];
-        }
-        $metadata = json_decode($metadataJson, true);
+        $metadataJson = $this->fetchManagedSchemaMetadata($endpointKey);
+        $metadata = json_decode(strval($metadataJson->getContent()), true);
         $path = sprintf('/%s', $this->getResourcePath());
 
         $resourceIds = [];

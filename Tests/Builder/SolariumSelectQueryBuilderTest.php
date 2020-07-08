@@ -11,6 +11,7 @@ use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
+use Markup\NeedleBundle\Sort\EmptySortCollection;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Solarium\Client;
@@ -23,7 +24,7 @@ use Solarium\QueryType\Select\Query\Query;
 class SolariumSelectQueryBuilderTest extends MockeryTestCase
 {
     /**
-     * @var callable
+     * @var Query
      */
     private $queryGenerator;
 
@@ -39,9 +40,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
 
     public function setUp()
     {
-        $this->queryGenerator = function () {
-            return (new Client())->createSelect();
-        };
+        $this->queryGenerator = (new Client())->createSelect();
         $this->lucenifier = m::mock(FilterQueryLucenifier::class);
         $this->builder = new SolariumSelectQueryBuilder(false, $this->lucenifier);
     }
@@ -49,6 +48,8 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
     public function testBuildWithNoOperationsReturnsSolariumSelectQuery()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+
         $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery, $this->queryGenerator);
         $this->assertInstanceOf(Query::class, $query);
     }
@@ -56,6 +57,8 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
     public function testBuildWithSearchTerm()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+
         $term = 'pirates';
         $genericQuery
             ->shouldReceive('getSearchTerm')
@@ -70,6 +73,8 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
     public function testAddFilterQuery()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+
         $filterQuery = m::mock(FilterQueryInterface::class);
         $filterQuery
             ->shouldReceive('getSearchKey')
@@ -83,7 +88,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
         $filter = m::mock(AttributeInterface::class);
         $filterValue = m::mock(FilterValueInterface::class);
         $filter
-            ->shouldReceive('getName')
+            ->shouldReceive('getSearchKey')
             ->andReturn('color_key');
         $filterQuery
             ->shouldReceive('getFilter')
@@ -111,7 +116,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
             break;
         }
         $this->assertEquals(
-            'color_key',
+            'facet_color_key',
             $singleFilterQuery->getKey(),
             'checking filter query key is correct'
         );
@@ -125,6 +130,8 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
     public function testSetFieldsUsingAttributes()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+
         $stringFields = ['this', 'that'];
         $attributeSpecialization = new AttributeSpecialization('other');
         $attribute = new SpecializedAttribute(
@@ -132,7 +139,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
             'the'
         );
         $context = new class () implements AttributeSpecializationContextInterface {
-            public function getValue()
+            public function getValue(): string
             {
                 return 'other';
             }

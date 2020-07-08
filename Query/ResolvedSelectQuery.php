@@ -3,9 +3,16 @@
 namespace Markup\NeedleBundle\Query;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Boost\BoostQueryField;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
+use Markup\NeedleBundle\Collator\NullCollatorProvider;
+use Markup\NeedleBundle\Context\NoopSearchContext;
+use Markup\NeedleBundle\Context\SearchContext;
 use Markup\NeedleBundle\Context\SearchContextInterface;
-use Markup\NeedleBundle\Service\SearchServiceInterface;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
+use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Sort\EmptySortCollection;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
  * {@inheritdoc}
@@ -18,52 +25,46 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     private $selectQuery;
 
     /**
-     * @var SearchContextInterface|null
+     * @var SearchContextInterface
      */
     private $searchContext;
 
     public function __construct(
         SelectQueryInterface $selectQuery,
-        SearchContextInterface $searchContext = null
+        ?SearchContextInterface $searchContext = null
     ) {
         $this->selectQuery = $selectQuery;
-        $this->searchContext = $searchContext;
+        $this->searchContext = $searchContext ?: new NoopSearchContext();
     }
 
-    /**
-     * @return SelectQueryInterface
-     */
-    protected function getSelectQuery()
+    protected function getSelectQuery(): SelectQueryInterface
     {
         return $this->selectQuery;
     }
 
     /**
-     * @return SearchContextInterface|null
+     * {@inheritdoc}
      */
-    protected function getSearchContext()
+    public function getSearchContext(): SearchContextInterface
     {
-        return $this->searchContext;
+        throw new \RuntimeException(' this method is going to be removed. the search context should be invisible');
+        //return $this->searchContext;
     }
 
     /**
      * {@inheritdoc}
-     * Merges select filterQueries with defaults
      */
     public function getFilterQueries(): array
     {
         $fq = $this->getSelectQuery()->getFilterQueries();
-        if ($this->getSearchContext() === null) {
-            return $fq;
-        }
 
-        return array_merge($fq, $this->getSearchContext()->getDefaultFilterQueries());
+        return array_merge($fq, $this->searchContext->getDefaultFilterQueries());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasFilterQueries()
+    public function hasFilterQueries(): bool
     {
         return count($this->getFilterQueries()) > 0;
     }
@@ -71,7 +72,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->getSelectQuery()->getFields();
     }
@@ -79,38 +80,62 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getPageNumber()
+    public function getMappingHashForFields(): array
     {
-        return $this->getSelectQuery()->getPageNumber();
+        $hash = [];
+        foreach ($this->getFields() as $name => $attribute) {
+            if (!is_string($name) || !$attribute instanceof AttributeInterface) {
+                throw new \InvalidArgumentException('Bad fields defined for query');
+            }
+
+            $hash[$name] = $attribute->getSearchKey();
+        }
+
+        return $hash;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getMaxPerPage()
+    public function getPageNumber(): int
     {
-        return $this->getSelectQuery()->getMaxPerPage();
+        return $this->getSelectQuery()->getPageNumber() ?: 1;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSortCollection()
+    public function getMaxPerPage(): int
+    {
+        $maxPerPage = $this->getSelectQuery()->getMaxPerPage();
+
+        if (is_int($maxPerPage)) {
+            return $maxPerPage;
+        }
+
+        return $this->searchContext->getItemsPerPage() ?: 9999;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSortCollection(): SortCollectionInterface
     {
         if ($this->getSelectQuery()->hasSortCollection()) {
-            return $this->getSelectQuery()->getSortCollection();
-        }
-        if ($this->getSearchContext() === null) {
-            return new EmptySortCollection();
+            $sort = $this->getSelectQuery()->getSortCollection();
+
+            if ($sort !== null) {
+                return $sort;
+            }
         }
 
-        return $this->getSearchContext()->getDefaultSortCollectionForQuery($this->getSelectQuery());
+        return $this->searchContext->getDefaultSortCollectionForQuery();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function hasSortCollection()
+    public function hasSortCollection(): bool
     {
         return $this->getSelectQuery()->hasSortCollection();
     }
@@ -118,39 +143,15 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getFacetNamesToExclude()
+    public function getFacetsToExclude(): array
     {
-        return $this->getSelectQuery()->getFacetNamesToExclude();
+        return $this->getSelectQuery()->getFacetsToExclude();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getResult()
-    {
-        return $this->getSelectQuery()->getResult();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getResultAsync()
-    {
-        return $this->getSelectQuery()->getResultAsync();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setSearchService(SearchServiceInterface $service)
-    {
-        return $this->getSelectQuery()->setSearchService($service);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFilterQueryWithKey($key)
+    public function getFilterQueryWithKey(string $key): ?FilterQueryInterface
     {
         return $this->getSelectQuery()->getFilterQueryWithKey($key);
     }
@@ -166,7 +167,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function shouldTreatAsTextSearch()
+    public function shouldTreatAsTextSearch(): bool
     {
         return $this->getSelectQuery()->shouldTreatAsTextSearch();
     }
@@ -182,7 +183,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function hasSearchTerm()
+    public function hasSearchTerm(): bool
     {
         return $this->getSelectQuery()->hasSearchTerm();
     }
@@ -190,9 +191,15 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getSearchTerm()
+    public function getSearchTerm(): string
     {
-        return $this->getSelectQuery()->getSearchTerm();
+        $searchTerm = $this->getSelectQuery()->getSearchTerm();
+
+        if (!$this->hasSearchTerm() || !is_string($searchTerm)) {
+            throw new \RuntimeException('No search term provided');
+        }
+
+        return $searchTerm;
     }
 
     /**
@@ -200,11 +207,11 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function getFacets()
     {
-        if ($this->getSearchContext() === null) {
-            return [];
+        if ($this->selectQuery->getFacets()) {
+            return $this->selectQuery->getFacets();
         }
 
-        return $this->getSearchContext()->getFacets();
+        return $this->searchContext->getDefaultFacets();
     }
 
     /**
@@ -212,11 +219,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function shouldRequestFacetValueForMissing()
     {
-        if ($this->getSearchContext() === null) {
-            return false;
-        }
-
-        return $this->getSearchContext()->shouldRequestFacetValueForMissing();
+        return $this->searchContext->shouldRequestFacetValueForMissing();
     }
 
     /**
@@ -224,11 +227,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function getSortOrderForFacet(AttributeInterface $facet)
     {
-        if ($this->getSearchContext() === null) {
-            return null;
-        }
-
-        return $this->getSearchContext()->getFacetSortOrderProvider()->getSortOrderForFacet($facet);
+        return $this->searchContext->getFacetSortOrderProvider()->getSortOrderForFacet($facet);
     }
 
     /**
@@ -236,11 +235,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet)
     {
-        if ($this->getSearchContext() === null) {
-            return false;
-        }
-
-        return $this->getSearchContext()->getWhetherFacetIgnoresCurrentFilters($facet);
+        return $this->searchContext->getWhetherFacetIgnoresCurrentFilters($facet);
     }
 
     /**
@@ -248,41 +243,21 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function getBoostQueryFields()
     {
-        if ($this->getSearchContext() === null) {
-            return [];
+        $boosts = $this->searchContext->getBoostQueryFields();
+        if (!empty($boosts)) {
+            return $boosts;
         }
 
-        return $this->getSearchContext()->getBoostQueryFields();
+        // when no boosts are provided we fallback to boosting using the fields specified
+        // this is fairly arbitrary but at least forces the solr backend into text search mode that
+        // doesnt need a combined single 'text' field in the schema
+        return array_map(function (AttributeInterface $attribute) {
+            return new BoostQueryField($attribute, 1);
+        }, $this->getFields());
     }
 
     /**
      * {@inheritdoc}
-     */
-    public function shouldUseFacetValuesForRecordedQuery()
-    {
-        if ($this->getSearchContext() === null) {
-            return false;
-        }
-        if (!$this->getSelectQuery() instanceof RecordableSelectQueryInterface) {
-            return false;
-        }
-        if (!$this->getSelectQuery()->hasRecord()) {
-            return false;
-        }
-        /** @var SelectQueryInterface $record */
-        $record = $this->getSelectQuery()->getRecord();
-
-        if (count($this->getSelectQuery()->getFilterQueries()) > count($record->getFilterQueries())) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets the original select query prior to resolution, for read-only access.
-     *
-     * @return SelectQueryInterface
      */
     public function getOriginalSelectQuery()
     {
@@ -290,24 +265,9 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getRecord()
-    {
-        if (!$this->getSelectQuery() instanceof RecordableSelectQueryInterface) {
-            return null;
-        }
-        if (!$this->getSelectQuery()->hasRecord()) {
-            return null;
-        }
-
-        return $this->getSelectQuery()->getRecord();
-    }
-
-    /**
     * {@inheritdoc}
     */
-    public function getGroupingField()
+    public function getGroupingField(): ?AttributeInterface
     {
         return $this->getSelectQuery()->getGroupingField();
     }
@@ -322,11 +282,16 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
 
     public function shouldUseFuzzyMatching()
     {
-        $context = $this->getSearchContext();
-        if ($context === null) {
-            return false;
-        }
+        return $this->searchContext->shouldUseFuzzyMatching();
+    }
 
-        return $context->shouldUseFuzzyMatching();
+    public function getFacetCollatorProvider(): CollatorProviderInterface
+    {
+        return $this->searchContext->getFacetCollatorProvider();
+    }
+
+    public function getFacetSetDecoratorProvider(): FacetSetDecoratorProviderInterface
+    {
+        return $this->searchContext->getFacetSetDecoratorProvider();
     }
 }

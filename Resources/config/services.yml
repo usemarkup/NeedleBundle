@@ -14,16 +14,12 @@ services:
         arguments:
             - '@doctrine'
             - '@logger'
-    markup_needle.facet.value_canonicalizer:
-        class: Markup\NeedleBundle\Facet\FacetValueCanonicalizer
-        lazy: true
+
+    Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface: '@Markup\NeedleBundle\Facet\AggregateFacetValueCanonicalizer'
+    Markup\NeedleBundle\Facet\AggregateFacetValueCanonicalizer:
+        autowire: true
         public: false
-    markup_needle.twig.extension.helper:
-        class: Markup\NeedleBundle\Twig\SearchHelperExtension
-        arguments:
-            - '@markup_needle.facet.value_canonicalizer'
-        tags:
-            - { name: twig.extension }
+
     markup_needle.interceptor:
         parent: markup_needle.interceptor.prototype
         calls:
@@ -66,11 +62,6 @@ services:
         class: Markup\NeedleBundle\Filter\NullFilterProvider
     markup_needle.filter_provider.simple:
         class: Markup\NeedleBundle\Filter\SimpleFilterProvider
-    markup_needle.facet_provider.simple:
-        class: Markup\NeedleBundle\Facet\SimpleFacetProvider
-    markup_needle.facet_provider.consume_filters.abstract:
-        class: Markup\NeedleBundle\Facet\ConsumeFiltersFacetProvider
-        abstract: true
     markup_needle.facet_set_decorator_provider:
         class: Markup\NeedleBundle\Facet\FacetSetDecoratorProvider
     markup_needle.collator_provider.null:
@@ -128,11 +119,6 @@ services:
             - []
         tags: ['container.service_locator']
     Markup\NeedleBundle\Terms\NullTermsFieldProvider: ~
-    markup_needle.registry.attribute.attribute_specialization_context_group:
-        class: Markup\NeedleBundle\Attribute\AttributeSpecializationContextGroupRegistry
-        arguments:
-            - '@markup_needle.registry.attribute_specialization_context'
-            - '@markup_needle.specialization_context_group_filter'
     markup_needle.specialization_context_group_filter:
         class: Markup\NeedleBundle\Attribute\CompositeSpecializationContextGroupFilter
     Markup\NeedleBundle\Synonyms\NoopSynonymClient: ~
@@ -170,3 +156,6 @@ services:
 
     Markup\NeedleBundle\Elastic\CorpusIndexConfiguration:
         public: false
+
+    Markup\NeedleBundle\Context\ContextSortAttributeFactory:
+        autowire: true

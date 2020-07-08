@@ -60,6 +60,6 @@ class SolariumIndexingMessager implements IndexingMessagerInterface
             return self::LUCENE_ALL_SIGNIFIER;
         }
 
-        return (new FilterQueryLucenifier())->lucenify($filterQuery);
+        return (new FilterQueryLucenifier())->lucenify($filterQuery->getSearchKey(), $filterQuery->getFilterValue());
     }
 }

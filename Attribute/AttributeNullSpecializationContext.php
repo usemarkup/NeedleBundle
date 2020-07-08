@@ -11,7 +11,7 @@ class AttributeNullSpecializationContext implements AttributeSpecializationNullC
     /**
      * {@inheritDoc}
      */
-    public function getValue()
+    public function getValue(): string
     {
         return '';
     }

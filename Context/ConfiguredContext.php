@@ -3,40 +3,22 @@
 namespace Markup\NeedleBundle\Context;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Attribute\AttributeProviderInterface;
-use Markup\NeedleBundle\Boost\BoostQueryField;
 use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Config\ContextConfigurationInterface;
-use Markup\NeedleBundle\Facet\FacetProviderInterface;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
-use Markup\NeedleBundle\Filter\FilterQuery;
-use Markup\NeedleBundle\Filter\ScalarFilterValue;
-use Markup\NeedleBundle\Filter\UnionFilterValue;
 use Markup\NeedleBundle\Intercept\ConfiguredInterceptorProvider;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
-use Markup\NeedleBundle\Sort\SortCollection;
-use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
- * A context that uses a configuration.
+ * A configuration that can be used to compose a SearchContext (optionally)
  */
-class ConfiguredContext implements SearchContextInterface
+class ConfiguredContext implements DefaultContextInterface
 {
     /**
      * @var ContextConfigurationInterface
      */
     private $config;
-
-    /**
-     * @var AttributeProviderInterface
-     */
-    private $attributeProvider;
-
-    /**
-     * @var FacetProviderInterface
-     */
-    private $facetProvider;
 
     /**
      * @var FacetSetDecoratorProviderInterface
@@ -60,16 +42,12 @@ class ConfiguredContext implements SearchContextInterface
 
     public function __construct(
         ContextConfigurationInterface $config,
-        AttributeProviderInterface $attributeProvider,
-        FacetProviderInterface $facetProvider,
         FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
         CollatorProviderInterface $facetCollatorProvider,
         SortOrderProviderInterface $facetSortOrderProvider,
         ConfiguredInterceptorProvider $interceptorProvider
     ) {
         $this->config = $config;
-        $this->attributeProvider = $attributeProvider;
-        $this->facetProvider = $facetProvider;
         $this->facetSetDecoratorProvider = $facetSetDecoratorProvider;
         $this->facetCollatorProvider = $facetCollatorProvider;
         $this->facetSortOrderProvider = $facetSortOrderProvider;
@@ -77,154 +55,70 @@ class ConfiguredContext implements SearchContextInterface
     }
 
     /**
-     * Gets the number of items that should be shown per page in a paged view.  Returns null if no constraint on numbers exists.
-     *
-     * @return int|null
-     **/
-    public function getItemsPerPage()
+     * {@inheritdoc}
+     */
+    public function getItemsPerPage(): ?int
     {
         return $this->config->getDefaultItemsPerPage() ?: null;
     }
 
     /**
-     * Gets the set of facets to apply to the search.
-     *
-     * @return \Markup\NeedleBundle\Attribute\AttributeInterface[]
-     **/
-    public function getFacets()
+     * {@inheritdoc}
+     */
+    public function getDefaultFacets(): array
     {
         $facets = [];
         foreach ($this->config->getDefaultFacetingAttributes() as $facetName) {
-            $facet = $this->facetProvider->getFacetByName($facetName);
-            if (!$facet) {
-                continue;
-            }
-            $facets[] = $facet;
+            $facets[] = $facetName;
         }
 
         return $facets;
     }
 
     /**
-     * Gets the default filters to be applied to any search with this context.
-     *
-     * @return \Markup\NeedleBundle\Filter\FilterQueryInterface[]
-     **/
-    public function getDefaultFilterQueries()
-    {
-        $queries = [];
-        foreach ($this->config->getDefaultFilterQueries() as $attr => $value) {
-            if (!is_array($value)) {
-                $q = new FilterQuery($this->attributeProvider->getAttributeByName($attr), new ScalarFilterValue($value));
-            } else {
-                $q = new FilterQuery(
-                    $this->attributeProvider->getAttributeByName($attr),
-                    new UnionFilterValue(
-                        array_map(function ($filterValue) {
-                            return new ScalarFilterValue($filterValue);
-                        }, $value)
-                    )
-                );
-            }
-            $queries[] = $q;
-        }
-
-        return $queries;
-    }
-
-    /**
-     * Gets the default sort collection to be applied to a query using this context.
-     *
-     * @param SelectQueryInterface $query
-     *
-     * @return SortCollectionInterface
-     **/
-    public function getDefaultSortCollectionForQuery(SelectQueryInterface $query)
-    {
-        $sortConfig = ($query->shouldTreatAsTextSearch())
-            ? $this->config->getDefaultSortsForSearchTermQuery()
-            : $this->config->getDefaultSortsForNonSearchTermQuery();
-
-        return $this->createSortCollectionForConfig($sortConfig);
-    }
-
-    /**
-     * Creates a sort collection from a hash of attribute names and directions.
-     *
-     * @param  array                   $sortConfig
-     * @return SortCollectionInterface
+     * {@inheritdoc}
      */
-    private function createSortCollectionForConfig(array $sortConfig)
+    public function getDefaultFilterQueries(): array
     {
-        $sorts = new SortCollection();
-        $contextSortAttributeFactory = new ContextSortAttributeFactory($this->attributeProvider);
-
-        foreach ($sortConfig as $attr => $direction) {
-            //allow legacy format (using hash as if it is ordered - which it is in PHP but not in other languages like JavaScript)
-            if (is_array($direction)) {
-                foreach ($direction as $attrKey => $dir) {
-                    $sorts->add($contextSortAttributeFactory->createSortForAttributeNameAndDirection($attrKey, $dir));
-                }
-                continue;
-            }
-            $sorts->add($contextSortAttributeFactory->createSortForAttributeNameAndDirection($attr, $direction));
-        }
-
-        return $sorts;
+        return $this->config->getDefaultFilterQueries();
     }
 
     /**
-     * Gets the facet set decorator to apply for a specific facet. (This can determine how a facet set renders.) Returns false if no decoration to be applied.
-     *
-     * @param  AttributeInterface                                         $facet
-     * @return \Markup\NeedleBundle\Facet\FacetSetDecoratorInterface|null
-     **/
-    public function getSetDecoratorForFacet(AttributeInterface $facet)
+     * {@inheritdoc}
+     */
+    public function getDefaultSorts(): array
     {
-        return $this->facetSetDecoratorProvider->getDecoratorForFacet($facet);
+        return $this->config->getDefaultSortsForNonSearchTermQuery();
     }
 
     /**
-     * Gets whether the given facet that is being displayed should ignore any corresponding filter values that are currently selected (true), or whether they should just reflect the returned results (false).
-     *
-     * @return bool
-     **/
-    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet)
+     * {@inheritdoc}
+     */
+    public function getFacetSetDecoratorProvider(): FacetSetDecoratorProviderInterface
+    {
+        return $this->facetSetDecoratorProvider;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet): bool
     {
         return $this->config->shouldIgnoreCurrentFilteredAttributesInFaceting();
     }
 
     /**
-     * Gets a list of available filter names that a userland query using this context can filter on.
-     *
-     * @return array
-     **/
-    public function getAvailableFilterNames()
+     * {@inheritdoc}
+     */
+    public function getBoostQueryFields(): array
     {
-        return $this->config->getFilterableAttributes();
+        return $this->config->getDefaultBoosts();
     }
 
     /**
-     * Gets the set of boost query fields that should be defined against this query.
-     *
-     * @return array
-     **/
-    public function getBoostQueryFields()
-    {
-        $fields = [];
-        foreach ($this->config->getDefaultBoosts() as $attr => $factor) {
-            $fields[] = new BoostQueryField($this->attributeProvider->getAttributeByName($attr), $factor);
-        }
-
-        return $fields;
-    }
-
-    /**
-     * Gets a provider object for collator (sorter) objects that can collate facet values.  May return null if no userland sorting of values should be done.
-     *
-     * @return \Markup\NeedleBundle\Collator\CollatorProviderInterface
-     **/
-    public function getFacetCollatorProvider()
+     * {@inheritdoc}
+     */
+    public function getFacetCollatorProvider(): CollatorProviderInterface
     {
         return $this->facetCollatorProvider;
     }
@@ -252,12 +146,12 @@ class ConfiguredContext implements SearchContextInterface
     /**
      * {@inheritdoc}
      */
-    public function shouldRequestFacetValueForMissing()
+    public function shouldRequestFacetValueForMissing(): bool
     {
         return false;
     }
 
-    public function shouldUseFuzzyMatching()
+    public function shouldUseFuzzyMatching(): bool
     {
         return $this->config->shouldUseFuzzyMatching();
     }

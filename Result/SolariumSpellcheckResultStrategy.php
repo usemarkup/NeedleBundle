@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Result;
 
+use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Markup\NeedleBundle\Spellcheck\SolariumSpellcheckResult;
 use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
@@ -17,7 +18,7 @@ class SolariumSpellcheckResultStrategy implements SpellcheckResultStrategyInterf
     private $solariumResult;
 
     /**
-     * @var SimpleQueryInterface
+     * @var ResolvedSelectQueryInterface
      */
     private $query;
 
@@ -30,9 +31,9 @@ class SolariumSpellcheckResultStrategy implements SpellcheckResultStrategyInterf
 
     /**
      * @param SolariumResult|\Closure $result
-     * @param SimpleQueryInterface    $query
+     * @param ResolvedSelectQueryInterface    $query
      */
-    public function __construct($result, SimpleQueryInterface $query)
+    public function __construct($result, ResolvedSelectQueryInterface $query)
     {
         if ($result instanceof SolariumResult) {
             $this->solariumResult = $result;

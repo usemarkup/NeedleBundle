@@ -5,12 +5,12 @@ namespace Markup\NeedleBundle\Tests\Attribute;
 use Markup\NeedleBundle\Attribute\AttributeGenericSpecializationContext;
 use Markup\NeedleBundle\Attribute\AttributeSpecialization;
 use Markup\NeedleBundle\Attribute\AttributeSpecializationContextGroupRegistry;
-use Markup\NeedleBundle\Attribute\AttributeSpecializationInterface;
+use Markup\NeedleBundle\Attribute\AttributeSpecializationContextRegistryInterface;
+use Markup\NeedleBundle\Attribute\AttributeSpecializationProvider;
 use Markup\NeedleBundle\Attribute\CompositeSpecializationContextGroupFilter;
 use Markup\NeedleBundle\Attribute\SpecializationContextGroupFilterInterface;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
-use Markup\NeedleBundle\Attribute\AttributeSpecializationContextRegistryInterface;
 
 class AttributeSpecializationContextGroupRegistryTest extends MockeryTestCase
 {
@@ -29,72 +29,48 @@ class AttributeSpecializationContextGroupRegistryTest extends MockeryTestCase
      */
     private $attributeSpecializationContextGroupRegistry;
 
+    /**
+     * @var AttributeSpecializationProvider|m\LegacyMockInterface|m\MockInterface
+     */
+    private $attributeSpecializationProvider;
+
     protected function setUp()
     {
         $this->attributeSpecializationContextRegistry = m::mock(AttributeSpecializationContextRegistryInterface::class);
+        $this->attributeSpecializationProvider = m::mock(AttributeSpecializationProvider::class);
         $this->attributeSpecializationContextRegistry
             ->shouldReceive('getContexts')
-            ->with(m::on(function(AttributeSpecializationInterface $specialization) {
-                return $specialization->getName() === 'locale';
-            }))
+            ->with('locale')
             ->andReturn([
                 new AttributeGenericSpecializationContext('en_GB'),
                 new AttributeGenericSpecializationContext('de_DE'),
                 new AttributeGenericSpecializationContext('es_ES'),
                 new AttributeGenericSpecializationContext('jp_JP')
             ]);
-        $this->attributeSpecializationContextRegistry
-            ->shouldReceive('getContext')
-            ->with(m::on(function(AttributeSpecializationInterface $specialization) {
-                return $specialization->getName() === 'locale';
-            }))
-            ->andReturn(
-                new AttributeGenericSpecializationContext('de_DE')
-            );
 
         $this->attributeSpecializationContextRegistry
             ->shouldReceive('getContexts')
-            ->with(m::on(function(AttributeSpecializationInterface $specialization) {
-                return $specialization->getName() === 'price_identity';
-            }))
+            ->with('price_identity')
             ->andReturn([
                 new AttributeGenericSpecializationContext('jp_customer'),
                 new AttributeGenericSpecializationContext('uk_customer'),
                 new AttributeGenericSpecializationContext('euro_customer'),
             ]);
-        $this->attributeSpecializationContextRegistry
-            ->shouldReceive('getContext')
-            ->with(m::on(function(AttributeSpecializationInterface $specialization) {
-                return $specialization->getName() === 'price_identity';
-            }))
-            ->andReturn(
-                new AttributeGenericSpecializationContext('euro_customer')
-            );
 
         $this->attributeSpecializationContextRegistry
             ->shouldReceive('getContexts')
-            ->with(m::on(function(AttributeSpecializationInterface $specialization) {
-                return $specialization->getName() === 'stock_location';
-            }))
+            ->with('stock_location')
             ->andReturn([
                 new AttributeGenericSpecializationContext('eastern_warehouse'),
                 new AttributeGenericSpecializationContext('euro_warehouse')
             ]);
 
-        $this->attributeSpecializationContextRegistry
-            ->shouldReceive('getContext')
-            ->with(m::on(function(AttributeSpecializationInterface $specialization) {
-                return $specialization->getName() === 'stock_location';
-            }))
-            ->andReturn(
-                new AttributeGenericSpecializationContext('euro_warehouse')
-            );
-
         $this->contextFilter = new CompositeSpecializationContextGroupFilter();
 
         $this->attributeSpecializationContextGroupRegistry = new AttributeSpecializationContextGroupRegistry(
             $this->attributeSpecializationContextRegistry,
-            $this->contextFilter
+            $this->contextFilter,
+            $this->attributeSpecializationProvider
         );
     }
 
@@ -105,7 +81,6 @@ class AttributeSpecializationContextGroupRegistryTest extends MockeryTestCase
         );
 
         $this->assertEquals(4, count($contextGroups));
-
     }
 
     public function testGetAllAttributeSpecializationGroupsWithMultipleSpecializations()
@@ -132,32 +107,10 @@ class AttributeSpecializationContextGroupRegistryTest extends MockeryTestCase
         $this->contextFilter->addFilter($filter);
 
         $contextGroups = $this->attributeSpecializationContextGroupRegistry->getAllValidAttributeSpecializationContextGroups(
-            [$this->getSpecialization('locale'), $this->getSpecialization('price_identity')]
+            ['locale', 'price_identity']
         );
 
         $this->assertEquals(11, count($contextGroups));
-    }
-
-    public function testGetCurrentAttributeSpecializationGroupWithOneSpecialization()
-    {
-        $contextGroups = $this->attributeSpecializationContextGroupRegistry->getCurrentAttributeSpecializationContextGroup(
-            [$this->getSpecialization('locale')]
-        );
-
-        $key = json_encode(['locale' => 'de_DE']);
-
-        $this->assertEquals($key, $contextGroups->getKey());
-    }
-
-    public function testGetCurrentAttributeSpecializationGroupWithMultipleSpecializations()
-    {
-        $contextGroups = $this->attributeSpecializationContextGroupRegistry->getCurrentAttributeSpecializationContextGroup(
-            [$this->getSpecialization('price_identity'), $this->getSpecialization('stock_location')]
-        );
-
-        $key = json_encode(['price_identity' => 'euro_customer', 'stock_location' => 'euro_warehouse']);
-
-        $this->assertEquals($key, $contextGroups->getKey());
     }
 
     private function getSpecialization($key)

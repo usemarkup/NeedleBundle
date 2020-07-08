@@ -28,19 +28,12 @@ class FilterQueryLucenifierTest extends MockeryTestCase
         $this->valueLucenifier
             ->shouldReceive('lucenify')
             ->andReturn($lucenifiedValue);
-        $filterQuery = m::mock(FilterQueryInterface::class);
-        $filterQuery
-            ->shouldReceive('getSearchKey')
-            ->andReturn($filterKey);
         $filterValue = m::mock(FilterValueInterface::class)->shouldIgnoreMissing();
         $filterValue
             ->shouldReceive('getSearchValue')
             ->andReturn($value);
-        $filterQuery
-            ->shouldReceive('getFilterValue')
-            ->andReturn($filterValue);
         $expectedLucene = 'search:fortytwo';
-        $this->assertEquals($expectedLucene, $this->queryLucenifier->lucenify($filterQuery));
+        $this->assertEquals($expectedLucene, $this->queryLucenifier->lucenify($filterKey, $filterValue));
     }
 
     public function testLucenifyWithEmptyValue()
@@ -50,18 +43,11 @@ class FilterQueryLucenifierTest extends MockeryTestCase
         $this->valueLucenifier
             ->shouldReceive('lucenify')
             ->andReturn('');
-        $filterQuery = m::mock(FilterQueryInterface::class);
-        $filterQuery
-            ->shouldReceive('getSearchKey')
-            ->andReturn($filterKey);
         $filterValue = m::mock(FilterValueInterface::class)->shouldIgnoreMissing();
         $filterValue
             ->shouldReceive('getSearchValue')
             ->andReturn($value);
-        $filterQuery
-            ->shouldReceive('getFilterValue')
-            ->andReturn($filterValue);
         $expectedLucene = '-search:[* TO *]';
-        $this->assertEquals($expectedLucene, $this->queryLucenifier->lucenify($filterQuery));
+        $this->assertEquals($expectedLucene, $this->queryLucenifier->lucenify($filterKey, $filterValue));
     }
 }

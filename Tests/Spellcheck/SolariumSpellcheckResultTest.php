@@ -2,6 +2,7 @@
 
 namespace Markup\NeedleBundle\Tests\Spellcheck;
 
+use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Query\SimpleQueryInterface;
 use Markup\NeedleBundle\Spellcheck\SolariumSpellcheckResult;
 use Mockery as m;
@@ -24,7 +25,7 @@ class SolariumSpellcheckResultTest extends MockeryTestCase
             [],
             $this->correctlySpelled
         );
-        $this->query = m::mock(SimpleQueryInterface::class)->shouldIgnoreMissing();
+        $this->query = m::mock(ResolvedSelectQueryInterface::class)->shouldIgnoreMissing();
         $this->spellcheckResult = new SolariumSpellcheckResult($this->solariumResult, $this->query);
     }
 

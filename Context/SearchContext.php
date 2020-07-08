@@ -1,133 +1,196 @@
 <?php
+declare(strict_types=1);
 
 namespace Markup\NeedleBundle\Context;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Boost\BoostQueryFieldInterface;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Collator\NullCollatorProvider;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
+use Markup\NeedleBundle\Facet\NullFacetSetDecoratorProvider;
 use Markup\NeedleBundle\Facet\NullSortOrderProvider;
+use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
+use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Intercept\InterceptorInterface;
 use Markup\NeedleBundle\Intercept\NullInterceptor;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
-use Markup\NeedleBundle\Sort\EmptySortCollection;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
- * A context for searches, providing information that can determine how searches display, which is agnostic of search engine implementations.
+ * A context for searches
+ *
+ * This provides the same information as DefaultContextInterface but with scalars converted to Attribute objects
  */
 class SearchContext implements SearchContextInterface
 {
     /**
-     * @var int
-     **/
+     * @var int|null
+     */
     private $itemsPerPage;
 
     /**
-     * @param int $itemsPerPage
-     **/
-    public function __construct($itemsPerPage)
-    {
+     * @var array
+     */
+    private $facets;
+
+    /**
+     * @var array
+     */
+    private $defaultFilterQueries;
+
+    /**
+     * @var SortCollectionInterface
+     */
+    private $defaultSortCollection;
+
+    /**
+     * @var bool
+     */
+    private $facetIgnoresFilters;
+
+    /**
+     * @var CollatorProviderInterface
+     */
+    private $facetCollatorProvider;
+
+    /**
+     * @var FacetSetDecoratorProviderInterface
+     */
+    private $facetSetDecoratorProvider;
+
+    /**
+     * @var array
+     */
+    private $boostQueryFields;
+
+    public function __construct(
+        ?int $itemsPerPage,
+        array $facets,
+        array $defaultFilterQueries,
+        SortCollectionInterface $defaultSortCollection,
+        array $boosts,
+        bool $facetIgnoresFilters,
+        ?CollatorProviderInterface $facetCollatorProvider,
+        ?FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
+    ) {
+        foreach ($facets as $facet) {
+            if (!$facet instanceof AttributeInterface) {
+                throw new \InvalidArgumentException('$facets is expected to be an array of AttributeInterface');
+            }
+        }
+        foreach ($defaultFilterQueries as $filter) {
+            if (!$filter instanceof FilterQueryInterface) {
+                throw new \InvalidArgumentException('$filter is expected to be an array of FilterQueryInterface');
+            }
+        }
+        foreach ($boosts as $boost) {
+            if (!$boost instanceof BoostQueryFieldInterface) {
+                throw new \InvalidArgumentException('$boosts is expected to be an array of BoostQueryFieldInterface');
+            }
+        }
+
         $this->itemsPerPage = $itemsPerPage;
+        $this->facets = $facets;
+        $this->defaultFilterQueries = $defaultFilterQueries;
+        $this->defaultSortCollection = $defaultSortCollection;
+        $this->facetIgnoresFilters = $facetIgnoresFilters;
+        $this->facetCollatorProvider = $facetCollatorProvider ?? new NullCollatorProvider();
+        $this->facetSetDecoratorProvider = $facetSetDecoratorProvider ?? new NullFacetSetDecoratorProvider();
+        $this->boostQueryFields = $boosts;
     }
 
     /**
-     * Gets the number of items to be used on a page.
-     *
-     * @return int
-     **/
-    public function getItemsPerPage()
+     * @inheritDoc
+     */
+    public function getItemsPerPage(): ?int
     {
         return $this->itemsPerPage;
     }
 
     /**
-     * Gets the set of facets that should be requested with this context.
-     *
-     * @return \Markup\NeedleBundle\Attribute\AttributeInterface[]
-     **/
-    public function getFacets()
+     * @inheritDoc
+     */
+    public function getDefaultFacets(): array
     {
-        return [];
+        return $this->facets;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getDefaultFilterQueries()
+    public function getDefaultFilterQueries(): array
     {
-        return [];
+        return $this->defaultFilterQueries;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getDefaultSortCollectionForQuery(SelectQueryInterface $query)
+    public function getDefaultSortCollectionForQuery(): SortCollectionInterface
     {
-        return new EmptySortCollection();
+        return $this->defaultSortCollection;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet)
+    public function getFacetSetDecoratorProvider(): FacetSetDecoratorProviderInterface
     {
-        return false;
+        return $this->facetSetDecoratorProvider;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getSetDecoratorForFacet(AttributeInterface $facet)
+    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet): bool
     {
-        return null;
+        return $this->facetIgnoresFilters;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getAvailableFilterNames()
+    public function getBoostQueryFields(): array
     {
-        return [];
+        return $this->boostQueryFields;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getBoostQueryFields()
+    public function getFacetCollatorProvider(): CollatorProviderInterface
     {
-        return [];
+        return $this->facetCollatorProvider;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getFacetCollatorProvider()
-    {
-        return new NullCollatorProvider();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFacetSortOrderProvider()
+    public function getFacetSortOrderProvider(): SortOrderProviderInterface
     {
         return new NullSortOrderProvider();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function getInterceptor()
+    public function getInterceptor(): InterceptorInterface
     {
         return new NullInterceptor();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function shouldRequestFacetValueForMissing()
+    public function shouldRequestFacetValueForMissing(): bool
     {
         return false;
     }
 
-    public function shouldUseFuzzyMatching()
+    /**
+     * @inheritDoc
+     */
+    public function shouldUseFuzzyMatching(): bool
     {
         return false;
     }

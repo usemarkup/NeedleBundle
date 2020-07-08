@@ -237,7 +237,6 @@ class MarkupNeedleExtension extends Extension
                 ConfiguredContextProvider::class,
                 [
                     new Reference($prefix.'filter_provider'),
-                    new Reference($prefix.'facet_provider'),
                     new Reference($prefix.'facet_set_decorator_provider'),
                     new Reference($prefix.'facet_collator_provider'),
                     new Reference($prefix.'facet_order_provider'),

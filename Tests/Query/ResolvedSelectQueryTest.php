@@ -51,7 +51,7 @@ class ResolvedSelectQueryTest extends MockeryTestCase
         $sortCollection->add(new Sort(new Attribute('weight')));
         $sortCollection->add(new Sort(new Attribute('on_sale')));
 
-        $this->query->shouldReceive('hasSortCollection')->andReturn(null);
+        $this->query->shouldReceive('hasSortCollection')->andReturn(false);
         $this->context->shouldReceive('getDefaultSortCollectionForQuery')->andReturn($sortCollection);
 
         $query = new ResolvedSelectQuery($this->query, $this->context);
@@ -102,10 +102,5 @@ class ResolvedSelectQueryTest extends MockeryTestCase
             ->shouldReceive('shouldUseFuzzyMatching')
             ->andReturn(true);
         $this->assertTrue((new ResolvedSelectQuery($this->query, $this->context))->shouldUseFuzzyMatching());
-    }
-
-    public function testGetOriginalSelectQuery()
-    {
-        $this->assertSame($this->query, (new ResolvedSelectQuery($this->query))->getOriginalSelectQuery());
     }
 }

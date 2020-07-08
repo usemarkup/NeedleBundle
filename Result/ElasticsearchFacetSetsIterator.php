@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Markup\NeedleBundle\Result;
 
-use Markup\NeedleBundle\Attribute\AttributeProvidesValueDisplayStrategyInterface;
+use Markup\NeedleBundle\Attribute\AttributeValueOptionsInterface;
 use Markup\NeedleBundle\Collator\CollatorInterface;
-use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Facet\ArbitraryCompositeFacetInterface;
 use Markup\NeedleBundle\Facet\CompositeFacetSetIterator;
 use Markup\NeedleBundle\Facet\FacetSet;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\FilterNonUnionValuesFacetSetDecorator;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 
@@ -29,11 +30,6 @@ class ElasticsearchFacetSetsIterator implements \OuterIterator
     private $facetsKeyedBySearchKey;
 
     /**
-     * @var SearchContextInterface
-     */
-    private $searchContext;
-
-    /**
      * @var SelectQueryInterface|null
      */
     private $originalQuery;
@@ -45,21 +41,34 @@ class ElasticsearchFacetSetsIterator implements \OuterIterator
      **/
     private $subIterator;
 
+    /**
+     * @var CollatorProviderInterface
+     */
+    private $collatorProvider;
+
+    /**
+     * @var FacetSetDecoratorProviderInterface
+     */
+    private $facetSetDecoratorProvider;
+
     public function __construct(
         array $aggregationsData,
-        SearchContextInterface $searchContext,
+        array $facets,
+        CollatorProviderInterface $collatorProvider,
+        FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
         ?SelectQueryInterface $originalQuery = null
     ) {
         $this->aggregationsIterator = new NonEmptyFacetSetFilterIterator(new \ArrayIterator($aggregationsData));
-        $this->searchContext = $searchContext;
         $this->originalQuery = $originalQuery;
-        $this->setFacetsKeyedBySearchKey($searchContext);
+        $this->setFacetsKeyedBySearchKey($facets);
+        $this->collatorProvider = $collatorProvider;
+        $this->facetSetDecoratorProvider = $facetSetDecoratorProvider;
     }
 
-    private function setFacetsKeyedBySearchKey(SearchContextInterface $context)
+    private function setFacetsKeyedBySearchKey(array $facets)
     {
         $this->facetsKeyedBySearchKey = [];
-        foreach ($context->getFacets() as $facet) {
+        foreach ($facets as $facet) {
             $this->facetsKeyedBySearchKey[$facet->getName()] = $facet;
         }
     }
@@ -111,7 +120,8 @@ class ElasticsearchFacetSetsIterator implements \OuterIterator
         $nonCombinedDecorator = new FilterNonUnionValuesFacetSetDecorator($this->originalQuery);
         $facetSet = $nonCombinedDecorator->decorate($facetSet);
         //there may be a configured decorator for this facet set
-        $facetSetDecorator = $this->getSearchContext()->getSetDecoratorForFacet($this->getCurrentFacet());
+        $facetSetDecorator = $this->facetSetDecoratorProvider->getDecoratorForFacet($this->getCurrentFacet());
+
         if ($facetSetDecorator) {
             $facetSet = $facetSetDecorator->decorate($facetSet);
         }
@@ -156,23 +166,17 @@ class ElasticsearchFacetSetsIterator implements \OuterIterator
      **/
     private function getCurrentCollator(): ?CollatorInterface
     {
-        return $this->getCollatorProvider()->getCollatorForKey($this->getInnerIterator()->key());
-    }
-
-    private function getCollatorProvider()
-    {
-        return $this->getSearchContext()->getFacetCollatorProvider();
-    }
-
-    private function getSearchContext(): SearchContextInterface
-    {
-        return $this->searchContext;
+        return $this->collatorProvider->getCollatorForKey($this->getInnerIterator()->key());
     }
 
     private function getViewDisplayStrategy(): ?\Closure
     {
-        return ($this->getCurrentFacet() instanceof AttributeProvidesValueDisplayStrategyInterface)
-            ? $this->getCurrentFacet()->getValueDisplayStrategy()
-            : null;
+        $facet = $this->getCurrentFacet();
+
+        if ($facet instanceof AttributeValueOptionsInterface && $facet->shouldCanonicalizeDisplayValue()) {
+            throw new \BadMethodCallException('not implemented');
+        }
+
+        return null;
     }
 }

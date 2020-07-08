@@ -2,14 +2,17 @@
 
 namespace Markup\NeedleBundle\Result;
 
-use Markup\NeedleBundle\Attribute\AttributeProvidesValueDisplayStrategyInterface;
+use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Attribute\AttributeValueOptionsInterface;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Context\SearchContextInterface as SearchContext;
 use Markup\NeedleBundle\Facet\ArbitraryCompositeFacetInterface;
 use Markup\NeedleBundle\Facet\CompositeFacetSetIterator;
 use Markup\NeedleBundle\Facet\FacetSet;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
+use Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface;
 use Markup\NeedleBundle\Facet\FilterNonUnionValuesFacetSetDecorator;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
-use Solarium\QueryType\Select\Result\Facet\Field as SolariumFacetField;
 use Solarium\QueryType\Select\Result\FacetSet as SolariumFacetSet;
 
 /**
@@ -30,11 +33,6 @@ class SolariumFacetSetsIterator implements \OuterIterator
     private $facetsKeyedBySearchKey;
 
     /**
-     * @var SearchContext
-     **/
-    private $searchContext;
-
-    /**
      * @var SelectQueryInterface|null
      */
     private $originalQuery;
@@ -46,18 +44,43 @@ class SolariumFacetSetsIterator implements \OuterIterator
      **/
     private $subIterator;
 
-    public function __construct(SolariumFacetSet $facetSet, SearchContext $searchContext, SelectQueryInterface $originalQuery = null)
-    {
-        $this->solariumFacetSetsIterator = new NonEmptyFacetSetFilterIterator(new \ArrayIterator($this->normalizeFacetData($facetSet)));
-        $this->searchContext = $searchContext;
+    /**
+     * @var FacetValueCanonicalizerInterface
+     */
+    private $facetValueCanonicalizer;
+
+    /**
+     * @var CollatorProviderInterface
+     */
+    private $collatorProvider;
+
+    /**
+     * @var FacetSetDecoratorProviderInterface
+     */
+    private $facetSetDecoratorProvider;
+
+    public function __construct(
+        FacetValueCanonicalizerInterface $facetValueCanonicalizer,
+        SolariumFacetSet $facetSet,
+        array $facets,
+        CollatorProviderInterface $collatorProvider,
+        FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
+        SelectQueryInterface $originalQuery = null
+    ) {
+        $this->solariumFacetSetsIterator = new NonEmptyFacetSetFilterIterator(
+            new \ArrayIterator($this->normalizeFacetData($facetSet))
+        );
         $this->originalQuery = $originalQuery;
-        $this->setFacetsKeyedBySearchKey($searchContext);
+        $this->setFacetsKeyedBySearchKey($facets);
+        $this->facetValueCanonicalizer = $facetValueCanonicalizer;
+        $this->collatorProvider = $collatorProvider;
+        $this->facetSetDecoratorProvider = $facetSetDecoratorProvider;
     }
 
-    private function setFacetsKeyedBySearchKey(SearchContext $context)
+    private function setFacetsKeyedBySearchKey(array $facets)
     {
         $this->facetsKeyedBySearchKey = [];
-        foreach ($context->getFacets() as $facet) {
+        foreach ($facets as $facet) {
             $this->facetsKeyedBySearchKey[$facet->getSearchKey()] = $facet;
         }
     }
@@ -110,11 +133,16 @@ class SolariumFacetSetsIterator implements \OuterIterator
                 );
             }
         }
-        //add a decorator to filter out values that don't match combined filter values, in cases where they exist
-        $nonCombinedDecorator = new FilterNonUnionValuesFacetSetDecorator($this->originalQuery);
-        $facetSet = $nonCombinedDecorator->decorate($facetSet);
+        // add a decorator to filter out values that don't match combined filter values, in cases where they exist
+        // I've removed this for now as it seems this exists to solve a problem where you are faceting on a field
+        // that was defined in the 'original' query. This isn't something we care about right now as you cannot
+        // facet on the same attributes used in base queries
+        // $nonCombinedDecorator = new FilterNonUnionValuesFacetSetDecorator($this->originalQuery);
+        // $facetSet = $nonCombinedDecorator->decorate($facetSet);
+
         //there may be a configured decorator for this facet set
-        $facetSetDecorator = $this->getSearchContext()->getSetDecoratorForFacet($this->getCurrentFacet());
+        $facetSetDecorator = $this->facetSetDecoratorProvider->getDecoratorForFacet($this->getCurrentFacet());
+
         if ($facetSetDecorator) {
             $facetSet = $facetSetDecorator->decorate($facetSet);
         }
@@ -134,12 +162,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
      **/
     private function getCurrentCollator()
     {
-        return $this->getCollatorProvider()->getCollatorForKey($this->getInnerIterator()->key());
-    }
-
-    private function getCollatorProvider()
-    {
-        return $this->getSearchContext()->getFacetCollatorProvider();
+        return $this->collatorProvider->getCollatorForKey($this->getInnerIterator()->key());
     }
 
     public function next()
@@ -176,15 +199,8 @@ class SolariumFacetSetsIterator implements \OuterIterator
         $facets = iterator_to_array($facetSet);
         $normalizedFacets = [];
         foreach ($facets as $name => $facet) {
-            //check for includes and excludes
-            if (substr($name, 0, 7) == 'include' && isset($facets['exclude_'.substr($name, 8)])) {
-                $normalizedFacets[substr($name, 8)] = $this->combineFacetValueFieldWithCountField($facets['exclude_'.substr($name, 8)], $facet);
-                continue;
-            }
-            if (substr($name, 0, 7) == 'exclude' && isset($facets['include_'.substr($name, 8)])) {
-                continue;
-            }
-            //just copy down (default action)
+            $name = str_replace('facet_', '', $name);
+
             $normalizedFacets[$name] = $facet;
         }
 
@@ -192,41 +208,22 @@ class SolariumFacetSetsIterator implements \OuterIterator
     }
 
     /**
-     * @param SolariumFacetField $valueField
-     * @param SolariumFacetField $countField
-     *
-     * @return array
-     **/
-    private function combineFacetValueFieldWithCountField(SolariumFacetField $valueField, SolariumFacetField $countField)
-    {
-        $facetValues = [];
-        $counts = iterator_to_array($countField);
-        foreach ($valueField as $value => $count) {
-            if (!isset($counts[$value])) {
-                $facetValues[$value] = 0;
-                continue;
-            }
-            $facetValues[$value] = $counts[$value];
-        }
-
-        return $facetValues;
-    }
-
-    /**
-     * @return SearchContext
-     **/
-    private function getSearchContext()
-    {
-        return $this->searchContext;
-    }
-
-    /**
      * @return \Closure|null
      */
     private function getViewDisplayStrategy()
     {
-        return ($this->getCurrentFacet() instanceof AttributeProvidesValueDisplayStrategyInterface)
-            ? $this->getCurrentFacet()->getValueDisplayStrategy()
-            : null;
+        $facet = $this->getCurrentFacet();
+
+        if ($facet instanceof AttributeValueOptionsInterface && !$facet->shouldCanonicalizeDisplayValue()) {
+            return null;
+        }
+
+        if (!$facet instanceof AttributeInterface) {
+            return null;
+        }
+
+        return function (string $value) use ($facet): string {
+            return $this->facetValueCanonicalizer->canonicalizeForFacet($value, $facet);
+        };
     }
 }

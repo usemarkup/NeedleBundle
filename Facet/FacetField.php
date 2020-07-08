@@ -45,7 +45,7 @@ class FacetField implements AttributeInterface
     /**
      * @return AttributeInterface
      **/
-    private function getFilter()
+    public function getFilter()
     {
         return $this->filter;
     }

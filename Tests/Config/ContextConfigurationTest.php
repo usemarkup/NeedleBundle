@@ -28,15 +28,6 @@ class ContextConfigurationTest extends TestCase
         $this->assertEquals([], $config->getDefaultFilterQueries());
     }
 
-    public function testEmptyConfigGivesDefaultSearchTermSortsAsRelevanceDescending()
-    {
-        $config = new ContextConfiguration();
-        $this->assertEquals(
-            [ContextConfigurationInterface::SORT_RELEVANCE => ContextConfigurationInterface::ORDER_DESC],
-            $config->getDefaultSortsForSearchTermQuery()
-        );
-    }
-
     public function testEmptyConfigGivesDefaultNonSearchTermsSortsAsEmpty()
     {
         $config = new ContextConfiguration();
@@ -61,12 +52,6 @@ class ContextConfigurationTest extends TestCase
         $this->assertEquals([], $config->getIntercepts());
     }
 
-    public function testEmptyConfigGivesEmptyFilterAttributesList()
-    {
-        $config = new ContextConfiguration();
-        $this->assertEquals([], $config->getFilterableAttributes());
-    }
-
     public function testEmptyConfigMeansShouldNotIgnoreCurrentFilteredAttributesInFaceting()
     {
         $config = new ContextConfiguration();
@@ -85,20 +70,11 @@ class ContextConfigurationTest extends TestCase
         $this->assertEquals(['active' => true, 'in_stock' => true], $config->getDefaultFilterQueries());
     }
 
-    public function testFullConfigGivesSortsForSearchTermsFromFallback()
-    {
-        $config = $this->createFullConfig();
-        $this->assertEquals(
-            ['name' => ContextConfigurationInterface::ORDER_ASC, 'price' => ContextConfigurationInterface::ORDER_DESC],
-            $config->getDefaultSortsForSearchTermQuery()
-        );
-    }
-
     public function testFullConfigGivesSortsForNonSearchTerm()
     {
         $config = $this->createFullConfig();
         $this->assertEquals(
-            ['velocity' => ContextConfigurationInterface::ORDER_DESC],
+            ['name' => ContextConfigurationInterface::ORDER_ASC, 'price' => ContextConfigurationInterface::ORDER_DESC],
             $config->getDefaultSortsForNonSearchTermQuery()
         );
     }
@@ -138,12 +114,6 @@ class ContextConfigurationTest extends TestCase
         );
     }
 
-    public function testFullConfigGivesFilterableAttributes()
-    {
-        $config = $this->createFullConfig();
-        $this->assertEquals(['gender', 'color', 'size', 'on_sale'], $config->getFilterableAttributes());
-    }
-
     public function testFullConfigGivesShouldIgnoreCurrentFiltersInFaceting()
     {
         $config = $this->createFullConfig();
@@ -165,7 +135,6 @@ class ContextConfigurationTest extends TestCase
             'items_per_page' => 12,
             'base_filter_queries' => ['active' => true, 'in_stock' => true],
             'sorts' => ['name' => ContextConfigurationInterface::ORDER_ASC, 'price' => ContextConfigurationInterface::ORDER_DESC],
-            'sorts_non_search_term' => ['velocity' => ContextConfigurationInterface::ORDER_DESC],
             'boosts' => ['name' => 5, 'category' => 0.4],
             'facets' => ['gender', 'category', 'price'],
             'intercepts' => [
@@ -183,7 +152,6 @@ class ContextConfigurationTest extends TestCase
                     ],
                 ],
             ],
-            'filters' => ['gender', 'color', 'size', 'on_sale'],
             'should_ignore_current_filters_in_faceting' => true,
             'should_use_fuzzy_matching' => true,
         ];
