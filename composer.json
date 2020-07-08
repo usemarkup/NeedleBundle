@@ -1,6 +1,6 @@
 {
     "name": "markup/needle-bundle",
-    "description": "A Symfony bundle for search. Defines a standard search query builder (including filters and faceting), and integrates with different backends (currently Solr/Solarium).",
+    "description": "A Symfony bundle for search. Defines a standard search query builder (including filters and faceting), and integrates with different backends (currently Solr and Elastic).",
     "keywords": ["search", "faceting", "solr"],
     "type": "symfony-bundle",
     "license": "MIT",
@@ -8,6 +8,10 @@
         {
             "name": "Douglas Greenshields",
             "email": "douglas@usemarkup.com"
+        },
+        {
+            "name": "Calum Brodie",
+            "email": "calum@usemarkup.com"
         },
         {
             "name": "Markup",
