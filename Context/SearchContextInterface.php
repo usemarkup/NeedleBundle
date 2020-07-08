@@ -3,105 +3,61 @@
 namespace Markup\NeedleBundle\Context;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
+use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
+use Markup\NeedleBundle\Intercept\InterceptorInterface;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
- * An interface for contexts for search engines.  This includes any contextual factors that are concerned with the nature of search results, and that are agnostic of the actual search engine implementation.
+ * An interface for contexts for search engines.  This includes any contextual factors that are
+ * concerned with the nature of search results, and that are agnostic of the actual search engine implementation.
  **/
 interface SearchContextInterface
 {
-    /**
-     * Gets the number of items that should be shown per page in a paged view.  Returns null if no constraint on numbers exists.
-     *
-     * @return int|null
-     **/
-    public function getItemsPerPage();
+    public function getItemsPerPage(): ?int;
 
     /**
-     * Gets the set of facets to apply to the search.
+     * Gets the set of facets to return
      *
      * @return \Markup\NeedleBundle\Attribute\AttributeInterface[]
      **/
-    public function getFacets();
+    public function getDefaultFacets(): array;
 
     /**
      * Gets the default filters to be applied to any search with this context.
      *
      * @return \Markup\NeedleBundle\Filter\FilterQueryInterface[]
      **/
-    public function getDefaultFilterQueries();
+    public function getDefaultFilterQueries(): array;
 
     /**
-     * Gets the default sort collection to be applied to a query using this context.
-     *
-     * @param SelectQueryInterface $query
-     *
      * @return \Markup\NeedleBundle\Sort\SortCollectionInterface
      **/
-    public function getDefaultSortCollectionForQuery(SelectQueryInterface $query);
+    public function getDefaultSortCollectionForQuery(): SortCollectionInterface;
+
+    public function getFacetSetDecoratorProvider(): FacetSetDecoratorProviderInterface;
 
     /**
-     * Gets the facet set decorator to apply for a specific facet. (This can determine how a facet set renders.) Returns null if no decoration to be applied.
-     *
-     * @param  AttributeInterface                                         $facet
-     * @return \Markup\NeedleBundle\Facet\FacetSetDecoratorInterface|null
-     **/
-    public function getSetDecoratorForFacet(AttributeInterface $facet);
-
-    /**
-     * Gets whether the given facet that is being displayed should ignore any corresponding filter values that are currently selected (true), or whether they should just reflect the returned results (false).
+     * Gets whether the given facet that is being displayed should ignore any corresponding filter values that are
+     * currently selected (true), or whether they should just reflect the returned results (false).
      *
      * @param  AttributeInterface $facet
      * @return bool
      **/
-    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet);
+    public function getWhetherFacetIgnoresCurrentFilters(AttributeInterface $facet): bool;
 
-    /**
-     * Gets a list of available filter names that a userland query using this context can filter on.
-     *
-     * @return array
-     **/
-    public function getAvailableFilterNames();
+    public function getBoostQueryFields(): array;
 
-    /**
-     * Gets the set of boost query fields that should be defined against this query.
-     *
-     * @return array
-     **/
-    public function getBoostQueryFields();
+    // the collator sorts facets _after_ they come back from solr
+    public function getFacetCollatorProvider(): CollatorProviderInterface;
 
-    /**
-     * Gets a provider object for collator (sorter) objects that can collate facet values.  May return null if no userland sorting of values should be done.
-     *
-     * @return \Markup\NeedleBundle\Collator\CollatorProviderInterface
-     **/
-    public function getFacetCollatorProvider();
+    // facet sort order provider provides an argument that sorts facets _within_ solr (i.e it affects the query)
+    public function getFacetSortOrderProvider(): SortOrderProviderInterface;
 
-    /**
-     * Gets a signifier for the sort order to use for sorting of facet values within the search engine itself (i.e. not within the web application).
-     *
-     * @return \Markup\NeedleBundle\Facet\SortOrderProviderInterface
-     **/
-    public function getFacetSortOrderProvider();
+    public function getInterceptor(): InterceptorInterface;
 
-    /**
-     * Gets an interceptor object that can intercept a lookup on a backend and provide redirects to specific places.
-     *
-     * @return \Markup\NeedleBundle\Intercept\InterceptorInterface
-     **/
-    public function getInterceptor();
+    public function shouldRequestFacetValueForMissing(): bool;
 
-    /**
-     * Gets whether a query should request facet values for missing (i.e. no match on that facet)
-     *
-     * @return bool
-     **/
-    public function shouldRequestFacetValueForMissing();
-
-    /**
-     * Gets whether a search backend using this context should use fuzzy matching on search terms if this functionality is available.
-     *
-     * @return bool
-     */
-    public function shouldUseFuzzyMatching();
+    public function shouldUseFuzzyMatching(): bool;
 }

@@ -1,8 +1,7 @@
 <?php
+declare(strict_types=1);
 
 namespace Markup\NeedleBundle\Attribute;
-
-use Markup\NeedleBundle\Exception\IllegalContextValueException;
 
 /**
  * An implementation that attempts to turn the passed variable into a string using a few simple strategies
@@ -10,14 +9,11 @@ use Markup\NeedleBundle\Exception\IllegalContextValueException;
 class AttributeGenericSpecializationContext implements AttributeSpecializationContextInterface
 {
     /**
-     * @var mixed
+     * @var string
      */
     private $data;
 
-    /**
-     * @param mixed $data
-     */
-    public function __construct($data)
+    public function __construct(string $data)
     {
         $this->data = $data;
     }
@@ -25,23 +21,9 @@ class AttributeGenericSpecializationContext implements AttributeSpecializationCo
     /**
      * {@inheritDoc}
      */
-    public function getValue()
+    public function getValue(): string
     {
-        if (is_string($this->data) || is_numeric($this->data)) {
-            return (string) $this->data;
-        }
-        if (is_object($this->data)) {
-            if (method_exists($this->data, 'getKey')) {
-                return $this->data->getKey();
-            }
-            if (method_exists($this->data, 'getName')) {
-                return $this->data->getName();
-            }
-            if (method_exists($this->data, 'getValue')) {
-                return $this->data->getValue();
-            }
-        }
-        throw new IllegalContextValueException($this->data, 'Cannot get a value for the given data');
+        return $this->data;
     }
 
     /**

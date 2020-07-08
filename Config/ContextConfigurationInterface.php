@@ -30,15 +30,6 @@ interface ContextConfigurationInterface
     public function getDefaultFilterQueries();
 
     /**
-     * Gets the default sort stack to use for queries that use a search term, with order indicators given
-     *
-     * example: [ { 'relevance' => 'asc' }, { 'price' => 'desc' } ]
-     *
-     * @return array
-     */
-    public function getDefaultSortsForSearchTermQuery();
-
-    /**
      * Gets the default sort stack to use for queries that do not use a search term, with order indicators given
      *
      * example: [ { 'name' => 'asc' }, { 'price' => 'desc' } ]
@@ -78,16 +69,6 @@ interface ContextConfigurationInterface
     public function getIntercepts();
 
     /**
-     * Gets a list of attributes that can be used for userland filtering.  It only makes sense for any available facets
-     * to be taken from this list.
-     *
-     * example: [ 'gender', 'size', 'on_sale' ]
-     *
-     * @return array
-     */
-    public function getFilterableAttributes();
-
-    /**
      * Gets whether any attributes that are currently being filtered on in a userland query should be ignored in the faceting.
      *
      * @return bool
@@ -100,4 +81,4 @@ interface ContextConfigurationInterface
      * @return bool
      */
     public function shouldUseFuzzyMatching();
-} 
+}

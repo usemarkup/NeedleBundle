@@ -10,7 +10,8 @@ use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
 interface ResultInterface extends \Countable, \IteratorAggregate
 {
     /*
-     * The inherited count method (from \Countable) returns the total result count, as it is not usually useful to know explicitly how many documents are present in a paged result.
+     * The inherited count method (from \Countable) returns the total result count
+     * as it is not usually useful to know explicitly how many documents are present in a paged result.
      */
 
     /**
@@ -18,7 +19,7 @@ interface ResultInterface extends \Countable, \IteratorAggregate
      *
      * @return int
      **/
-    public function getTotalCount();
+    public function getNbResults();
 
     /**
      * Gets the time of the search query in milliseconds.
@@ -32,19 +33,20 @@ interface ResultInterface extends \Countable, \IteratorAggregate
      *
      * @return int
      **/
-    public function getTotalPageCount();
+    public function getNbPages();
 
     /**
      * @return int
      **/
-    public function getCurrentPageNumber();
+    public function getCurrentPage();
 
     /**
-     * Gets whether there are a sufficient number of result documents to paginate this result (i.e. the number is greater than the max number to show per page).
+     * Gets whether there are a sufficient number of result documents to paginate this result
+     * (i.e. the number is greater than the max number to show per page).
      *
      * @return bool
      **/
-    public function isPaginated();
+    public function haveToPaginate();
 
     /**
      * Gets whether there is a page previous to the page currently being shown.
@@ -59,7 +61,7 @@ interface ResultInterface extends \Countable, \IteratorAggregate
      * @return int
      * @throws PageDoesNotExistException if there is no previous page
      **/
-    public function getPreviousPageNumber();
+    public function getPreviousPage();
 
     /**
      * Gets whether there is a page after the page currently being shown.
@@ -74,7 +76,7 @@ interface ResultInterface extends \Countable, \IteratorAggregate
      * @return int
      * @throws PageDoesNotExistException if there is no next page
      **/
-    public function getNextPageNumber();
+    public function getNextPage();
 
     /**
      * Gets the facet sets that are returned with this result.
@@ -98,9 +100,19 @@ interface ResultInterface extends \Countable, \IteratorAggregate
     public function hasDebugOutput();
 
     /**
-     * Gets any debug output that could be displayed for this result - likely to be in HTML format, but this interface does not specify.  Returns null if there is no info to output.
+     * Gets any debug output that could be displayed for this result - likely to be in HTML format
+     * but this interface does not specify.  Returns null if there is no info to output.
      *
      * @return string|null
      **/
     public function getDebugOutput();
+
+    /**
+     * A mapping hash can be used to read values against the result where the eventual key with the document is unknown
+     * (e.g for specialized attributes)
+     */
+    public function getMappingHashForFields(): array;
+
+    public function getMaxPerPage(): int;
+
 }

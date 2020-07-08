@@ -5,7 +5,7 @@ namespace Markup\NeedleBundle\Attribute;
 /**
  * An attribute implementation that allows a different name to the key.
  */
-class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStrategyInterface
+class Attribute implements AttributeInterface, AttributeValueOptionsInterface
 {
     /**
      * The name for the attribute.
@@ -29,26 +29,20 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
     private $displayName;
 
     /**
-     * The value display strategy for the attribute.
-     *
-     * @var callable
+     * @var bool
      */
-    private $valueDisplayStrategy;
+    private $shouldCanonicalizeDisplayValue;
 
-    /**
-     * @param string   $name
-     * @param string   $key
-     * @param string   $displayName
-     * @param callable $valueDisplayStrategy
-     **/
-    public function __construct($name, $key = null, $displayName = null, callable $valueDisplayStrategy = null)
-    {
+    public function __construct(
+        string $name,
+        string $key = null,
+        string $displayName = null,
+        bool $shouldCanonicalizeDisplayValue = false
+    ) {
         $this->name = $name;
         $this->key = $key ?: $name;
         $this->displayName = $displayName ?: ucfirst(str_replace('_', ' ', $name));
-        $this->valueDisplayStrategy = $valueDisplayStrategy ?: function ($value) {
-            return $value;
-        };
+        $this->shouldCanonicalizeDisplayValue = $shouldCanonicalizeDisplayValue;
     }
 
     public function getName()
@@ -76,13 +70,8 @@ class Attribute implements AttributeInterface, AttributeProvidesValueDisplayStra
         return $this->getDisplayName();
     }
 
-    /**
-     * Gets a display strategy closure which takes a value as a parameter and emits a displayable value.
-     *
-     * @return callable
-     */
-    public function getValueDisplayStrategy()
+    public function shouldCanonicalizeDisplayValue(): bool
     {
-        return $this->valueDisplayStrategy;
+        return $this->shouldCanonicalizeDisplayValue;
     }
 }

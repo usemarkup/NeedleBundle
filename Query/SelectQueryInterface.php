@@ -2,10 +2,9 @@
 
 namespace Markup\NeedleBundle\Query;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
-use Markup\NeedleBundle\Service\SearchServiceInterface as SearchService;
+use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Markup\NeedleBundle\Spellcheck\SpellcheckInterface;
 
 /**
@@ -13,80 +12,31 @@ use Markup\NeedleBundle\Spellcheck\SpellcheckInterface;
  **/
 interface SelectQueryInterface extends SimpleQueryInterface
 {
-    /**
-     * Gets the filters that apply to this query.
-     *
-     * @return FilterQueryInterface[]
-     **/
     public function getFilterQueries(): array;
 
-    /**
-     * Gets whether this query contains filter queries.
-     *
-     * @return bool
-     **/
-    public function hasFilterQueries();
+    public function hasFilterQueries(): bool;
 
-    /**
-     * Gets a list of explicit field names and/or attributes on the backend to return.
-     * If empty, will not specify fields on any backend.
-     *
-     * @return string[]|AttributeInterface[]
-     */
-    public function getFields();
+    public function getFacets(): ?array;
 
-    /**
-     * Gets the page number of results being requested, if specified. Returns null if not specified.
-     *
-     * @return int|null
-     **/
-    public function getPageNumber();
+    public function hasFacets(): bool;
 
-    /**
-     * Gets the max number of results to return per page. Returns null if not specified.
-     * @return integer|null
-     */
-    public function getMaxPerPage();
+    public function getFields(): array;
 
-    /**
-     * Gets the sort collection used by this query.
-     *
-     * @return \Markup\NeedleBundle\Sort\SortCollectionInterface
-     **/
-    public function getSortCollection();
+    public function getPageNumber(): ?int;
 
-    /**
-     * Gets whether the query has a (non-empty) sort collection.
-     *
-     * @return bool
-     **/
-    public function hasSortCollection();
+    public function getMaxPerPage(): ?int;
+
+    public function getSortCollection(): ?SortCollectionInterface;
+
+    public function hasSortCollection(): bool;
 
     /**
      * Gets certain attribute names should not be faceted on for this query.
      *
-     * @return string[]
+     * @return array|AttributeInterface[]
+     * @deprecated
      **/
-    public function getFacetNamesToExclude();
-
-    /**
-     * Gets the result of the query.
-     *
-     * @return object (Result class)
-     **/
-    public function getResult();
-
-    /**
-     * Gets the result of the query as a promise.
-     *
-     * @return PromiseInterface
-     */
-    public function getResultAsync();
-
-    /**
-     * @param SearchService $service
-     **/
-    public function setSearchService(SearchService $service);
+    public function getFacetsToExclude(): array;
 
     /**
      * Gets the filter query keyed with the passed string. Returns null if no filter query matching the key.
@@ -94,7 +44,7 @@ interface SelectQueryInterface extends SimpleQueryInterface
      * @param string $key The search key of the filter query to retrieve
      * @return FilterQueryInterface|null
      */
-    public function getFilterQueryWithKey($key);
+    public function getFilterQueryWithKey(string $key): ?FilterQueryInterface;
 
      /**
      * Determine if the filter query with key $key, exists in this select query, and has a value of $value.
@@ -103,7 +53,7 @@ interface SelectQueryInterface extends SimpleQueryInterface
      * @param string $value search value of the filter query to retrieve
      * @return bool
      */
-    public function doesValueExistInFilterQueries($key, $value);
+    public function doesValueExistInFilterQueries(string $key, $value);
 
     /**
      * Gets whether consuming code should interpret this query as a text search. For example, even if there is a search term
@@ -111,6 +61,7 @@ interface SelectQueryInterface extends SimpleQueryInterface
      * different default sorts etc)
      *
      * @return bool
+     * @deprecated
      */
     public function shouldTreatAsTextSearch();
 
@@ -124,14 +75,14 @@ interface SelectQueryInterface extends SimpleQueryInterface
     /**
      * Gets a grouping field, or null if none set.
      *
-     * @return string|null
+     * @return AttributeInterface|null
      */
-    public function getGroupingField();
+    public function getGroupingField(): ?AttributeInterface;
 
     /**
      * Gets the sort collection used to sort the group internally
      *
-     * @return \Markup\NeedleBundle\Sort\SortCollectionInterface|null
+     * @return SortCollectionInterface|null
      **/
-    public function getGroupingSortCollection();
+    public function getGroupingSortCollection(): ?SortCollectionInterface;
 }

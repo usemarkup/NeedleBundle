@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Markup\NeedleBundle\Result;
 
-use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Collator\CollatorProviderInterface;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetInterface;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
 
@@ -16,23 +17,37 @@ class ElasticsearchFacetSetsStrategy implements FacetSetStrategyInterface
     private $aggregationsData;
 
     /**
-     * @var SearchContextInterface
-     */
-    private $searchContext;
-
-    /**
      * @var SelectQueryInterface|null
      */
     private $originalQuery;
 
+    /**
+     * @var array
+     */
+    private $facets;
+
+    /**
+     * @var CollatorProviderInterface
+     */
+    private $collatorProvider;
+
+    /**
+     * @var FacetSetDecoratorProviderInterface
+     */
+    private $facetSetDecoratorProvider;
+
     public function __construct(
         array $aggregationsData,
-        SearchContextInterface $searchContext,
+        array $facets,
+        CollatorProviderInterface $collatorProvider,
+        FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
         ?SelectQueryInterface $originalQuery = null
     ) {
         $this->aggregationsData = $aggregationsData;
-        $this->searchContext = $searchContext;
         $this->originalQuery = $originalQuery;
+        $this->facets = $facets;
+        $this->collatorProvider = $collatorProvider;
+        $this->facetSetDecoratorProvider = $facetSetDecoratorProvider;
     }
 
     public function getFacetSets()
@@ -40,7 +55,9 @@ class ElasticsearchFacetSetsStrategy implements FacetSetStrategyInterface
         /** @var FacetSetInterface[] $facetSets */
         $facetSets = new ElasticsearchFacetSetsIterator(
             $this->flattenAggregationsData($this->aggregationsData),
-            $this->searchContext,
+            $this->facets,
+            $this->collatorProvider,
+            $this->facetSetDecoratorProvider,
             $this->originalQuery
         );
 

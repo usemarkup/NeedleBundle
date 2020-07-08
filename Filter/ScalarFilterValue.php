@@ -19,6 +19,10 @@ class ScalarFilterValue implements FilterValueInterface
      **/
     public function __construct($scalar)
     {
+        if (!is_scalar($scalar)) {
+            throw new \InvalidArgumentException('Invalid scalar');
+        }
+
         $this->scalar = $scalar;
     }
 

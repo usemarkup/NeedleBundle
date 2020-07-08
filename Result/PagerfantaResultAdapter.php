@@ -12,8 +12,6 @@ use Pagerfanta\Pagerfanta;
 class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInterface
 {
     /**
-     * A Pagerfanta instance.
-     *
      * @var Pagerfanta
      **/
     private $pagerfanta;
@@ -46,12 +44,21 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
      **/
     private $debugOutputStrategy;
 
+    /**
+     * @var array
+     */
+    private $mappingHashForFields;
+
     public function __construct(Pagerfanta $pagerfanta)
     {
         $this->pagerfanta = $pagerfanta;
+        $this->mappingHashForFields = [];
     }
 
-    public function getTotalCount()
+    /**
+     * {@inheritdoc}
+     */
+    public function getNbResults()
     {
         return $this->getPagerfanta()->getNbResults();
     }
@@ -63,7 +70,7 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
 
     public function count()
     {
-        return $this->getTotalCount();
+        return $this->getNbResults();
     }
 
     public function setQueryTimeStrategy(QueryTimeStrategyInterface $queryTimeStrategy)
@@ -71,6 +78,9 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
         $this->queryTimeStrategy = $queryTimeStrategy;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getQueryTimeInMilliseconds()
     {
         if (null === $this->queryTimeStrategy) {
@@ -80,27 +90,42 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
         return $this->queryTimeStrategy->getQueryTimeInMilliseconds();
     }
 
-    public function getTotalPageCount()
+    /**
+     * {@inheritdoc}
+     */
+    public function getNbPages()
     {
         return $this->getPagerfanta()->getNbPages();
     }
 
-    public function getCurrentPageNumber()
+    /**
+     * {@inheritdoc}
+     */
+    public function getCurrentPage()
     {
         return $this->getPagerfanta()->getCurrentPage();
     }
 
-    public function isPaginated()
+    /**
+     * {@inheritdoc}
+     */
+    public function haveToPaginate()
     {
         return $this->getPagerfanta()->haveToPaginate();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasPreviousPage()
     {
         return $this->getPagerfanta()->hasPreviousPage();
     }
 
-    public function getPreviousPageNumber()
+    /**
+     * {@inheritdoc}
+     */
+    public function getPreviousPage()
     {
         try {
             $page = $this->getPagerfanta()->getPreviousPage();
@@ -112,12 +137,18 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
         return $page;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasNextPage()
     {
         return $this->getPagerfanta()->hasNextPage();
     }
 
-    public function getNextPageNumber()
+    /**
+     * {@inheritdoc}
+     */
+    public function getNextPage()
     {
         try {
             $page = $this->getPagerfanta()->getNextPage();
@@ -134,6 +165,9 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
         $this->facetSetStrategy = $facetSetStrategy;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFacetSets()
     {
         if (null === $this->facetSetStrategy) {
@@ -151,7 +185,7 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
     }
 
     /**
-     * @return SpellcheckResultInterface|null
+     * {@inheritdoc}
      */
     public function getSpellcheckResult()
     {
@@ -163,6 +197,9 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
         $this->debugOutputStrategy = $debugOutputStrategy;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasDebugOutput()
     {
         if (null === $this->debugOutputStrategy) {
@@ -172,6 +209,9 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
         return $this->debugOutputStrategy->hasDebugOutput();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDebugOutput()
     {
         if (null !== $this->debugOutputStrategy and $this->debugOutputStrategy->hasDebugOutput()) {
@@ -185,5 +225,20 @@ class PagerfantaResultAdapter implements ResultInterface, CanExposePagerfantaInt
     public function getPagerfanta(): Pagerfanta
     {
         return $this->pagerfanta;
+    }
+
+    public function setMappingHashForFields(array $hash)
+    {
+        $this->mappingHashForFields = $hash;
+    }
+
+    public function getMappingHashForFields(): array
+    {
+        return $this->mappingHashForFields;
+    }
+
+    public function getMaxPerPage(): int
+    {
+        return $this->pagerfanta->getMaxPerPage();
     }
 }

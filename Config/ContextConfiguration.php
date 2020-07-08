@@ -14,8 +14,8 @@ class ContextConfiguration implements ContextConfigurationInterface
     /**
      * A hash containing all the configuration passed in. Keys are:
      *
-     * items_per_page, base_filter_queries, sorts, sorts_search_term, sorts_non_search_term, boosts,
-     * filters, facets, intercepts, should_ignore_current_filters_in_faceting, should_use_fuzzy_matching
+     * items_per_page, base_filter_queries, sorts, boosts,
+     * facets, intercepts, should_ignore_current_filters_in_faceting, should_use_fuzzy_matching
      *
      * Values are exactly in the format as the various methods should return.
      */
@@ -24,8 +24,8 @@ class ContextConfiguration implements ContextConfigurationInterface
     /**
      * @param array $config A hash config with keys:
      *
-     * items_per_page, base_filter_queries, sorts, sorts_search_term, sorts_non_search_term, boosts,
-     * filters, facets, intercepts, should_ignore_current_filters_in_faceting
+     * items_per_page, base_filter_queries, sorts, boosts,
+     * facets, intercepts, should_ignore_current_filters_in_faceting
      */
     public function __construct(array $config = [])
     {
@@ -53,25 +53,6 @@ class ContextConfiguration implements ContextConfigurationInterface
     }
 
     /**
-     * Gets the default sort stack to use for queries that use a search term, with order indicators given
-     *
-     * example: [ { 'relevance' => 'asc' }, { 'price' => 'desc' } ]
-     *
-     * @return array
-     */
-    public function getDefaultSortsForSearchTermQuery()
-    {
-        if (isset($this->config['sorts_search_term'])) {
-            return $this->config['sorts_search_term'];
-        }
-        if (isset($this->config['sorts'])) {
-            return $this->config['sorts'];
-        }
-
-        return [ContextConfigurationInterface::SORT_RELEVANCE => ContextConfigurationInterface::ORDER_DESC];
-    }
-
-    /**
      * Gets the default sort stack to use for queries that do not use a search term, with order indicators given
      *
      * example: [ { 'name' => 'asc' }, { 'price' => 'desc' } ]
@@ -80,9 +61,6 @@ class ContextConfiguration implements ContextConfigurationInterface
      */
     public function getDefaultSortsForNonSearchTermQuery()
     {
-        if (isset($this->config['sorts_non_search_term'])) {
-            return $this->config['sorts_non_search_term'];
-        }
         if (isset($this->config['sorts'])) {
             return $this->config['sorts'];
         }
@@ -130,19 +108,6 @@ class ContextConfiguration implements ContextConfigurationInterface
     }
 
     /**
-     * Gets a list of attributes that can be used for userland filtering.  It only makes sense for any available facets
-     * to be taken from this list.
-     *
-     * example: [ 'gender', 'size', 'on_sale' ]
-     *
-     * @return array
-     */
-    public function getFilterableAttributes()
-    {
-        return $this->config['filters'];
-    }
-
-    /**
      * Gets whether any attributes that are currently being filtered on in a userland query should be ignored in the faceting.
      *
      * @return bool
@@ -166,7 +131,6 @@ class ContextConfiguration implements ContextConfigurationInterface
             'items_per_page' => self::DEFAULT_ITEMS_PER_PAGE,
             'base_filter_queries' => [],
             'boosts' => [],
-            'filters' => [],
             'facets' => [],
             'intercepts' => [],
             'should_ignore_current_filters_in_faceting' => false,

@@ -23,21 +23,21 @@ class SpecializedAttribute extends Attribute implements SpecializedAttributeInte
 
     /**
      * @param AttributeSpecializationInterface[] $specializations
-     * @param string                           $name
-     * @param string                           $key
-     * @param string                           $displayName
-     * @param callable|null                    $valueDisplayStrategy
+     * @param string $name
+     * @param string $key
+     * @param string $displayName
+     * @param bool $shouldCanonicalizeDisplayValue
      */
     public function __construct(
         array $specializations,
         string $name,
         string $key = null,
         string $displayName = null,
-        callable $valueDisplayStrategy = null
+        bool $shouldCanonicalizeDisplayValue = false
     ) {
         $this->specializations = $specializations;
         $this->contexts = [];
-        parent::__construct($name, $key, $displayName, $valueDisplayStrategy);
+        parent::__construct($name, $key, $displayName, $shouldCanonicalizeDisplayValue);
     }
 
     /**
@@ -114,9 +114,9 @@ class SpecializedAttribute extends Attribute implements SpecializedAttributeInte
         }
 
         if (empty($contextValues)) {
-            return parent::getSearchKey();
+            return parent::getSearchKey($options);
         }
 
-        return sprintf('%s_%s', parent::getSearchKey(), implode('_', $contextValues));
+        return sprintf('%s_%s', parent::getSearchKey($options), implode('_', $contextValues));
     }
 }

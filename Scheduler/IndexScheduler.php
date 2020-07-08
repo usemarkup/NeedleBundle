@@ -2,7 +2,7 @@
 
 namespace Markup\NeedleBundle\Scheduler;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\UnitOfWork;
 use Markup\NeedleBundle\Corpus\CorpusInterface;
 use Markup\NeedleBundle\Entity\ScheduledIndex;

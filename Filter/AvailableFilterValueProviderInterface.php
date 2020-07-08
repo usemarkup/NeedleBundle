@@ -3,6 +3,7 @@
 namespace Markup\NeedleBundle\Filter;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Attribute\SpecializationContextHashInterface;
 
 /**
  * An interface for a provider object that can fetch information about available filter values.
@@ -14,13 +15,15 @@ interface AvailableFilterValueProviderInterface
      *
      * @return AttributeInterface[]
      **/
-    public function getAvailableFilters();
+    public function getAvailableFilters(SpecializationContextHashInterface $contextHash);
 
     /**
      * Gets the filter values that are available for the given filter.
      *
-     * @param  AttributeInterface                                 $filter
-     * @return \Markup\NeedleBundle\Filter\FilterValueInterface[]
+     * @return array
      **/
-    public function getAvailableValuesForFilter(AttributeInterface $filter);
+    public function getAvailableValuesForFilter(
+        AttributeInterface $filter,
+        SpecializationContextHashInterface $contextHash
+    );
 }

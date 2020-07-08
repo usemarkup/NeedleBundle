@@ -17,6 +17,12 @@ trait DedupeFilterQueryTrait
     {
         $nameCounts = [];
         foreach ($filterQueries as $filterQuery) {
+            if (!$filterQuery instanceof Filter\FilterQueryInterface) {
+                throw new \InvalidArgumentException(
+                    sprintf('filterQuery expected to be type FilterQueryInterface, got %s', gettype($filterQuery))
+                );
+            }
+
             $name = $filterQuery->getSearchKey();
             if (!isset($nameCounts[$name])) {
                 $nameCounts[$name] = 1;

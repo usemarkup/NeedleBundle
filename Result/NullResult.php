@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Markup\NeedleBundle\Result;
 
-use Markup\NeedleBundle\Spellcheck\SpellcheckResultInterface;
-
 /**
  * Null implementation of a search result.
  */
@@ -22,109 +20,87 @@ class NullResult implements ResultInterface
     }
 
     /**
-     * Gets the total count of the result set, regardless of any paging.
-     *
-     * @return int
-     **/
-    public function getTotalCount()
+     * {@inheritdoc}
+     */
+    public function getNbResults()
     {
         return 0;
     }
 
     /**
-     * Gets the time of the search query in milliseconds.
-     *
-     * @return float
-     **/
+     * {@inheritdoc}
+     */
     public function getQueryTimeInMilliseconds()
     {
         return 0;
     }
 
     /**
-     * Gets the total number of pages for this result.
-     *
-     * @return int
-     **/
-    public function getTotalPageCount()
+     * {@inheritdoc}
+     */
+    public function getNbPages()
     {
         return 1;
     }
 
     /**
-     * @return int
-     **/
-    public function getCurrentPageNumber()
+     * {@inheritdoc}
+     */
+    public function getCurrentPage()
     {
         return 1;
     }
 
     /**
-     * Gets whether there are a sufficient number of result documents to paginate this result (i.e. the number is greater than the max number to show per page).
-     *
-     * @return bool
-     **/
-    public function isPaginated()
+     * {@inheritdoc}
+     */
+    public function haveToPaginate()
     {
         return false;
     }
 
     /**
-     * Gets whether there is a page previous to the page currently being shown.
-     *
-     * @return bool
-     **/
+     * {@inheritdoc}
+     */
     public function hasPreviousPage()
     {
         return false;
     }
 
     /**
-     * Gets the number of the previous page.
-     *
-     * @return int
-     * @throws PageDoesNotExistException if there is no previous page
-     **/
-    public function getPreviousPageNumber()
+     * {@inheritdoc}
+     */
+    public function getPreviousPage()
     {
         throw new PageDoesNotExistException();
     }
 
     /**
-     * Gets whether there is a page after the page currently being shown.
-     *
-     * @return bool
-     **/
+     * {@inheritdoc}
+     */
     public function hasNextPage()
     {
         return false;
     }
 
     /**
-     * Gets the number of the next page.
-     *
-     * @return int
-     * @throws PageDoesNotExistException if there is no next page
-     **/
-    public function getNextPageNumber()
+     * {@inheritdoc}
+     */
+    public function getNextPage()
     {
         throw new PageDoesNotExistException();
     }
 
     /**
-     * Gets the facet sets that are returned with this result.
-     *
-     * @return \Markup\NeedleBundle\Facet\FacetSetInterface[]|iterable
-     **/
+     * {@inheritdoc}
+     */
     public function getFacetSets()
     {
-        return new \ArrayIterator();
+        return [];
     }
 
     /**
-     * Gets a spellcheck result, if there is one (otherwise returns null).
-     *
-     * @return SpellcheckResultInterface|null
+     * {@inheritdoc}
      */
     public function getSpellcheckResult()
     {
@@ -132,22 +108,30 @@ class NullResult implements ResultInterface
     }
 
     /**
-     * Gets whether there is debug output for this result that could be displayed.
-     *
-     * @return bool
-     **/
+     * {@inheritdoc}
+     */
     public function hasDebugOutput()
     {
         return false;
     }
 
     /**
-     * Gets any debug output that could be displayed for this result - likely to be in HTML format, but this interface does not specify.  Returns null if there is no info to output.
-     *
-     * @return string|null
-     **/
+     * {@inheritdoc}
+     */
     public function getDebugOutput()
     {
         return null;
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function getMappingHashForFields(): array
+    {
+        return [];
+    }
+
+    public function getMaxPerPage(): int
+    {
+        return 1;
     }
 }

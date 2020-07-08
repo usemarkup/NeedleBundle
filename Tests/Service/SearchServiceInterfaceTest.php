@@ -13,8 +13,6 @@ class SearchServiceInterfaceTest extends AbstractInterfaceTestCase
     {
         return [
             'executeQuery',
-            'setContext',
-            'addDecorator',
         ];
     }
 

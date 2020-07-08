@@ -2,11 +2,8 @@
 
 namespace Markup\NeedleBundle\Lucene;
 
-use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Filter\FilterValueInterface;
 
-/**
-* An object that can lucenify filter queries.
-*/
 class FilterQueryLucenifier
 {
     /**
@@ -19,18 +16,12 @@ class FilterQueryLucenifier
         $this->filterValueLucenifier = $valueLucenifier ?? new FilterValueLucenifier();
     }
 
-    /**
-     * Lucenifies that provided filter query.
-     *
-     * @param  FilterQueryInterface $filterQuery
-     * @return string
-     **/
-    public function lucenify(FilterQueryInterface $filterQuery)
+    public function lucenify(string $searchKey, FilterValueInterface $filterValue): string
     {
-        if ($filterQuery->getFilterValue()->getSearchValue() === '') {
-            return sprintf('-%s:[* TO *]', $filterQuery->getSearchKey());
+        if ($filterValue->getSearchValue() === '') {
+            return sprintf('-%s:[* TO *]', $searchKey);
         }
 
-        return sprintf('%s:%s', $filterQuery->getSearchKey(), $this->filterValueLucenifier->lucenify($filterQuery->getFilterValue()));
+        return sprintf('%s:%s', $searchKey, $this->filterValueLucenifier->lucenify($filterValue));
     }
 }

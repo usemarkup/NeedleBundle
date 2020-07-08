@@ -86,18 +86,11 @@ class ElasticSelectQueryBuilder
             ];
         }
 
-        //determine whether we are using the facet values for an underlying "base" (recorded) query
-        $shouldUseFacetValuesForRecordedQuery = $genericQuery->shouldUseFacetValuesForRecordedQuery();
-
         $filterQueries = $genericQuery->getFilterQueries();
         $baseQueries = $filterQueries;
+        // TODO: this is almost certainly broken as a result of the RecordedSelectQuery being refactored out
+        // Faceting in elastic is probably broken now....
         $extraQueries = [];
-        if ($shouldUseFacetValuesForRecordedQuery) {
-            $record = $genericQuery->getRecord();
-            $recordedQueries = ($record) ? $record->getFilterQueries() : [];
-            $baseQueries = $recordedQueries;
-            $extraQueries = $this->diffQuerySets($filterQueries, $recordedQueries);
-        }
 
         //if there are base filter queries, add them
         if (count($baseQueries) > 0) {
@@ -134,7 +127,7 @@ class ElasticSelectQueryBuilder
         //if there are facets to request, request them
         $facets = $genericQuery->getFacets();
         if (!empty($facets)) {
-            $facetNamesToExclude = $genericQuery->getFacetNamesToExclude();
+            $facetNamesToExclude = $genericQuery->getFacetsToExclude();
             $shouldIncludeFacetValuesForMissing = $genericQuery->shouldRequestFacetValueForMissing();
             foreach ($facets as $facet) {
                 //if query indicates we should skip this facet, then skip it

@@ -3,7 +3,8 @@
 namespace Markup\NeedleBundle\Tests\Result;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Collator\NullCollatorProvider;
+use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetInterface;
 use Markup\NeedleBundle\Facet\FacetValueInterface;
 use Markup\NeedleBundle\Result\FacetSetStrategyInterface;
@@ -18,11 +19,44 @@ use Solarium\QueryType\Select\Result\Result;
 */
 class SolariumFacetSetsStrategyTest extends TestCase
 {
+    /**
+     * @var SolariumFacetSetsStrategy
+     */
+    private $strategy;
+
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|Result
+     */
+    private $solariumResult;
+
+    /**
+     * @var NullCollatorProvider
+     */
+    private $collatorProvider;
+
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|FacetSetDecoratorProviderInterface
+     */
+    private $facetSetDecoratorProvider;
+
     public function setUp()
     {
         $this->solariumResult = $this->createMock(Result::class);
-        $this->searchContext = $this->createMock(SearchContextInterface::class);
-        $this->strategy = new SolariumFacetSetsStrategy($this->solariumResult, $this->searchContext);
+        $this->collatorProvider = new NullCollatorProvider();
+        $this->facetSetDecoratorProvider = $this->createMock(FacetSetDecoratorProviderInterface::class);
+
+        $facet = $this->createMock(AttributeInterface::class);
+        $facet
+            ->expects($this->any())
+            ->method('getSearchKey')
+            ->will($this->returnValue('color'));
+
+        $this->strategy = new SolariumFacetSetsStrategy(
+            $this->solariumResult,
+            [$facet],
+            $this->collatorProvider,
+            $this->facetSetDecoratorProvider
+        );
     }
 
     public function testIsFacetSetsStrategy()
@@ -32,21 +66,6 @@ class SolariumFacetSetsStrategyTest extends TestCase
 
     public function testGetOneFacetSet()
     {
-        $facet = $this->createMock(AttributeInterface::class);
-        $this->searchContext
-            ->expects($this->any())
-            ->method('getFacets')
-            ->will($this->returnValue([$facet]));
-        $collatorProvider = new \Markup\NeedleBundle\Collator\NullCollatorProvider();
-        $this->searchContext
-            ->expects($this->any())
-            ->method('getFacetCollatorProvider')
-            ->will($this->returnValue($collatorProvider));
-        $key = 'color';
-        $facet
-            ->expects($this->any())
-            ->method('getSearchKey')
-            ->will($this->returnValue($key));
         $solariumFacetSet = $this->createMock(FacetSet::class);
         $solariumFacetValue = $this->createMock(FacetValueInterface::class);
         $this->solariumResult
@@ -54,7 +73,7 @@ class SolariumFacetSetsStrategyTest extends TestCase
             ->method('getFacetSet')
             ->will($this->returnValue($solariumFacetSet));
         $solariumFacet = $this->createMock(Field::class);
-        $solariumFacetValues = new \ArrayIterator([$key => $solariumFacetValue]);
+        $solariumFacetValues = new \ArrayIterator(['color' => $solariumFacetValue]);
         $solariumFacet
             ->expects($this->any())
             ->method('getIterator')
@@ -62,41 +81,8 @@ class SolariumFacetSetsStrategyTest extends TestCase
         $solariumFacetSet
             ->expects($this->any())
             ->method('getIterator')
-            ->will($this->returnValue(new \ArrayIterator([$key => $solariumFacet])));
+            ->will($this->returnValue(new \ArrayIterator(['color' => $solariumFacet])));
         $facetSets = $this->strategy->getFacetSets();
-        $this->assertContainsOnly(FacetSetInterface::class, $facetSets);
-    }
-
-    public function testGetOneFacetSetWithResultPassedToConstructorAsClosure()
-    {
-        $facet = $this->createMock(AttributeInterface::class);
-        $this->searchContext
-            ->expects($this->any())
-            ->method('getFacets')
-            ->will($this->returnValue([$facet]));
-        $key = 'color';
-        $facet
-            ->expects($this->any())
-            ->method('getSearchKey')
-            ->will($this->returnValue($key));
-        $solariumFacetSet = $this->createMock(FacetSet::class);
-        $solariumFacetValue = $this->createMock(FacetValueInterface::class);
-        $this->solariumResult
-            ->expects($this->any())
-            ->method('getFacetSet')
-            ->will($this->returnValue($solariumFacetSet));
-        $solariumFacet = $this->createMock(Field::class);
-        $solariumFacetValues = new \ArrayIterator([$key => $solariumFacetValue]);
-        $solariumFacet
-            ->expects($this->any())
-            ->method('getIterator')
-            ->will($this->returnValue($solariumFacetValues));
-        $solariumFacetSet
-            ->expects($this->any())
-            ->method('getIterator')
-            ->will($this->returnValue(new \ArrayIterator([$key => $solariumFacet])));
-        $strategy = new SolariumFacetSetsStrategy(function() { return $this->solariumResult; }, $this->searchContext);
-        $facetSets = $strategy->getFacetSets();
         $this->assertContainsOnly(FacetSetInterface::class, $facetSets);
     }
 }

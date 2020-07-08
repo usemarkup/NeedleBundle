@@ -28,11 +28,8 @@ class AttributeSpecializationGroup
      */
     public function getKey()
     {
-        $names = array_map(function (AttributeSpecializationInterface $s) {
-            return $s->getName();
-        }, $this->specializations);
+        $json = json_encode($this->specializations);
 
-        $json = json_encode($names);
         if (!$json) {
             throw new \RuntimeException('Unexpected JSON encoding error.');
         }
@@ -45,9 +42,7 @@ class AttributeSpecializationGroup
      */
     public function getDisplayName()
     {
-        return implode(self::DISPLAY_SEPARATOR, array_map(function (AttributeSpecializationInterface $s) {
-            return $s->getName();
-        }, $this->specializations));
+        return implode(self::DISPLAY_SEPARATOR, $this->specializations);
     }
 
     /**

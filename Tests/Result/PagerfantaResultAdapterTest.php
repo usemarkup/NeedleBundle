@@ -48,7 +48,7 @@ class PagerfantaResultAdapterResultTest extends TestCase
             ->expects($this->any())
             ->method('getNbResults')
             ->will($this->returnValue($count));
-        $this->assertEquals(42, $this->adapter->getTotalCount());
+        $this->assertEquals(42, $this->adapter->getNbResults());
     }
 
     public function testGetIterator()
@@ -90,7 +90,7 @@ class PagerfantaResultAdapterResultTest extends TestCase
             ->expects($this->any())
             ->method('getNbPages')
             ->will($this->returnValue($pages));
-        $this->assertEquals($pages, $this->adapter->getTotalPageCount());
+        $this->assertEquals($pages, $this->adapter->getNbPages());
     }
 
     public function testGetCurrentPageNumber()
@@ -100,7 +100,7 @@ class PagerfantaResultAdapterResultTest extends TestCase
             ->expects($this->any())
             ->method('getCurrentPage')
             ->will($this->returnValue($currentPage));
-        $this->assertEquals($currentPage, $this->adapter->getCurrentPageNumber());
+        $this->assertEquals($currentPage, $this->adapter->getCurrentPage());
     }
 
     public function testIsPaginated()
@@ -110,7 +110,7 @@ class PagerfantaResultAdapterResultTest extends TestCase
             ->expects($this->any())
             ->method('haveToPaginate')
             ->will($this->returnValue($whetherPaginated));
-        $this->assertSame($whetherPaginated, $this->adapter->isPaginated());
+        $this->assertSame($whetherPaginated, $this->adapter->haveToPaginate());
     }
 
     public function testHasPreviousPage()
@@ -130,7 +130,7 @@ class PagerfantaResultAdapterResultTest extends TestCase
             ->expects($this->any())
             ->method('getPreviousPage')
             ->will($this->returnValue($previous));
-        $this->assertSame($previous, $this->adapter->getPreviousPageNumber());
+        $this->assertSame($previous, $this->adapter->getPreviousPage());
     }
 
     public function testGetPreviousPageIfDoesNotExist()
@@ -140,7 +140,7 @@ class PagerfantaResultAdapterResultTest extends TestCase
             ->method('getPreviousPage')
             ->will($this->throwException(new \LogicException));
         $this->expectException(PageDoesNotExistException::class);
-        $this->adapter->getPreviousPageNumber();
+        $this->adapter->getPreviousPage();
     }
 
     public function testHasNextPage()
@@ -160,7 +160,7 @@ class PagerfantaResultAdapterResultTest extends TestCase
             ->expects($this->any())
             ->method('getNextPage')
             ->will($this->returnValue($next));
-        $this->assertSame($next, $this->adapter->getNextPageNumber());
+        $this->assertSame($next, $this->adapter->getNextPage());
     }
 
     public function testGetNextPageIfDoesNotExist()
@@ -170,7 +170,7 @@ class PagerfantaResultAdapterResultTest extends TestCase
             ->method('getNextPage')
             ->will($this->throwException(new \LogicException));
         $this->expectException(PageDoesNotExistException::class);
-        $this->adapter->getNextPageNumber();
+        $this->adapter->getNextPage();
     }
 
     public function testGetFacetSetsWithNoStrategySet()

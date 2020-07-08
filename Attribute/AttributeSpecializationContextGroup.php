@@ -9,7 +9,7 @@ namespace Markup\NeedleBundle\Attribute;
 class AttributeSpecializationContextGroup
 {
 
-    const DISPLAY_SEPARATOR = "/";
+    const DISPLAY_SEPARATOR = " / ";
 
     /**
      * @var array
@@ -24,9 +24,6 @@ class AttributeSpecializationContextGroup
         $this->specializationContexts = $specializationContexts;
     }
 
-    /**
-     * @return string
-     */
     public function getKey()
     {
         $key = [];
@@ -43,14 +40,49 @@ class AttributeSpecializationContextGroup
         return $json;
     }
 
-    /**
-     * @return string
-     */
-    public function getDisplayName()
+    public function getDisplayName(): string
     {
         return implode(self::DISPLAY_SEPARATOR, array_map(function (AttributeSpecializationContextInterface $s) {
             return $s->getValue();
         }, $this->specializationContexts));
+    }
+
+    public function toArray(): array
+    {
+        $hash = [];
+
+        foreach ($this->specializationContexts as $specializationName => $specializationContext) {
+            $hash[$specializationName] = $specializationContext->getValue();
+        }
+
+        return $hash;
+    }
+
+    /**
+     * Checks that this group matches multiple specializations
+     * @param array $specializationContextHash hash of specialization names and data that this group must match
+     * @return bool
+     */
+    public function hasMatchingSpecializations(array $specializationContextHash): bool
+    {
+        foreach ($specializationContextHash as $name => $value) {
+            if (!$this->hasMatchingSpecialization($name, $value)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function hasMatchingSpecialization(string $key, $value): bool
+    {
+        foreach ($this->getSpecializationContexts() as $name => $context) {
+            if ($name === $key && $context->getData() === $value) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

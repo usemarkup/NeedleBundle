@@ -10,6 +10,7 @@ use Markup\NeedleBundle\Builder\QueryBuildOptions;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
+use Markup\NeedleBundle\Sort\EmptySortCollection;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
@@ -28,6 +29,7 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
     public function testBuildWithNoOperationsReturnsSolariumSelectQuery()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
         $query = $this->builder->buildElasticQueryFromGeneric($genericQuery, $this->emptyOptions());
         $this->assertEquals(new \stdClass(), $query['query']['match_all']);
     }
@@ -35,6 +37,8 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
     public function testBuildWithSearchTerm()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+
         $term = 'pirates';
         $genericQuery
             ->shouldReceive('getSearchTerm')
@@ -49,6 +53,8 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
     public function testBuildWithSearchTermThatRequiresEscaping()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+
         $term = 'lemons::apples::oranges';
         $genericQuery
             ->shouldReceive('getSearchTerm')
@@ -63,6 +69,8 @@ class ElasticSelectQueryBuilderTest extends MockeryTestCase
     public function testAddFilterQuery()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+
         $filterQuery = m::mock(FilterQueryInterface::class);
         $filterQuery
             ->shouldReceive('getSearchKey')
