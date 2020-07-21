@@ -50,6 +50,7 @@ class SolrSynonymClient implements SynonymClientInterface
      */
     public function updateSynonyms(string $locale, array $data): bool
     {
+        $data = $this->removePercentageCharacters($data);
         $existingTerms = array_keys($this->getSynonyms($locale));
         $termsToRemove = array_diff_key($existingTerms, $data);
 
@@ -80,5 +81,20 @@ class SolrSynonymClient implements SynonymClientInterface
         }
 
         return $wasSuccess;
+    }
+
+    private function removePercentageCharacters(array $data)
+    {
+        $newData = [];
+        foreach ($data as $key => $value) {
+            $key = str_replace('%', '', $key);
+            $newSynonymArray = [];
+            foreach ($value as $synonym) {
+                $newSynonymArray[] = str_replace('%', '', $synonym);
+            }
+            $newData[$key] = $newSynonymArray;
+        }
+
+        return $newData;
     }
 }
