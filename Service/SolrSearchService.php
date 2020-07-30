@@ -2,11 +2,13 @@
 
 namespace Markup\NeedleBundle\Service;
 
+use Http\Client\Exception\HttpException;
 use Markup\NeedleBundle\Adapter\GroupedResultAdapter;
 use Markup\NeedleBundle\Adapter\SolariumResultPromisePagerfantaAdapter;
 use Markup\NeedleBundle\Builder\SolariumSelectQueryBuilder;
 use Markup\NeedleBundle\Context\NoopSearchContext;
 use Markup\NeedleBundle\Context\SearchContextInterface;
+use Markup\NeedleBundle\Exception\FailedSearchBackendResponseException;
 use Markup\NeedleBundle\Facet\AggregateFacetValueCanonicalizer;
 use Markup\NeedleBundle\Facet\FacetValueCanonicalizer;
 use Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface;
@@ -96,7 +98,16 @@ class SolrSearchService implements AsyncSearchServiceInterface
      */
     public function executeQuery($query, ?SearchContextInterface $searchContext = null): ResultInterface
     {
-        return $this->executeQueryAsync($query, $searchContext)->wait();
+        try {
+            return $this->executeQueryAsync($query, $searchContext)->wait();
+        } catch (HttpException $e) {
+            throw new FailedSearchBackendResponseException(
+                $e->getResponse(),
+                strval($e->getResponse()->getBody()),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /**
