@@ -61,15 +61,22 @@ class SolariumFacetSetsIterator implements \OuterIterator
 
     public function __construct(
         FacetValueCanonicalizerInterface $facetValueCanonicalizer,
-        SolariumFacetSet $facetSet,
+        ?SolariumFacetSet $facetSet,
         array $facets,
         CollatorProviderInterface $collatorProvider,
         FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
         SelectQueryInterface $originalQuery = null
     ) {
-        $this->solariumFacetSetsIterator = new NonEmptyFacetSetFilterIterator(
-            new \ArrayIterator($this->normalizeFacetData($facetSet))
-        );
+        if ($facetSet == null) {
+            $this->solariumFacetSetsIterator = new NonEmptyFacetSetFilterIterator(
+                new \ArrayIterator()
+            );
+        } else {
+            $this->solariumFacetSetsIterator = new NonEmptyFacetSetFilterIterator(
+                new \ArrayIterator($this->normalizeFacetData($facetSet))
+            );
+        }
+
         $this->originalQuery = $originalQuery;
         $this->setFacetsKeyedBySearchKey($facets);
         $this->facetValueCanonicalizer = $facetValueCanonicalizer;
