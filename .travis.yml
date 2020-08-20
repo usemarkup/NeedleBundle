@@ -1,26 +1,35 @@
 language: php
 
 php:
-    - 7.1.19
-    - 7.3
-    - 7.4
+  - 7.1
+  - 7.3
+  - 7.4
 
-env:
-    global:
-        - deps=high
+jobs:
+  # Deploy a release if php71 passes
+  include:
+    - php: 7.1
+      env:
+        - deploy=true
+        - secure: nKBD+0Y3xvfPiNBPJphVPO5ulpFREwix0J/aiV/xXFWj9zC+80W5EelDBBzq2YnrUMmeT8pFgvC8dNofZ63HR8fx2B2fHv51rHdiEzGPfGmfF9q/Rwz0tvXmatglfvfcHcFye62ZAQ/JCwM22rwQo2jlw5cdusJdkdLZn7LIAbs=
+
+addons:
+  apt:
+    update: true
 
 install:
-    - composer install --ignore-platform-reqs
+- composer install --ignore-platform-reqs
 
 before_script:
-    - if [ -f $HOME/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini ]; then phpenv config-rm xdebug.ini; fi
+- if [ -f $HOME/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini ]; then phpenv
+  config-rm xdebug.ini; fi
 
 script:
-    - vendor/bin/phpstan.phar analyse -c phpstan.neon --level 7 .
-    - vendor/phpunit/phpunit/phpunit --debug
+- vendor/bin/phpstan.phar analyse -c phpstan.neon --level 7 .
+- vendor/phpunit/phpunit/phpunit
+# If master branch deploy a release providing everything else passes on the deploy matrix
+- if [ "$deploy" = "true" ] && [ "$TRAVIS_BRANCH" = "master" ]; then nvm install --lts && nvm alias default lts
+  && npm install --ignore-scripts && ./node_modules/.bin/semantic-release --no-ci; fi
 
-notifications:
-  email: "support@usemarkup.com"
+dist: bionic
 
-sudo: required
-dist: xenial
