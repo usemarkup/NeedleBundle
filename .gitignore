@@ -17,3 +17,6 @@ app/config/parameters.yml
 
 # Composer
 composer.lock
+
+
+node_modules/
