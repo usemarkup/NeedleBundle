@@ -116,7 +116,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
             break;
         }
         $this->assertEquals(
-            'facet_color_key',
+            'color_key',
             $singleFilterQuery->getKey(),
             'checking filter query key is correct'
         );
