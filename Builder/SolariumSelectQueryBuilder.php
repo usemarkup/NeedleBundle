@@ -71,12 +71,21 @@ class SolariumSelectQueryBuilder
             $filterQueries = $this->dedupeFilterQueries($filterQueries);
 
             foreach ($filterQueries as $filterQuery) {
-                $solariumSearchKey = $filterQuery->getFilter()->getSearchKey();
+                $searchKey = $filterQuery->getFilter()->getSearchKey();
+                $solariumSearchKey = 'filter_%s';
+
+                if (substr($searchKey, 0, 1) === '-') {
+                    $solariumSearchKey = '-filter_%s';
+                    $searchKey = substr($searchKey, 1);
+                }
+
+                $solariumSearchKey = sprintf($solariumSearchKey, $searchKey);
 
                 $solariumQuery
                     ->createFilterQuery($solariumSearchKey)
                     ->setQuery($this->lucenifier->lucenify($solariumSearchKey, $filterQuery->getFilterValue()))
                     ->addTag($solariumSearchKey);
+
             }
         }
 
