@@ -2,7 +2,6 @@ language: php
 
 php:
     - 7.1.19
-    - 7.2.7
     - 7.3
     - 7.4
 
@@ -21,7 +20,7 @@ script:
     - vendor/phpunit/phpunit/phpunit --debug
 
 notifications:
-  email: "douglas@usemarkup.com"
+  email: "support@usemarkup.com"
 
 sudo: required
 dist: xenial
