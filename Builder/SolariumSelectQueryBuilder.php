@@ -71,15 +71,7 @@ class SolariumSelectQueryBuilder
             $filterQueries = $this->dedupeFilterQueries($filterQueries);
 
             foreach ($filterQueries as $filterQuery) {
-                $searchKey = $filterQuery->getFilter()->getSearchKey();
-                $solariumSearchKey = 'facet_%s';
-
-                if (substr($searchKey, 0, 1) === '-') {
-                    $solariumSearchKey = '-facet_%s';
-                    $searchKey = substr($searchKey, 1);
-                }
-
-                $solariumSearchKey = sprintf($solariumSearchKey, $searchKey);
+                $solariumSearchKey = $filterQuery->getFilter()->getSearchKey();
 
                 $solariumQuery
                     ->createFilterQuery($solariumSearchKey)
