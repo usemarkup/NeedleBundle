@@ -8,6 +8,7 @@ use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Result\SolariumUpdateResult;
 use Solarium\Client as Solarium;
+use Solarium\Core\Client\Endpoint;
 
 class SolariumIndexingMessager implements IndexingMessagerInterface
 {
@@ -33,9 +34,20 @@ class SolariumIndexingMessager implements IndexingMessagerInterface
     {
         $updateQuery = $this->solarium->createUpdate();
         $preDeleteQuery = $message->getPreDeleteQuery();
+
         if ($preDeleteQuery || $message->isFullReindex()) {
+            $endPoint = $this->solarium->getOption('endpoint')[0] ?? null;
+
+            if ($endPoint instanceof Endpoint) {
+                /**
+                 * For a FULL Index increase the timeout by 10x
+                 * to allow a large payload to be sent to Solr
+                 */
+                $endPoint->setTimeout(intval($endPoint->getTimeout()) * 10);
+            }
             $updateQuery->addDeleteQuery($this->createLuceneFilterQuery($preDeleteQuery));
         }
+
         $subjectMapper = $this->subjectDataMapperProvider->fetchMapperForCorpus($message->getCorpus());
         $documentGenerator = new SubjectDocumentGenerator($subjectMapper, false);
         $documentGenerator->setUpdateQuery($updateQuery);
