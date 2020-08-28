@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/usemarkup/NeedleBundle/compare/v1.0.0...v1.1.0) (2020-08-28)
+
+
+### Features
+
+* increase timeout when doing a full index ([b79942d](https://github.com/usemarkup/NeedleBundle/commit/b79942da2770a2a673028a8731f8c59ba818feec))
+
 # 1.0.0 (2020-08-21)
 
 
