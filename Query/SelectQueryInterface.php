@@ -12,7 +12,14 @@ use Markup\NeedleBundle\Spellcheck\SpellcheckInterface;
  **/
 interface SelectQueryInterface extends SimpleQueryInterface
 {
+    // combined base filter and applied filter queries
     public function getFilterQueries(): array;
+
+    // base filters are those added in such a way that the user manipulating filters cannot get rid of them
+    public function getBaseFilterQueries(): array;
+
+    // applied filters are those chose by the user
+    public function getAppliedFilterQueries(): array;
 
     public function hasFilterQueries(): bool;
 

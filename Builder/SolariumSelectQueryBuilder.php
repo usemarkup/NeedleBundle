@@ -18,8 +18,6 @@ use Solarium\QueryType\Select\Query\Query;
  */
 class SolariumSelectQueryBuilder
 {
-    use DedupeFilterQueryTrait;
-
     const ALL_SIGNIFIER = '*:*';
 
     /**
@@ -40,6 +38,23 @@ class SolariumSelectQueryBuilder
     ) {
         $this->provideDebugOutput = $provideDebugOutput;
         $this->lucenifier = $lucenifier ?? new FilterQueryLucenifier();
+    }
+
+    private function getSolariumSearchKeyByFilterSearchKey(string $searchKey)
+    {
+        $solariumSearchKey = 'filter_%s';
+
+        if (substr($searchKey, 0, 1) === '-') {
+            $solariumSearchKey = '-filter_%s';
+            $searchKey = substr($searchKey, 1);
+        }
+
+        return sprintf($solariumSearchKey, $searchKey);
+    }
+
+    private function getExcludeTagNameByFilterSearchKey(string $searchKey)
+    {
+       return sprintf('applied_filter_tag_%s', $searchKey);
     }
 
     /**
@@ -63,30 +78,29 @@ class SolariumSelectQueryBuilder
             $solariumQuery->setQuery($luceneTerm);
         }
 
-        //if there are filter queries, add them
-        $filterQueries = $query->getFilterQueries();
 
-        if (!empty($filterQueries)) {
-            // TODO - move deduping to ResolvedSelectQuery
-            $filterQueries = $this->dedupeFilterQueries($filterQueries);
+        foreach ($query->getBaseAndContextFilterQueries() as $filterQuery) {
+            $searchKey = $filterQuery->getFilter()->getSearchKey();
+            $solariumSearchKey = $this->getSolariumSearchKeyByFilterSearchKey($searchKey);
 
-            foreach ($filterQueries as $filterQuery) {
-                $searchKey = $filterQuery->getFilter()->getSearchKey();
-                $solariumSearchKey = 'filter_%s';
+            $solariumQuery
+                ->createFilterQuery($solariumSearchKey)
+                ->setQuery($this->lucenifier->lucenify($solariumSearchKey, $filterQuery->getFilterValue()));
+        }
 
-                if (substr($searchKey, 0, 1) === '-') {
-                    $solariumSearchKey = '-filter_%s';
-                    $searchKey = substr($searchKey, 1);
-                }
+        $allExcludeTagNames = [];
 
-                $solariumSearchKey = sprintf($solariumSearchKey, $searchKey);
+        foreach ($query->getAppliedFilterQueries() as $filterQuery) {
+            $searchKey = $filterQuery->getFilter()->getSearchKey();
+            $solariumSearchKey = $this->getSolariumSearchKeyByFilterSearchKey($searchKey);
 
-                $solariumQuery
-                    ->createFilterQuery($solariumSearchKey)
-                    ->setQuery($this->lucenifier->lucenify($solariumSearchKey, $filterQuery->getFilterValue()))
-                    ->addTag($solariumSearchKey);
+            // applied filters are not set as 'exclude tags' and therefore dont affect counts in the same way
+            $solariumQuery
+                ->createFilterQuery($solariumSearchKey)
+                ->setQuery($this->lucenifier->lucenify($solariumSearchKey, $filterQuery->getFilterValue()))
+                ->addTag($this->getExcludeTagNameByFilterSearchKey($searchKey));
 
-            }
+            $allExcludeTagNames[] = $this->getExcludeTagNameByFilterSearchKey($searchKey);
         }
 
         //if there are fields specified, set them
@@ -147,14 +161,21 @@ class SolariumSelectQueryBuilder
                     $conf = $solariumQuery
                         ->getFacetSet()
                         ->createFacetField($facetSearchKey)
-                        ->setMinCount(1) //sets default min count of 1, so facet value needs > 1 result to show
+                        ->setMinCount(0)
                         ->setMissing($checkMissingFacetValues)
                         ->setSort($facetSortOrder ?: 'index')
                         ->setField($facetSearchKey);
                 }
 
                 if ($query->getWhetherFacetIgnoresCurrentFilters($facet)) {
-                    $conf->addExclude($facetSearchKey);
+                    $conf->addExclude($this->getExcludeTagNameByFilterSearchKey($facet->getSearchKey()));
+
+                    // Leaving this here as an example of how you can have a setup whereby faceting only affects the
+                    // result set but never adjusts the counts or values returned in available facets
+
+                    // foreach ($allExcludeTagNames as $tagName) {
+                    //  $conf->addExclude($tagName);
+                    // }
                 }
 
             }

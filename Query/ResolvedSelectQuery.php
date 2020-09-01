@@ -4,21 +4,22 @@ namespace Markup\NeedleBundle\Query;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Boost\BoostQueryField;
+use Markup\NeedleBundle\Builder\DedupeFilterQueryTrait;
 use Markup\NeedleBundle\Collator\CollatorProviderInterface;
-use Markup\NeedleBundle\Collator\NullCollatorProvider;
 use Markup\NeedleBundle\Context\NoopSearchContext;
-use Markup\NeedleBundle\Context\SearchContext;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
-use Markup\NeedleBundle\Sort\EmptySortCollection;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
+ *
  * {@inheritdoc}
  */
 class ResolvedSelectQuery implements ResolvedSelectQueryInterface
 {
+    use DedupeFilterQueryTrait;
+
     /**
      * @var SelectQueryInterface
      */
@@ -56,9 +57,45 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
      */
     public function getFilterQueries(): array
     {
-        $fq = $this->getSelectQuery()->getFilterQueries();
+        return $this->dedupeFilterQueries(array_merge(
+            $this->getSelectQuery()->getFilterQueries(),
+            $this->searchContext->getDefaultFilterQueries()
+        ));
+    }
 
-        return array_merge($fq, $this->searchContext->getDefaultFilterQueries());
+    /**
+     * {@inheritdoc}
+     */
+    public function getContextFilterQueries(): array
+    {
+        return $this->searchContext->getDefaultFilterQueries();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseFilterQueries(): array
+    {
+        return $this->getSelectQuery()->getBaseFilterQueries();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseAndContextFilterQueries(): array
+    {
+        return $this->dedupeFilterQueries(array_merge(
+            $this->searchContext->getDefaultFilterQueries(),
+            $this->getSelectQuery()->getBaseFilterQueries()
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAppliedFilterQueries(): array
+    {
+        return $this->getSelectQuery()->getAppliedFilterQueries();
     }
 
     /**

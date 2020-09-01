@@ -17,11 +17,6 @@ class SelectQuery implements SelectQueryInterface
     /**
      * @var array
      */
-    private $filterQueries;
-
-    /**
-     * @var array
-     */
     private $fields;
 
     /**
@@ -69,8 +64,19 @@ class SelectQuery implements SelectQueryInterface
      */
     private $facets;
 
+    /**
+     * @var array
+     */
+    private $baseFilterQueries;
+
+    /**
+     * @var array
+     */
+    private $appliedFilterQueries;
+
     public function __construct(
-        array $filterQueries,
+        array $baseFilterQueries,
+        array $appliedFilterQueries,
         array $fields,
         ?array $facets = null,
         ?int $pageNumber = null,
@@ -82,7 +88,6 @@ class SelectQuery implements SelectQueryInterface
         ?SortCollectionInterface $groupingSortCollection = null,
         bool $shouldTreatAsTextSearch = false
     ) {
-        $this->filterQueries = $filterQueries;
         $this->facets = $facets;
         $this->fields = $fields;
         $this->pageNumber = $pageNumber;
@@ -93,6 +98,8 @@ class SelectQuery implements SelectQueryInterface
         $this->groupingSortCollection = $groupingSortCollection;
         $this->shouldTreatAsTextSearch = $shouldTreatAsTextSearch;
         $this->searchTerm = $searchTerm;
+        $this->baseFilterQueries = $baseFilterQueries;
+        $this->appliedFilterQueries = $appliedFilterQueries;
     }
 
     /**
@@ -100,7 +107,7 @@ class SelectQuery implements SelectQueryInterface
      */
     public function getFilterQueries(): array
     {
-        return $this->filterQueries;
+        return array_merge($this->baseFilterQueries, $this->appliedFilterQueries);
     }
 
     /**
@@ -108,7 +115,7 @@ class SelectQuery implements SelectQueryInterface
      */
     public function hasFilterQueries(): bool
     {
-        return count($this->filterQueries) > 0;
+        return count($this->getFilterQueries()) > 0;
     }
 
     /**
@@ -165,7 +172,7 @@ class SelectQuery implements SelectQueryInterface
      */
     public function getFilterQueryWithKey(string $key): ?FilterQueryInterface
     {
-        foreach ($this->filterQueries as $filterQuery) {
+        foreach ($this->getFilterQueries() as $filterQuery) {
             if (!$filterQuery instanceof FilterQueryInterface) {
                 continue;
             }
@@ -267,5 +274,15 @@ class SelectQuery implements SelectQueryInterface
     public function hasFacets(): bool
     {
         return $this->facets !== null;
+    }
+
+    public function getBaseFilterQueries(): array
+    {
+        return $this->baseFilterQueries;
+    }
+
+    public function getAppliedFilterQueries(): array
+    {
+        return $this->appliedFilterQueries;
     }
 }

@@ -16,6 +16,10 @@ use Markup\NeedleBundle\Sort\SortCollectionInterface;
  *
  * This structure represents a more accurate version of the actual query that is executed against the search backend
  * than the Query alone
+ *
+ * 2020: The value of this abstraction is now not clear. It provides a way to access the search context and the search
+ * query at the same time, but in all probability this is obfuscation and makes things more confusing. This looks
+ * like a candidate to be removed IMO.
  */
 interface ResolvedSelectQueryInterface
 {
@@ -30,6 +34,26 @@ interface ResolvedSelectQueryInterface
      * @return array|FilterQueryInterface[]
      */
     public function getFilterQueries(): array;
+
+    /**
+     * @return array|FilterQueryInterface[]
+     */
+    public function getContextFilterQueries(): array;
+
+    /**
+     * @return array|FilterQueryInterface[]
+     */
+    public function getBaseFilterQueries(): array;
+
+    /**
+     * @return array|FilterQueryInterface[]
+     */
+    public function getBaseAndContextFilterQueries(): array;
+
+    /**
+     * @return array|FilterQueryInterface[]
+     */
+    public function getAppliedFilterQueries(): array;
 
     /**
      * @return array|AttributeInterface[]
