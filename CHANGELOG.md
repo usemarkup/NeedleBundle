@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/usemarkup/NeedleBundle/compare/v1.1.0...v1.2.0) (2020-09-01)
+
+
+### Features
+
+* **query:** splits base, default and applied queries for better facet function ([1579159](https://github.com/usemarkup/NeedleBundle/commit/1579159ef0055ab4058d7a2084c2ae71fe659e28))
+
 # [1.1.0](https://github.com/usemarkup/NeedleBundle/compare/v1.0.0...v1.1.0) (2020-08-28)
 
 
