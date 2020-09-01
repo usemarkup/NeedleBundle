@@ -97,7 +97,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
             ->shouldReceive('getFilterValue')
             ->andReturn($filterValue);
         $genericQuery
-            ->shouldReceive('getFilterQueries')
+            ->shouldReceive('getBaseAndContextFilterQueries')
             ->andReturn([$filterQuery]);
         $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery, $this->queryGenerator);
         $filterQueries = $query->getFilterQueries();
