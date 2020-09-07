@@ -17,11 +17,6 @@ class ElasticsearchFacetSetsStrategy implements FacetSetStrategyInterface
     private $aggregationsData;
 
     /**
-     * @var SelectQueryInterface|null
-     */
-    private $originalQuery;
-
-    /**
      * @var array
      */
     private $facets;
@@ -40,11 +35,9 @@ class ElasticsearchFacetSetsStrategy implements FacetSetStrategyInterface
         array $aggregationsData,
         array $facets,
         CollatorProviderInterface $collatorProvider,
-        FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
-        ?SelectQueryInterface $originalQuery = null
+        FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
     ) {
         $this->aggregationsData = $aggregationsData;
-        $this->originalQuery = $originalQuery;
         $this->facets = $facets;
         $this->collatorProvider = $collatorProvider;
         $this->facetSetDecoratorProvider = $facetSetDecoratorProvider;
@@ -57,8 +50,7 @@ class ElasticsearchFacetSetsStrategy implements FacetSetStrategyInterface
             $this->flattenAggregationsData($this->aggregationsData),
             $this->facets,
             $this->collatorProvider,
-            $this->facetSetDecoratorProvider,
-            $this->originalQuery
+            $this->facetSetDecoratorProvider
         );
 
         return $facetSets;

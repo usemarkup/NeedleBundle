@@ -131,8 +131,7 @@ class ElasticSearchService implements AsyncSearchServiceInterface
                         $elasticResult['aggregations'] ?? [],
                         $query->getFacets(),
                         $query->getFacetCollatorProvider(),
-                        $query->getFacetSetDecoratorProvider(),
-                        $query->getOriginalSelectQuery()
+                        $query->getFacetSetDecoratorProvider()
                     )
                 );
 

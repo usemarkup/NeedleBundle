@@ -11,8 +11,6 @@ use Markup\NeedleBundle\Facet\ArbitraryCompositeFacetInterface;
 use Markup\NeedleBundle\Facet\CompositeFacetSetIterator;
 use Markup\NeedleBundle\Facet\FacetSet;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
-use Markup\NeedleBundle\Facet\FilterNonUnionValuesFacetSetDecorator;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
 
 /**
  * An iterator that goes over a collection of Elasticsearch aggregation results and emits generic facet sets.
@@ -28,11 +26,6 @@ class ElasticsearchFacetSetsIterator implements \OuterIterator
      * @var array
      */
     private $facetsKeyedBySearchKey;
-
-    /**
-     * @var SelectQueryInterface|null
-     */
-    private $originalQuery;
 
     /**
      * A sub-iterator of facet sets.
@@ -55,11 +48,9 @@ class ElasticsearchFacetSetsIterator implements \OuterIterator
         array $aggregationsData,
         array $facets,
         CollatorProviderInterface $collatorProvider,
-        FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
-        ?SelectQueryInterface $originalQuery = null
+        FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
     ) {
         $this->aggregationsIterator = new NonEmptyFacetSetFilterIterator(new \ArrayIterator($aggregationsData));
-        $this->originalQuery = $originalQuery;
         $this->setFacetsKeyedBySearchKey($facets);
         $this->collatorProvider = $collatorProvider;
         $this->facetSetDecoratorProvider = $facetSetDecoratorProvider;
@@ -116,9 +107,7 @@ class ElasticsearchFacetSetsIterator implements \OuterIterator
                 );
             }
         }
-        //add a decorator to filter out values that don't match combined filter values, in cases where they exist
-        $nonCombinedDecorator = new FilterNonUnionValuesFacetSetDecorator($this->originalQuery);
-        $facetSet = $nonCombinedDecorator->decorate($facetSet);
+
         //there may be a configured decorator for this facet set
         $facetSetDecorator = $this->facetSetDecoratorProvider->getDecoratorForFacet($this->getCurrentFacet());
 

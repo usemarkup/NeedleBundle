@@ -7,7 +7,6 @@ use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Facet\FacetSetInterface;
 use Markup\NeedleBundle\Facet\FacetValueCanonicalizerInterface;
 use Markup\NeedleBundle\Facet\NoopFacetValueCanonicalizer;
-use Markup\NeedleBundle\Query\SelectQueryInterface;
 use Solarium\QueryType\Select\Result\Result as SolariumResult;
 
 /**
@@ -26,11 +25,6 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
      * @var \Closure
      **/
     private $solariumResultClosure;
-
-    /**
-     * @var SelectQueryInterface|null
-     */
-    private $originalQuery;
 
     /**
      * @var FacetValueCanonicalizerInterface
@@ -57,7 +51,6 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
         array $facets,
         CollatorProviderInterface $collatorProvider,
         FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
-        SelectQueryInterface $originalQuery = null,
         FacetValueCanonicalizerInterface $facetValueCanonicalizer = null
     ) {
         if ($result instanceof SolariumResult) {
@@ -67,7 +60,6 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
         } else {
             throw new \InvalidArgumentException(sprintf('Passed an instance of %s as a result into %s. Expected a Solarium result instance (Solarium\QueryType\Select\Result\Result) or a closure that returns a Solarium result instance.', get_class($result), __METHOD__));
         }
-        $this->originalQuery = $originalQuery;
         $this->facetValueCanonicalizer = $facetValueCanonicalizer ?: new NoopFacetValueCanonicalizer();
         $this->facets = $facets;
         $this->collatorProvider = $collatorProvider;
@@ -82,8 +74,7 @@ class SolariumFacetSetsStrategy implements FacetSetStrategyInterface
             $this->getSolariumResult()->getFacetSet(),
             $this->facets,
             $this->collatorProvider,
-            $this->facetSetDecoratorProvider,
-            $this->originalQuery
+            $this->facetSetDecoratorProvider
         );
 
         return $facetSets;

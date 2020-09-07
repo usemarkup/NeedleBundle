@@ -4,6 +4,7 @@ namespace Markup\NeedleBundle\Query;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Sort\DefinedSortOrder;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Markup\NeedleBundle\Spellcheck\SpellcheckInterface;
 
@@ -53,25 +54,6 @@ interface SelectQueryInterface extends SimpleQueryInterface
      */
     public function getFilterQueryWithKey(string $key): ?FilterQueryInterface;
 
-     /**
-     * Determine if the filter query with key $key, exists in this select query, and has a value of $value.
-     *
-     * @param string $key   The search key of the filter query to retrieve
-     * @param string $value search value of the filter query to retrieve
-     * @return bool
-     */
-    public function doesValueExistInFilterQueries(string $key, $value);
-
-    /**
-     * Gets whether consuming code should interpret this query as a text search. For example, even if there is a search term
-     * in the query, we may not wish to treat the query as a text search in a particular context (and so possibly apply
-     * different default sorts etc)
-     *
-     * @return bool
-     * @deprecated
-     */
-    public function shouldTreatAsTextSearch();
-
     /**
      * Gets a spellcheck on the query, or null if none set.
      *
@@ -92,4 +74,11 @@ interface SelectQueryInterface extends SimpleQueryInterface
      * @return SortCollectionInterface|null
      **/
     public function getGroupingSortCollection(): ?SortCollectionInterface;
+
+    /**
+     * Allows sorting of the results in a specific order. Ususally used in conjunction with a filter against
+     * a range of document ids or references (where you know the documents you want to retrieve and the order you want
+     * them in
+     */
+    public function getDefinedSortOrder(): ?DefinedSortOrder;
 }

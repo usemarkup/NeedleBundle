@@ -3,10 +3,8 @@
 namespace Markup\NeedleBundle\Query;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Filter\CombinedFilterValueInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
-use Markup\NeedleBundle\Filter\FilterValueInterface;
-use Markup\NeedleBundle\Sort\EmptySortCollection;
+use Markup\NeedleBundle\Sort\DefinedSortOrder;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
@@ -50,11 +48,6 @@ class SelectQuery implements SelectQueryInterface
     private $groupingSortCollection;
 
     /**
-     * @var bool
-     */
-    private $shouldTreatAsTextSearch;
-
-    /**
      * @var string|null
      */
     private $searchTerm;
@@ -74,6 +67,11 @@ class SelectQuery implements SelectQueryInterface
      */
     private $appliedFilterQueries;
 
+    /**
+     * @var DefinedSortOrder|null
+     */
+    private $definedSortOrder;
+
     public function __construct(
         array $baseFilterQueries,
         array $appliedFilterQueries,
@@ -84,22 +82,22 @@ class SelectQuery implements SelectQueryInterface
         ?string $searchTerm = null,
         array $facetsToExclude = [],
         ?SortCollectionInterface $sortCollection = null,
+        ?DefinedSortOrder $definedSortOrder = null,
         ?AttributeInterface $groupingField = null,
-        ?SortCollectionInterface $groupingSortCollection = null,
-        bool $shouldTreatAsTextSearch = false
+        ?SortCollectionInterface $groupingSortCollection = null
     ) {
         $this->facets = $facets;
         $this->fields = $fields;
         $this->pageNumber = $pageNumber;
         $this->maxPerPage = $maxPerPage;
         $this->facetsToExclude = $facetsToExclude;
-        $this->sortCollection = $sortCollection ?: new EmptySortCollection();
+        $this->sortCollection = $sortCollection;
         $this->groupingField = $groupingField;
         $this->groupingSortCollection = $groupingSortCollection;
-        $this->shouldTreatAsTextSearch = $shouldTreatAsTextSearch;
         $this->searchTerm = $searchTerm;
         $this->baseFilterQueries = $baseFilterQueries;
         $this->appliedFilterQueries = $appliedFilterQueries;
+        $this->definedSortOrder = $definedSortOrder;
     }
 
     /**
@@ -145,18 +143,14 @@ class SelectQuery implements SelectQueryInterface
     /**
      * @inheritDoc
      */
-    public function getSortCollection(): SortCollectionInterface
+    public function getSortCollection(): ?SortCollectionInterface
     {
-        if (!$this->sortCollection instanceof SortCollectionInterface) {
-            return new EmptySortCollection();
-        }
-
         return $this->sortCollection;
     }
 
     public function hasSortCollection(): bool
     {
-        return !$this->sortCollection instanceof EmptySortCollection;
+        return $this->sortCollection !== null;
     }
 
     /**
@@ -188,43 +182,6 @@ class SelectQuery implements SelectQueryInterface
     /**
      * @inheritDoc
      */
-    public function doesValueExistInFilterQueries(string $key, $value)
-    {
-        $fq = $this->getFilterQueryWithKey($key);
-
-        if (!$fq) {
-            return false;
-        }
-
-        $filterValue = $fq->getFilterValue();
-
-        if ($filterValue instanceof CombinedFilterValueInterface) {
-            foreach ($filterValue->getValues() as $v) {
-                if ($v->getSearchValue() === strval($value)) {
-                    return true;
-                }
-            }
-        }
-
-        if ($filterValue instanceof FilterValueInterface) {
-            //cast each value to string for comparison
-            return strval($filterValue->getSearchValue()) === strval($value);
-        }
-
-        return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function shouldTreatAsTextSearch()
-    {
-        return $this->shouldTreatAsTextSearch;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getSpellcheck()
     {
         return null;
@@ -249,7 +206,7 @@ class SelectQuery implements SelectQueryInterface
     /**
      * @inheritDoc
      */
-    public function hasSearchTerm()
+    public function hasSearchTerm(): bool
     {
         return $this->searchTerm !== null;
     }
@@ -284,5 +241,10 @@ class SelectQuery implements SelectQueryInterface
     public function getAppliedFilterQueries(): array
     {
         return $this->appliedFilterQueries;
+    }
+
+    public function getDefinedSortOrder(): ?DefinedSortOrder
+    {
+        return $this->definedSortOrder;
     }
 }

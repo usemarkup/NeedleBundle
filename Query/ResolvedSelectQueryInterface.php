@@ -5,9 +5,9 @@ namespace Markup\NeedleBundle\Query;
 use Markup\NeedleBundle\Attribute\AttributeInterface;
 use Markup\NeedleBundle\Boost\BoostQueryField;
 use Markup\NeedleBundle\Collator\CollatorProviderInterface;
-use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Sort\DefinedSortOrder;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
@@ -15,11 +15,7 @@ use Markup\NeedleBundle\Sort\SortCollectionInterface;
  * order to allow decoration of the query immediately before execution.
  *
  * This structure represents a more accurate version of the actual query that is executed against the search backend
- * than the Query alone
- *
- * 2020: The value of this abstraction is now not clear. It provides a way to access the search context and the search
- * query at the same time, but in all probability this is obfuscation and makes things more confusing. This looks
- * like a candidate to be removed IMO.
+ * than the Query alone.
  */
 interface ResolvedSelectQueryInterface
 {
@@ -68,11 +64,6 @@ interface ResolvedSelectQueryInterface
      */
     public function getMappingHashForFields(): array;
 
-    /**
-     * @deprecated
-     */
-    public function doesValueExistInFilterQueries($key, $value);
-
     public function getPageNumber(): int;
 
     public function getMaxPerPage(): int;
@@ -81,9 +72,11 @@ interface ResolvedSelectQueryInterface
 
     public function getSearchTerm(): string;
 
-    public function getSortCollection(): SortCollectionInterface;
+    public function getSortCollection(): ?SortCollectionInterface;
+    
+    public function getDefinedSortOrder(): ?DefinedSortOrder;
 
-    public function getFacets();
+    public function getFacets(): array;
 
     /**
      * Gets the sort order to use for sorting facet values in a search engine, given a particular facet.
@@ -117,21 +110,12 @@ interface ResolvedSelectQueryInterface
      **/
     public function shouldRequestFacetValueForMissing();
 
-
-    /**
-     * Gets the original select query prior to resolution, for read-only access.
-     *
-     * @return SelectQueryInterface
-     * @deprecated
-     */
-    public function getOriginalSelectQuery();
-
     /**
      * Gets the set of boost query fields that should be defined against this query.
      *
      * @return BoostQueryField[]
      **/
-    public function getBoostQueryFields();
+    public function getBoostQueryFields(): array;
 
     /**
      * Gets the sort collection used to sort the group internally
@@ -142,15 +126,11 @@ interface ResolvedSelectQueryInterface
 
     /**
      * Gets whether this query should be executed using fuzzy matching functionality, if available within a backend.
-     *
-     * @return bool
      */
-    public function shouldUseFuzzyMatching();
+    public function shouldUseFuzzyMatching(): bool;
 
     public function getFacetCollatorProvider(): CollatorProviderInterface;
     public function getFacetSetDecoratorProvider(): FacetSetDecoratorProviderInterface;
 
     public function getGroupingField(): ?AttributeInterface;
-
-    public function shouldTreatAsTextSearch(): bool;
 }

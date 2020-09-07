@@ -34,7 +34,7 @@ interface SearchContextInterface
     /**
      * @return \Markup\NeedleBundle\Sort\SortCollectionInterface
      **/
-    public function getDefaultSortCollectionForQuery(): SortCollectionInterface;
+    public function getDefaultSortCollectionForQuery(): ?SortCollectionInterface;
 
     public function getFacetSetDecoratorProvider(): FacetSetDecoratorProviderInterface;
 

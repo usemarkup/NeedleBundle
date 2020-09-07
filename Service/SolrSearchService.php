@@ -181,7 +181,6 @@ class SolrSearchService implements AsyncSearchServiceInterface
                         $query->getFacets(),
                         $query->getFacetCollatorProvider(),
                         $query->getFacetSetDecoratorProvider(),
-                        $query->getOriginalSelectQuery(),
                         $this->facetValueCanonicalizer
                     )
                 );
