@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/usemarkup/NeedleBundle/compare/v1.2.0...v2.0.0) (2020-09-07)
+
+
+### Features
+
+* **search:** Adds function to define order for documents ([9795a9c](https://github.com/usemarkup/NeedleBundle/commit/9795a9cdb403cbc6abdbe57d9dde076808504a80))
+
+
+### BREAKING CHANGES
+
+* **search:** Removal of various public methods
+
 # [1.2.0](https://github.com/usemarkup/NeedleBundle/compare/v1.1.0...v1.2.0) (2020-09-01)
 
 
