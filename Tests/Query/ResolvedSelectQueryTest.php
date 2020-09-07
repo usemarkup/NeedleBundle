@@ -2,7 +2,6 @@
 
 namespace Markup\NeedleBundle\Tests\Query;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Markup\NeedleBundle\Attribute\Attribute;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Filter\FilterQuery;
@@ -10,7 +9,6 @@ use Markup\NeedleBundle\Filter\ScalarFilterValue;
 use Markup\NeedleBundle\Filter\SimpleFilter;
 use Markup\NeedleBundle\Query\ResolvedSelectQuery;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
-use Markup\NeedleBundle\Sort\EmptySortCollection;
 use Markup\NeedleBundle\Sort\Sort;
 use Markup\NeedleBundle\Sort\SortCollection;
 use Mockery as m;
@@ -34,30 +32,6 @@ class ResolvedSelectQueryTest extends MockeryTestCase
     {
         $query = new ResolvedSelectQuery($this->query);
         $query = new ResolvedSelectQuery($this->query, $this->context);
-    }
-
-    public function testGetSortCollectionWithoutContextReturnsEmptyCollection()
-    {
-        $this->query->shouldReceive('getSortCollection')->andReturn(null);
-        $this->query->shouldReceive('hasSortCollection')->andReturn(false);
-        $query = new ResolvedSelectQuery($this->query);
-
-        $this->assertInstanceOf(EmptySortCollection::class, $query->getSortCollection());
-    }
-
-    public function testGetSortCollectionWithoutContextReturnsDefaultCollection()
-    {
-        $sortCollection = new SortCollection();
-        $sortCollection->add(new Sort(new Attribute('weight')));
-        $sortCollection->add(new Sort(new Attribute('on_sale')));
-
-        $this->query->shouldReceive('hasSortCollection')->andReturn(false);
-        $this->context->shouldReceive('getDefaultSortCollectionForQuery')->andReturn($sortCollection);
-
-        $query = new ResolvedSelectQuery($this->query, $this->context);
-
-        $this->assertInstanceOf(SortCollection::class, $query->getSortCollection());
-        $this->assertEquals(2, count($query->getSortCollection()));
     }
 
     public function testGetFilterQueriesWithoutContext()

@@ -39,7 +39,7 @@ class SearchContext implements SearchContextInterface
     private $defaultFilterQueries;
 
     /**
-     * @var SortCollectionInterface
+     * @var SortCollectionInterface|null
      */
     private $defaultSortCollection;
 
@@ -67,7 +67,7 @@ class SearchContext implements SearchContextInterface
         ?int $itemsPerPage,
         array $facets,
         array $defaultFilterQueries,
-        SortCollectionInterface $defaultSortCollection,
+        ?SortCollectionInterface $defaultSortCollection,
         array $boosts,
         bool $facetIgnoresFilters,
         ?CollatorProviderInterface $facetCollatorProvider,
@@ -126,7 +126,7 @@ class SearchContext implements SearchContextInterface
     /**
      * @inheritDoc
      */
-    public function getDefaultSortCollectionForQuery(): SortCollectionInterface
+    public function getDefaultSortCollectionForQuery(): ?SortCollectionInterface
     {
         return $this->defaultSortCollection;
     }

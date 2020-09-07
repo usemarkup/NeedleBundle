@@ -33,11 +33,6 @@ class SolariumFacetSetsIterator implements \OuterIterator
     private $facetsKeyedBySearchKey;
 
     /**
-     * @var SelectQueryInterface|null
-     */
-    private $originalQuery;
-
-    /**
      * A sub-iterator of facet sets.
      *
      * @var \Iterator|null
@@ -64,8 +59,7 @@ class SolariumFacetSetsIterator implements \OuterIterator
         ?SolariumFacetSet $facetSet,
         array $facets,
         CollatorProviderInterface $collatorProvider,
-        FacetSetDecoratorProviderInterface $facetSetDecoratorProvider,
-        SelectQueryInterface $originalQuery = null
+        FacetSetDecoratorProviderInterface $facetSetDecoratorProvider
     ) {
         if ($facetSet == null) {
             $this->solariumFacetSetsIterator = new NonEmptyFacetSetFilterIterator(
@@ -77,7 +71,6 @@ class SolariumFacetSetsIterator implements \OuterIterator
             );
         }
 
-        $this->originalQuery = $originalQuery;
         $this->setFacetsKeyedBySearchKey($facets);
         $this->facetValueCanonicalizer = $facetValueCanonicalizer;
         $this->collatorProvider = $collatorProvider;
@@ -140,12 +133,6 @@ class SolariumFacetSetsIterator implements \OuterIterator
                 );
             }
         }
-        // add a decorator to filter out values that don't match combined filter values, in cases where they exist
-        // I've removed this for now as it seems this exists to solve a problem where you are faceting on a field
-        // that was defined in the 'original' query. This isn't something we care about right now as you cannot
-        // facet on the same attributes used in base queries
-        // $nonCombinedDecorator = new FilterNonUnionValuesFacetSetDecorator($this->originalQuery);
-        // $facetSet = $nonCombinedDecorator->decorate($facetSet);
 
         //there may be a configured decorator for this facet set
         $facetSetDecorator = $this->facetSetDecoratorProvider->getDecoratorForFacet($this->getCurrentFacet());

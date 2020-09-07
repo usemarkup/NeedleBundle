@@ -31,7 +31,7 @@ class SimpleQuery implements SimpleQueryInterface
     /**
      * {@inheritdoc}
      **/
-    public function hasSearchTerm()
+    public function hasSearchTerm(): bool
     {
         return '' !== $this->term;
     }

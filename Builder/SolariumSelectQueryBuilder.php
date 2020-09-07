@@ -2,13 +2,16 @@
 
 namespace Markup\NeedleBundle\Builder;
 
+use Markup\NeedleBundle\Attribute\Attribute;
 use Markup\NeedleBundle\Attribute\AttributeInterface;
+use Markup\NeedleBundle\Boost\BoostQueryField;
 use Markup\NeedleBundle\Exception\UnformableSearchKeyException;
 use Markup\NeedleBundle\Facet\RangeFacetInterface;
 use Markup\NeedleBundle\Lucene\BoostLucenifier;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Lucene\SearchTermProcessor;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
+use Markup\NeedleBundle\Sort\DefinedSortOrder;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 use Solarium\QueryType\Select\Query\Query;
@@ -77,8 +80,7 @@ class SolariumSelectQueryBuilder
                 : $termProcessor->process($rawTerm);
             $solariumQuery->setQuery($luceneTerm);
         }
-
-
+        
         foreach ($query->getBaseAndContextFilterQueries() as $filterQuery) {
             $searchKey = $filterQuery->getFilter()->getSearchKey();
             $solariumSearchKey = $this->getSolariumSearchKeyByFilterSearchKey($searchKey);
@@ -187,29 +189,58 @@ class SolariumSelectQueryBuilder
             }
         }
 
-        //if there are boost query fields to apply, apply them, and switch the search engine to edismax from lucene
-        $boostQueryFields = $query->getBoostQueryFields();
-
-        if (!empty($boostQueryFields)) {
-            //set to using edismax
-            $edismax = $solariumQuery->getEDisMax();
-            //set query/ query alternative to all if applicable
-            if ($solariumQuery->getQuery() === self::ALL_SIGNIFIER) {
-                $solariumQuery->setQuery('');
-                $edismax->setQueryAlternative(self::ALL_SIGNIFIER);
+        // set to using edismax
+        // we always need to use edismax because we no longer maintain a 'text' field in the document against which
+        // to perform searches
+        $edismax = $solariumQuery->getEDisMax();
+        $boostLucenifier = new BoostLucenifier();
+        
+        //set query/ query alternative to all if applicable
+        if ($solariumQuery->getQuery() === self::ALL_SIGNIFIER) {
+            $solariumQuery->setQuery('');
+            $edismax->setQueryAlternative(self::ALL_SIGNIFIER);
+        }
+        
+        // if a defined order of documents has been provided
+        $definedSortOrder = $query->getDefinedSortOrder();
+        if ($definedSortOrder instanceof DefinedSortOrder) {
+            $fieldName = $definedSortOrder->getFieldName();
+            $count = count($definedSortOrder);
+            $parts = [];
+            foreach ($definedSortOrder->getValues() as $index => $value) {
+                $inverseIndex = $count - $index;
+                $parts[] = $boostLucenifier->lucenifyBoost(
+                    new BoostQueryField(
+                        new Attribute(sprintf('%s:%s', $fieldName, $value)),
+                        $inverseIndex
+                    )
+                );
             }
+            $edismax->setBoostQuery(implode(' ', $parts));
+        }
+        
+        $boostQueryFields = $query->getBoostQueryFields();
+        
+        // if searching text
+        if (!$query->getDefinedSortOrder() 
+            && $query->hasSearchTerm() 
+            && !$query->getSortCollection() 
+            && !empty($query->getBoostQueryFields())
+        ) {
+            
             //apply boosts
             $queryFields = [];
             $boostLucenifier = new BoostLucenifier();
             foreach ($boostQueryFields as $boostField) {
                 $queryFields[] = $boostLucenifier->lucenifyBoost($boostField);
             }
+
             $edismax->setQueryFields(implode(' ', $queryFields));
         }
-
+        
         //if there are sorts to apply, apply them
         $sortCollection = $query->getSortCollection();
-
+        
         if ($sortCollection instanceof SortCollectionInterface) {
             foreach ($sortCollection as $sort) {
                 try {
@@ -225,16 +256,6 @@ class SolariumSelectQueryBuilder
                 );
             }
         }
-
-        //if there is a spellcheck request to apply, apply it
-        // @TODO perhaps delete this? also why is the SpellCheck against the Query? surely better against the Context?
-        //        if (null !== $query->getSpellcheck()) {
-        //            $solariumSpellcheck = $solariumQuery->getSpellcheck();
-        //            if (null !== $query->getSpellcheck()->getResultLimit()) {
-        //                $solariumSpellcheck->setCount($query->getSpellcheck()->getResultLimit());
-        //            }
-        //            $solariumSpellcheck->setDictionary($query->getSpellcheck()->getDictionary());
-        //        }
 
         $groupingField = $query->getGroupingField();
 

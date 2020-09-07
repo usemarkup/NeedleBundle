@@ -3,13 +3,13 @@
 namespace Markup\NeedleBundle\Query;
 
 use Markup\NeedleBundle\Attribute\AttributeInterface;
-use Markup\NeedleBundle\Boost\BoostQueryField;
 use Markup\NeedleBundle\Builder\DedupeFilterQueryTrait;
 use Markup\NeedleBundle\Collator\CollatorProviderInterface;
 use Markup\NeedleBundle\Context\NoopSearchContext;
 use Markup\NeedleBundle\Context\SearchContextInterface;
 use Markup\NeedleBundle\Facet\FacetSetDecoratorProviderInterface;
 use Markup\NeedleBundle\Filter\FilterQueryInterface;
+use Markup\NeedleBundle\Sort\DefinedSortOrder;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 /**
@@ -41,15 +41,6 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     protected function getSelectQuery(): SelectQueryInterface
     {
         return $this->selectQuery;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSearchContext(): SearchContextInterface
-    {
-        throw new \RuntimeException(' this method is going to be removed. the search context should be invisible');
-        //return $this->searchContext;
     }
 
     /**
@@ -156,7 +147,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getSortCollection(): SortCollectionInterface
+    public function getSortCollection(): ?SortCollectionInterface
     {
         if ($this->getSelectQuery()->hasSortCollection()) {
             $sort = $this->getSelectQuery()->getSortCollection();
@@ -165,7 +156,20 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
                 return $sort;
             }
         }
+        
+        // only use the fallback from the search context in very specific cases...
+        // most of the time you would not want to use this
+        
+        if ($this->hasSearchTerm()) {
+            // case where "text searching" but user has not picked a sort order
+            return null;
+        }
 
+        if ($this->getDefinedSortOrder()) {
+            // if 'definedSortOrder' has been defined then we don't want a fallback sort order
+            return null;
+        }
+        
         return $this->searchContext->getDefaultSortCollectionForQuery();
     }
 
@@ -191,22 +195,6 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     public function getFilterQueryWithKey(string $key): ?FilterQueryInterface
     {
         return $this->getSelectQuery()->getFilterQueryWithKey($key);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doesValueExistInFilterQueries($key, $value)
-    {
-        return $this->getSelectQuery()->doesValueExistInFilterQueries($key, $value);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function shouldTreatAsTextSearch(): bool
-    {
-        return $this->getSelectQuery()->shouldTreatAsTextSearch();
     }
 
     /**
@@ -242,13 +230,11 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getFacets()
+    public function getFacets(): array
     {
-        if ($this->selectQuery->getFacets()) {
-            return $this->selectQuery->getFacets();
-        }
-
-        return $this->searchContext->getDefaultFacets();
+        $facets = $this->selectQuery->getFacets();
+        
+        return $facets ?? $this->searchContext->getDefaultFacets();
     }
 
     /**
@@ -278,27 +264,14 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function getBoostQueryFields()
+    public function getBoostQueryFields(): array
     {
         $boosts = $this->searchContext->getBoostQueryFields();
         if (!empty($boosts)) {
             return $boosts;
         }
 
-        // when no boosts are provided we fallback to boosting using the fields specified
-        // this is fairly arbitrary but at least forces the solr backend into text search mode that
-        // doesnt need a combined single 'text' field in the schema
-        return array_map(function (AttributeInterface $attribute) {
-            return new BoostQueryField($attribute, 1);
-        }, $this->getFields());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOriginalSelectQuery()
-    {
-        return $this->getSelectQuery();
+        return [];
     }
 
     /**
@@ -317,18 +290,35 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
         return $this->getSelectQuery()->getGroupingSortCollection();
     }
 
-    public function shouldUseFuzzyMatching()
+    /**
+     * {@inheritdoc}
+     */
+    public function shouldUseFuzzyMatching(): bool
     {
         return $this->searchContext->shouldUseFuzzyMatching();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFacetCollatorProvider(): CollatorProviderInterface
     {
         return $this->searchContext->getFacetCollatorProvider();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFacetSetDecoratorProvider(): FacetSetDecoratorProviderInterface
     {
         return $this->searchContext->getFacetSetDecoratorProvider();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefinedSortOrder(): ?DefinedSortOrder
+    {
+        return $this->getSelectQuery()->getDefinedSortOrder();
     }
 }

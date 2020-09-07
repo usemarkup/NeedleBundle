@@ -12,7 +12,6 @@ use Markup\NeedleBundle\Facet\NullSortOrderProvider;
 use Markup\NeedleBundle\Facet\SortOrderProviderInterface;
 use Markup\NeedleBundle\Intercept\InterceptorInterface;
 use Markup\NeedleBundle\Intercept\NullInterceptor;
-use Markup\NeedleBundle\Sort\EmptySortCollection;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
 
 class NoopSearchContext implements SearchContextInterface
@@ -44,9 +43,9 @@ class NoopSearchContext implements SearchContextInterface
     /**
      * {@inheritdoc}
      */
-    public function getDefaultSortCollectionForQuery(): SortCollectionInterface
+    public function getDefaultSortCollectionForQuery(): ?SortCollectionInterface
     {
-        return new EmptySortCollection();
+        return null;
     }
 
     /**

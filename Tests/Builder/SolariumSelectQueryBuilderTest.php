@@ -11,7 +11,6 @@ use Markup\NeedleBundle\Filter\FilterQueryInterface;
 use Markup\NeedleBundle\Filter\FilterValueInterface;
 use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
-use Markup\NeedleBundle\Sort\EmptySortCollection;
 use Mockery as m;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Solarium\Client;
@@ -48,7 +47,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
     public function testBuildWithNoOperationsReturnsSolariumSelectQuery()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
-        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(null);
 
         $query = $this->builder->buildSolariumQueryFromGeneric($genericQuery, $this->queryGenerator);
         $this->assertInstanceOf(Query::class, $query);
@@ -57,7 +56,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
     public function testBuildWithSearchTerm()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
-        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(null);
 
         $term = 'pirates';
         $genericQuery
@@ -73,7 +72,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
     public function testAddFilterQuery()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
-        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(null);
 
         $filterQuery = m::mock(FilterQueryInterface::class);
         $filterQuery
@@ -130,7 +129,7 @@ class SolariumSelectQueryBuilderTest extends MockeryTestCase
     public function testSetFieldsUsingAttributes()
     {
         $genericQuery = m::spy(ResolvedSelectQueryInterface::class);
-        $genericQuery->shouldReceive('getSortCollection')->andReturn(new EmptySortCollection());
+        $genericQuery->shouldReceive('getSortCollection')->andReturn(null);
 
         $stringFields = ['this', 'that'];
         $attributeSpecialization = new AttributeSpecialization('other');

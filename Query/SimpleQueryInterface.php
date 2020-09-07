@@ -12,7 +12,7 @@ interface SimpleQueryInterface
      *
      * @return bool
      **/
-    public function hasSearchTerm();
+    public function hasSearchTerm(): bool;
 
     /**
      * Gets the search term being used in this query.  Returns false if not specified.
