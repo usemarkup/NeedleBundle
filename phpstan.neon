@@ -1,13 +1,7 @@
 parameters:
     excludes_analyse:
-        - %currentWorkingDirectory%/DependencyInjection/Configuration.php
-        - %currentWorkingDirectory%/Tests/*
-        - %currentWorkingDirectory%/vendor/*
-        - %currentWorkingDirectory%/bin/*
+        - */DependencyInjection/Configuration.php
     ignoreErrors:
         - '#Query::addDocuments\(\) expects array#'
-        - '#Class Symfony\\Component\\DependencyInjection\\ChildDefinition not found#'
-        - '#Class Symfony\\Component\\DependencyInjection\\DefinitionDecorator not found#'
-        - '#Access to undefined constant Symfony\\Component\\DependencyInjection\\ContainerInterface::SCOPE_PROTOTYPE#'
     reportUnmatchedIgnoredErrors: false
     inferPrivatePropertyTypeFromConstructor: true

@@ -1,7 +1,11 @@
 {
     "name": "markup/needle-bundle",
     "description": "A Symfony bundle for search. Defines a standard search query builder (including filters and faceting), and integrates with different backends (currently Solr and Elastic).",
-    "keywords": ["search", "faceting", "solr"],
+    "keywords": [
+        "search",
+        "faceting",
+        "solr"
+    ],
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -47,7 +51,14 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Markup\\NeedleBundle\\": "" }
+        "psr-4": {
+            "Markup\\NeedleBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Markup\\NeedleBundle\\Tests\\": "Tests"
+        }
     },
     "extra": {
         "branch-alias": {

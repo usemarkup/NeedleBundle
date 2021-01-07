@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<ruleset name="needle"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>Needle Ruleset</description>
+
+    <rule ref="vendor/markup/coding-standard/phpmd.xml">
+        <exclude name="ElseExpression"/>
+        <exclude name="CouplingBetweenObjects"/>
+        <exclude name="CyclomaticComplexity"/>
+        <exclude name="BooleanGetMethodName"/>
+        <exclude name="ExcessiveMethodLength"/>
+        <exclude name="NPathComplexity"/>
+        <exclude name="LongVariable"/>
+    </rule>
+</ruleset>
