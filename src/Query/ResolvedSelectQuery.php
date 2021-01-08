@@ -234,7 +234,7 @@ class ResolvedSelectQuery implements ResolvedSelectQueryInterface
     {
         $facets = $this->selectQuery->getFacets();
         
-        return $facets ?? $this->searchContext->getDefaultFacets();
+        return $facets ?: $this->searchContext->getDefaultFacets();
     }
 
     /**
