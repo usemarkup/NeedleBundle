@@ -159,3 +159,15 @@ services:
 
     Markup\NeedleBundle\Context\ContextSortAttributeFactory:
         autowire: true
+
+    solarium.data_collector:
+        class: Markup\NeedleBundle\DataCollector\SolrDataCollector
+        public: false
+        tags:
+            -   name: 'data_collector'
+                template: 'MarkupNeedleBundle:DataCollector:solr.html.twig'
+                id: 'solr'
+            -   name: 'monolog.logger'
+                channel: 'solr'
+        calls:
+            - [ 'setLogger', [ '@logger' ] ]
