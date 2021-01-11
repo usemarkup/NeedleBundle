@@ -25,8 +25,7 @@ before_script:
   config-rm xdebug.ini; fi
 
 script:
-- vendor/bin/phpstan.phar analyse -c phpstan.neon --level 7 .
-- vendor/phpunit/phpunit/phpunit
+- make all
 # If master branch deploy a release providing everything else passes on the deploy matrix
 - if [ "$deploy" = "true" ] && [ "$TRAVIS_BRANCH" = "master" ]; then nvm install --lts && nvm alias default lts
   && npm install --ignore-scripts && ./node_modules/.bin/semantic-release --no-ci; fi
