@@ -66,25 +66,39 @@ final class ContextFilterFactory
         return new SearchFilter\FilterQuery($attribute, new SearchFilter\ScalarFilterValue($filterValue));
     }
 
-    // if the value can/should be interpreted as a range filter value then one is returned
-    private function getRangeFilterValue(AttributeInterface $attribute, $filterValue): ?SearchFilter\RangeFilterValue
-    {
+    /**
+     * If the value should be interpreted as a range filter or a collection of range filters then one is returned.
+     *
+     * @param AttributeInterface $attribute
+     * @param mixed $filterValue
+     * @return SearchFilter\FilterValueInterface|null
+     */
+    private function getRangeFilterValue(
+        AttributeInterface $attribute,
+        $filterValue
+    ): ?SearchFilter\FilterValueInterface {
         if ($attribute instanceof RangeFacetField) {
-            if (is_array($filterValue) && isset($filterValue['min'], $filterValue['max'])) {
+            if (!is_array($filterValue) || empty($filterValue)) {
+                throw new \RuntimeException('Cannot provide range filter value given the passed filter values');
+            }
+
+            if (isset($filterValue['min'], $filterValue['max'])) {
                 return new SearchFilter\RangeFilterValue(
                     floatval($filterValue['min']),
                     floatval($filterValue['max'])
                 );
             }
 
-            if (is_array($filterValue)) {
-                $min = floatval(min($filterValue));
-                $max = floatval(max($filterValue)) + (floatval($attribute->getRangeSize()) - 0.01);
-
-                return new SearchFilter\RangeFilterValue($min, $max);
+            $ranges = [];
+            foreach ($filterValue as $min) {
+                $min = floatval($min);
+                $max = $min + $attribute->getRangeSize() - 0.01;
+                $ranges[] = new SearchFilter\RangeFilterValue($min, $max);
             }
-
-            throw new \RuntimeException('Cannot provide range filter value given the passed filter values');
+            if (count($ranges) === 1) {
+                return $ranges[0];
+            }
+            return new SearchFilter\UnionFilterValue($ranges);
         }
 
         if (!$attribute instanceof FloatAttributeInterface) {
