@@ -1,0 +1,124 @@
+{% extends app.request.isXmlHttpRequest ? '@WebProfiler/Profiler/ajax_layout.html.twig' : '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% if collector.queryCount > 0 %}
+        {% set icon %}
+            {{ include('@NelmioSolarium/DataCollector/solr.svg') }}
+            <span class="sf-toolbar-value">{{ collector.queryCount }}</span>
+            <span class="sf-toolbar-info-piece-additional-detail">
+                <span class="sf-toolbar-label">in</span>
+                <span class="sf-toolbar-value">{{ '%0.2f'|format(collector.totalTimeMs) }}</span>
+                <span class="sf-toolbar-label">ms</span>
+            </span>
+        {% endset %}
+        {% set text %}
+            <div class="sf-toolbar-info-piece">
+                <b>Solr Queries</b>
+                <span class="sf-toolbar-status">{{ collector.queryCount }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Query time</b>
+                <span>{{ '%0.2f'|format(collector.totalTimeMs) }} ms</span>
+            </div>
+        {% endset %}
+        {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } %}
+    {% endif %}
+{% endblock %}
+
+{% block menu %}
+    <span class="label  {{ collector.queryCount ? '' : 'disabled' }}">
+        <span class="icon">{{ include('@NelmioSolarium/DataCollector/solr.svg') }}</span>
+        <strong>Solr</strong>
+        {% if collector.queryCount > 0 %}
+            <span class="count">
+                <span>{{ collector.queryCount }}</span>
+                <span>{{ '%0.0f'|format(collector.totalTimeMs) }} ms</span>
+            </span>
+        {% endif %}
+    </span>
+{% endblock %}
+
+{% block panel %}
+    {% if collector.queries is empty %}
+        <p>
+            <em>No queries.</em>
+        </p>
+    {% else %}
+        {% for i, query in collector.queries %}
+            <div>
+                <h2>
+                    Query {{ loop.index }}
+                    (
+                        {%- if query.statusCode -%}
+                            status: {{ query.statusCode }}, duration: {{ '%0.2f'|format(query.durationMs) }} ms
+                        {%- else -%}
+                            request failed
+                        {%- endif -%}
+                    )
+                </h2>
+                <div class="sf-tabs" style="padding: 0 0 30px 30px;">
+                    <div class="tab">
+                        <h3 class="tab-title">Request</h3>
+                        <div class="tab-content">
+                            <p>
+                                {{ query.isPost ? 'POST' : 'GET' }}
+                                <a href="{{ query.requestUri }}">{{ query.requestUri }}</a>
+                            </p>
+                            {% if query.isPost %}
+                                <form action="{{ query.requestUri }}" method="post" target="_blank">
+                                    {% for key, value in query.requestParams %}
+                                        {% if value is iterable %}
+                                            {% for subValue in value %}
+                                                <input type="hidden" name="{{ key }}" value="{{ subValue }}">
+                                            {% endfor %}
+                                        {% else %}
+                                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                                        {% endif %}
+                                    {% endfor %}
+                                    <input type="submit" value="Execute POST Request">
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="tab">
+                        <h3 class="tab-title">Params</h3>
+                        <div class="tab-content">
+                            <table style="width:45%">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Key</th>
+                                    <th scope="col">Value</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for key, value in query.requestParams %}
+                                    <tr>
+                                        <td><b>{{ key }}</b></td>
+                                        {% if value is iterable %}
+                                            <td>{{ value|join('<br />')|raw }}</td>
+                                        {% else %}
+                                            <td>{{ value }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab">
+                        <h3 class="tab-title">JSON Response</h3>
+                        <div class="tab-content">
+                            {% if query.statusCode %}
+                                <pre style="overflow:visible;">{{ query.responseBody }}</pre>
+                            {% else %}
+                                <p>Request failed, no response logged</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
