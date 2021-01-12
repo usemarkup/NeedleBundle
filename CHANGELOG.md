@@ -1,3 +1,18 @@
+# [2.1.0](https://github.com/usemarkup/NeedleBundle/compare/v2.0.0...v2.1.0) (2021-01-12)
+
+
+### Bug Fixes
+
+* **search:** typo bugfix after release 2.0.0 ([0b7161e](https://github.com/usemarkup/NeedleBundle/commit/0b7161ebfa36a1f8881634b399619ba21decf6f2))
+
+
+### Features
+
+* **debug:** new solr debug panel in symfony profiler ([0b59677](https://github.com/usemarkup/NeedleBundle/commit/0b59677cbb7a6f89d02d47cc7cb937a0919e5265))
+* **standards:** removed CircleCI integration in favour of existing TravisCI integration ([dd62c05](https://github.com/usemarkup/NeedleBundle/commit/dd62c05252859c3745264f430fbd7fdd10dbd857))
+* **search:** split range queries with multiple ranges to a union of ranges ([75b4910](https://github.com/usemarkup/NeedleBundle/commit/75b4910ff4e3af349e0ec86469e0611ad702c0c9))
+* **standards:** updated the code to follow the coding standards and added circle.ci tests ([6426f14](https://github.com/usemarkup/NeedleBundle/commit/6426f146900be93f04d8b5082798ca2203113ec1))
+
 # [2.0.0](https://github.com/usemarkup/NeedleBundle/compare/v1.2.0...v2.0.0) (2020-09-07)
 
 
