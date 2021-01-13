@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/usemarkup/NeedleBundle/compare/v2.1.0...v2.1.1) (2021-01-13)
+
+
+### Bug Fixes
+
+* **debug:** Removed internal constant present in new solr Symfony Debug Panel. Added optional configuration for the value. ([0962051](https://github.com/usemarkup/NeedleBundle/commit/0962051b8f70dce9313f09c4b05bad16f39b6c06))
+
 # [2.1.0](https://github.com/usemarkup/NeedleBundle/compare/v2.0.0...v2.1.0) (2021-01-12)
 
 
