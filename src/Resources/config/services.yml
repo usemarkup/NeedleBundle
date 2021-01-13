@@ -170,4 +170,4 @@ services:
             -   name: 'monolog.logger'
                 channel: 'solr'
         calls:
-            - [ 'setLogger', [ '@logger' ] ]
+            - [ 'setLogger', [ '@?logger' ] ]

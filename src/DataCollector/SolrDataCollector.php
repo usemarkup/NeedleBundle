@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Markup\NeedleBundle\DataCollector;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Solarium\Core\Client\Endpoint as SolariumEndpoint;
 use Solarium\Core\Client\Request as SolariumRequest;
 use Solarium\Core\Client\Response as SolariumResponse;
@@ -56,9 +57,29 @@ class SolrDataCollector extends SolariumPlugin implements DataCollectorInterface
      */
     protected $logger;
 
+    /**
+     * @var string
+     */
+    protected $solrDashboardDomain;
+
+    /**
+     * SolrDataCollector constructor.
+     * @param array|null $options
+     */
+    public function __construct($options = null)
+    {
+        $this->logger = new NullLogger();
+        parent::__construct($options);
+    }
+
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    public function setSolrDashboardDomain(string $solrDashboardDomain): void
+    {
+        $this->solrDashboardDomain = $solrDashboardDomain;
     }
 
     /**
@@ -173,7 +194,7 @@ class SolrDataCollector extends SolariumPlugin implements DataCollectorInterface
     ): void {
         $requestUri = str_replace(
             '://localhost:',
-            '://gant-dev-solr.usemarkup.com:',
+            sprintf('://%s:', $this->solrDashboardDomain),
             $endpoint->getBaseUri().$request->getUri()
         );
 

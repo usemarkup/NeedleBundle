@@ -145,6 +145,20 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('solr')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('debug')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('solr_dashboard_domain')
+                                    ->info('Used in Symfony Profiler to redirect to solr dashboard from the solr debug panel')
+                                    ->defaultValue('localhost')
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

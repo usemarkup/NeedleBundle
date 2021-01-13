@@ -269,5 +269,8 @@ class MarkupNeedleExtension extends Extension
 
         $corpusIndexProvider = $container->getDefinition(CorpusIndexProvider::class);
         $corpusIndexProvider->setArgument('$prefix', $config['elasticsearch']['index_prefix']);
+
+        $definition = $container->findDefinition('solarium.data_collector');
+        $definition->addMethodCall('setSolrDashboardDomain', [$config['solr']['debug']['solr_dashboard_domain']]);
     }
 }
