@@ -1,3 +1,12 @@
+## [2.1.2](https://github.com/usemarkup/NeedleBundle/compare/v2.1.1...v2.1.2) (2021-07-27)
+
+
+### Bug Fixes
+
+* **search:** apply boost fields with search term ([ad5ac16](https://github.com/usemarkup/NeedleBundle/commit/ad5ac16698942bc41d9de47272ac502979e7fe55))
+
+
+
 ## [2.1.1](https://github.com/usemarkup/NeedleBundle/compare/v2.1.0...v2.1.1) (2021-01-13)
 
 
