@@ -223,11 +223,7 @@ class SolariumSelectQueryBuilder
         $boostQueryFields = $query->getBoostQueryFields();
 
         // if searching text
-        if (!$query->getDefinedSortOrder()
-            && $query->hasSearchTerm()
-            && !$query->getSortCollection()
-            && !empty($query->getBoostQueryFields())
-        ) {
+        if ($query->hasSearchTerm()) {
             //apply boosts
             $queryFields = [];
             $boostLucenifier = new BoostLucenifier();
@@ -241,7 +237,7 @@ class SolariumSelectQueryBuilder
         //if there are sorts to apply, apply them
         $sortCollection = $query->getSortCollection();
 
-        if ($sortCollection instanceof SortCollectionInterface) {
+        if ($sortCollection instanceof SortCollectionInterface && !$query->hasSearchTerm()) {
             foreach ($sortCollection as $sort) {
                 try {
                     $sortKey = $sort->getFilter()->getSearchKey();
