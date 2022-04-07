@@ -28,7 +28,7 @@ class SearchTermProcessor
 
         if ($filterBitMask & self::FILTER_NORMALIZE) {
             $text = trim(preg_replace('/[\s~]+/', ' ', $text) ?? $text);
-            $text = trim(preg_replace('/[\:/', '\:', $text) ?? $text);
+            $text = trim(preg_replace('/[\:]/', '\:', $text) ?? $text);
         }
 
         if ($filterBitMask & self::FILTER_FUZZY_MATCHING) {
