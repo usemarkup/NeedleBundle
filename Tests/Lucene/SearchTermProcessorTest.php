@@ -48,7 +48,7 @@ class SearchTermProcessorTest extends TestCase
     public function normalizeCases()
     {
         return [
-            ['red:case', 'red case'],
+            ['red:case', 'red\:case'],
             ['red~ cane~', 'red cane'],
             ['"red cane"', '"red cane"'],
             ['"red cane"~', '"red cane"'],
