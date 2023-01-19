@@ -9,8 +9,8 @@ use Markup\NeedleBundle\Facet\CompositeFacetSetIterator;
 use Markup\NeedleBundle\Facet\FacetSet;
 use Markup\NeedleBundle\Facet\FilterNonUnionValuesFacetSetDecorator;
 use Markup\NeedleBundle\Query\SelectQueryInterface;
-use Solarium\QueryType\Select\Result\Facet\Field as SolariumFacetField;
-use Solarium\QueryType\Select\Result\FacetSet as SolariumFacetSet;
+use Solarium\Component\Facet\Field as SolariumFacetField;
+use Solarium\Component\Result\FacetSet as SolariumFacetSet;
 
 /**
 * An iterator that goes over a collection of Solarium facet sets and emits generic facet sets.

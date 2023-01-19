@@ -6,12 +6,12 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Solarium\Core\Event\Events as SolariumEvents;
 use Solarium\Core\Event\PostExecuteRequest as SolariumPostExecuteRequestEvent;
-use Solarium\Core\Plugin\Plugin as SolariumPlugin;
+use Solarium\Core\Plugin\AbstractPlugin;
 
 /**
 * A plugin that logs bad request information.
 */
-class SolariumLogBadRequestsPlugin extends SolariumPlugin
+class SolariumLogBadRequestsPlugin extends AbstractPlugin
 {
     /**
      * @var LoggerInterface

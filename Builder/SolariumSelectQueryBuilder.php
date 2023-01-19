@@ -11,8 +11,8 @@ use Markup\NeedleBundle\Lucene\FilterQueryLucenifier;
 use Markup\NeedleBundle\Lucene\SearchTermProcessor;
 use Markup\NeedleBundle\Query\ResolvedSelectQueryInterface;
 use Markup\NeedleBundle\Sort\SortCollectionInterface;
-use Solarium\QueryType\Select\Query\Component\Facet\Field;
-use Solarium\QueryType\Select\Query\Component\Facet\Range;
+use Solarium\Component\Facet\Field;
+use Solarium\Component\Facet\Range;
 use Solarium\QueryType\Select\Query\Query as SolariumQuery;
 use Solarium\QueryType\Select\Query\Query;
 
